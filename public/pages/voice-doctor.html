@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vani Vaidya — Voice-First AI Health Assistant — MedInVedic</title>
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css?v=v_RAG_v90" />
+  <link rel="stylesheet" href="../css/vani-vaidya.css?v=v_RAG_v90" />
+  
+  <!-- PDF Generator Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <!-- Core Knowledge & RAG Pipeline -->
+  <script src="../js/i18n.js?v=v_RAG_v90"></script>
+  <script src="../js/medical-kb.js?v=v_RAG_v90"></script>
+  <script src="../js/rag-knowledge-base.js?v=v_RAG_v90"></script>
+  <script src="../js/rag-safety.js?v=v_RAG_v90"></script>
+  <script src="../js/rag-retriever.js?v=v_RAG_v90"></script>
+  <script src="../js/rag-generator.js?v=v_RAG_v90"></script>
+  
+  <!-- Vani Vaidya Voice Engine Modules -->
+  <script src="../js/vani-language-registry.js?v=v_RAG_v90"></script>
+  <script src="../js/vani-multimodal.js?v=v_RAG_v90"></script>
+  <script src="../js/vani-rag-engine.js?v=v_RAG_v90"></script>
+</head>
+<body class="vani-theme">
+
+<!-- NAVIGATION BAR -->
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+  <div style="margin-left: auto; display: flex; align-items: center; gap: 12px;">
+    <a href="emergency.html" class="nav-sos-btn" style="padding: 6px 14px; font-size: 11.5px; background: linear-gradient(135deg, #ef4444, #b91c1c); border-radius: 50px; color: #fff; text-decoration: none; font-weight: 800;">
+      🚨 SOS
+    </a>
+    <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- SIDEBAR DRAWER -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <div class="nav-logo">
+      <span class="nav-logo-text">MedInVedic</span>
+    </div>
+    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+  </div>
+  <div class="sidebar-body">
+    <a href="../index.html" class="sidebar-link">🏠 Home</a>
+    <a href="ai-assistant.html" class="sidebar-link" style="color: #3b82f6; font-weight: 800;">🧠 AI Health Assistant</a>
+    <a href="voice-doctor.html" class="sidebar-link active" style="color: #22c55e; font-weight: 800;">🎙️ Vani Vaidya (Voice AI)</a>
+    <a href="categories.html" class="sidebar-link">📦 Categories</a>
+    <a href="consult.html" class="sidebar-link">👨‍⚕️ Consult</a>
+    <a href="healing-hub.html" class="sidebar-link">✨ Healing Hub</a>
+    <a href="prakriti-analysis.html" class="sidebar-link">🧬 Prakriti Test</a>
+    <a href="online-pharmacy.html" class="sidebar-link">💊 Pharmacy Hub</a>
+    
+    <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
+    <a href="login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
+    <a href="#" class="sidebar-link" onclick="VANI_RAG_ENGINE.clearHistory(); toggleSidebar(); return false;">🗑️ Clear Health Session</a>
+  </div>
+</div>
+
+<!-- MAIN VOICE HEALTH LAB -->
+<div class="vani-lab">
+
+  <!-- Header Branding -->
+  <div style="margin-bottom: 24px;">
+     <div class="vani-badge">
+       <span style="width:7px; height:7px; background:#22c55e; border-radius:50%; display:inline-block; box-shadow:0 0 8px #22c55e;"></span>
+       THE VOICE-FIRST AI HEALTH ASSISTANT
+     </div>
+     <h1 class="vani-title">Vani Vaidya</h1>
+     <p class="vani-subtitle">Speak Naturally • Understand Clearly • Stay Healthy</p>
+  </div>
+
+  <!-- Multimodal Feature Selector Tabs -->
+  <div class="vani-mode-tabs">
+    <button class="vani-mode-tab active" id="tabVoice" onclick="switchMode('voice')">🎙️ Voice First</button>
+    <button class="vani-mode-tab" id="tabTyped" onclick="switchMode('typed')">⌨️ Typed Ask</button>
+    <button class="vani-mode-tab" id="tabMedicine" onclick="openMedicineModal()">💊 Medicine Scanner</button>
+    <button class="vani-mode-tab" id="tabReport" onclick="openReportModal()">📄 Report Analyzer</button>
+    <button class="vani-mode-tab" id="tabImage" onclick="openImageModal()">📷 Health Image</button>
+    <button class="vani-mode-tab sos" onclick="window.location.href='emergency.html'">🚨 Emergency Help</button>
+  </div>
+
+  <!-- Central Glowing Mic Button & Animated Visualizer -->
+  <div class="vani-mic-wrapper">
+    <button class="mic-button" id="micBtn" onclick="VANI_RAG_ENGINE.toggleRecording()" title="Tap to start voice consultation" aria-label="Microphone Button"></button>
+    <div class="audio-wave">
+       <div class="wave-bar" style="animation-delay: 0.1s"></div>
+       <div class="wave-bar" style="animation-delay: 0.25s"></div>
+       <div class="wave-bar" style="animation-delay: 0.4s"></div>
+       <div class="wave-bar" style="animation-delay: 0.2s"></div>
+       <div class="wave-bar" style="animation-delay: 0.5s"></div>
+    </div>
+    <p class="mic-hint-text" id="micHint">TAP TO START TALKING</p>
+  </div>
+
+  <!-- 50+ Multilingual Selector Panel (Indian Prioritized) -->
+  <div class="vani-lang-panel">
+    <div class="vani-lang-header">
+      <div style="font-size: 11.5px; font-weight: 900; color: #22c55e; letter-spacing: 2px; text-transform: uppercase;">
+        🇮🇳 50+ Languages Supported (Select Preferred)
+      </div>
+      <input type="text" id="langSearchInput" class="vani-lang-search" placeholder="🔍 Search language..." oninput="filterLanguages(this.value)">
+    </div>
+    <div class="lang-grid" id="langGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(115px, 1fr)); gap: 8px; max-height: 180px; overflow-y: auto; padding-right: 6px; scrollbar-width: thin;">
+      <!-- Populated dynamically from VANI_LANGUAGES -->
+    </div>
+  </div>
+
+  <!-- Real-Time Transcript & Typed Input Box -->
+  <div class="transcript-box" id="transcriptBox">
+     <div class="transcript-header">
+       <span>🎙️ Real-Time Transcript</span>
+       <span id="detectedLangBadge" style="font-size: 10.5px; color: #94a3b8; font-weight: 700;">Active: English (India)</span>
+     </div>
+     <div id="transcriptText">Waiting for your voice input... (or choose a quick query below)</div>
+
+     <!-- Typed Input Option -->
+     <div class="typed-input-row" id="typedInputRow">
+       <input type="text" id="vaniTextInput" placeholder="Type health questions in any language (e.g. 'fever for 2 days', 'ನನಗೆ ಜ್ವರ ಇದೆ')..." onkeydown="if(event.key==='Enter') submitTypedQuery()">
+       <button onclick="submitTypedQuery()">Ask AI</button>
+     </div>
+
+     <!-- Quick Symptoms Prompts -->
+     <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px;">
+       <button class="lang-chip-grid" onclick="quickAsk('I have had a high fever and body pain for two days')" style="font-size: 11.5px; padding: 4px 10px;">🌡️ High Fever</button>
+       <button class="lang-chip-grid" onclick="quickAsk('ನನಗೆ ಎರಡು ದಿನಗಳಿಂದ ಜ್ವರ ಮತ್ತು ಗಂಟಲು ನೋವು ಇದೆ')" style="font-size: 11.5px; padding: 4px 10px;">ಕನ್ನಡ: ಜ್ವರ + ಗಂಟಲು ನೋವು</button>
+       <button class="lang-chip-grid" onclick="quickAsk('मुझे दो दिन से पेट में बहुत तेज़ दर्द हो रहा है')" style="font-size: 11.5px; padding: 4px 10px;">हिन्दी: पेट दर्द</button>
+       <button class="lang-chip-grid" onclick="quickAsk('Severe headache and sensitivity to light')" style="font-size: 11.5px; padding: 4px 10px;">🧠 Migraine / Headache</button>
+       <button class="lang-chip-grid" onclick="quickAsk('Acid reflux, heartburn and gas trouble')" style="font-size: 11.5px; padding: 4px 10px;">🫃 Acidity & GERD</button>
+     </div>
+  </div>
+
+  <!-- RAG Response Dashboard Area -->
+  <div class="ai-response" id="responseArea">
+     <div class="response-card">
+        <button class="speaker-btn" id="playResponseBtn" onclick="toggleVoicePlayback()" title="Listen to response" aria-label="Speaker Button">🔊</button>
+        
+        <h2 style="font-size: clamp(24px, 4vw, 32px); font-weight: 900; margin: 0 0 16px; color: #0f172a;" id="resTitle">Health Assessment</h2>
+        <div style="font-size: 16.5px; line-height: 1.8; color: #1e293b; font-weight: 500;" id="resBody"></div>
+
+        <!-- 3-Way Evidence Insight Grid -->
+        <div class="insight-grid">
+           <!-- Safe Next Steps -->
+           <div class="insight-box" style="background: #f0fdf4; border-color: #86efac;">
+              <span style="font-size: 28px; display: block; margin-bottom: 8px;">🥣</span>
+              <strong style="color: #15803d; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Safe Next Steps</strong>
+              <div style="font-size: 14.5px; margin-top: 8px; color: #1e293b; line-height: 1.6; font-weight: 500;" id="resRemedy"></div>
+           </div>
+           
+           <!-- Ayurveda Insight -->
+           <div class="insight-box" style="background: #f0f9ff; border-color: #7dd3fc;">
+              <span style="font-size: 28px; display: block; margin-bottom: 8px;">🍃</span>
+              <strong style="color: #0284c7; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Ayurveda Insight</strong>
+              <div style="font-size: 14.5px; margin-top: 8px; color: #1e293b; line-height: 1.6; font-weight: 500;" id="resHerb"></div>
+           </div>
+
+           <!-- Medicine Information -->
+           <div class="insight-box" style="background: #fffbeb; border-color: #fcd34d;">
+              <span style="font-size: 28px; display: block; margin-bottom: 8px;">💊</span>
+              <strong style="color: #b45309; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Medicine Information</strong>
+              <div style="font-size: 14.5px; margin-top: 8px; color: #1e293b; line-height: 1.6; font-weight: 500;" id="resMedicine"></div>
+              <a href="#" id="buyMedicineBtn" class="shop-btn" style="color: #b45309; font-weight: 900;">View in Pharmacy 🛒</a>
+           </div>
+        </div>
+
+        <!-- Authoritative Sources Drawer will be injected here -->
+        <div id="vaniSourcesContainer"></div>
+
+        <!-- Doctor Questions Box will be injected here -->
+        <div id="vaniDocQuestions"></div>
+
+        <!-- Disclaimer & Action Toolbar -->
+        <div style="margin-top: 22px; font-size: 12.5px; color: #475569; line-height: 1.6; padding: 12px 18px; background: #f1f5f9; border: 1.5px solid #cbd5e1; border-radius: 12px;">
+          ⚕️ <strong style="color: #0284c7;">Medical Safety Notice:</strong> Vani Vaidya is an educational health assistant. It answers from clinical guidelines (WHO/CDC/NHS/MoHFW) but does not provide autonomous clinical diagnosis or prescriptions. For severe pain or emergencies, call <strong>112</strong> immediately.
+        </div>
+
+        <div class="vani-actions-bar">
+          <button class="vani-action-btn pdf" onclick="VANI_RAG_ENGINE.downloadPDF()" title="Download Verified Clinical Summary Report">
+            📄 Download Verified PDF Report
+          </button>
+          <button class="vani-action-btn" onclick="copyDoctorBrief()">
+            📋 Copy for Doctor
+          </button>
+          <button class="vani-action-btn" onclick="shareWhatsApp()">
+            📱 Share Summary
+          </button>
+          
+          <select class="vani-speed-select" onchange="VANI_RAG_ENGINE.setRate(this.value)">
+            <option value="0.75">Speed: 0.75x</option>
+            <option value="1.0" selected>Speed: 1.0x (Normal)</option>
+            <option value="1.25">Speed: 1.25x</option>
+            <option value="1.5">Speed: 1.5x</option>
+          </select>
+        </div>
+     </div>
+  </div>
+</div>
+
+<!-- MEDICINE SCANNER MODAL -->
+<div class="vani-modal-overlay" id="medicineModal">
+  <div class="vani-modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0; font-size:20px; color:#0f172a;">💊 Medicine Scanner & Safety</h3>
+      <button onclick="closeModal('medicineModal')" style="background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:13.5px; color:#475569; margin-bottom:16px;">
+      Enter the name of a medicine or active generic ingredient to review verified pharmacology, safety warnings, and interactions.
+    </p>
+    <div style="display:flex; gap:8px; margin-bottom:16px;">
+      <input type="text" id="medSearchInput" placeholder="e.g. Paracetamol, Pantocid, Augmentin..." style="flex:1; padding:10px 14px; border-radius:10px; background:#f8fafc; border:1.5px solid #cbd5e1; color:#0f172a; font-size:14px; outline:none;">
+      <button onclick="scanMedicine()" style="background:#0284c7; color:#ffffff; font-weight:800; border:none; padding:0 20px; border-radius:10px; cursor:pointer;">Scan</button>
+    </div>
+    <div id="medResultContainer" style="display:none; padding:16px; background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:14px; font-size:13.5px; line-height:1.6; color:#1e293b;"></div>
+  </div>
+</div>
+
+<!-- REPORT ANALYZER MODAL -->
+<div class="vani-modal-overlay" id="reportModal">
+  <div class="vani-modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0; font-size:20px; color:#0f172a;">📄 Lab Report Analyzer</h3>
+      <button onclick="closeModal('reportModal')" style="background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:13.5px; color:#475569; margin-bottom:14px;">
+      Paste lab report text or values (e.g. CBC, Hb 10.5, Fasting Blood Sugar 135, TSH 6.2, Platelets 1.2) for reference range analysis.
+    </p>
+    <textarea id="reportTextInput" placeholder="Paste report text here e.g.
+Hemoglobin: 11.2 g/dL
+Fasting Blood Sugar: 128 mg/dL
+Platelet Count: 1.4 Lakhs
+TSH: 5.8 µIU/mL" style="width:100%; height:120px; padding:12px; border-radius:12px; background:#f8fafc; border:1.5px solid #cbd5e1; color:#0f172a; font-family:inherit; font-size:13.5px; outline:none; box-sizing:border-box; resize:vertical;"></textarea>
+    <div style="margin-top:12px; text-align:right;">
+      <button onclick="analyzeReport()" style="background:#0284c7; color:#fff; font-weight:800; border:none; padding:10px 22px; border-radius:10px; cursor:pointer;">Analyze Report</button>
+    </div>
+    <div id="reportResultContainer" style="display:none; margin-top:16px; font-size:13.5px; color:#1e293b;"></div>
+  </div>
+</div>
+
+<!-- HEALTH IMAGE MODAL -->
+<div class="vani-modal-overlay" id="imageModal">
+  <div class="vani-modal-content">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0; font-size:20px; color:#0f172a;">📷 Health Image Observation</h3>
+      <button onclick="closeModal('imageModal')" style="background:none; border:none; color:#64748b; font-size:20px; cursor:pointer;">✕</button>
+    </div>
+    <p style="font-size:13.5px; color:#475569; margin-bottom:14px;">
+      Describe visual concerns (e.g., localized rash, swelling, insect bite, redness) for general supportive care notes.
+    </p>
+    <input type="text" id="imageDescInput" placeholder="Describe the image e.g., 'red itchy rash on forearm for 1 day'..." style="width:100%; padding:12px; border-radius:12px; background:#f8fafc; border:1.5px solid #cbd5e1; color:#0f172a; font-size:13.5px; outline:none; box-sizing:border-box; margin-bottom:12px;">
+    <div style="text-align:right;">
+      <button onclick="analyzeImageDesc()" style="background:#0284c7; color:#fff; font-weight:800; border:none; padding:10px 22px; border-radius:10px; cursor:pointer;">Submit Description</button>
+    </div>
+    <div id="imageResultContainer" style="display:none; margin-top:16px; font-size:13.5px; padding:14px; background:#f8fafc; border-radius:12px; border:1.5px solid #e2e8f0; color:#1e293b;"></div>
+  </div>
+</div>
+
+<!-- INITIALIZATION SCRIPT -->
+<script>
+  let activeLangId = 'en';
+
+  // Populate 50+ Languages Grid
+  function renderLanguageGrid() {
+    const grid = document.getElementById('langGrid');
+    if (!grid || !window.VANI_LANGUAGES) return;
+
+    const langs = window.VANI_LANGUAGES.allLanguages;
+    grid.innerHTML = langs.map(l => `
+      <div class="lang-chip-grid ${l.id === activeLangId ? 'active' : ''}" 
+           id="lang-chip-${l.id}" 
+           onclick="selectVaniLanguage('${l.id}')"
+           title="${l.name} (${l.nativeName})">
+        ${l.flag || '🌐'} ${l.nativeName}
+      </div>
+    `).join('');
+  }
+
+  function filterLanguages(query) {
+    const grid = document.getElementById('langGrid');
+    if (!grid || !window.VANI_LANGUAGES) return;
+    const filtered = window.VANI_LANGUAGES.search(query);
+    grid.innerHTML = filtered.map(l => `
+      <div class="lang-chip-grid ${l.id === activeLangId ? 'active' : ''}" 
+           id="lang-chip-${l.id}" 
+           onclick="selectVaniLanguage('${l.id}')"
+           title="${l.name} (${l.nativeName})">
+        ${l.flag || '🌐'} ${l.nativeName}
+      </div>
+    `).join('');
+  }
+
+  function selectVaniLanguage(langId) {
+    activeLangId = langId;
+    if (window.VANI_RAG_ENGINE) window.VANI_RAG_ENGINE.setLanguage(langId);
+
+    document.querySelectorAll('.lang-chip-grid').forEach(c => c.classList.remove('active'));
+    const chip = document.getElementById('lang-chip-' + langId);
+    if (chip) chip.classList.add('active');
+
+    const langObj = window.VANI_LANGUAGES ? window.VANI_LANGUAGES.getById(langId) : null;
+    const badge = document.getElementById('detectedLangBadge');
+    if (badge && langObj) badge.textContent = `Active: ${langObj.name} (${langObj.nativeName})`;
+
+    if (langObj && langObj.welcomeGreeting) {
+      const transcriptEl = document.getElementById('transcriptText');
+      if (transcriptEl) transcriptEl.textContent = langObj.welcomeGreeting;
+    }
+  }
+
+  function submitTypedQuery() {
+    const input = document.getElementById('vaniTextInput');
+    if (!input || !input.value.trim()) return;
+    const q = input.value.trim();
+    input.value = '';
+    if (window.VANI_RAG_ENGINE) window.VANI_RAG_ENGINE.ask(q);
+  }
+
+  function quickAsk(query) {
+    if (window.VANI_RAG_ENGINE) window.VANI_RAG_ENGINE.ask(query);
+  }
+
+  function toggleVoicePlayback() {
+    const resBody = document.getElementById('resBody');
+    if (!resBody) return;
+    if (window.VANI_RAG_ENGINE) {
+      window.VANI_RAG_ENGINE.speak(resBody.innerText);
+    }
+  }
+
+  function copyDoctorBrief() {
+    const title = document.getElementById('resTitle')?.innerText || 'Health Assessment';
+    const body = document.getElementById('resBody')?.innerText || '';
+    const remedy = document.getElementById('resRemedy')?.innerText || '';
+    const herb = document.getElementById('resHerb')?.innerText || '';
+    const med = document.getElementById('resMedicine')?.innerText || '';
+
+    const text = `📋 VANI VAIDYA CLINICAL HEALTH BRIEF\nDate: ${new Date().toLocaleDateString()}\n\n🔍 Evaluation: ${body}\n\n🥣 Safe Next Steps: ${remedy}\n🍃 Ayurveda Insight: ${herb}\n💊 Medicine Info: ${med}\n\nGenerated via MedInVedic Vani Vaidya (Informational only)`;
+    navigator.clipboard.writeText(text).then(() => alert('✓ Clinical Brief copied to clipboard!'));
+  }
+
+  function shareWhatsApp() {
+    const body = document.getElementById('resBody')?.innerText.substring(0, 280) || '';
+    const text = encodeURIComponent(`*MedInVedic Vani Vaidya Health Summary*\n\n${body}\n\nLearn more: https://medinvedic.web.app/pages/voice-doctor.html`);
+    window.open(`https://wa.me/?text=${text}`, '_blank');
+  }
+
+  // Modals & Multimodal Handlers
+  function openMedicineModal() { document.getElementById('medicineModal').classList.add('open'); }
+  function openReportModal() { document.getElementById('reportModal').classList.add('open'); }
+  function openImageModal() { document.getElementById('imageModal').classList.add('open'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+  function scanMedicine() {
+    const input = document.getElementById('medSearchInput').value;
+    const resContainer = document.getElementById('medResultContainer');
+    if (!window.VANI_MULTIMODAL) return;
+    const res = window.VANI_MULTIMODAL.identifyMedicine(input);
+
+    resContainer.style.display = 'block';
+    if (res.success) {
+      const m = res.medicine;
+      resContainer.innerHTML = `
+        <h4 style="color:#fbbf24; margin:0 0 6px; font-size:16px;">${m.brand}</h4>
+        <div style="color:#94a3b8; font-size:12px; margin-bottom:8px;">Generic: <strong>${m.generic}</strong> • Category: ${m.category}</div>
+        <p style="margin:0 0 6px;"><strong>Purpose:</strong> ${m.purpose}</p>
+        <p style="margin:0 0 6px; color:#f87171;">${m.warnings}</p>
+        <p style="margin:0 0 6px;"><strong>Dosage Boundary:</strong> ${m.dosageGuidance}</p>
+        <p style="margin:0 0 6px; color:#60a5fa;"><strong>Ayurvedic Parallel:</strong> ${m.ayurvedicParallel}</p>
+        <div style="margin-top:10px;"><a href="../${m.storeLink}" style="color:#fbbf24; font-weight:800; text-decoration:none;">View in Pharmacy Hub 🛒</a></div>
+      `;
+    } else {
+      resContainer.innerHTML = `<div style="color:#f87171;">${res.error}</div>`;
+    }
+  }
+
+  function analyzeReport() {
+    const text = document.getElementById('reportTextInput').value;
+    const resContainer = document.getElementById('reportResultContainer');
+    if (!window.VANI_MULTIMODAL) return;
+    const res = window.VANI_MULTIMODAL.analyzeReportText(text);
+
+    resContainer.style.display = 'block';
+    if (res.success) {
+      resContainer.innerHTML = `
+        <div style="margin-bottom:10px; font-weight:800; color:#60a5fa;">Parsed Test Parameters:</div>
+        ${res.results.map(r => `
+          <div style="padding:10px; background:rgba(255,255,255,0.04); border-left:3.5px solid ${r.status === 'NORMAL' ? '#22c55e' : (r.status === 'LOW' ? '#3b82f6' : '#ef4444')}; border-radius:6px; margin-bottom:8px;">
+            <div style="display:flex; justify-content:space-between;">
+              <strong>${r.test}</strong>
+              <span style="font-weight:800; color:${r.status === 'NORMAL' ? '#4ade80' : '#f87171'};">${r.value} (${r.status})</span>
+            </div>
+            <div style="font-size:11.5px; color:#94a3b8; margin:2px 0;">Reference Range: ${r.reference}</div>
+            <div style="font-size:12px; color:#e2e8f0;">${r.explanation}</div>
+          </div>
+        `).join('')}
+        <div style="font-size:11px; color:#94a3b8; margin-top:8px;">${res.disclaimer}</div>
+      `;
+    } else {
+      resContainer.innerHTML = `<div style="color:#f87171;">${res.error}</div>`;
+    }
+  }
+
+  function analyzeImageDesc() {
+    const desc = document.getElementById('imageDescInput').value;
+    const resContainer = document.getElementById('imageResultContainer');
+    if (!window.VANI_MULTIMODAL) return;
+    const res = window.VANI_MULTIMODAL.analyzeHealthImage(desc);
+
+    resContainer.style.display = 'block';
+    resContainer.innerHTML = `
+      <h4 style="color:#a78bfa; margin:0 0 6px;">${res.category}</h4>
+      <p style="margin:0 0 6px;"><strong>Supportive Guidance:</strong> ${res.guidance}</p>
+      <p style="margin:0 0 6px; color:#f87171;"><strong>Warning Signs:</strong> ${res.warningSigns}</p>
+      <div style="font-size:11px; color:#94a3b8; margin-top:8px;">${res.disclaimer}</div>
+    `;
+  }
+
+  function switchMode(mode) {
+    document.querySelectorAll('.vani-mode-tab').forEach(t => t.classList.remove('active'));
+    if (mode === 'voice') document.getElementById('tabVoice').classList.add('active');
+    if (mode === 'typed') {
+      document.getElementById('tabTyped').classList.add('active');
+      document.getElementById('vaniTextInput').focus();
+    }
+  }
+
+  // Auto initialize on DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.VANI_RAG_ENGINE) window.VANI_RAG_ENGINE.init();
+    renderLanguageGrid();
+  });
+</script>
+
+</body>
+</html>

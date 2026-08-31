@@ -1,0 +1,48 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // ── Secure Prescriptions Folder ───────────────────────────────
+    match /prescriptions/{userId}/{fileName} {
+      // User can upload their own prescriptions (max 10MB, images or PDF)
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 10 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf');
+
+      // User can read their own; authorized pharmacists, doctors, and admins can read all
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        request.auth.token.admin == true ||
+        request.auth.token.pharmacist == true ||
+        request.auth.token.doctor == true
+      );
+    }
+
+    // ── Product Images Catalog ────────────────────────────────────
+    match /products/{imageFile} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.token.admin == true
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // ── Doctor Credentials & Profile Photos ───────────────────────
+    match /doctors/{imageFile} {
+      allow read: if true;
+      allow write: if request.auth != null && (
+        request.auth.token.admin == true ||
+        request.auth.token.doctor == true
+      );
+    }
+
+    // ── User Avatars ──────────────────────────────────────────────
+    match /users/{userId}/avatar/{fileName} {
+      allow read: if true;
+      allow write: if request.auth != null
+        && request.auth.uid == userId
+        && request.resource.size < 2 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*');
+    }
+  }
+}

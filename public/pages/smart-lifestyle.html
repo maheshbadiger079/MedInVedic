@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smart Lifestyle Engine — Dinacharya Automation — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .lifestyle-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+
+    .lab-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 20% 40%, rgba(245, 158, 11, 0.08), transparent);
+      z-index: -1;
+    }
+
+    .wizard-container {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 48px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      position: relative;
+    }
+
+    .step { display: none; animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1); }
+    .step.active { display: block; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
+
+    .step-header { margin-bottom: 40px; }
+    .step-label { color: var(--yellow); font-weight: 800; font-size: 14px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; display: block; }
+    .step-title { font-size: 32px; font-weight: 900; margin-bottom: 12px; }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .input-group label { display: block; font-size: 14px; color: var(--gray-400); margin-bottom: 8px; font-weight: 600; }
+    .input-field {
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 18px;
+      border-radius: 12px;
+      color: white;
+      font-size: 16px;
+      outline: none;
+      transition: 0.3s;
+    }
+    .input-field:focus { border-color: var(--yellow); background: rgba(255,255,255,0.08); }
+
+    .btn-next { background: var(--yellow); color: black; border: none; padding: 18px 48px; border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2); transition: 0.3s; }
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 15px 35px rgba(245, 158, 11, 0.3); }
+
+    /* Timeline UI */
+    .timeline-container { display: none; width: 100%; max-width: 900px; animation: fadeIn 0.8s ease-out; }
+    .timeline { position: relative; padding-left: 80px; }
+    .timeline::before { content: ''; position: absolute; left: 39px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); }
+
+    .timeline-item { position: relative; margin-bottom: 48px; }
+    .time-marker {
+      position: absolute;
+      left: -80px;
+      top: 0;
+      width: 60px;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+    .status-dot {
+      position: absolute;
+      left: -48px;
+      top: 0;
+      width: 16px;
+      height: 16px;
+      background: #0f172a;
+      border: 3px solid var(--yellow);
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .event-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 24px;
+      transition: 0.3s;
+    }
+    .event-card:hover { border-color: rgba(245, 158, 11, 0.3); background: rgba(255,255,255,0.05); }
+    .event-title { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: white; display: flex; align-items: center; gap: 10px; }
+    .event-desc { font-size: 14px; color: var(--gray-400); line-height: 1.6; }
+    .pillar-tag { font-size: 11px; font-weight: 700; background: rgba(245,158,11,0.1); color: var(--yellow); padding: 4px 10px; border-radius: 4px; text-transform: uppercase; margin-top: 12px; display: inline-block; }
+
+    .summary-card {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: 32px;
+      padding: 40px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+  <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+  </button>
+</nav>
+
+<div class="lifestyle-lab">
+  <div class="lab-bg"></div>
+
+  <div class="wizard-container" id="formWizard">
+    <div class="step active" id="step1">
+      <span class="step-label">LIFESTYLE SYNC</span>
+      <h1 class="step-title">Configure your Dinacharya</h1>
+      
+      <div class="input-grid">
+         <div class="input-group">
+            <label>Dominant Dosha</label>
+            <select class="input-field" id="dosha">
+               <option value="Vata">Vata</option>
+               <option value="Pitta">Pitta</option>
+               <option value="Kapha">Kapha</option>
+            </select>
+         </div>
+         <div class="input-group">
+            <label>Current Wakeup</label>
+            <input type="time" class="input-field" id="currentWake" value="07:30">
+         </div>
+      </div>
+
+      <div class="input-group" style="margin-bottom: 32px;">
+         <label>Primary Goal</label>
+         <select class="input-field" id="lifestyleGoal">
+            <option value="discipline">Improve Discipline & Clarity</option>
+            <option value="energy">Boost All-Day Energy</option>
+            <option value="sleep">Optimize Sleep Cycle</option>
+            <option value="stress">Reduce Mental Stress</option>
+         </select>
+      </div>
+
+      <div style="text-align: right;">
+         <button class="btn-next" onclick="generateRoutine()">Generate Smart Routine ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="timeline-container" id="resultArea">
+     <div class="summary-card">
+        <h2 style="font-size: 32px; font-weight: 900; margin-bottom: 12px;">Your Optimized Dinacharya</h2>
+        <p style="color: var(--gray-400);">Synchronized with Brahma Muhurta and Dosha Time-Blocks</p>
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 24px;">
+           <div style="background: rgba(255,255,255,0.05); padding: 12px 24px; border-radius: 12px; font-size: 13px;">🌞 Target Wake: <strong id="targetWake">5:00 AM</strong></div>
+           <div style="background: rgba(255,255,255,0.05); padding: 12px 24px; border-radius: 12px; font-size: 13px;">🌙 Target Sleep: <strong id="targetSleep">10:00 PM</strong></div>
+        </div>
+     </div>
+
+     <div class="timeline" id="timelineItems">
+        <!-- Dyn. -->
+     </div>
+
+     <div style="text-align: center; margin-top: 60px;">
+        <button class="btn-next" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: white;" onclick="location.reload()">Re-Architect Plan</button>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  function generateRoutine() {
+    const dosha = document.getElementById('dosha').value;
+    const goal = document.getElementById('lifestyleGoal').value;
+    
+    // Logic for times
+    let wake = '05:00 AM';
+    let sleep = '10:00 PM';
+    
+    if (dosha === 'Kapha') wake = '04:30 AM'; // Kapha needs early wake to avoid sluggishness
+    if (dosha === 'Pitta') sleep = '10:30 PM';
+    
+    document.getElementById('targetWake').textContent = wake;
+    document.getElementById('targetSleep').textContent = sleep;
+
+    const events = [
+      { time: wake, title: 'Brahma Muhurta Wakeup', desc: 'The "Creator\'s Time". Purest energy for meditation and setting intentions.', pillar: 'Circadian Sync' },
+      { time: '06:30 AM', title: 'Dosha-Specific Yoga', desc: dosha === 'Vata' ? 'Slow, grounding Vinyasa to stabilize air energy.' : dosha === 'Pitta' ? 'Cooling Hatha yoga with moon salutations.' : 'Dynamic Surya Namaskar to stimulate Kapha.', pillar: 'Movement' },
+      { time: '12:00 PM', title: 'Main Meal (Agni Peak)', desc: 'The sun is directly overhead. Fire (Pitta) is at its peak; consume your largest meal now.', pillar: 'Ahara' },
+      { time: '05:00 PM', title: 'Digital Sunset Ritual', desc: 'Lower mental load. Gentle walk or breathwork to prepare for Vata time transition.', pillar: 'Focus' },
+      { time: sleep, title: 'Deep Rest Cycle', desc: 'Optimal sleep period for cellular repair and mental detoxification.', pillar: 'Recovery' }
+    ];
+
+    document.getElementById('timelineItems').innerHTML = events.map(e => `
+       <div class="timeline-item">
+          <div class="time-marker">${e.time}</div>
+          <div class="status-dot"></div>
+          <div class="event-card">
+             <div class="event-title">${e.title}</div>
+             <p class="event-desc">${e.desc}</p>
+             <div class="pillar-tag">${e.pillar}</div>
+          </div>
+       </div>
+    `).join('');
+
+    document.getElementById('formWizard').style.display = 'none';
+    document.getElementById('resultArea').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

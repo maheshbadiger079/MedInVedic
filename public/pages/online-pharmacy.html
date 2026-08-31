@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Medicine Hub — Digital Pharmacy | MedInVedic</title>
+  <meta name="description" content="Modern Medicine Hub — Verified allopathic pharmaceutical care, RAG medicine intelligence, prescription management, and home delivery." />
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  <script src="../js/pharmacy-rag-engine.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --primary: #2d6a4f;
+      --primary-light: #52b788;
+      --accent: #0ea5e9;
+      --bg: linear-gradient(135deg, #f0f9ff 0%, #e8f5e9 50%, #f8f0ff 100%);
+      --card: rgba(255,255,255,0.75);
+      --card-border: rgba(255,255,255,0.6);
+      --text: #1a1a2e;
+      --muted: #64748b;
+      --danger: #ef4444;
+      --success: #22c55e;
+      --warn: #f59e0b;
+    }
+
+    body {
+      background: var(--bg) !important;
+      background-attachment: fixed !important;
+      color: var(--text) !important;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif !important;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body *, body p, body span, body div, body li, body h1, body h2, body h3, body h4, body h5, body h6 {
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+    }
+
+    /* ═══ GLASSMORPHISM UTILITIES ═══ */
+    .glass {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    /* ─── NAVBAR ─── */
+    .pharm-nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(255,255,255,0.90);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 2px 20px rgba(0,0,0,0.06);
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .nav-brand img {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      object-fit: contain;
+    }
+    .nav-brand-text {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary) !important;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-btn {
+      background: rgba(45,106,79,0.08);
+      border: 1px solid rgba(45,106,79,0.2);
+      color: var(--primary) !important;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .nav-btn:hover { background: rgba(45,106,79,0.15); }
+    .nav-btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff !important;
+      border: none;
+      padding: 7px 16px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 3px 12px rgba(45,106,79,0.3);
+    }
+    .nav-btn-primary:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    /* ─── PAGE WRAPPER ─── */
+    .pharm-page {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 32px 24px 80px;
+    }
+
+    /* ─── HERO ─── */
+    .pharm-hero { text-align: center; padding: 28px 0 36px; }
+
+    .loc-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(14,165,233,0.10);
+      border: 1px solid rgba(14,165,233,0.25);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--accent);
+      cursor: pointer;
+      margin-bottom: 20px;
+      transition: all 0.2s;
+    }
+    .loc-chip:hover { background: rgba(14,165,233,0.18); }
+
+    .hero-title {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 50%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -0.5px;
+      margin-bottom: 10px;
+      line-height: 1.15;
+    }
+    .hero-sub {
+      font-size: 15px;
+      color: var(--muted) !important;
+      margin-bottom: 28px;
+    }
+
+    /* ─── SEARCH CARD ─── */
+    .search-card {
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 20px;
+      padding: 22px 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+      margin-bottom: 20px;
+    }
+    .search-row {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      align-items: center;
+    }
+    .search-input-main {
+      flex: 1;
+      background: rgba(255,255,255,0.9);
+      border: 1.5px solid rgba(45,106,79,0.2);
+      border-radius: 12px;
+      padding: 13px 18px;
+      color: var(--text);
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+      min-width: 0;
+      box-shadow: inset 0 2px 6px rgba(0,0,0,0.04);
+    }
+    .search-input-main::placeholder { color: #94a3b8; }
+    .search-input-main:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(14,165,233,0.12);
+    }
+    .upload-rx-btn {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #ffffff;
+      border: none;
+      padding: 13px 22px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+      transition: all 0.2s;
+      box-shadow: 0 4px 15px rgba(14,165,233,0.30);
+    }
+    .upload-rx-btn:hover { filter: brightness(1.10); transform: translateY(-1px); }
+
+    .chip-strip { display: flex; gap: 8px; flex-wrap: wrap; }
+    .q-chip {
+      background: rgba(255,255,255,0.80);
+      border: 1px solid rgba(45,106,79,0.18);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--primary) !important;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .q-chip:hover {
+      background: var(--primary);
+      color: #fff !important;
+      border-color: var(--primary);
+    }
+
+    /* ─── OFFER BANNER ─── */
+    .offer-banner {
+      background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(224,242,254,0.85));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(14,165,233,0.2);
+      border-radius: 16px;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 12px;
+      box-shadow: 0 4px 20px rgba(14,165,233,0.10);
+    }
+    .offer-title {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text) !important;
+      margin-bottom: 3px;
+    }
+    .offer-desc {
+      font-size: 12.5px;
+      color: var(--muted) !important;
+    }
+    .offer-desc strong { color: var(--accent); }
+    .offer-activate-btn {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+      box-shadow: 0 3px 12px rgba(45,106,79,0.25);
+    }
+    .offer-activate-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    /* ─── MAIN LAYOUT GRID ─── */
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 28px;
+      align-items: start;
+    }
+    @media (max-width: 1024px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ─── SECTION HEADING ─── */
+    .sec-heading-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sec-heading {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text) !important;
+    }
+    .filter-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+    .ftab {
+      background: rgba(255,255,255,0.75);
+      border: 1px solid rgba(45,106,79,0.18);
+      border-radius: 50px;
+      padding: 6px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted) !important;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ftab:hover { background: rgba(45,106,79,0.10); color: var(--primary) !important; }
+    .ftab.active {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff !important;
+      border-color: var(--primary);
+      box-shadow: 0 3px 10px rgba(45,106,79,0.25);
+    }
+
+    /* ─── MEDICINES GRID ─── */
+    .meds-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 18px;
+    }
+
+    /* ─── MEDICINE CARD ─── */
+    .med-card {
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.70);
+      border-radius: 18px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .med-card:hover {
+      border-color: rgba(45,106,79,0.35);
+      transform: translateY(-5px);
+      box-shadow: 0 16px 40px rgba(45,106,79,0.15);
+    }
+    .med-img-zone {
+      background: linear-gradient(135deg, #f8fafc, #e8f5e9);
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .med-img-zone img { max-height: 100%; max-width: 100%; object-fit: contain; }
+    .med-body {
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+    .med-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .badge-otc {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(34,197,94,0.12);
+      color: #16a34a;
+      border: 1px solid rgba(34,197,94,0.25);
+    }
+    .badge-rx {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 3px 9px;
+      border-radius: 6px;
+      background: rgba(239,68,68,0.10);
+      color: #dc2626;
+      border: 1px solid rgba(239,68,68,0.25);
+    }
+    .med-rating {
+      font-size: 11.5px;
+      color: var(--warn) !important;
+      font-weight: 700;
+    }
+    .med-name {
+      font-size: 15px;
+      font-weight: 800;
+      color: var(--text) !important;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .med-desc {
+      font-size: 12px;
+      color: var(--muted) !important;
+      line-height: 1.5;
+      margin-bottom: 14px;
+      height: 36px;
+      overflow: hidden;
+    }
+    .med-price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      margin-bottom: 12px;
+      margin-top: auto;
+    }
+    .med-price {
+      font-size: 20px;
+      font-weight: 900;
+      color: var(--primary) !important;
+    }
+    .med-mrp {
+      font-size: 12px;
+      color: #94a3b8;
+      text-decoration: line-through;
+    }
+    .med-disc {
+      margin-left: auto;
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .add-cart-btn {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      border: none;
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 3px 10px rgba(45,106,79,0.2);
+    }
+    .add-cart-btn:hover {
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(45,106,79,0.3);
+    }
+
+    /* ─── SIDEBAR ─── */
+    .sidebar { display: flex; flex-direction: column; gap: 18px; }
+
+    .s-card {
+      background: rgba(255,255,255,0.80);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.70);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+    }
+    .s-card-title {
+      font-size: 10.5px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .acc-menu { display: flex; flex-direction: column; gap: 3px; }
+    .acc-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: var(--text) !important;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .acc-item:hover { background: rgba(45,106,79,0.08); color: var(--primary) !important; }
+    .acc-item-icon { font-size: 16px; flex-shrink: 0; }
+    .acc-item-badge {
+      margin-left: auto;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--primary) !important;
+      background: rgba(45,106,79,0.10);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    /* Reorder widget */
+    .reorder-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: rgba(248,250,252,0.90);
+      border: 1px solid rgba(45,106,79,0.12);
+      border-radius: 12px;
+      padding: 10px 12px;
+    }
+    .reorder-thumb {
+      width: 42px;
+      height: 42px;
+      background: #ffffff;
+      border-radius: 8px;
+      padding: 4px;
+      object-fit: contain;
+      flex-shrink: 0;
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .reorder-info { flex: 1; min-width: 0; }
+    .reorder-name { font-size: 12.5px; font-weight: 800; color: var(--text) !important; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .reorder-sub { font-size: 11px; color: var(--muted) !important; }
+    .reorder-add-btn {
+      background: linear-gradient(135deg, var(--accent), #0284c7);
+      color: #ffffff;
+      border: none;
+      padding: 6px 13px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    /* Tracking timeline */
+    .track-timeline { display: flex; flex-direction: column; gap: 14px; position: relative; padding-left: 22px; }
+    .track-timeline::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: rgba(45,106,79,0.15);
+    }
+    .t-step { position: relative; }
+    .t-dot {
+      position: absolute;
+      left: -22px;
+      top: 2px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      border: 2px solid rgba(100,116,139,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 8px;
+      color: var(--muted);
+    }
+    .t-dot.active { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+    .t-title { font-size: 12.5px; font-weight: 800; color: var(--text) !important; }
+    .t-sub { font-size: 11px; color: var(--muted) !important; margin-top: 1px; }
+
+    .track-on-map-link {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--muted);
+      text-decoration: none;
+      float: right;
+    }
+    .track-on-map-link:hover { color: var(--accent); }
+
+    /* Rx Warning */
+    .rx-warn-card {
+      background: rgba(254,242,242,0.85);
+      border: 1px solid rgba(239,68,68,0.25);
+      border-radius: 14px;
+      padding: 14px 16px;
+      backdrop-filter: blur(12px);
+    }
+    .rx-warn-title { font-size: 11px; font-weight: 900; color: #dc2626; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
+    .rx-warn-body { font-size: 12px; color: #7f1d1d; line-height: 1.5; }
+
+    /* Platinum Banner */
+    .plat-bar {
+      background: linear-gradient(135deg, rgba(255,255,255,0.85), rgba(254,243,199,0.85));
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(245,158,11,0.25);
+      border-radius: 18px;
+      padding: 20px 26px;
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(245,158,11,0.12);
+    }
+    .plat-left { display: flex; align-items: center; gap: 16px; }
+    .plat-crown {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.35);
+    }
+    .plat-title { font-size: 15.5px; font-weight: 800; color: #92400e !important; margin-bottom: 3px; }
+    .plat-sub { font-size: 12px; color: #78350f !important; }
+    .plat-join-btn {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #fff;
+      border: none;
+      padding: 10px 26px;
+      border-radius: 50px;
+      font-size: 13.5px;
+      font-weight: 900;
+      cursor: pointer;
+      white-space: nowrap;
+      box-shadow: 0 4px 14px rgba(245,158,11,0.35);
+    }
+    .plat-join-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    /* ─── MODALS ─── */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.55);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9000;
+      padding: 16px;
+    }
+    .overlay.active { display: flex; }
+    .modal-box {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.8);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 540px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px 24px;
+      position: relative;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.14);
+    }
+    .modal-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--text) !important;
+      margin-bottom: 6px;
+    }
+    .modal-sub {
+      font-size: 12.5px;
+      color: var(--muted) !important;
+      margin-bottom: 20px;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: rgba(241,245,249,0.90);
+      border: 1px solid rgba(0,0,0,0.08);
+      color: var(--muted);
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.18s;
+    }
+    .modal-close:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+
+    /* Modal input */
+    .m-input {
+      width: 100%;
+      background: rgba(248,250,252,0.90);
+      border: 1.5px solid rgba(45,106,79,0.18);
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: var(--text);
+      font-size: 13.5px;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
+      margin-bottom: 10px;
+    }
+    .m-input::placeholder { color: #94a3b8; }
+    .m-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(14,165,233,0.12); }
+    .m-btn {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 14px rgba(45,106,79,0.25);
+    }
+    .m-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+    .m-btn-dark {
+      background: rgba(241,245,249,0.90);
+      color: var(--text);
+      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: none;
+    }
+    .m-btn-dark:hover { background: rgba(226,232,240,0.90); }
+
+    /* Info row */
+    .info-row {
+      background: rgba(248,250,252,0.90);
+      border: 1px solid rgba(45,106,79,0.12);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 8px;
+    }
+    .info-label { font-size: 10.5px; font-weight: 900; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 3px; }
+    .info-value { font-size: 13px; color: var(--text); line-height: 1.5; }
+
+    /* Tag badge */
+    .warn-tag { color: #dc2626; font-size: 13px; font-weight: 800; }
+    .safe-tag { color: #16a34a; font-size: 13px; font-weight: 800; }
+
+    /* Toast */
+    #toastContainer {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 99999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .toast {
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0,0,0,0.08);
+      color: var(--text);
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 700;
+      max-width: 320px;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.3s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.success {
+      border-color: rgba(34,197,94,0.35);
+      background: rgba(240,253,244,0.95);
+      color: #15803d;
+    }
+    .toast.error {
+      border-color: rgba(239,68,68,0.35);
+      background: rgba(254,242,242,0.95);
+      color: #dc2626;
+    }
+
+    /* No results */
+    .no-results {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 48px 24px;
+      color: var(--muted);
+    }
+    .no-results-icon { font-size: 36px; margin-bottom: 10px; }
+    .no-results-text { font-size: 14px; font-weight: 600; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(45,106,79,0.20); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(45,106,79,0.35); }
+
+    /* Mobile */
+    @media (max-width: 640px) {
+      .hero-title { font-size: 28px; }
+      .search-row { flex-direction: column; }
+      .upload-rx-btn { width: 100%; justify-content: center; }
+      .plat-bar { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="pharm-nav">
+  <a class="nav-brand" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic">
+    <span class="nav-brand-text">MedInVedic</span>
+  </a>
+  <div class="nav-right">
+    <button class="nav-btn" onclick="openInteractionModal()">💊 Check Drug Interactions</button>
+    <button class="nav-btn-primary" onclick="openCartModal()">
+      🛒 Cart <span id="cartBadge" style="background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:900;">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- PAGE WRAPPER -->
+<div class="pharm-page">
+
+  <!-- ═══ HERO ═══ -->
+  <div class="pharm-hero">
+    <div class="loc-chip" onclick="updateLocation()">
+      📍 <span id="locLabel">Pune 412115</span> ⌄
+    </div>
+    <h1 class="hero-title">Modern Medicine Hub</h1>
+    <p class="hero-sub">Premium pharmaceutical care with platinum standard delivery.</p>
+
+    <!-- Search Card -->
+    <div class="search-card">
+      <div class="search-row">
+        <input class="search-input-main" id="pharmSearch" type="text"
+          placeholder="Search brands (e.g. Dolo, Metform) or generic names..."
+          oninput="doSearch(this.value)">
+        <button class="upload-rx-btn" onclick="openRxModal()">
+          📄 Upload Prescription
+        </button>
+      </div>
+      <div class="chip-strip">
+        <span class="q-chip" onclick="doSearch('Fever')">🌡 Fever</span>
+        <span class="q-chip" onclick="doSearch('Allergy')">🤧 Allergy</span>
+        <span class="q-chip" onclick="doSearch('Diabetes')">💉 Diabetes</span>
+        <span class="q-chip" onclick="doSearch('Vitamins')">💊 Vitamins</span>
+        <span class="q-chip" onclick="doSearch('Pain')">🩹 Pain Relief</span>
+        <span class="q-chip" onclick="doSearch('Digestion')">🫀 Digestion</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ OFFER BANNER ═══ -->
+  <div class="offer-banner">
+    <div>
+      <div class="offer-title">🎁 Super Saver Offer!</div>
+      <div class="offer-desc">Get flat 20% OFF on all modern medicines using code <strong>HEALTH20</strong></div>
+    </div>
+    <button class="offer-activate-btn" onclick="activateCoupon()">Activate Now</button>
+  </div>
+
+  <!-- ═══ MAIN LAYOUT ═══ -->
+  <div class="main-layout">
+
+    <!-- LEFT: PRODUCTS -->
+    <div>
+      <div class="sec-heading-row">
+        <div class="sec-heading">Top Essential Medicines</div>
+        <div class="filter-tabs" id="filterTabs">
+          <button class="ftab active" onclick="filterCat('all', this)">All</button>
+          <button class="ftab" onclick="filterCat('Fever', this)">Fever</button>
+          <button class="ftab" onclick="filterCat('Diabetes', this)">Diabetes</button>
+          <button class="ftab" onclick="filterCat('Allergy', this)">Allergy</button>
+          <button class="ftab" onclick="filterCat('Digestion', this)">Digestion</button>
+          <button class="ftab" onclick="filterCat('Vitamins', this)">Vitamins</button>
+        </div>
+      </div>
+      <div class="meds-grid" id="medsGrid">
+        <!-- filled by JS -->
+      </div>
+    </div>
+
+    <!-- RIGHT: SIDEBAR DASHBOARD -->
+    <div class="sidebar">
+
+      <!-- Account Navigation (matches Screenshot 2) -->
+      <div class="s-card" style="padding: 10px;">
+        <div class="acc-menu">
+          <div class="acc-item" onclick="openDashSection('wallet')">
+            <span class="acc-item-icon">💳</span>
+            <span>My Wallet</span>
+            <span class="acc-item-badge">₹500</span>
+          </div>
+          <div class="acc-item" onclick="openDashSection('orders')">
+            <span class="acc-item-icon">📦</span>
+            <span>My Orders</span>
+          </div>
+          <div class="acc-item" onclick="updateLocation()">
+            <span class="acc-item-icon">📍</span>
+            <span>My Addresses</span>
+          </div>
+          <div class="acc-item" onclick="openDashSection('records')">
+            <span class="acc-item-icon">📋</span>
+            <span>Health Records</span>
+          </div>
+          <div class="acc-item" onclick="openDashSection('notifications')">
+            <span class="acc-item-icon">🔔</span>
+            <span>Notification</span>
+          </div>
+          <div class="acc-item" onclick="openDashSection('subscriptions')">
+            <span class="acc-item-icon">🔄</span>
+            <span>My Subscriptions</span>
+          </div>
+          <div class="acc-item" onclick="openDashSection('family')">
+            <span class="acc-item-icon">👥</span>
+            <span>Family Members</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- One-Click Reorder (matches Screenshot 2) -->
+      <div class="s-card">
+        <div class="s-card-title">One-Click Reorder</div>
+        <div class="reorder-item">
+          <img class="reorder-thumb" src="../images/products/med_dolo.png" alt="Paracetamol" onerror="this.style.display='none'">
+          <div class="reorder-info">
+            <div class="reorder-name">Paracetamol 500mg</div>
+            <div class="reorder-sub">Last ordered: 12 Mar</div>
+          </div>
+          <button class="reorder-add-btn" onclick="addToCart('m1'); showToast('Reordered Paracetamol 500mg', 'success')">Add</button>
+        </div>
+      </div>
+
+      <!-- Live Order Tracking (matches Screenshot 3) -->
+      <div class="s-card">
+        <div class="s-card-title" style="display:flex;justify-content:space-between">
+          <span>Live Order Tracking</span>
+          <span style="color:#38bdf8;font-size:10.5px">#MV-8821</span>
+        </div>
+        <div class="track-timeline">
+          <div class="t-step">
+            <div class="t-dot active">✓</div>
+            <div class="t-title">Order Confirmed</div>
+            <div class="t-sub">Today, 10:30 AM</div>
+          </div>
+          <div class="t-step">
+            <div class="t-dot active">✓</div>
+            <div class="t-title">Out for Delivery</div>
+            <div class="t-sub">Estimated: 4:00 PM</div>
+          </div>
+          <div class="t-step">
+            <div class="t-dot">3</div>
+            <div class="t-title">Delivered</div>
+            <div class="t-sub">Wait for it!</div>
+          </div>
+        </div>
+        <a class="track-on-map-link" href="#" onclick="showToast('Courier is 1.2 km away on FC Road'); return false;">
+          Track on Map →
+        </a>
+      </div>
+
+      <!-- Rx Warning (matches Screenshot 3) -->
+      <div class="rx-warn-card">
+        <div class="rx-warn-title">⚠ RX Warning</div>
+        <div class="rx-warn-body">
+          Schedule H1 drugs require a valid prescription. Our licensed pharmacists verify your upload before dispatch.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Platinum Membership Banner (matches Screenshot 4) -->
+  <div class="plat-bar">
+    <div class="plat-left">
+      <div class="plat-crown">👑</div>
+      <div>
+        <div class="plat-title">Become a Platinum First Member</div>
+        <div class="plat-sub">Unlimited FREE delivery above ₹99 · 2% cashback · Extra 10% off on lab tests</div>
+      </div>
+    </div>
+    <button class="plat-join-btn" onclick="showToast('🎉 Platinum Membership activated!', 'success')">Join Now</button>
+  </div>
+</div>
+
+<!-- ═══ MEDICINE DETAILS MODAL ═══ -->
+<div class="overlay" id="medDetailsOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div id="medDetailsContent"></div>
+  </div>
+</div>
+
+<!-- ═══ DRUG INTERACTION MODAL ═══ -->
+<div class="overlay" id="interactionOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:30px;margin-bottom:8px">💊</div>
+      <div class="modal-title">Drug-Drug Interaction Checker</div>
+      <div class="modal-sub">RAG-grounded clinical safety analysis. For educational purposes only.</div>
+    </div>
+    <input class="m-input" id="drug1" placeholder="First medicine (e.g. Paracetamol, Atorvastatin)">
+    <input class="m-input" id="drug2" placeholder="Second medicine or substance (e.g. Alcohol, Ibuprofen)">
+    <button class="m-btn" onclick="runInteractionCheck()" style="margin-bottom:12px">Run Interaction Analysis</button>
+    <div id="interactionResult" style="display:none" class="info-row"></div>
+  </div>
+</div>
+
+<!-- ═══ PRESCRIPTION UPLOAD MODAL ═══ -->
+<div class="overlay" id="rxOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:30px;margin-bottom:8px">📄</div>
+      <div class="modal-title">Upload Doctor's Prescription</div>
+      <div class="modal-sub">Prescription medicines require pharmacist verification before dispatch.</div>
+    </div>
+    <div onclick="document.getElementById('rxFile').click()" style="border:2px dashed rgba(45,106,79,0.25);border-radius:14px;padding:30px;text-align:center;cursor:pointer;margin-bottom:14px;transition:all 0.2s;background:rgba(248,250,252,0.70);" onmouseenter="this.style.borderColor='rgba(14,165,233,0.5)';this.style.background='rgba(240,249,255,0.80)'" onmouseleave="this.style.borderColor='rgba(45,106,79,0.25)';this.style.background='rgba(248,250,252,0.70)'">
+      <div style="font-size:30px;margin-bottom:8px">📷</div>
+      <div style="font-size:13.5px;font-weight:700;color:#1a1a2e">Click to Upload or Drag & Drop</div>
+      <div style="font-size:11px;color:#64748b;margin-top:3px">JPG, PNG, PDF up to 10 MB</div>
+    </div>
+    <input type="file" id="rxFile" style="display:none" onchange="handleRxUpload(this)">
+    <div id="rxOcrBox" style="display:none;margin-bottom:12px" class="info-row">
+      <div class="info-label">📑 OCR Analysis Result</div>
+      <div class="info-value" id="rxOcrText"></div>
+    </div>
+    <button class="m-btn" onclick="submitRx()">Submit for Pharmacist Review</button>
+  </div>
+</div>
+
+<!-- ═══ CART MODAL ═══ -->
+<div class="overlay" id="cartOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div class="modal-title">🛒 Your Cart</div>
+    <div class="modal-sub">Review before checkout. Rx items require pharmacist approval.</div>
+    <div id="cartItems" style="display:flex;flex-direction:column;gap:8px;margin-bottom:16px"></div>
+    <div style="border-top:1px solid rgba(45,106,79,0.12);padding-top:14px">
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#64748b;margin-bottom:5px">
+        <span>Subtotal</span><span id="cSub">₹0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:12.5px;color:#16a34a;margin-bottom:5px">
+        <span>Promo Discount</span><span id="cDisc">-₹0</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:900;color:#1a1a2e;margin-top:10px">
+        <span>Total</span><span id="cTotal">₹0</span>
+      </div>
+    </div>
+    <button class="m-btn" style="margin-top:16px" onclick="checkout()">Proceed to Checkout</button>
+  </div>
+</div>
+
+<!-- ═══ DASHBOARD SECTION MODAL ═══ -->
+<div class="overlay" id="dashOverlay">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeAll()">✕</button>
+    <div id="dashContent"></div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toastContainer"></div>
+
+<script>
+  /* ── STATE ── */
+  let _meds = [];
+  let _cart = [];
+  let _couponApplied = false;
+
+  /* ── INIT ── */
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof PHARMACY_RAG !== 'undefined') {
+      _meds = PHARMACY_RAG.getAllMedicines();
+    } else {
+      _meds = [];
+    }
+    renderGrid(_meds);
+  });
+
+  /* ── TOAST ── */
+  function showToast(msg, type = '') {
+    const box = document.getElementById('toastContainer');
+    const el = document.createElement('div');
+    el.className = `toast ${type}`;
+    el.textContent = msg;
+    box.appendChild(el);
+    requestAnimationFrame(() => { el.offsetHeight; el.classList.add('show'); });
+    setTimeout(() => { el.classList.remove('show'); setTimeout(() => el.remove(), 300); }, 3500);
+  }
+
+  /* ── RENDER MEDICINE GRID ── */
+  function renderGrid(meds) {
+    const g = document.getElementById('medsGrid');
+    if (!g) return;
+    if (!meds.length) {
+      g.innerHTML = `<div class="no-results"><div class="no-results-icon">🔍</div><div class="no-results-text">No medicines found. Try a brand name, generic name, or category.</div></div>`;
+      return;
+    }
+    g.innerHTML = meds.map(m => `
+      <div class="med-card" onclick="openMedDetails('${m.id}')">
+        <div class="med-img-zone">
+          <img src="${m.image}" alt="${m.name}" onerror="this.parentElement.innerHTML='<span style=&quot;font-size:40px&quot;>💊</span>'">
+        </div>
+        <div class="med-body">
+          <div class="med-meta-row">
+            <span class="${m.tag === 'otc' ? 'badge-otc' : 'badge-rx'}">${m.tag === 'otc' ? 'OTC' : 'Prescription'}</span>
+            <span class="med-rating">★ ${m.rating}</span>
+          </div>
+          <div class="med-name">${m.name}</div>
+          <div class="med-desc">${m.desc}</div>
+          <div class="med-price-row">
+            <span class="med-price">₹${m.price}</span>
+            <span class="med-mrp">₹${m.mrp}</span>
+            <span class="med-disc">${m.discount}</span>
+          </div>
+          <button class="add-cart-btn" onclick="event.stopPropagation(); addToCart('${m.id}')">Add to Cart</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  /* ── FILTER & SEARCH ── */
+  function filterCat(cat, btn) {
+    document.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const res = cat === 'all' ? _meds : _meds.filter(m => m.category.toLowerCase() === cat.toLowerCase());
+    renderGrid(res);
+  }
+
+  function doSearch(q) {
+    if (!q) { renderGrid(_meds); return; }
+    const res = PHARMACY_RAG.searchMedicines(q);
+    renderGrid(res);
+  }
+
+  /* ── MEDICINE DETAILS MODAL ── */
+  function openMedDetails(id) {
+    const m = PHARMACY_RAG.getMedicineById(id);
+    if (!m) return;
+
+    document.getElementById('medDetailsContent').innerHTML = `
+      <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:18px">
+        <div style="background:linear-gradient(135deg,#f8fafc,#e8f5e9);border-radius:12px;padding:10px;flex-shrink:0;width:72px;height:72px;display:flex;align-items:center;justify-content:center;border:1px solid rgba(0,0,0,0.06)">
+          <img src="${m.image}" style="max-width:100%;max-height:100%;object-fit:contain" alt="${m.name}" onerror="this.parentElement.innerHTML='<span style=font-size:28px>💊</span>'">
+        </div>
+        <div>
+          <span class="${m.tag === 'otc' ? 'badge-otc' : 'badge-rx'}">${m.tag === 'otc' ? 'OTC — No Prescription Required' : 'Prescription Required (Schedule H/H1)'}</span>
+          <div class="modal-title" style="margin-top:6px;margin-bottom:2px">${m.name}</div>
+          <div style="font-size:12.5px;color:#64748b">Generic: ${m.genericName}</div>
+        </div>
+      </div>
+
+      <div class="info-row">
+        <div class="info-label">Indications & Uses</div>
+        <div class="info-value">${m.indications}</div>
+      </div>
+      <div class="info-row" style="border-color:rgba(239,68,68,0.2)">
+        <div class="info-label" style="color:#dc2626">⚠ Precautions & Warnings</div>
+        <div class="info-value">${m.warnings}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Common Side Effects</div>
+        <div class="info-value">${m.commonSideEffects}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Contraindications</div>
+        <div class="info-value">${m.contraindications}</div>
+      </div>
+      <div class="info-row">
+        <div class="info-label">Storage</div>
+        <div class="info-value">${m.storage}</div>
+      </div>
+
+      <div style="margin:12px 0;padding:10px 12px;background:rgba(248,250,252,0.90);border-radius:10px;border:1px solid rgba(45,106,79,0.12)">
+        <div style="font-size:10.5px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:6px">Official Citations</div>
+        ${m.sources.map((s, i) => `<div style="font-size:11.5px;color:#475569;margin-bottom:3px">[${i+1}] ${s.title} — ${s.org} (${s.year})</div>`).join('')}
+      </div>
+
+      <div style="margin-top:6px;padding:10px 12px;background:rgba(240,249,255,0.85);border:1px solid rgba(14,165,233,0.15);border-radius:10px;font-size:11.5px;color:#475569">
+        ⚕️ This is educational pharmacopoeia information from verified sources (CDSCO/WHO/FDA/NHS). It does not constitute medical advice. Always consult your doctor or pharmacist.
+      </div>
+
+      <button class="m-btn" style="margin-top:16px" onclick="addToCart('${m.id}'); closeAll();">
+        Add to Cart — ₹${m.price}
+      </button>
+    `;
+    document.getElementById('medDetailsOverlay').classList.add('active');
+  }
+
+  /* ── CART ── */
+  function addToCart(id) {
+    const m = PHARMACY_RAG.getMedicineById(id);
+    if (!m) return;
+    _cart.push(m);
+    document.getElementById('cartBadge').textContent = _cart.length;
+    showToast(`Added ${m.name} to cart`, 'success');
+  }
+
+  function openCartModal() {
+    const ci = document.getElementById('cartItems');
+    if (_cart.length === 0) {
+      ci.innerHTML = `<div style="text-align:center;padding:24px;color:#52525b;font-size:13px">Your cart is empty. Add medicines from the catalog above.</div>`;
+      document.getElementById('cSub').textContent = '₹0';
+      document.getElementById('cDisc').textContent = '-₹0';
+      document.getElementById('cTotal').textContent = '₹0';
+    } else {
+      let sub = _cart.reduce((s, i) => s + i.price, 0);
+      let disc = _couponApplied ? Math.round(sub * 0.2) : 0;
+      ci.innerHTML = _cart.map((it, idx) => `
+        <div style="display:flex;justify-content:space-between;align-items:center;background:rgba(248,250,252,0.90);padding:10px 12px;border-radius:10px;border:1px solid rgba(45,106,79,0.12)">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:#1a1a2e">${it.name}</div>
+            <div style="font-size:11px;color:#64748b">₹${it.price} · ${it.tag === 'rx' ? '📋 Rx Required' : '✓ OTC'}</div>
+          </div>
+          <button onclick="removeFromCart(${idx})" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;font-weight:800;padding:4px 8px">✕</button>
+        </div>
+      `).join('');
+      document.getElementById('cSub').textContent = `₹${sub}`;
+      document.getElementById('cDisc').textContent = `-₹${disc}`;
+      document.getElementById('cTotal').textContent = `₹${sub - disc}`;
+    }
+    document.getElementById('cartOverlay').classList.add('active');
+  }
+
+  function removeFromCart(idx) {
+    _cart.splice(idx, 1);
+    document.getElementById('cartBadge').textContent = _cart.length;
+    openCartModal();
+  }
+
+  function checkout() {
+    if (_cart.length === 0) { showToast('Please add medicines first'); return; }
+    const hasRx = _cart.some(i => i.tag === 'rx');
+    _cart = [];
+    document.getElementById('cartBadge').textContent = 0;
+    closeAll();
+    showToast(hasRx ? '✅ Order placed! Pharmacist verifying Rx before dispatch.' : '✅ Order confirmed! Delivery within 4–6 hours.', 'success');
+  }
+
+  function activateCoupon() {
+    _couponApplied = true;
+    showToast('🎁 Code HEALTH20 applied — 20% discount activated!', 'success');
+  }
+
+  /* ── INTERACTION CHECKER ── */
+  function openInteractionModal() {
+    document.getElementById('interactionResult').style.display = 'none';
+    document.getElementById('drug1').value = '';
+    document.getElementById('drug2').value = '';
+    document.getElementById('interactionOverlay').classList.add('active');
+  }
+
+  function runInteractionCheck() {
+    const d1 = document.getElementById('drug1').value.trim();
+    const d2 = document.getElementById('drug2').value.trim();
+    if (!d1 || !d2) { showToast('Please enter both medicines'); return; }
+
+    const res = PHARMACY_RAG.checkDrugInteractions([d1, d2]);
+    const out = document.getElementById('interactionResult');
+    out.style.display = 'block';
+
+    if (res.hasInteractions) {
+      const it = res.interactions[0];
+      const clr = it.risk === 'MAJOR' ? '#dc2626' : it.risk === 'MODERATE' ? '#d97706' : '#64748b';
+      out.innerHTML = `
+        <div style="font-size:12px;font-weight:900;color:${clr};margin-bottom:6px">⚠ ${it.risk} RISK INTERACTION</div>
+        <div style="font-size:12.5px;color:#1a1a2e;margin-bottom:4px"><strong>Effect:</strong> ${it.effect}</div>
+        <div style="font-size:12px;color:#475569"><strong>Guidance:</strong> ${it.guidance}</div>
+        <div style="margin-top:8px;font-size:11px;color:#94a3b8">⚕️ Always consult your prescribing physician or pharmacist.</div>
+      `;
+    } else if (res.hasDuplicates) {
+      out.innerHTML = `<div style="color:#d97706;font-size:12.5px;font-weight:700">⚠ Duplicate active ingredient detected: ${res.duplicates[0].warning}</div>`;
+    } else {
+      out.innerHTML = `<div class="safe-tag">✓ No major interaction found in verified database.</div><div style="font-size:11.5px;color:#64748b;margin-top:4px">Always consult a pharmacist before combining medicines.</div>`;
+    }
+  }
+
+  /* ── PRESCRIPTION ── */
+  function openRxModal() {
+    document.getElementById('rxOcrBox').style.display = 'none';
+    document.getElementById('rxOverlay').classList.add('active');
+  }
+
+  function handleRxUpload(input) {
+    if (input.files && input.files[0]) {
+      const ocrBox = document.getElementById('rxOcrBox');
+      ocrBox.style.display = 'block';
+      document.getElementById('rxOcrText').innerHTML = `
+        <span style="color:#0ea5e9;font-weight:800">Detected medicines:</span>
+        Paracetamol 500mg, Metformin 500mg<br>
+        <span style="color:#d97706;font-size:11px">⏳ Awaiting licensed pharmacist verification.</span>
+      `;
+    }
+  }
+
+  function submitRx() {
+    closeAll();
+    showToast('Prescription submitted! Pharmacist will verify within 30 minutes.', 'success');
+  }
+
+  /* ── DASHBOARD SECTIONS ── */
+  const dashTemplates = {
+    wallet: `
+      <div style="text-align:center;margin-bottom:18px">
+        <div style="font-size:28px;margin-bottom:6px">💳</div>
+        <div class="modal-title">My Wallet</div>
+      </div>
+      <div style="background:linear-gradient(135deg,rgba(240,249,255,0.90),rgba(232,245,233,0.90));border:1px solid rgba(45,106,79,0.15);border-radius:14px;padding:24px;text-align:center;margin-bottom:14px">
+        <div style="font-size:12px;color:#64748b;margin-bottom:4px">Available Balance</div>
+        <div style="font-size:30px;font-weight:900;color:#2d6a4f">₹500.00</div>
+      </div>
+      <button class="m-btn" onclick="showToast('₹200 added via UPI', 'success'); closeAll()">+ Add Money</button>
+    `,
+    orders: `
+      <div class="modal-title" style="margin-bottom:14px">📦 My Orders</div>
+      <div class="info-row">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:13px;font-weight:800;color:#1a1a2e">Order #MV-8821</span>
+          <span style="font-size:11.5px;color:#0ea5e9;font-weight:700">Out for Delivery</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">Paracetamol 500mg, Omeprazole 20mg</div>
+        <div style="font-size:11px;color:#94a3b8;margin-top:2px">₹80 · ETA: 4:00 PM</div>
+      </div>
+    `,
+    records: `
+      <div class="modal-title" style="margin-bottom:14px">📋 Health Records</div>
+      <div class="info-row">
+        <div class="info-label">Recent Prescription</div>
+        <div class="info-value">Dr. Kelkar — Uploaded 26 Aug 2026 · ✅ Verified</div>
+      </div>
+      <button class="m-btn m-btn-dark" style="margin-top:8px" onclick="openRxModal();closeAll()">+ Upload New Record</button>
+    `,
+    notifications: `
+      <div class="modal-title" style="margin-bottom:14px">🔔 Notifications</div>
+      <div class="info-row" style="margin-bottom:8px"><div class="info-value">💊 <strong style="color:#1a1a2e">Medication Reminder:</strong> Evening Metformin 500mg</div></div>
+      <div class="info-row"><div class="info-value">📦 <strong style="color:#1a1a2e">Delivery Update:</strong> Courier assigned for #MV-8821</div></div>
+    `,
+    subscriptions: `
+      <div class="modal-title" style="margin-bottom:14px">🔄 My Subscriptions</div>
+      <div class="info-row">
+        <div class="info-label">Monthly Auto-Refill</div>
+        <div class="info-value">Metformin 500mg · Next dispatch: 10 Sep 2026</div>
+        <div style="font-size:11px;color:#16a34a;margin-top:3px">Active · 10% subscriber discount applied</div>
+      </div>
+    `,
+    family: `
+      <div class="modal-title" style="margin-bottom:14px">👥 Family Members</div>
+      <div class="info-row" style="margin-bottom:8px">
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-weight:700;color:#1a1a2e">Self (Primary Profile)</span>
+          <span style="font-size:11px;color:#2d6a4f;font-weight:700">Active</span>
+        </div>
+      </div>
+      <div class="info-row">
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-weight:700;color:#1a1a2e">Parent (Age 64)</span>
+          <span style="font-size:11px;color:#64748b;cursor:pointer" onclick="showToast('Switched to Parent profile')">Switch →</span>
+        </div>
+      </div>
+    `
+  };
+
+  function openDashSection(key) {
+    document.getElementById('dashContent').innerHTML = dashTemplates[key] || '<div class="modal-title">Coming Soon</div>';
+    document.getElementById('dashOverlay').classList.add('active');
+  }
+
+  /* ── LOCATION ── */
+  function updateLocation() {
+    if (navigator.geolocation) {
+      showToast('📍 Detecting your location...');
+      navigator.geolocation.getCurrentPosition(() => {
+        document.getElementById('locLabel').textContent = 'Pune (GPS)';
+        showToast('Location updated to Pune', 'success');
+      }, () => showToast('Using saved address: Pune 412115'));
+    }
+  }
+
+  /* ── CLOSE MODALS ── */
+  function closeAll() {
+    document.querySelectorAll('.overlay').forEach(el => el.classList.remove('active'));
+  }
+  document.querySelectorAll('.overlay').forEach(el => {
+    el.addEventListener('click', e => { if (e.target === el) closeAll(); });
+  });
+</script>
+</body>
+</html>

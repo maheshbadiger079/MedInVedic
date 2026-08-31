@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Integrative Health Compare — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .compare-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+    }
+
+    .search-section { text-align: center; margin-bottom: 60px; width: 100%; max-width: 600px; }
+    .search-bar-wrap { position: relative; }
+    .search-input { 
+      width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); 
+      padding: 24px 32px 24px 60px; border-radius: 20px; color: white; font-size: 18px; outline: none; transition: 0.3s;
+    }
+    .search-input:focus { border-color: var(--primary); background: rgba(255,255,255,0.06); box-shadow: 0 0 30px rgba(16, 185, 129, 0.1); }
+    .search-icon-fixed { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.5; }
+
+    .comparison-display {
+      display: none; width: 100%; max-width: 1200px; animation: fadeIn 0.6s ease-out;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+    
+    .approach-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      padding: 40px;
+      position: relative;
+    }
+    .approach-card.ayur { border-left: 8px solid var(--primary); }
+    .approach-card.modern { border-left: 8px solid var(--blue); }
+
+    .approach-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 16px; opacity: 0.6; }
+    .approach-title { font-size: 28px; font-weight: 900; margin-bottom: 24px; font-family: var(--font-display); }
+
+    .data-row { margin-bottom: 32px; }
+    .data-label { font-size: 13px; font-weight: 700; color: var(--gray-400); margin-bottom: 8px; }
+    .data-value { font-size: 16px; line-height: 1.6; color: var(--gray-100); }
+
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 24px; }
+    .pc-box { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px; }
+    .pc-title { font-size: 12px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .pc-list { margin: 0; padding: 0; list-style: none; font-size: 13px; color: var(--gray-300); }
+    .pc-list li { margin-bottom: 8px; display: flex; gap: 8px; }
+
+    .integration-note {
+      grid-column: span 2;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .suggestion-pills { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 20px; }
+    .sug-pill { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 100px; font-size: 13px; cursor: pointer; transition: 0.3s; }
+    .sug-pill:hover { background: var(--primary); border-color: var(--primary); color: white; }
+
+    @media (max-width: 900px) { .compare-grid { grid-template-columns: 1fr; } .integration-note { grid-column: span 1; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="compare-lab">
+  <div class="search-section">
+    <div style="font-size: 12px; font-weight: 800; color: var(--primary); letter-spacing: 2px; margin-bottom: 12px;">INTEGRATIVE MEDICINE TOOL</div>
+    <h1 style="font-size: 40px; font-weight: 900; margin-bottom: 32px;">Clinical Side-by-Side</h1>
+    <div class="search-bar-wrap">
+      <div class="search-icon-fixed">🔍</div>
+      <input type="text" class="search-input" id="compareSearch" placeholder="Enter condition (e.g. Headache, Fever, Acne)..." onkeydown="if(event.key === 'Enter') performComparison()">
+    </div>
+    <div class="suggestion-pills">
+       <div class="sug-pill" onclick="searchFor('Headache')">Headache</div>
+       <div class="sug-pill" onclick="searchFor('Fever')">Fever</div>
+       <div class="sug-pill" onclick="searchFor('Acne')">Acne</div>
+       <div class="sug-pill" onclick="searchFor('Digestion')">Digestion</div>
+       <div class="sug-pill" onclick="searchFor('Stress')">Anxiety</div>
+    </div>
+  </div>
+
+  <div class="comparison-display" id="resultArea">
+     <div class="compare-grid">
+        <!-- AYURVEDA SIDE -->
+        <div class="approach-card ayur">
+           <div class="approach-label">Ancient Wisdom Approach</div>
+           <div class="approach-title">Ayurvedic Protocol</div>
+           
+           <div class="data-row">
+              <div class="data-label">Methodology</div>
+              <div class="data-value" id="ayurMethod">Root cause analysis based on Dosha imbalance (Vata/Pitta/Kapha). Focused on restoring natural equilibrium.</div>
+           </div>
+
+           <div class="data-row">
+              <div class="data-label">Primary Remedies</div>
+              <div class="data-value" id="ayurRemedy">Herbal extracts, dietary modifications (Ahara), and lifestyle changes (Dinacharya).</div>
+           </div>
+
+           <div class="pros-cons">
+              <div class="pc-box">
+                <div class="pc-title" style="color:var(--primary);">✅ PROS</div>
+                <ul class="pc-list" id="ayurPros">
+                   <li>Long-term healing</li>
+                   <li>Zero side effects (mostly)</li>
+                   <li>Holistic wellness</li>
+                </ul>
+              </div>
+              <div class="pc-box">
+                <div class="pc-title" style="color:#f87171;">⚠️ CONS</div>
+                <ul class="pc-list" id="ayurCons">
+                   <li>Slower action</li>
+                   <li>Requires lifestyle discipline</li>
+                </ul>
+              </div>
+           </div>
+        </div>
+
+        <!-- MODERN SIDE -->
+        <div class="approach-card modern">
+           <div class="approach-label">Modern Science Approach</div>
+           <div class="approach-title">Allopathic Protocol</div>
+
+           <div class="data-row">
+              <div class="data-label">Methodology</div>
+              <div class="data-value" id="modernMethod">Symptom-focused suppression using pharmaceutical compounds. Focused on fast acting relief and biochemical intervention.</div>
+           </div>
+
+           <div class="data-row">
+              <div class="data-label">Primary Treatment</div>
+              <div class="data-value" id="modernRemedy">Synthetic drugs, antibiotics, or surgical interventions based on clinical diagnostics.</div>
+           </div>
+
+           <div class="pros-cons">
+              <div class="pc-box">
+                <div class="pc-title" style="color:var(--blue);">✅ PROS</div>
+                <ul class="pc-list" id="modernPros">
+                   <li>Instant relief</li>
+                   <li>Precision diagnostics</li>
+                   <li>Emergency care</li>
+                </ul>
+              </div>
+              <div class="pc-box">
+                <div class="pc-title" style="color:#f87171;">⚠️ CONS</div>
+                <ul class="pc-list" id="modernCons">
+                   <li>Side effect potential</li>
+                   <li>Chemical dependency</li>
+                </ul>
+              </div>
+           </div>
+        </div>
+
+        <div class="integration-note">
+           <div style="font-weight:800; font-size:18px; margin-bottom:12px;">The MedInVedic Integration</div>
+           <p style="font-size:15px; color:var(--gray-300); line-height:1.6;" id="integrateLogic">
+             For acute pain or emergency, Allopathy is superior. For chronic management and prevention, Ayurveda provides a more sustainable path without toxic load.
+           </p>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  const DATA = {
+    'headache': {
+      ayur: { method: 'Nidana (Cause) search: Stress, digestion, or vision. Often linked to Vata-Pitta aggravation.', remedy: 'Brahmi/Ashwagandha for stress-based; Peppermint/Sandalwood for Pitta.', pros: ['Treats nerves', 'Calms mind'], cons: ['Not for stroke/migraine emergencies'] },
+      modern: { method: 'Inhibition of prostaglandins and pain receptors in the CNS.', remedy: 'Acetaminophen (Paracetamol) or Ibuprofen.', pros: ['Relief in 20 mins', 'Highly predictable'], cons: ['Liver stress', 'Acidity'] },
+      logic: 'Use Allopathy for sudden severe pain; use Ayurveda to stop reoccurring headaches by fixing sleep and stress.'
+    },
+    'fever': {
+      ayur: { method: 'Jvara management: Reducing "Ama" (toxins) and balancing heat.', remedy: 'Giloy (Guduchi) drops, Tulsi, and restricted light diet.', pros: ['Boosts natural immunity', 'Cleanses toxins'], cons: ['Slow temperature drop'] },
+      modern: { method: 'Hypothalamic reset via antipyretics.', remedy: 'Paracetamol 500mg, NSAIDs.', pros: ['Prevents seizure', 'Instant cooling'], cons: ['Masks underlying infection', 'Stomach irritation'] },
+      logic: 'Use Allopathy if fever > 101°F for safety. Use Ayurveda (Giloy) for post-fever recovery and low-grade inflammation.'
+    },
+    'acne': {
+      ayur: { method: 'Rakta Shodhaka: Blood purification and liver detox.', remedy: 'Neem, Turmeric, Kumkumadi oil; avoids oily food.', pros: ['Clear skin from within', 'Permanent fix'], cons: ['Takes 2-4 weeks to show'] },
+      modern: { method: 'Kill bacteria (P.acnes) and reduce sebum production.', remedy: 'Salicylic acid, Benzoyl peroxide, or Antibiotics.', pros: ['Fast drying', 'Prevents scars'], cons: ['Skin thinning', 'Redness/Sensitivity'] },
+      logic: 'Use Modern topical treatments for cystic outbreaks. Switch to Ayurveda for hormone balancing and internal detox.'
+    }
+  };
+
+  function searchFor(t) {
+    document.getElementById('compareSearch').value = t;
+    performComparison();
+  }
+
+  function performComparison() {
+    const query = document.getElementById('compareSearch').value.toLowerCase();
+    const resultArea = document.getElementById('resultArea');
+    
+    // Find matching key
+    const theme = Object.keys(DATA).find(k => query.includes(k));
+    
+    if (!theme) {
+      alert("No data for this condition yet. Try: Headache, Fever, or Acne.");
+      return;
+    }
+
+    const d = DATA[theme];
+    
+    // Populate
+    document.getElementById('ayurMethod').textContent = d.ayur.method;
+    document.getElementById('ayurRemedy').textContent = d.ayur.remedy;
+    document.getElementById('ayurPros').innerHTML = d.ayur.pros.map(p => `<li>✅ ${p}</li>`).join('');
+    document.getElementById('ayurCons').innerHTML = d.ayur.cons.map(c => `<li>⚠️ ${c}</li>`).join('');
+    
+    document.getElementById('modernMethod').textContent = d.modern.method;
+    document.getElementById('modernRemedy').textContent = d.modern.remedy;
+    document.getElementById('modernPros').innerHTML = d.modern.pros.map(p => `<li>✅ ${p}</li>`).join('');
+    document.getElementById('modernCons').innerHTML = d.modern.cons.map(c => `<li>⚠️ ${c}</li>`).join('');
+
+    document.getElementById('integrateLogic').textContent = d.logic;
+
+    resultArea.style.display = 'block';
+    resultArea.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

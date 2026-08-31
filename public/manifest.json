@@ -1,0 +1,45 @@
+{
+  "name": "MedInVedic: Modern & Ayurvedic Healthcare",
+  "short_name": "MedInVedic",
+  "description": "Where Modern Medicine Meets Ancient Ayurveda. Dual-healthcare marketplace with AI Assistant and Expert Doctor Consultations.",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#0F172A",
+  "categories": ["medical", "health", "wellness"],
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Consult Doctor",
+      "short_name": "Consult",
+      "url": "/pages/consult.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "My Dashboard",
+      "short_name": "Dashboard",
+      "url": "/pages/dashboard.html",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

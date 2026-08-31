@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Digital Twin Health Model — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .twin-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 40px 60px;
+    }
+
+    .simulation-grid { display: grid; grid-template-columns: 500px 1fr; gap: 40px; margin-top: 60px; }
+
+    .avatar-box {
+      background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 40px; padding: 40px; text-align: center; position: relative;
+      overflow: hidden; height: 750px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .human-outline {
+      width: 280px; height: 600px; border: 2px solid rgba(6, 182, 212, 0.2);
+      border-radius: 100px 100px 50px 50px; position: relative;
+      box-shadow: 0 0 50px rgba(6, 182, 212, 0.1);
+      background: linear-gradient(to bottom, rgba(6, 182, 212, 0.05), transparent);
+    }
+
+    .organ-node {
+       position: absolute; width: 12px; height: 12px; border-radius: 50%;
+       background: #06b6d4; box-shadow: 0 0 15px #06b6d4;
+    }
+
+    .twin-sidebar {
+      display: flex; flex-direction: column; gap: 24px;
+    }
+
+    .control-card {
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px; padding: 32px;
+    }
+
+    .sim-log {
+      height: 200px; background: black; border-radius: 16px; padding: 20px;
+      font-family: 'Courier New', monospace; font-size: 13px; color: #a21d21;
+      overflow-y: auto; margin-top: 20px;
+    }
+
+    .input-pill {
+       background: rgba(255,255,255,0.05); padding: 12px 20px; border-radius: 50px;
+       border: 1px solid rgba(255,255,255,0.1); cursor: pointer; display: inline-block;
+       margin: 4px; font-size: 13px; font-weight: 700; transition: 0.3s;
+    }
+    .input-pill:hover { border-color: #06b6d4; background: rgba(6,182,212,0.1); }
+    .input-pill.active { border-color: #06b6d4; background: #06b6d4; color: black; }
+
+    .dosha-stat { margin-top: 24px; }
+    .stat-bar { height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; margin-top: 8px; }
+    .stat-fill { height: 100%; transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="twin-lab">
+  <div style="margin-bottom: 48px;">
+     <div style="font-size: 11px; font-weight: 800; color: #06b6d4; letter-spacing: 4px; margin-bottom: 8px;">BIOLOGICAL DIGITAL TWIN</div>
+     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Twin Simulation Model</h1>
+     <p style="color: var(--gray-400); margin-top: 12px;">Predict biological outcomes before you start treatment.</p>
+  </div>
+
+  <div class="simulation-grid">
+     <div class="avatar-box">
+        <div style="position: absolute; top:40px; right:40px; font-size: 11px; font-weight:800; color:var(--gray-500);">SIMULATION STATUS: STABLE</div>
+        
+        <div class="human-outline" id="avatarBody">
+           <!-- Organ nodes -->
+           <div class="organ-node" id="nodeHead" style="top: 8%; left: 48%;"></div>
+           <div class="organ-node" id="nodeChest" style="top: 30%; left: 48%;"></div>
+           <div class="organ-node" id="nodeGuts" style="top: 50%; left: 48%;"></div>
+        </div>
+
+        <div style="position: absolute; bottom: 40px; width: 80%; display: flex; justify-content: space-around;">
+           <div class="dosha-stat">
+              <span style="font-size: 11px; font-weight:800; color:var(--gray-400);">VATA</span>
+              <div class="stat-bar" style="width: 80px;"><div id="vFill" class="stat-fill" style="width: 45%; background: #60a5fa;"></div></div>
+           </div>
+           <div class="dosha-stat">
+              <span style="font-size: 11px; font-weight:800; color:var(--gray-400);">PITTA</span>
+              <div class="stat-bar" style="width: 80px;"><div id="pFill" class="stat-fill" style="width: 70%; background: #ef4444;"></div></div>
+           </div>
+           <div class="dosha-stat">
+              <span style="font-size: 11px; font-weight:800; color:var(--gray-400);">KAPHA</span>
+              <div class="stat-bar" style="width: 80px;"><div id="kFill" class="stat-fill" style="width: 30%; background: #fbbf24;"></div></div>
+           </div>
+        </div>
+     </div>
+
+     <div class="twin-sidebar">
+        <div class="control-card">
+           <h3 style="font-weight: 900; margin-bottom: 24px;">Apply External Variable</h3>
+           
+           <div style="margin-bottom: 32px;">
+              <span style="font-size: 11px; font-weight:800; color:var(--gray-500); display:block; margin-bottom:12px;">MEDICINE / HERB</span>
+              <div class="input-pill" onclick="applySim('ashwa')">Ashwagandha 500mg</div>
+              <div class="input-pill" onclick="applySim('ghee')">Medicated Ghee</div>
+              <div class="input-pill" onclick="applySim('met')">Metformin</div>
+           </div>
+
+           <div style="margin-bottom: 32px;">
+              <span style="font-size: 11px; font-weight:800; color:var(--gray-500); display:block; margin-bottom:12px;">DIET / LIFESTYLE</span>
+              <div class="input-pill" onclick="applySim('spicy')">Spicy Meal Peak</div>
+              <div class="input-pill" onclick="applySim('sleep')">Late Night Work</div>
+              <div class="input-pill" onclick="applySim('yoga')">30m Yoga Path</div>
+           </div>
+
+           <div class="sim-log" id="simLog">
+              > Digital Twin Initialized.<br>
+              > Waiting for biometric input...
+           </div>
+        </div>
+
+        <div class="control-card" style="background: rgba(6, 182, 212, 0.05); border-color: rgba(6, 182, 212, 0.2);">
+           <strong style="color: #06b6d4;">🧬 PROJECTED OUTCOME</strong>
+           <p style="margin-top: 16px; font-size: 14px; color: var(--gray-300); line-height: 1.6;" id="simOutcome">
+              Select a variable to simulate your biological trajectory.
+           </p>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  const log = document.getElementById('simLog');
+  const outcome = document.getElementById('simOutcome');
+  const vFill = document.getElementById('vFill');
+  const pFill = document.getElementById('pFill');
+  const kFill = document.getElementById('kFill');
+  const avatar = document.getElementById('avatarBody');
+
+  function addLog(text) {
+     log.innerHTML += `<br>> ${text}`;
+     log.scrollTop = log.scrollHeight;
+  }
+
+  function applySim(type) {
+     addLog(`Applying Variable: ${type.toUpperCase()}...`);
+     avatar.style.borderColor = "#06b6d4";
+     avatar.style.boxShadow = "0 0 50px rgba(6, 182, 212, 0.3)";
+
+     setTimeout(() => {
+        if (type === 'ashwa') {
+           vFill.style.width = "20%";
+           pFill.style.width = "50%";
+           outcome.textContent = "Twin shows 25% decrease in CNS stress. Projected sleep improvement of +45 mins tonight.";
+           addLog("Biological stress markers neutralizing.");
+        } else if (type === 'spicy') {
+           pFill.style.width = "95%";
+           outcome.textContent = "Twin shows severe Pitta flare in Stomach zone. Acid reflux probability: 84% in 3 hours.";
+           addLog("Inflammation spike detected in Gut-Brain axis.");
+           document.getElementById('nodeGuts').style.background = "#ef4444";
+           document.getElementById('nodeGuts').style.boxShadow = "0 0 20px #ef4444";
+        } else if (type === 'yoga') {
+           vFill.style.width = "30%";
+           kFill.style.width = "50%";
+           pFill.style.width = "40%";
+           outcome.textContent = "Prana circulation optimized. Twin shows stable Sattva state for the next 4 hours.";
+           addLog("Homeostatic balance achieved.");
+           document.querySelectorAll('.organ-node').forEach(n => n.style.background = "#a21d21");
+        }
+     }, 1200);
+  }
+</script>
+
+</body>
+</html>

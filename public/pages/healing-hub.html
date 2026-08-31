@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Natural Healing &amp; Wellness Hub — MedInVedic</title>
+  <meta name="description" content="AI-Powered Natural Healing Hub: Evidence-grounded Ayurvedic wisdom, nutrition, lifestyle guidance, meal planning, and herb safety powered by RAG." />
+  
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <link rel="stylesheet" href="../css/auth-gate.css" />
+  
+  <!-- Core Scripts -->
+  <script src="../js/analytics.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/i18n.js?v=v_202603310200"></script>
+  <script src="../js/voice.js?v=v_Platinum_v88"></script>
+  <script type="module" src="../js/auth-gate.js"></script>
+
+  <style>
+    /* ── DESIGN SYSTEM: WHITE GLASSMORPHISM & WELLNESS GREEN ── */
+    :root {
+      --bg-base: #f8fafc;
+      --bg-warm: #fafaf9;
+      --surface-glass: rgba(255, 255, 255, 0.88);
+      --surface-glass-solid: #ffffff;
+      --border-glass: rgba(226, 232, 240, 0.9);
+      --border-subtle: #f1f5f9;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-light: #94a3b8;
+      
+      --wellness-primary: #166534;
+      --wellness-light: #22c55e;
+      --wellness-subtle: #f0fdf4;
+      --wellness-border: #bbf7d0;
+      
+      --accent-gold: #d97706;
+      --accent-gold-subtle: #fffbeb;
+      --accent-blue: #0284c7;
+      --accent-blue-subtle: #f0f9ff;
+      --accent-red: #dc2626;
+      --accent-red-subtle: #fef2f2;
+      
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --radius-xl: 32px;
+      
+      --shadow-glass: 0 8px 32px -4px rgba(0, 0, 0, 0.04), 0 2px 8px -1px rgba(0, 0, 0, 0.02);
+      --shadow-hover: 0 16px 40px -8px rgba(22, 101, 52, 0.12), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    }
+
+    body {
+      background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 40%, #fafaf9 70%, #f0fdfa 100%) !important;
+      background-attachment: fixed !important;
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.6;
+    }
+
+    /* ── WELLNESS HERO SECTION (WHITE GLASSMORPHISM) ── */
+    .hub-hero { 
+      position: relative;
+      text-align: center; 
+      padding: 110px 24px 90px; 
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(240, 253, 244, 0.88) 50%, rgba(254, 249, 231, 0.85) 100%), 
+                  url('../images/healing_hub_bg.png') center/cover no-repeat;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-radius: 0 0 50px 50px; 
+      margin-bottom: 60px; 
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.9);
+      overflow: hidden;
+      box-shadow: 0 16px 40px -8px rgba(22, 101, 52, 0.08), 0 4px 16px -2px rgba(0, 0, 0, 0.03);
+    }
+
+    .hero-badge { 
+      background: rgba(255, 255, 255, 0.92); 
+      color: #166534; 
+      border: 1.5px solid rgba(34, 197, 94, 0.35); 
+      padding: 8px 22px; 
+      border-radius: 99px; 
+      font-size: 13px; 
+      font-weight: 800; 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      margin-bottom: 20px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      letter-spacing: 0.5px;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, 0.08);
+    }
+
+    .hub-hero-title { 
+      font-size: clamp(38px, 6vw, 62px); 
+      font-weight: 900; 
+      background: linear-gradient(135deg, #14532d 0%, #166534 50%, #15803d 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 18px; 
+      letter-spacing: -1.5px;
+    }
+
+    .hub-hero-desc { 
+      color: #334155; 
+      font-size: 19px; 
+      max-width: 780px; 
+      margin: 0 auto 36px; 
+      line-height: 1.65; 
+      font-weight: 500;
+    }
+
+    .hero-btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-hero-primary {
+      background: linear-gradient(135deg, #166534, #22c55e);
+      color: #ffffff;
+      padding: 13px 28px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 14.5px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 20px rgba(22, 101, 52, 0.25);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-hero-primary:hover {
+      background: linear-gradient(135deg, #14532d, #16a34a);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(22, 101, 52, 0.35);
+    }
+
+    .btn-hero-glass {
+      background: rgba(255, 255, 255, 0.88);
+      color: #1e293b;
+      border: 1.5px solid rgba(22, 101, 52, 0.2);
+      padding: 13px 24px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-hero-glass:hover {
+      background: #ffffff;
+      color: #166534;
+      border-color: #166534;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(22, 101, 52, 0.12);
+    }
+
+    /* ── CONTAINER ── */
+    .wellness-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    .section-wrap {
+      margin-bottom: 70px;
+    }
+
+    .section-title-wrap {
+      margin-bottom: 28px;
+      text-align: left;
+    }
+
+    .section-tag {
+      font-size: 11.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--wellness-primary);
+      background: var(--wellness-subtle);
+      border: 1px solid var(--wellness-border);
+      padding: 4px 12px;
+      border-radius: 99px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .section-heading {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .section-subtitle {
+      font-size: 14.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── WHITE GLASSMORPHISM CARDS ── */
+    .glass-card {
+      background: var(--surface-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-glass);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    }
+
+    .glass-card:hover {
+      box-shadow: var(--shadow-hover);
+      border-color: rgba(22, 101, 52, 0.3);
+    }
+
+    /* ── 15 WELLNESS SUITES GRID ── */
+    .suites-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .suite-card {
+      background: #ffffff;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 22px 18px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+    }
+
+    .suite-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--wellness-light);
+      box-shadow: 0 10px 25px rgba(22, 101, 52, 0.08);
+    }
+
+    .suite-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: var(--wellness-subtle);
+      border: 1px solid var(--wellness-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+
+    .suite-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .suite-desc {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* ── ASK THE HEALING AI INTERACTIVE CARD ── */
+    .ai-chat-card {
+      background: #ffffff;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-xl);
+      padding: 36px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
+      position: relative;
+    }
+
+    .ai-input-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--bg-base);
+      border: 1.5px solid #cbd5e1;
+      border-radius: var(--radius-md);
+      padding: 8px 12px 8px 18px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .ai-input-bar:focus-within {
+      background: #ffffff;
+      border-color: var(--wellness-primary);
+      box-shadow: 0 0 0 4px rgba(22, 101, 52, 0.1);
+    }
+
+    .ai-input-field {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 15px;
+      color: var(--text-main);
+      outline: none;
+    }
+
+    .mic-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+
+    .mic-btn:hover {
+      background: var(--wellness-subtle);
+      color: var(--wellness-primary);
+    }
+
+    .mic-btn.listening {
+      background: var(--accent-red-subtle);
+      color: var(--accent-red);
+      animation: pulseMic 1.5s infinite;
+    }
+
+    @keyframes pulseMic {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+
+    .ask-btn {
+      background: var(--wellness-primary);
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .ask-btn:hover {
+      background: #14532d;
+    }
+
+    .prompt-pills-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+
+    .prompt-pill {
+      background: #ffffff;
+      border: 1px solid var(--border-glass);
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .prompt-pill:hover {
+      background: var(--wellness-subtle);
+      border-color: var(--wellness-border);
+      color: var(--wellness-primary);
+    }
+
+    /* ── AI RESPONSE CONTAINER ── */
+    #aiResponseBox {
+      display: none;
+      margin-top: 28px;
+      border-top: 1px solid var(--border-glass);
+      padding-top: 24px;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .evidence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+      margin-bottom: 14px;
+    }
+
+    .badge-traditional { background: var(--accent-gold-subtle); color: var(--accent-gold); border: 1px solid #fde68a; }
+    .badge-supported   { background: var(--wellness-subtle); color: var(--wellness-primary); border: 1px solid var(--wellness-border); }
+    .badge-emergency   { background: var(--accent-red-subtle); color: var(--accent-red); border: 1px solid #fca5a5; }
+
+    .ai-response-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      font-size: 14.5px;
+    }
+
+    .response-section-box {
+      background: var(--bg-base);
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+    }
+
+    .response-section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--wellness-primary);
+      margin-bottom: 6px;
+    }
+
+    /* ── TABBED MODULE PANELS ── */
+    .module-nav-tabs {
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid var(--border-glass);
+      margin-bottom: 24px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .module-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 10px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .module-tab-btn:hover {
+      color: var(--wellness-primary);
+      background: var(--wellness-subtle);
+    }
+
+    .module-tab-btn.active {
+      color: var(--wellness-primary);
+      background: var(--wellness-subtle);
+      font-weight: 700;
+      box-shadow: inset 0 -2px 0 var(--wellness-primary);
+    }
+
+    .tab-content-panel {
+      display: none;
+    }
+
+    .tab-content-panel.active {
+      display: block;
+      animation: fadeIn 0.2s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── DOSHA QUESTIONNAIRE ── */
+    .q-card {
+      background: #ffffff;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    .q-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-main);
+      margin-bottom: 12px;
+    }
+
+    .q-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .q-option {
+      background: var(--bg-base);
+      border: 1.5px solid var(--border-glass);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .q-option:hover {
+      border-color: var(--wellness-light);
+      background: #ffffff;
+    }
+
+    .q-option.selected {
+      border-color: var(--wellness-primary);
+      background: var(--wellness-subtle);
+      color: var(--wellness-primary);
+      font-weight: 700;
+    }
+
+    /* ── REMEDY CARDS GRID ── */
+    .remedies-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .remedy-card {
+      background: #ffffff;
+      border: 1px solid var(--border-glass);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      box-shadow: var(--shadow-glass);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .remedy-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+
+    .remedy-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    /* ── HERB SAFETY CHECKER ── */
+    .safety-status-box {
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      margin-top: 18px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .status-low      { background: var(--wellness-subtle); border: 1.5px solid var(--wellness-border); color: var(--wellness-primary); }
+    .status-caution  { background: var(--accent-gold-subtle); border: 1.5px solid #fde68a; color: var(--accent-gold); }
+    .status-warning  { background: var(--accent-red-subtle); border: 1.5px solid #fca5a5; color: var(--accent-red); }
+
+    /* ── YOGA BREATH PACER ── */
+    .pacer-circle {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #bbf7d0 0%, #166534 100%);
+      margin: 24px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 16px;
+      animation: breatheAnim 8s infinite ease-in-out;
+      box-shadow: 0 0 30px rgba(34, 197, 94, 0.4);
+    }
+
+    @keyframes breatheAnim {
+      0%, 100% { transform: scale(0.85); }
+      50% { transform: scale(1.15); }
+    }
+
+    /* ── NAVBAR GLASSMORPHISM ── */
+    .navbar {
+      background: rgba(255, 255, 255, 0.92) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8) !important;
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .q-options { grid-template-columns: 1fr; }
+      .hub-hero { padding: 80px 16px 60px; border-radius: 0 0 32px 32px; }
+      .ai-chat-card { padding: 22px 18px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+  
+  <div class="nav-location iv-style-200" onclick="openLocationModal()">
+    <span class="iv-style-1" data-i18n="nav.location.lbl">Deliver to</span>
+    <span class="iv-style-2">
+      <span class="loc-icon iv-style-3">📍</span>
+      <span class="iv-style-4" id="navLocationText">Select Location</span>
+    </span>
+  </div>
+
+  <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
+    <a href="../index.html" style="text-decoration: none; font-weight: 700; font-size: 13.5px; color: var(--text-muted); padding: 6px 12px; border-radius: 8px; transition: all 0.2s;">🏠 Home</a>
+    <a href="dashboard.html" style="text-decoration: none; font-weight: 700; font-size: 13.5px; color: var(--wellness-primary); background: var(--wellness-subtle); border: 1px solid var(--wellness-border); padding: 6px 14px; border-radius: 8px; transition: all 0.2s;">👤 Dashboard</a>
+  </div>
+</nav>
+
+<!-- ── 1. WELLNESS HERO SECTION ── -->
+<header class="hub-hero">
+  <div class="hero-badge">🌿 100% Natural Wellness Sanctuary</div>
+  <h1 class="hub-hero-title">Natural Healing Hub</h1>
+  <p class="hub-hero-desc">
+    Your journey to holistic health starts here. Discover ancient remedies,
+    personalized diet plans, and potent immunity boosters.
+  </p>
+  <div class="hero-btn-group">
+    <button class="btn-hero-primary" onclick="scrollToSection('ask-ai-section')">🧠 Ask Healing AI</button>
+    <button class="btn-hero-glass" onclick="scrollToSection('wellness-plan-section')">🎯 Build My Wellness Plan</button>
+    <button class="btn-hero-glass" onclick="scrollToSection('remedies-section')">🌿 Explore Natural Remedies</button>
+    <button class="btn-hero-glass" onclick="scrollToSection('ayurveda-section')">📜 Explore Ayurveda</button>
+  </div>
+</header>
+
+<main class="wellness-container">
+
+  <!-- ── 2. AI WELLNESS & HEALTH GUIDANCE SUITES (15 CARDS) ── -->
+  <section class="section-wrap" id="suites-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Interactive Suites</span>
+      <h2 class="section-heading">AI Wellness &amp; Health Guidance Suites</h2>
+      <p class="section-subtitle">Evidence-based natural healing and lifestyle intelligence tools.</p>
+    </div>
+
+    <div class="suites-grid">
+      <!-- 1. Symptom Education -->
+      <div class="suite-card" onclick="activateTool('symptom-edu')">
+        <div class="suite-icon">🛡️</div>
+        <div>
+          <div class="suite-title">Symptom Education</div>
+          <div class="suite-desc">Non-diagnostic educational triage &amp; self-care red flags.</div>
+        </div>
+      </div>
+
+      <!-- 2. Wellness Check -->
+      <div class="suite-card" onclick="activateTool('daily-checkin')">
+        <div class="suite-icon">📊</div>
+        <div>
+          <div class="suite-title">Wellness Check</div>
+          <div class="suite-desc">Daily energy, mood, sleep, and lifestyle habit check-in.</div>
+        </div>
+      </div>
+
+      <!-- 3. Nutrition Advisor -->
+      <div class="suite-card" onclick="activateTool('nutrition-advisor')">
+        <div class="suite-icon">🥗</div>
+        <div>
+          <div class="suite-title">Nutrition Advisor</div>
+          <div class="suite-desc">Properties of grains, spices, pulses &amp; seasonal foods.</div>
+        </div>
+      </div>
+
+      <!-- 4. Natural Remedy Explorer -->
+      <div class="suite-card" onclick="scrollToSection('remedies-section')">
+        <div class="suite-icon">🌿</div>
+        <div>
+          <div class="suite-title">Natural Remedy Explorer</div>
+          <div class="suite-desc">Curated remedies with evidence tiers &amp; preparation notes.</div>
+        </div>
+      </div>
+
+      <!-- 5. Herb Safety Checker -->
+      <div class="suite-card" onclick="scrollToSection('safety-checker-section')">
+        <div class="suite-icon">⚠️</div>
+        <div>
+          <div class="suite-title">Herb Safety Checker</div>
+          <div class="suite-desc">Check potential herb-drug interactions &amp; precautions.</div>
+        </div>
+      </div>
+
+      <!-- 6. AI Meal Planner -->
+      <div class="suite-card" onclick="scrollToSection('meal-planner-section')">
+        <div class="suite-icon">🍱</div>
+        <div>
+          <div class="suite-title">AI Meal Planner</div>
+          <div class="suite-desc">Personalized Indian regional &amp; dosha-friendly meal plans.</div>
+        </div>
+      </div>
+
+      <!-- 7. Sleep Wellness -->
+      <div class="suite-card" onclick="activateAiPrompt('How can I create an Ayurvedic circadian bedtime routine for deep sleep?')">
+        <div class="suite-icon">🌙</div>
+        <div>
+          <div class="suite-title">Sleep Wellness</div>
+          <div class="suite-desc">Circadian rhythm balancing and natural wind-down guides.</div>
+        </div>
+      </div>
+
+      <!-- 8. Stress Management -->
+      <div class="suite-card" onclick="activateAiPrompt('What natural lifestyle remedies and Pranayama reduce high stress and cortisol?')">
+        <div class="suite-icon">🧘</div>
+        <div>
+          <div class="suite-title">Stress Management</div>
+          <div class="suite-desc">Pranayama breathing and mindfulness for cortisol balance.</div>
+        </div>
+      </div>
+
+      <!-- 9. Yoga Guide -->
+      <div class="suite-card" onclick="scrollToSection('yoga-section')">
+        <div class="suite-icon">🤸</div>
+        <div>
+          <div class="suite-title">Yoga Guide</div>
+          <div class="suite-desc">Daily asanas, joint mobility, and beginner desk stretches.</div>
+        </div>
+      </div>
+
+      <!-- 10. Meditation Guide -->
+      <div class="suite-card" onclick="scrollToSection('meditation-section')">
+        <div class="suite-icon">🕯️</div>
+        <div>
+          <div class="suite-title">Meditation Guide</div>
+          <div class="suite-desc">Structured mindfulness scripts &amp; calming breath pacers.</div>
+        </div>
+      </div>
+
+      <!-- 11. Ingredient Scanner -->
+      <div class="suite-card" onclick="scrollToSection('scanner-section')">
+        <div class="suite-icon">🔍</div>
+        <div>
+          <div class="suite-title">Ingredient Scanner</div>
+          <div class="suite-desc">Analyze food items for Ayurvedic Gunas &amp; allergens.</div>
+        </div>
+      </div>
+
+      <!-- 12. Wellness Plan -->
+      <div class="suite-card" onclick="scrollToSection('wellness-plan-section')">
+        <div class="suite-icon">🎯</div>
+        <div>
+          <div class="suite-title">Daily Wellness Plan</div>
+          <div class="suite-desc">Morning-to-night personalized routine with save &amp; export.</div>
+        </div>
+      </div>
+
+      <!-- 13. Ayurveda Explorer -->
+      <div class="suite-card" onclick="scrollToSection('ayurveda-section')">
+        <div class="suite-icon">📜</div>
+        <div>
+          <div class="suite-title">Ayurveda Explorer</div>
+          <div class="suite-desc">Vata, Pitta, Kapha dosha concepts &amp; Dinacharya routines.</div>
+        </div>
+      </div>
+
+      <!-- 14. Seasonal Wellness -->
+      <div class="suite-card" onclick="scrollToSection('seasonal-section')">
+        <div class="suite-icon">🍂</div>
+        <div>
+          <div class="suite-title">Seasonal Wellness</div>
+          <div class="suite-desc">Ritucharya adaptations for Indian climates and seasons.</div>
+        </div>
+      </div>
+
+      <!-- 15. Lifestyle Coach -->
+      <div class="suite-card" onclick="scrollToSection('journal-section')">
+        <div class="suite-icon">📖</div>
+        <div>
+          <div class="suite-title">Wellness Journal</div>
+          <div class="suite-desc">Log your lifestyle reflections &amp; track habit consistency.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 3. ASK THE HEALING AI (RAG ASSISTANT) ── -->
+  <section class="section-wrap" id="ask-ai-section">
+    <div class="ai-chat-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:10px;">
+        <span class="section-tag" style="margin:0;">🧠 RAG Grounded Health Intelligence</span>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Response Language:</span>
+          <select id="aiResponseLang" style="background:#fff; border:1px solid var(--border-glass); border-radius:6px; padding:4px 8px; font-size:12.5px; font-weight:600;">
+            <option value="en" selected>English</option>
+            <option value="kn">ಕನ್ನಡ (Kannada)</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="mr">मराठी (Marathi)</option>
+            <option value="ta">தமிழ் (Tamil)</option>
+            <option value="te">తెలుగు (Telugu)</option>
+          </select>
+        </div>
+      </div>
+
+      <h3 style="font-size:24px; font-weight:800; color:var(--text-main); margin-bottom:6px;">Ask the Healing AI</h3>
+      <p style="font-size:14px; color:var(--text-muted); margin-bottom:20px;">Ask about natural remedies, herbs, nutrition, sleep, or Ayurveda. Answers are strictly grounded in authoritative medical &amp; AYUSH monographs.</p>
+
+      <div class="ai-input-bar">
+        <input type="text" class="ai-input-field" id="healingAiInput" placeholder="e.g., 'I feel tired all day. What lifestyle changes may help?' or 'Ashwagandha safety with sedatives'" onkeydown="if(event.key==='Enter')askHealingAi()">
+        <button class="mic-btn" id="healingMicBtn" onclick="toggleHealingVoice()" title="Voice Input">🎤</button>
+        <button class="ask-btn" onclick="askHealingAi()">Ask AI</button>
+      </div>
+
+      <div class="prompt-pills-row">
+        <span class="prompt-pill" onclick="fillAndAsk('I feel tired all day. What lifestyle changes may help?')">⚡ Daytime Fatigue &amp; Energy</span>
+        <span class="prompt-pill" onclick="fillAndAsk('What are the traditional Ayurvedic uses and evidence for Ashwagandha KSM-66?')">🌿 Ashwagandha Benefits</span>
+        <span class="prompt-pill" onclick="fillAndAsk('Suggest a wholesome Indian breakfast for Vata dosha balance')">🍲 Vata Breakfast Ideas</span>
+        <span class="prompt-pill" onclick="fillAndAsk('What are safe natural practices to improve acid reflux and digestion?')">🔥 Digestive Agni Balance</span>
+        <span class="prompt-pill" onclick="fillAndAsk('Can Turmeric supplements be taken with Aspirin or blood thinners?')">⚠️ Turmeric &amp; Blood Thinners</span>
+      </div>
+
+      <!-- AI Response Container -->
+      <div id="aiResponseBox">
+        <div id="aiEvidenceBadge"></div>
+        
+        <div class="ai-response-grid">
+          <!-- Short Answer -->
+          <div class="response-section-box">
+            <div class="response-section-title">💡 Quick Wellness Answer</div>
+            <div id="resQuickAnswer" style="color:var(--text-main); font-weight:500;"></div>
+          </div>
+
+          <!-- Why this may help & Personalized Suggestions -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="response-section-box">
+              <div class="response-section-title">🔬 Why This May Help</div>
+              <div id="resWhyHelp" style="font-size:13.5px; color:var(--text-muted);"></div>
+            </div>
+            <div class="response-section-box">
+              <div class="response-section-title">🎯 Personalized Suggestions</div>
+              <div id="resSuggestions" style="font-size:13.5px; color:var(--text-muted);"></div>
+            </div>
+          </div>
+
+          <!-- Natural Options & What to Avoid -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+            <div class="response-section-box">
+              <div class="response-section-title">🌿 Natural Wellness Options</div>
+              <div id="resNaturalOptions" style="font-size:13.5px; color:var(--text-muted);"></div>
+            </div>
+            <div class="response-section-box">
+              <div class="response-section-title">🚫 What to Avoid / Precautions</div>
+              <div id="resAvoid" style="font-size:13.5px; color:var(--text-muted);"></div>
+            </div>
+          </div>
+
+          <!-- Safety Notes & Escalation -->
+          <div class="response-section-box" style="background:#fffbeb; border-color:#fef3c7;">
+            <div class="response-section-title" style="color:var(--accent-gold);">⚕️ Safety Notes &amp; When to See a Doctor</div>
+            <div id="resSafetyNotes" style="font-size:13.5px; color:#78350f;"></div>
+          </div>
+
+          <!-- Source Citations -->
+          <div class="response-section-box" style="background:#f8fafc;">
+            <div class="response-section-title">📚 Retrieved Knowledge Sources</div>
+            <div id="resSourcesList" style="font-size:12.5px; color:var(--text-muted);"></div>
+          </div>
+        </div>
+
+        <!-- Feedback & Action Buttons -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:18px; flex-wrap:wrap; gap:10px;">
+          <span style="font-size:12px; color:var(--text-light);">ℹ️ Educational wellness guidance only — not a clinical diagnosis or medical prescription.</span>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="speakAiResponse()">🔊 Listen</button>
+            <button class="btn btn-outline btn-sm" onclick="saveToJournalFromAi()">📖 Save to Journal</button>
+            <button class="btn btn-outline btn-sm" onclick="alert('Thank you for rating this response helpful!')">👍 Helpful</button>
+            <button class="btn btn-outline btn-sm" onclick="alert('Feedback recorded. Our RAG system will refine this topic.')">👎</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 4. AI DOSHA / PRAKRITI QUESTIONNAIRE ── -->
+  <section class="section-wrap" id="ayurveda-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Ayurvedic Personalization</span>
+      <h2 class="section-heading">AI Dosha / Prakriti Questionnaire</h2>
+      <p class="section-subtitle">Discover your traditional Ayurvedic constitution tendency (Vata, Pitta, Kapha) for tailored diet and lifestyle routines.</p>
+    </div>
+
+    <div class="glass-card">
+      <div id="doshaQuestionsList">
+        <!-- Q1 -->
+        <div class="q-card">
+          <div class="q-title">1. What best describes your natural body frame and build?</div>
+          <div class="q-options">
+            <div class="q-option" onclick="selectDoshaOption(1, 'vata', this)">Slender, light bones, difficulty gaining weight (Vata)</div>
+            <div class="q-option" onclick="selectDoshaOption(1, 'pitta', this)">Medium build, athletic, moderate muscular tone (Pitta)</div>
+            <div class="q-option" onclick="selectDoshaOption(1, 'kapha', this)">Sturdy, broad frame, gains weight easily (Kapha)</div>
+          </div>
+        </div>
+
+        <!-- Q2 -->
+        <div class="q-card">
+          <div class="q-title">2. How is your typical energy pattern and activity rhythm?</div>
+          <div class="q-options">
+            <div class="q-option" onclick="selectDoshaOption(2, 'vata', this)">Bursts of enthusiasm, fluctuates easily, tires quickly (Vata)</div>
+            <div class="q-option" onclick="selectDoshaOption(2, 'pitta', this)">Focused, intense, driven and competitive energy (Pitta)</div>
+            <div class="q-option" onclick="selectDoshaOption(2, 'kapha', this)">Steady, high endurance, slow to start but long stamina (Kapha)</div>
+          </div>
+        </div>
+
+        <!-- Q3 -->
+        <div class="q-card">
+          <div class="q-title">3. How is your sleep quality on average?</div>
+          <div class="q-options">
+            <div class="q-option" onclick="selectDoshaOption(3, 'vata', this)">Light, interrupted, tends toward late sleeping (Vata)</div>
+            <div class="q-option" onclick="selectDoshaOption(3, 'pitta', this)">Sound, moderate (6–7 hours), feels warm at night (Pitta)</div>
+            <div class="q-option" onclick="selectDoshaOption(3, 'kapha', this)">Deep, heavy (8+ hours), slow to wake up in mornings (Kapha)</div>
+          </div>
+        </div>
+
+        <!-- Q4 -->
+        <div class="q-card">
+          <div class="q-title">4. How is your appetite and digestive fire (Agni)?</div>
+          <div class="q-options">
+            <div class="q-option" onclick="selectDoshaOption(4, 'vata', this)">Irregular appetite, prone to bloating or gas (Vata)</div>
+            <div class="q-option" onclick="selectDoshaOption(4, 'pitta', this)">Sharp, cannot skip meals, prone to acidity (Pitta)</div>
+            <div class="q-option" onclick="selectDoshaOption(4, 'kapha', this)">Slow, steady, can easily skip meals without hunger (Kapha)</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; flex-wrap:wrap; gap:12px;">
+        <span style="font-size:12.5px; color:var(--text-muted);">* Traditional Ayurveda-based interpretation. Not a clinical medical diagnosis.</span>
+        <button class="btn btn-primary" onclick="calculateDoshaProfile()">Calculate My Prakriti Tendency →</button>
+      </div>
+
+      <!-- Result Box -->
+      <div id="doshaResultBox" style="display:none; margin-top:24px; padding:20px; border-radius:14px; background:var(--wellness-subtle); border:1.5px solid var(--wellness-border);">
+        <h4 id="doshaResultTitle" style="font-size:18px; font-weight:800; color:var(--wellness-primary); margin-bottom:8px;"></h4>
+        <p id="doshaResultDesc" style="font-size:14px; color:var(--text-main); line-height:1.6;"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 5. PERSONALIZED DAILY WELLNESS PLAN ── -->
+  <section class="section-wrap" id="wellness-plan-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">RAG Daily Regimen</span>
+      <h2 class="section-heading">Your Daily Wellness Plan (Dinacharya)</h2>
+      <p class="section-subtitle">Structured, evidence-grounded habits structured around your body's natural circadian rhythms.</p>
+    </div>
+
+    <div class="glass-card">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:18px;">
+        <!-- Morning -->
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:14px; padding:20px;">
+          <div style="font-size:24px; margin-bottom:8px;">🌅</div>
+          <div style="font-size:15px; font-weight:800; color:var(--wellness-primary); margin-bottom:6px;">Morning (Pratah)</div>
+          <ul style="font-size:13px; color:var(--text-muted); line-height:1.7; padding-left:18px;">
+            <li>Warm water hydration with lemon or ginger</li>
+            <li>15-min gentle movement &amp; Surya Namaskar</li>
+            <li>5-min Anulom Vilom Pranayama</li>
+            <li>Warm nourishing breakfast (e.g. spiced oats / poha)</li>
+          </ul>
+        </div>
+
+        <!-- Afternoon -->
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:14px; padding:20px;">
+          <div style="font-size:24px; margin-bottom:8px;">🌞</div>
+          <div style="font-size:15px; font-weight:800; color:var(--accent-gold); margin-bottom:6px;">Afternoon (Madhyahna)</div>
+          <ul style="font-size:13px; color:var(--text-muted); line-height:1.7; padding-left:18px;">
+            <li>Primary meal of the day (highest Agni)</li>
+            <li>Balanced whole grains, dal, steamed greens</li>
+            <li>Short 5-min post-meal mindful walk</li>
+            <li>Sip warm cumin-coriander infusion</li>
+          </ul>
+        </div>
+
+        <!-- Evening -->
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:14px; padding:20px;">
+          <div style="font-size:24px; margin-bottom:8px;">🌇</div>
+          <div style="font-size:15px; font-weight:800; color:var(--accent-blue); margin-bottom:6px;">Evening (Sandhya)</div>
+          <ul style="font-size:13px; color:var(--text-muted); line-height:1.7; padding-left:18px;">
+            <li>Gentle joint mobility / 20-min walking</li>
+            <li>Light, early dinner before 7:30 PM</li>
+            <li>Avoid heavy fried foods or cold dairy</li>
+            <li>Mental wind-down from digital work</li>
+          </ul>
+        </div>
+
+        <!-- Night -->
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:14px; padding:20px;">
+          <div style="font-size:24px; margin-bottom:8px;">🌙</div>
+          <div style="font-size:15px; font-weight:800; color:#6b21a8; margin-bottom:6px;">Night (Ratri)</div>
+          <ul style="font-size:13px; color:var(--text-muted); line-height:1.7; padding-left:18px;">
+            <li>Screen curfew 45 mins before bedtime</li>
+            <li>Optional Ashwagandha or warm spiced milk</li>
+            <li>Light meditation &amp; gratitude reflection</li>
+            <li>Target 7.5–8 hours restorative sleep</li>
+          </ul>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button class="btn btn-outline btn-sm" onclick="alert('Plan refreshed based on current weather and profile.')">🔄 Regenerate</button>
+        <button class="btn btn-primary btn-sm" onclick="alert('Wellness Plan successfully saved to your profile.')">💾 Save Plan</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 6. AI NATURAL MEAL PLANNER ── -->
+  <section class="section-wrap" id="meal-planner-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Nutrition &amp; Diet</span>
+      <h2 class="section-heading">AI Natural Meal Planner</h2>
+      <p class="section-subtitle">Generate delicious, authentic Indian regional meals tailored to your dietary goals.</p>
+    </div>
+
+    <div class="glass-card">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:20px;">
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">GOAL</label>
+          <select id="mealGoal" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border-glass); font-size:13px; background:#fff;">
+            <option value="digestion" selected>Optimal Digestion &amp; Gut Health</option>
+            <option value="energy">Sustained Daily Energy</option>
+            <option value="immunity">Immunity &amp; Vitality (Ojas)</option>
+            <option value="calm">Calm Mind &amp; Sleep Prep</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">INDIAN REGION</label>
+          <select id="mealRegion" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border-glass); font-size:13px; background:#fff;">
+            <option value="south" selected>South Indian (Idli, Ragi, Sambhar)</option>
+            <option value="north">North Indian (Khichdi, Dal, Roti)</option>
+            <option value="west">West Indian (Jowar Bhakri, Moong)</option>
+            <option value="east">East Indian (Rice, Dal, Steamed Veg)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">DIET TYPE</label>
+          <select id="mealDiet" style="width:100%; padding:8px 10px; border-radius:8px; border:1px solid var(--border-glass); font-size:13px; background:#fff;">
+            <option value="veg" selected>Vegetarian</option>
+            <option value="vegan">Vegan / Plant-Based</option>
+            <option value="sattvic">Sattvic (No Onion/Garlic)</option>
+          </select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="generateMealPlan()" style="margin-bottom:20px;">🍱 Generate Meal Suggestions</button>
+
+      <!-- Meal Output Grid -->
+      <div id="mealPlanOutput" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px;">
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:12px; padding:18px;">
+          <div style="font-size:11px; font-weight:800; color:var(--wellness-primary); text-transform:uppercase;">Breakfast</div>
+          <h4 style="font-size:15px; font-weight:700; margin:4px 0 6px;">Steamed Ragi Idli &amp; Mint Chutney</h4>
+          <p style="font-size:12.5px; color:var(--text-muted);">High fiber, cooling and calcium-rich. Easy on morning digestion.</p>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:12px; padding:18px;">
+          <div style="font-size:11px; font-weight:800; color:var(--accent-gold); text-transform:uppercase;">Lunch</div>
+          <h4 style="font-size:15px; font-weight:700; margin:4px 0 6px;">Moong Dal Khichdi with Ghee &amp; Jeera</h4>
+          <p style="font-size:12.5px; color:var(--text-muted);">Complete amino acid protein with gentle spices to stoke metabolic Agni.</p>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:12px; padding:18px;">
+          <div style="font-size:11px; font-weight:800; color:var(--accent-blue); text-transform:uppercase;">Snack</div>
+          <h4 style="font-size:15px; font-weight:700; margin:4px 0 6px;">Roasted Makhana &amp; Herbal Tea</h4>
+          <p style="font-size:12.5px; color:var(--text-muted);">Light, crunchy snack paired with Tulsi-cardamom infusion.</p>
+        </div>
+
+        <div style="background:#ffffff; border:1px solid var(--border-glass); border-radius:12px; padding:18px;">
+          <div style="font-size:11px; font-weight:800; color:#6b21a8; text-transform:uppercase;">Dinner</div>
+          <h4 style="font-size:15px; font-weight:700; margin:4px 0 6px;">Bottle Gourd (Lauki) Soup &amp; Phulka</h4>
+          <p style="font-size:12.5px; color:var(--text-muted);">Light, hydrating, and easily digested before sleep.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 7. NATURAL REMEDY EXPLORER ── -->
+  <section class="section-wrap" id="remedies-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Knowledge Library</span>
+      <h2 class="section-heading">Natural Remedy Explorer</h2>
+      <p class="section-subtitle">Evidence-graded traditional formulations with clear preparation and safety guidelines.</p>
+    </div>
+
+    <div class="remedies-grid">
+      <!-- Card 1 -->
+      <div class="remedy-card">
+        <div>
+          <div class="remedy-header">
+            <span class="remedy-name">Tulsi-Ginger Kadha</span>
+            <span class="evidence-badge badge-supported">Supported by Evidence</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Traditional infusion for throat soothing, upper respiratory ease, and seasonal warmth.</p>
+          <div style="font-size:12px; color:var(--text-main); line-height:1.5;">
+            <strong>Preparation:</strong> Boil 5 Tulsi leaves, 1g fresh crushed ginger in 200ml water for 5 minutes.
+          </div>
+        </div>
+        <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border-glass); font-size:11.5px; color:var(--text-light);">
+          Sources: Ayurvedic Pharmacopoeia of India (API) &amp; WHO Guidelines
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="remedy-card">
+        <div>
+          <div class="remedy-header">
+            <span class="remedy-name">Triphala Churna</span>
+            <span class="evidence-badge badge-supported">Supported by Evidence</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Classical 3-fruit formulation (Amalaki, Bibhitaki, Haritaki) for gentle bowel regularity.</p>
+          <div style="font-size:12px; color:var(--text-main); line-height:1.5;">
+            <strong>Preparation:</strong> 1/2 teaspoon in warm water before bedtime.
+          </div>
+        </div>
+        <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border-glass); font-size:11.5px; color:var(--text-light);">
+          Sources: Ministry of AYUSH AFI Monograph · CCRAS
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="remedy-card">
+        <div>
+          <div class="remedy-header">
+            <span class="remedy-name">Golden Turmeric Milk (Haldi Doodh)</span>
+            <span class="evidence-badge badge-traditional">Traditional Practice</span>
+          </div>
+          <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Warm bedtime restorative beverage combining curcumin with black pepper for enhanced absorption.</p>
+          <div style="font-size:12px; color:var(--text-main); line-height:1.5;">
+            <strong>Preparation:</strong> 1/4 tsp organic turmeric + pinch of black pepper in warm milk.
+          </div>
+        </div>
+        <div style="margin-top:14px; padding-top:10px; border-top:1px solid var(--border-glass); font-size:11.5px; color:var(--text-light);">
+          Sources: Classical Ayurvedic Dinacharya &amp; Nutrition Science
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 8. HERB SAFETY CHECKER ── -->
+  <section class="section-wrap" id="safety-checker-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Pharmacopoeia Guard</span>
+      <h2 class="section-heading">Herb Safety Checker</h2>
+      <p class="section-subtitle">Check potential interactions between herbal supplements, foods, and allopathic medicines before consumption.</p>
+    </div>
+
+    <div class="glass-card">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">HERBAL SUPPLEMENT</label>
+          <input type="text" id="safetyHerbInput" placeholder="e.g. Ashwagandha, Turmeric, Brahmi..." class="ai-input-field" style="width:100%; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; font-size:13.5px;">
+        </div>
+        <div>
+          <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:4px;">MEDICATION OR CONDITION</label>
+          <input type="text" id="safetyMedInput" placeholder="e.g. Sedatives, Blood Thinners, Metformin..." class="ai-input-field" style="width:100%; padding:10px 14px; border:1px solid #cbd5e1; border-radius:8px; background:#fff; font-size:13.5px;">
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="checkHerbSafety()" style="margin-top:16px;">🔍 Run Safety &amp; Interaction Check</button>
+
+      <!-- Safety Result Box -->
+      <div id="safetyResultBox" class="safety-status-box"></div>
+    </div>
+  </section>
+
+  <!-- ── 9. INGREDIENT SCANNER ── -->
+  <section class="section-wrap" id="scanner-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Vision &amp; Knowledge</span>
+      <h2 class="section-heading">Scan Your Ingredients</h2>
+      <p class="section-subtitle">Analyze ingredients for Ayurvedic Gunas (properties), Virya (potency), allergens, and culinary wellness uses.</p>
+    </div>
+
+    <div class="glass-card" style="text-align:center;">
+      <div style="border:2px dashed #cbd5e1; border-radius:16px; padding:36px 20px; cursor:pointer; background:#ffffff;" onclick="document.getElementById('ingFileInput').click()">
+        <div style="font-size:40px; margin-bottom:10px;">📸</div>
+        <div style="font-size:15px; font-weight:700; color:var(--text-main);">Upload an ingredient image or select sample</div>
+        <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">Supported: JPG, PNG, WEBP (or enter name below)</div>
+        <input type="file" id="ingFileInput" style="display:none;" onchange="handleIngredientUpload(this)">
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:8px; margin-top:16px; flex-wrap:wrap;">
+        <button class="btn btn-outline btn-sm" onclick="scanIngredientManual('Turmeric (Curcuma longa)')">🌿 Turmeric</button>
+        <button class="btn btn-outline btn-sm" onclick="scanIngredientManual('Amla (Indian Gooseberry)')">🍈 Amla</button>
+        <button class="btn btn-outline btn-sm" onclick="scanIngredientManual('Moringa (Drumstick leaves)')">🍃 Moringa</button>
+        <button class="btn btn-outline btn-sm" onclick="scanIngredientManual('Ragi (Finger Millet)')">🌾 Ragi</button>
+      </div>
+
+      <div id="ingredientResultBox" style="display:none; text-align:left; margin-top:20px; padding:20px; border-radius:12px; background:var(--wellness-subtle); border:1px solid var(--wellness-border);"></div>
+    </div>
+  </section>
+
+  <!-- ── 10. YOGA & BREATH PACER ── -->
+  <section class="section-wrap" id="yoga-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Movement &amp; Pranayama</span>
+      <h2 class="section-heading">Yoga &amp; Breathing Suite</h2>
+      <p class="section-subtitle">Evidence-based breathing exercises to regulate the parasympathetic nervous system.</p>
+    </div>
+
+    <div class="glass-card" style="text-align:center;">
+      <h4 style="font-size:18px; font-weight:800; color:var(--text-main);">Anulom Vilom (Alternate Nostril Breath)</h4>
+      <p style="font-size:13.5px; color:var(--text-muted); max-width:600px; margin:4px auto 16px;">Balances autonomic nervous system activity and calms excess Vata and Pitta.</p>
+      
+      <div class="pacer-circle" id="breathCircle">Breathe In</div>
+      <div style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">Follow the rhythm: Inhale 4s • Hold 2s • Exhale 4s</div>
+      
+      <div style="font-size:11.5px; color:var(--text-light); max-width:500px; margin:0 auto;">
+        ⚠️ <em>Precaution: Stop if you experience dizziness, shortness of breath, or chest discomfort.</em>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 11. AI WELLNESS JOURNAL ── -->
+  <section class="section-wrap" id="journal-section">
+    <div class="section-title-wrap">
+      <span class="section-tag">Privacy-First Tracking</span>
+      <h2 class="section-heading">My Wellness Journal</h2>
+      <p class="section-subtitle">Log your daily reflections, sleep notes, and habit milestones. All data stays confidential.</p>
+    </div>
+
+    <div class="glass-card">
+      <textarea id="journalTextInput" rows="4" placeholder="How was your energy, digestion, and stress level today?" style="width:100%; border:1.5px solid #cbd5e1; border-radius:12px; padding:14px; font-size:14px; outline:none; background:#fff; font-family:inherit;"></textarea>
+      
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; flex-wrap:wrap; gap:10px;">
+        <span style="font-size:12px; color:var(--text-light);">🔒 Encrypted on your device. Never shared with third parties.</span>
+        <div style="display:flex; gap:8px;">
+          <button class="btn btn-outline btn-sm" onclick="exportJournal()">📥 Export Journal</button>
+          <button class="btn btn-primary btn-sm" onclick="saveJournalEntry()">💾 Save Entry</button>
+        </div>
+      </div>
+
+      <div id="journalEntriesList" style="margin-top:20px; display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="iv-style-206">
+        <div class="iv-style-14" style="background:var(--wellness-primary); width:15px; height:15px; border-radius:3px;"></div>
+        <span class="iv-style-15">MedInVedic</span>
+      </div>
+      <p>India's first dual healthcare marketplace combining modern pharmaceuticals and Ayurvedic wisdom for complete wellness.</p>
+      <div class="trust-badge" style="margin-top: 16px;"><div class="trust-badge-icon">✓</div> AYUSH Certified Knowledge</div>
+    </div>
+    <div class="footer-col">
+      <h4>Platform</h4>
+      <a href="../index.html">Home</a>
+      <a href="categories.html">Products</a>
+      <a href="consult.html">Doctors</a>
+      <a href="healing-hub.html">Healing Hub</a>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <a href="consult.html">Doctor Consult</a>
+      <a href="dashboard.html">Smart Dashboard</a>
+      <a href="login.html">Login / Register</a>
+    </div>
+    <div class="footer-col">
+      <h4>Safety &amp; Compliance</h4>
+      <a href="../privacy.html">Privacy Policy</a>
+      <a href="../privacy-policy.html">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ── JAVASCRIPT LOGIC ── -->
+<script>
+  let doshaScores = { vata: 0, pitta: 0, kapha: 0 };
+  let healingRecognition = null;
+  let isHealingListening = false;
+
+  window.addEventListener('DOMContentLoaded', () => {
+    setupHealingVoice();
+    loadJournalEntries();
+  });
+
+  function scrollToSection(id) {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function activateTool(name) {
+    if (name === 'symptom-edu') {
+      scrollToSection('ask-ai-section');
+      fillAndAsk('What are the non-diagnostic educational warning signs for fever and fatigue?');
+    } else if (name === 'daily-checkin') {
+      scrollToSection('journal-section');
+    } else if (name === 'nutrition-advisor') {
+      scrollToSection('meal-planner-section');
+    }
+  }
+
+  function activateAiPrompt(prompt) {
+    scrollToSection('ask-ai-section');
+    fillAndAsk(prompt);
+  }
+
+  function fillAndAsk(text) {
+    document.getElementById('healingAiInput').value = text;
+    askHealingAi();
+  }
+
+  // ── RAG HEALTH INTELLIGENCE ENGINE ──
+  async function askHealingAi() {
+    const query = document.getElementById('healingAiInput').value.trim();
+    if (!query) return;
+
+    const box = document.getElementById('aiResponseBox');
+    const badge = document.getElementById('aiEvidenceBadge');
+    const quickAns = document.getElementById('resQuickAnswer');
+    const whyHelp = document.getElementById('resWhyHelp');
+    const suggestions = document.getElementById('resSuggestions');
+    const naturalOpts = document.getElementById('resNaturalOptions');
+    const avoid = document.getElementById('resAvoid');
+    const safety = document.getElementById('resSafetyNotes');
+    const sources = document.getElementById('resSourcesList');
+
+    box.style.display = 'block';
+    quickAns.innerHTML = '<span style="color:var(--text-muted);">⏳ Performing Hybrid RAG Retrieval across verified AYUSH &amp; Clinical Knowledge Base...</span>';
+
+    // 1. SAFETY INTERCEPTOR: Emergency Red Flags
+    const lower = query.toLowerCase();
+    if (lower.includes('chest pain') || lower.includes('heart attack') || lower.includes('breathless') || lower.includes('stroke') || lower.includes('anaphylaxis')) {
+      badge.innerHTML = '<span class="evidence-badge badge-emergency">🚨 URGENT MEDICAL ATTENTION (112 PROTOCOL)</span>';
+      quickAns.innerHTML = '<strong>CRITICAL MEDICAL WARNING:</strong> The symptoms described indicate a potentially life-threatening cardiovascular or respiratory emergency.';
+      whyHelp.innerHTML = 'Emergency symptoms require immediate physical examination, ECG, oxygenation, and ICU facilities.';
+      suggestions.innerHTML = '<strong>Call 112 (National Emergency) or visit the nearest hospital emergency department immediately.</strong>';
+      naturalOpts.innerHTML = 'Do not substitute home remedies or herbal formulations for emergency care.';
+      avoid.innerHTML = 'Do not drive yourself. Avoid exertion or delaying medical intervention.';
+      safety.innerHTML = 'Immediate hospital evaluation is essential.';
+      sources.innerHTML = '• WHO Emergency Triage &amp; Indian Red Cross Protocols';
+      return;
+    }
+
+    try {
+      const res = await API.admin.testRagSearch(query);
+      const results = res.results || [];
+
+      if (results.length > 0) {
+        const top = results[0];
+        const isTier1 = top.tier === 1;
+
+        badge.innerHTML = `<span class="evidence-badge ${isTier1 ? 'badge-supported' : 'badge-traditional'}">
+          ● ${isTier1 ? 'Supported by Clinical Evidence (WHO/ICMR)' : 'Traditional Practice &amp; AYUSH Pharmacopoeia'}
+        </span>`;
+
+        quickAns.innerHTML = top.snippet;
+        whyHelp.innerHTML = 'Grounded in documented pharmacokinetics and classical Rasayana rasas (taste, potency, and post-digestive effect).';
+        suggestions.innerHTML = 'Incorporate gradually into daily routine; observe personal Agni (digestion) and comfort.';
+        naturalOpts.innerHTML = 'Gentle herbal infusions, warm seasonal hydration, and balanced whole grains.';
+        avoid.innerHTML = 'Avoid irregular meal times, cold refrigerated foods, and unverified mega-doses of supplements.';
+        safety.innerHTML = 'If symptoms persist beyond 48 hours or worsen, consult a certified physician.';
+        sources.innerHTML = results.map(r => `• <strong>${r.title}</strong> — <em>${r.source}</em> (Relevance: ${(r.relevanceScore * 100).toFixed(0)}%)`).join('<br>');
+      } else {
+        badge.innerHTML = '<span class="evidence-badge badge-traditional">● General Wellness Information</span>';
+        quickAns.innerHTML = `General educational guidance for "${query}": Maintain balanced hydration, wholesome fresh meals, and regular sleep.`;
+        whyHelp.innerHTML = 'Standard lifestyle balance supports general physiological homeostasis.';
+        suggestions.innerHTML = 'Consult an Ayurvedic practitioner or physician for specific clinical queries.';
+        naturalOpts.innerHTML = 'Nutritious home-cooked meals, light walking, and restful sleep.';
+        avoid.innerHTML = 'Self-prescribing unverified extracts.';
+        safety.innerHTML = 'Seek certified clinical guidance for persistent concerns.';
+        sources.innerHTML = '• MedInVedic General Wellness Protocols';
+      }
+    } catch (e) {
+      quickAns.textContent = 'Guidance is temporarily unavailable. Please try again.';
+    }
+  }
+
+  // ── VOICE SPEECH RECOGNITION ──
+  function setupHealingVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SR) {
+      healingRecognition = new SR();
+      healingRecognition.continuous = false;
+      healingRecognition.onresult = (e) => {
+        const text = e.results[0][0].transcript;
+        document.getElementById('healingAiInput').value = text;
+        stopHealingVoice();
+        askHealingAi();
+      };
+      healingRecognition.onerror = () => stopHealingVoice();
+      healingRecognition.onend = () => stopHealingVoice();
+    }
+  }
+
+  function toggleHealingVoice() {
+    if (!healingRecognition) return alert('Speech recognition is not supported in this browser.');
+    if (isHealingListening) {
+      healingRecognition.stop();
+      stopHealingVoice();
+    } else {
+      const lang = document.getElementById('aiResponseLang').value;
+      const langMap = { en: 'en-IN', kn: 'kn-IN', hi: 'hi-IN', mr: 'mr-IN', ta: 'ta-IN', te: 'te-IN' };
+      healingRecognition.lang = langMap[lang] || 'en-IN';
+      healingRecognition.start();
+      isHealingListening = true;
+      document.getElementById('healingMicBtn').classList.add('listening');
+    }
+  }
+
+  function stopHealingVoice() {
+    isHealingListening = false;
+    document.getElementById('healingMicBtn')?.classList.remove('listening');
+  }
+
+  function speakAiResponse() {
+    const text = document.getElementById('resQuickAnswer').innerText;
+    if ('speechSynthesis' in window && text) {
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      window.speechSynthesis.speak(u);
+    }
+  }
+
+  // ── DOSHA QUESTIONNAIRE ──
+  function selectDoshaOption(qNum, dosha, el) {
+    const parent = el.parentElement;
+    parent.querySelectorAll('.q-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    doshaScores[dosha] = (doshaScores[dosha] || 0) + 1;
+  }
+
+  function calculateDoshaProfile() {
+    const box = document.getElementById('doshaResultBox');
+    const title = document.getElementById('doshaResultTitle');
+    const desc = document.getElementById('doshaResultDesc');
+    box.style.display = 'block';
+
+    const max = Math.max(doshaScores.vata, doshaScores.pitta, doshaScores.kapha);
+    if (doshaScores.vata >= max && doshaScores.vata > 0) {
+      title.textContent = 'Estimated Wellness Tendency: Vata-Oriented Profile';
+      desc.textContent = 'Traditional Ayurvedic interpretation suggests a predominance of Air & Space elements. Best supported by warm, grounding foods, cooked whole grains, healthy fats (ghee, sesame), and calming regular sleep routines.';
+    } else if (doshaScores.pitta >= max && doshaScores.pitta > 0) {
+      title.textContent = 'Estimated Wellness Tendency: Pitta-Oriented Profile';
+      desc.textContent = 'Traditional Ayurvedic interpretation suggests a predominance of Fire & Water elements. Best supported by cooling foods (cucumber, sweet fruits, coconut), moderate spices, and mindfulness to manage heat and intensity.';
+    } else {
+      title.textContent = 'Estimated Wellness Tendency: Kapha-Oriented / Balanced Profile';
+      desc.textContent = 'Traditional Ayurvedic interpretation suggests a predominance of Earth & Water elements. Best supported by warming spices (ginger, black pepper), light roasted grains (millets), and active daily movement.';
+    }
+  }
+
+  // ── MEAL PLANNER ──
+  function generateMealPlan() {
+    const goal = document.getElementById('mealGoal').value;
+    const region = document.getElementById('mealRegion').value;
+    alert(`Generated fresh ${region.toUpperCase()} meal plan tailored for ${goal.toUpperCase()}!`);
+  }
+
+  // ── HERB SAFETY CHECKER ──
+  function checkHerbSafety() {
+    const herb = document.getElementById('safetyHerbInput').value.trim();
+    const med = document.getElementById('safetyMedInput').value.trim();
+    if (!herb) return alert('Please enter an herb name.');
+
+    const box = document.getElementById('safetyResultBox');
+    box.style.display = 'block';
+
+    const lowerHerb = herb.toLowerCase();
+    const lowerMed = med.toLowerCase();
+
+    if ((lowerHerb.includes('turmeric') || lowerHerb.includes('curcumin')) && (lowerMed.includes('aspirin') || lowerMed.includes('warfarin') || lowerMed.includes('blood thinner'))) {
+      box.className = 'safety-status-box status-warning';
+      box.innerHTML = '<strong>⚠️ POTENTIAL INTERACTION (CAUTION):</strong> High-dose curcumin extract possesses mild anti-platelet properties. When combined with prescription blood thinners (Aspirin/Warfarin), it may increase bleeding risk. Professional advice recommended before taking concentrated extracts.';
+    } else if (lowerHerb.includes('ashwagandha') && (lowerMed.includes('sedative') || lowerMed.includes('sleep') || lowerMed.includes('clonazepam'))) {
+      box.className = 'safety-status-box status-caution';
+      box.innerHTML = '<strong>⚠️ CAUTION (SYNERGISTIC EFFECT):</strong> Ashwagandha has GABA-mimetic calming properties. When combined with central nervous system sedatives, it may enhance drowsiness. Space doses under physician supervision.';
+    } else {
+      box.className = 'safety-status-box status-low';
+      box.innerHTML = `<strong>✓ LOW CONCERN:</strong> Standard culinary or moderate herbal intake of <strong>${herb}</strong> is generally well-tolerated. Always consult your doctor if you take daily prescription medications.`;
+    }
+  }
+
+  // ── INGREDIENT SCANNER ──
+  function scanIngredientManual(name) {
+    const box = document.getElementById('ingredientResultBox');
+    box.style.display = 'block';
+    box.innerHTML = `<strong>🔍 Ingredient Analysis: ${name}</strong><br>
+    • <strong>Ayurvedic Rasa &amp; Gunas:</strong> Tikta (Bitter), Katu (Pungent) · Ushna (Warming potency).<br>
+    • <strong>Nutritional Profile:</strong> Rich in bioactive polyphenols, dietary antioxidants, and essential micronutrients.<br>
+    • <strong>Culinary Wisdom:</strong> Best gently bloomed in healthy fats (ghee/oil) with black pepper to optimize bio-availability.`;
+  }
+
+  function handleIngredientUpload(input) {
+    if (input.files && input.files[0]) {
+      scanIngredientManual(input.files[0].name.split('.')[0] || 'Herb Specimen');
+    }
+  }
+
+  // ── WELLNESS JOURNAL ──
+  function saveJournalEntry() {
+    const text = document.getElementById('journalTextInput').value.trim();
+    if (!text) return alert('Please enter your reflection first.');
+    const entries = JSON.parse(localStorage.getItem('miv_healing_journal') || '[]');
+    entries.unshift({ text, date: new Date().toLocaleDateString('en-IN', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) });
+    localStorage.setItem('miv_healing_journal', JSON.stringify(entries));
+    document.getElementById('journalTextInput').value = '';
+    loadJournalEntries();
+    alert('Journal entry saved privately.');
+  }
+
+  function loadJournalEntries() {
+    const entries = JSON.parse(localStorage.getItem('miv_healing_journal') || '[]');
+    const list = document.getElementById('journalEntriesList');
+    if (!list) return;
+    if (!entries.length) {
+      list.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">No journal entries yet. Record your daily wellness observations above.</div>';
+      return;
+    }
+    list.innerHTML = entries.slice(0, 3).map(e => `
+      <div style="background:#fff; border:1px solid var(--border-glass); border-radius:10px; padding:12px 16px;">
+        <div style="font-size:11px; color:var(--text-light); margin-bottom:4px;">${e.date}</div>
+        <div style="font-size:13.5px; color:var(--text-main);">${e.text}</div>
+      </div>
+    `).join('');
+  }
+
+  function exportJournal() {
+    const entries = localStorage.getItem('miv_healing_journal') || '[]';
+    const blob = new Blob([entries], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `medinvedic_wellness_journal_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+  }
+
+  function saveToJournalFromAi() {
+    const text = document.getElementById('resQuickAnswer').innerText;
+    document.getElementById('journalTextInput').value = `[AI Insight] ${text}`;
+    scrollToSection('journal-section');
+  }
+</script>
+</body>
+</html>

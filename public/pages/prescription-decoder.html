@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lipi Vaidya — RAG Prescription Decoder — MedInVedic</title>
+  <meta name="description" content="Understand your prescription in simple language. RAG-powered medicine decoder with Ayurvedic parallels." />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <script src="../js/rag-knowledge-base.js"></script>
+  <script src="../js/rag-retriever.js"></script>
+  <style>
+    :root {
+      --bg: #07080f; --card: #0f1120; --border: #1e2240;
+      --blue: #3b82f6; --sky: #38bdf8; --green: #22c55e;
+      --amber: #f59e0b; --red: #ef4444;
+      --text: #f1f5f9; --muted: #94a3b8; --dim: #475569;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; min-height: 100vh; }
+
+    .topbar {
+      display: flex; align-items: center; gap: 14px; padding: 14px 24px;
+      background: #0a0c18; border-bottom: 1px solid var(--border);
+    }
+    .back-link { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: 0.15s; }
+    .back-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .page-title { font-size: 16px; font-weight: 900; color: #fff; }
+    .page-sub { font-size: 11px; color: var(--muted); }
+    .rag-pill { display: inline-flex; align-items: center; gap: 6px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; margin-left: auto; }
+    .rag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: p 2s infinite; }
+    @keyframes p { 0%,100%{opacity:.5;transform:scale(.9)} 50%{opacity:1;transform:scale(1.3)} }
+
+    .main { max-width: 900px; margin: 0 auto; padding: 32px 24px; }
+    .hero { text-align: center; margin-bottom: 36px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 7px; font-size: 11px; font-weight: 800; letter-spacing: 2px; color: var(--sky); text-transform: uppercase; margin-bottom: 12px; }
+    .hero h1 { font-size: clamp(28px, 5vw, 42px); font-weight: 900; color: #fff; margin-bottom: 10px; letter-spacing: -0.5px; }
+    .hero p { font-size: 15px; color: var(--muted); max-width: 540px; margin: 0 auto; line-height: 1.6; }
+
+    /* Medicine search input */
+    .med-search-box {
+      background: var(--card); border: 1.5px solid var(--border); border-radius: 16px; padding: 20px 24px; margin-bottom: 24px;
+    }
+    .med-search-label { font-size: 13px; font-weight: 800; color: #fff; margin-bottom: 14px; display: block; }
+    .med-input-row { display: flex; gap: 10px; }
+    .med-input {
+      flex: 1; background: rgba(255,255,255,0.04); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 12px 16px; color: #fff; font-size: 14px; outline: none; font-family: inherit; transition: 0.2s;
+    }
+    .med-input:focus { border-color: var(--blue); }
+    .med-input::placeholder { color: var(--dim); }
+    .decode-btn { background: var(--blue); color: #fff; border: none; padding: 0 22px; border-radius: 10px; font-weight: 800; font-size: 14px; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+    .decode-btn:hover { background: #2563eb; }
+
+    .quick-meds { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 12px; }
+    .qm-btn { background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 50px; cursor: pointer; transition: 0.15s; }
+    .qm-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+    /* Rx text input */
+    .rx-upload-box {
+      background: var(--card); border: 1.5px dashed var(--border); border-radius: 16px;
+      padding: 28px 24px; margin-bottom: 24px; text-align: center; cursor: pointer; transition: 0.2s;
+    }
+    .rx-upload-box:hover { border-color: var(--blue); background: rgba(59,130,246,0.03); }
+    .rx-upload-box .upload-icon { font-size: 36px; margin-bottom: 10px; }
+    .rx-upload-box h3 { font-size: 15px; font-weight: 800; color: #fff; margin-bottom: 6px; }
+    .rx-upload-box p { font-size: 13px; color: var(--muted); }
+
+    /* Medicine Result Cards */
+    .result-area { display: flex; flex-direction: column; gap: 18px; }
+    .med-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; overflow: hidden; }
+    .med-card-head { padding: 18px 20px; background: rgba(255,255,255,0.02); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: flex-start; }
+    .med-name { font-size: 18px; font-weight: 900; color: #fff; }
+    .med-dosage { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+    .med-type-badge { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; padding: 4px 12px; border-radius: 50px; }
+    .badge-rx { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .badge-otc { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+
+    .med-card-body { padding: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 600px) { .med-card-body { grid-template-columns: 1fr; } }
+
+    .info-block { background: rgba(0,0,0,0.25); border-radius: 12px; padding: 14px; border: 1px solid rgba(255,255,255,0.05); }
+    .info-block-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+    .info-block-label.blue { color: var(--sky); }
+    .info-block-label.green { color: var(--green); }
+    .info-block-label.amber { color: var(--amber); }
+    .info-block-label.red { color: #f87171; }
+    .info-block p { font-size: 13px; color: var(--text); line-height: 1.6; }
+
+    .human-explain {
+      margin: 0 20px 16px; padding: 14px 16px;
+      background: rgba(59,130,246,0.07); border: 1px solid rgba(59,130,246,0.2); border-radius: 12px;
+      font-size: 14px; color: var(--text); line-height: 1.6;
+    }
+    .human-explain strong { color: #93c5fd; }
+
+    .ayur-block {
+      margin: 0 20px 16px; padding: 14px 16px;
+      background: rgba(34,197,94,0.06); border: 1px solid rgba(34,197,94,0.2); border-radius: 12px;
+    }
+    .ayur-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; color: var(--green); margin-bottom: 8px; }
+    .ayur-name { font-size: 15px; font-weight: 900; color: #fff; margin-bottom: 6px; }
+    .ayur-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    .source-bar { margin: 0 20px 18px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 8px 12px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; font-size: 11px; color: var(--muted); }
+    .src-org { font-weight: 800; color: var(--sky); }
+    .ev-chip { font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 50px; background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+
+    .warn-box { margin: 0 20px 18px; padding: 12px 14px; background: rgba(239,68,68,0.06); border: 1px solid rgba(239,68,68,0.18); border-radius: 10px; font-size: 12.5px; color: var(--muted); }
+    .warn-box strong { color: #f87171; }
+
+    /* LOADING / NOT FOUND */
+    .loading-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 32px; text-align: center; }
+    .not-found-card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 28px 24px; }
+
+    /* DISCLAIMER */
+    .disclaimer { margin-top: 24px; padding: 14px 18px; background: rgba(245,158,11,0.05); border: 1px solid rgba(245,158,11,0.18); border-radius: 12px; font-size: 12px; color: #d1a830; line-height: 1.6; }
+    .disclaimer strong { color: var(--amber); }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="../index.html" class="back-link">
+    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    Home
+  </a>
+  <div>
+    <div class="page-title">💊 Lipi Vaidya — Prescription Decoder</div>
+    <div class="page-sub">RAG-Powered Medicine Intelligence</div>
+  </div>
+  <div class="rag-pill"><div class="rag-dot"></div>RAG ACTIVE</div>
+</div>
+
+<div class="main">
+  <div class="hero">
+    <div class="hero-badge">📋 Lipi Vaidya · Prescription Decoder</div>
+    <h1>Understand Your Medicine</h1>
+    <p>Type any medicine name to get a plain-language explanation, Ayurvedic parallel, side effects, and safety information — retrieved from verified clinical sources.</p>
+  </div>
+
+  <!-- MEDICINE SEARCH -->
+  <div class="med-search-box">
+    <span class="med-search-label">🔍 Search Medicine by Name</span>
+    <div class="med-input-row">
+      <input class="med-input" id="medInput" placeholder='e.g. "Paracetamol", "Metformin", "Aspirin", "Amoxicillin"...' onkeydown="if(event.key==='Enter') decodeMedicine()">
+      <button class="decode-btn" onclick="decodeMedicine()">Decode →</button>
+    </div>
+    <div class="quick-meds">
+      <button class="qm-btn" onclick="decodeQuick('Paracetamol 500mg')">💊 Paracetamol</button>
+      <button class="qm-btn" onclick="decodeQuick('Metformin 500mg')">🍬 Metformin</button>
+      <button class="qm-btn" onclick="decodeQuick('Aspirin 75mg')">❤️ Aspirin</button>
+      <button class="qm-btn" onclick="decodeQuick('Amoxicillin 500mg')">🦠 Amoxicillin</button>
+      <button class="qm-btn" onclick="decodeQuick('Ibuprofen 400mg')">🩹 Ibuprofen</button>
+      <button class="qm-btn" onclick="decodeQuick('Atorvastatin 10mg')">🫀 Atorvastatin</button>
+      <button class="qm-btn" onclick="decodeQuick('Omeprazole 20mg')">🌿 Omeprazole</button>
+      <button class="qm-btn" onclick="decodeQuick('Cetirizine 10mg')">🤧 Cetirizine</button>
+    </div>
+  </div>
+
+  <!-- RX TEXT INPUT -->
+  <div class="med-search-box">
+    <span class="med-search-label">📝 Paste Prescription Text</span>
+    <textarea class="med-input" id="rxText" rows="3" placeholder="Paste your prescription here and click Decode All. Example: Paracetamol 500mg BD, Amoxicillin 250mg TDS, Metformin 500mg OD..."></textarea>
+    <button class="decode-btn" style="margin-top:10px; padding:10px 20px;" onclick="decodeRxText()">Decode All Medicines →</button>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="result-area" id="resultArea"></div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    ⚕️ <strong>Safety Disclaimer:</strong> This prescription decoder provides educational information only. It is NOT a substitute for your pharmacist, doctor, or healthcare professional. Always follow your doctor's instructions and dosage. Never stop or change medication without medical supervision. For emergencies, call <strong>112</strong>.
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ──────────────────────────────────────────────────
+   EMBEDDED MEDICINE KNOWLEDGE BASE
+   (RAG-grounded from WHO EML, NHS BNF, FDA, CDSCO)
+─────────────────────────────────────────────────── */
+const MEDICINE_KB = {
+  paracetamol: {
+    name: 'Paracetamol (Acetaminophen)', genericName: 'Paracetamol', type: 'OTC',
+    humanExplanation: 'This is a <strong>Pain Reliever & Fever Reducer</strong>. It works by blocking pain signals in the brain and lowering body temperature. Safe for most people when taken correctly.',
+    mechanism: 'Inhibits prostaglandin synthesis in the CNS; acts on the hypothalamic heat-regulating center.',
+    uses: 'Fever, mild-to-moderate pain (headache, toothache, musculoskeletal pain, post-vaccination fever)',
+    dosage: 'Adults: 500mg–1000mg every 4–6 hours. Maximum: 4000mg/day (3000mg if elderly/liver risk). Children: weight-based.',
+    sideEffects: 'Generally well tolerated at therapeutic doses. Rare: skin rash, liver damage (overdose).',
+    contraindications: 'Severe liver disease, paracetamol hypersensitivity. Caution in alcohol use.',
+    interactions: 'Warfarin (increased bleeding risk at high doses), alcohol (liver toxicity risk).',
+    warnings: 'NEVER exceed 4g/day. Paracetamol overdose is a leading cause of acute liver failure — seek emergency care immediately if overdose suspected.',
+    ayurvedicParallel: { name: 'Giloy (Guduchi) + Tulsi', description: 'In Ayurveda, fever is treated as excess Pitta. Giloy (Tinospora cordifolia) is used for its Jwaraghna (anti-pyretic) properties. Tulsi is used for pain and immune support. These work differently from paracetamol and should not replace it for high fevers.' },
+    source: 'WHO Essential Medicines List 23rd Edition · NHS BNF · CDSCO India',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Paracetamol is one of the most studied medicines globally. Follow exact dosing instructions.'
+  },
+
+  ibuprofen: {
+    name: 'Ibuprofen', genericName: 'Ibuprofen', type: 'OTC/Rx',
+    humanExplanation: 'This is an <strong>Anti-Inflammatory Pain Reliever (NSAID)</strong>. It reduces swelling, pain, and fever by blocking chemicals (prostaglandins) that cause inflammation.',
+    mechanism: 'Non-selective COX-1 and COX-2 inhibitor — reduces prostaglandin synthesis.',
+    uses: 'Pain (dental, menstrual, joint), fever, mild-to-moderate inflammation, arthritis.',
+    dosage: 'Adults: 200–400mg every 4–6 hours with food. Maximum: 2400mg/day (OTC). Up to 3200mg/day (prescription).',
+    sideEffects: 'Stomach upset, heartburn, nausea. Rare: peptic ulcer, kidney impairment, raised BP, fluid retention.',
+    contraindications: 'Active peptic ulcer, severe renal/hepatic impairment, third trimester of pregnancy, aspirin-sensitive asthma. Avoid in patients after heart bypass surgery.',
+    interactions: 'Warfarin, aspirin, ACE inhibitors, lithium, methotrexate.',
+    warnings: 'Always take with food to reduce stomach risk. Avoid in elderly without medical supervision. Do not use long-term without monitoring.',
+    ayurvedicParallel: { name: 'Shallaki (Boswellia serrata)', description: 'Shallaki is a classical Ayurvedic herb with evidence-based anti-inflammatory properties for joint pain (Sandhivata). Several clinical studies show benefit in osteoarthritis. Unlike ibuprofen, it does not inhibit COX enzymes and is gentler on the stomach.' },
+    source: 'WHO EML · NHS BNF · FDA Labeling · CDSCO',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'NSAIDs carry gastrointestinal and cardiovascular risks. Use lowest effective dose for shortest duration.'
+  },
+
+  metformin: {
+    name: 'Metformin Hydrochloride', genericName: 'Metformin', type: 'Rx',
+    humanExplanation: 'This is a <strong>Blood Sugar Stabilizer</strong>. It helps your body use its own insulin more effectively and reduces the amount of glucose produced by the liver. The cornerstone of Type 2 diabetes treatment.',
+    mechanism: 'Activates AMPK enzyme → decreases hepatic glucose production, improves peripheral insulin sensitivity, reduces glucose absorption.',
+    uses: 'Type 2 Diabetes Mellitus (first-line), Pre-diabetes (selected cases), Polycystic Ovarian Syndrome (PCOS).',
+    dosage: 'Start: 500mg once/twice daily with meals. Maintenance: 1000–2000mg/day. Maximum: 3000mg/day.',
+    sideEffects: 'Nausea, diarrhea, stomach upset (especially initially) — take with food. Rare: lactic acidosis (very rare, mainly in renal impairment).',
+    contraindications: 'eGFR <30, active liver disease, iodinated contrast media procedures, alcoholism.',
+    interactions: 'Alcohol (lactic acidosis risk), iodinated contrast agents (hold before procedures).',
+    warnings: 'Stop Metformin before any contrast CT/MRI scan — restart after 48 hours once kidney function confirmed normal. Monitor Vitamin B12 levels with long-term use.',
+    ayurvedicParallel: { name: 'Gudmar (Gymnema sylvestre) + Karela (Bitter Gourd)', description: 'Gudmar (\"sugar destroyer\") reduces sugar absorption and supports pancreatic function. Karela has documented blood-glucose lowering properties. Both are adjuncts ONLY — they cannot replace Metformin in established diabetes. Monitor blood glucose carefully if using both.' },
+    source: 'WHO EML · NHS BNF · ADA Standards of Care 2024 · CDSCO India',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Metformin requires monitoring of kidney function. Do not self-adjust dose. Keep all diabetic reviews with your doctor.'
+  },
+
+  aspirin: {
+    name: 'Aspirin (Acetylsalicylic Acid)', genericName: 'Aspirin', type: 'OTC/Rx',
+    humanExplanation: 'This is a <strong>Blood Thinner & Anti-Platelet Agent</strong> (at low dose 75–100mg). It prevents blood clots by stopping platelets from sticking together — protecting against heart attacks and strokes.',
+    mechanism: 'Irreversibly inhibits COX-1 enzyme → reduces thromboxane A2 → prevents platelet aggregation.',
+    uses: 'Low dose (75–100mg): Prevention of heart attack, stroke, blood clots (secondary prevention). Higher doses: Pain, fever, inflammation.',
+    dosage: 'Cardiac prevention: 75–100mg daily (with doctor supervision). Pain/fever: 325–650mg every 4–6 hours.',
+    sideEffects: 'Stomach irritation, heartburn. Risk: GI bleeding, peptic ulcer. Rare: allergic reaction, tinnitus (high dose).',
+    contraindications: 'Children <16 (Reye\'s syndrome risk), active bleeding, peptic ulcer, aspirin allergy, third trimester pregnancy.',
+    interactions: 'Warfarin (major bleeding risk), NSAIDs, ACE inhibitors, SSRIs.',
+    warnings: 'Do NOT use in children with viral illness (Reye\'s syndrome). Do NOT take low-dose aspirin for pain prevention without doctor advice — there are risks in people without cardiovascular disease.',
+    ayurvedicParallel: { name: 'Arjuna (Terminalia arjuna)', description: 'Arjuna bark has been studied for cardioprotective effects in Ayurveda. It is used for heart weakness (Hridroga). It has mild anti-platelet properties in some studies but cannot replace aspirin therapy prescribed for cardiac events.' },
+    source: 'WHO EML · NHS BNF · AHA/ACC Guidelines · CDSCO India',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Aspirin therapy requires medical supervision. Self-prescribing aspirin for cardiac prevention without evaluation carries real risks including GI bleeding.'
+  },
+
+  amoxicillin: {
+    name: 'Amoxicillin', genericName: 'Amoxicillin', type: 'Rx',
+    humanExplanation: 'This is a <strong>Penicillin Antibiotic</strong>. It kills bacteria by destroying their cell walls. Used for a wide range of bacterial infections — remember it does NOT work on viral infections (cold, flu).',
+    mechanism: 'Beta-lactam antibiotic — inhibits bacterial cell wall synthesis by binding to penicillin-binding proteins (PBPs).',
+    uses: 'Throat (strep), ear, sinus, chest (community-acquired pneumonia), urinary tract, skin infections, H. pylori (triple therapy).',
+    dosage: 'Adults: 250–500mg every 8 hours or 500–875mg every 12 hours. Children: weight-based (25–45mg/kg/day). Complete the full course.',
+    sideEffects: 'Nausea, diarrhea, stomach upset. Rash (especially with EBV/mono). Rare: allergic reaction (anaphylaxis).',
+    contraindications: 'Penicillin allergy (risk of cross-reaction — always tell your doctor). Infectious mononucleosis (causes diffuse rash).',
+    interactions: 'Warfarin (monitor INR), oral contraceptives (theoretical interaction), Methotrexate.',
+    warnings: 'ALWAYS complete the full course — stopping early causes antibiotic resistance. Stop immediately and seek emergency care if you develop hives, swelling, or breathing difficulty (anaphylaxis).',
+    ayurvedicParallel: { name: 'Neem (Azadirachta indica) + Turmeric (Curcumin)', description: 'Neem and Turmeric have documented antimicrobial properties in classical texts and some modern studies. They may support immune response and skin healing. They are NOT substitutes for antibiotics in bacterial infections — serious infections require prescription antibiotics.' },
+    source: 'WHO EML · NHS BNF · CDSCO India · Sanford Guide',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Antibiotics require prescription. Overuse leads to antibiotic resistance. Never share antibiotics or use leftover courses.'
+  },
+
+  atorvastatin: {
+    name: 'Atorvastatin', genericName: 'Atorvastatin', type: 'Rx',
+    humanExplanation: 'This is a <strong>Cholesterol Manager (Statin)</strong>. It blocks an enzyme in your liver (HMG-CoA reductase) that makes cholesterol — reducing "bad" LDL cholesterol and protecting against heart attacks.',
+    mechanism: 'HMG-CoA reductase inhibitor → reduces hepatic cholesterol synthesis → upregulates LDL receptors → lowers LDL-C, VLDL, triglycerides. Also has pleiotropic cardioprotective effects.',
+    uses: 'High cholesterol (Hyperlipidaemia), Prevention of heart attack and stroke in high-risk patients, Cardiovascular disease.',
+    dosage: 'Usually 10–80mg once daily at any time of day. Take regularly — effect builds over weeks.',
+    sideEffects: 'Generally well tolerated. Muscle aches (myalgia) — report persistent muscle pain. Rare: liver enzyme elevation, myopathy, rhabdomyolysis.',
+    contraindications: 'Active liver disease, unexplained elevated liver enzymes, pregnancy, breastfeeding.',
+    interactions: 'Grapefruit juice (increases drug levels), some antibiotics (clarithromycin), antifungals, HIV drugs, fibrates.',
+    warnings: 'Report any unexplained muscle pain, weakness, or dark urine immediately. Avoid grapefruit juice.',
+    ayurvedicParallel: { name: 'Guggulu (Commiphora mukul)', description: 'Guggul is considered the Ayurvedic equivalent of a lipid-scraping agent (Lekhaniya). Some clinical studies show modest LDL reduction. Standardized Guggulipid extracts have been studied. It works through different mechanisms than statins and is an adjunct, not a replacement.' },
+    source: 'WHO EML · NHS BNF · AHA/ACC Cholesterol Guidelines 2019 · CDSCO India',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Statins require regular cholesterol and liver function monitoring. Do not self-adjust dose.'
+  },
+
+  omeprazole: {
+    name: 'Omeprazole', genericName: 'Omeprazole', type: 'OTC/Rx',
+    humanExplanation: 'This is a <strong>Acid Reducer (Proton Pump Inhibitor / PPI)</strong>. It dramatically reduces the amount of acid your stomach produces — treating acid reflux, ulcers, and heartburn.',
+    mechanism: 'Irreversibly inhibits H+/K+ ATPase (proton pump) in gastric parietal cells → suppresses acid secretion.',
+    uses: 'GERD (acid reflux), peptic ulcer disease, H. pylori eradication (triple therapy), Zollinger-Ellison syndrome, protection against NSAID-induced ulcers.',
+    dosage: 'Usually 20–40mg once daily before meals. Take 30 minutes before first meal of the day for best effect.',
+    sideEffects: 'Headache, nausea, diarrhea, abdominal pain. Long-term use: reduced Magnesium, B12, Iron absorption; increased risk of C. difficile, fractures.',
+    contraindications: 'Rilpivirine-containing HIV regimens. Caution: chronic kidney disease, long-term use.',
+    interactions: 'Clopidogrel (reduced effect), Methotrexate, Rilpivirine, Atazanavir.',
+    warnings: 'PPIs are among the most overprescribed medications. Use lowest effective dose for shortest duration. Long-term use without indication should be reviewed with your doctor.',
+    ayurvedicParallel: { name: 'Shatavari (Asparagus racemosus) + Licorice (Yashtimadhu)', description: 'Shatavari is cooling and mucilaginous — protective for the gastric mucosa in Pitta (acid) conditions. Yashtimadhu (Licorice) has been studied for H. pylori and ulcer protection. Both are supportive and may help mild symptoms but cannot replace PPIs for active ulcers.' },
+    source: 'WHO EML · NHS BNF · CDSCO India · AGA Guidelines',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Do not use PPIs long-term without medical review. Sudden cessation after prolonged use may cause rebound acid hypersecretion.'
+  },
+
+  cetirizine: {
+    name: 'Cetirizine Hydrochloride', genericName: 'Cetirizine', type: 'OTC',
+    humanExplanation: 'This is a <strong>Second-Generation Antihistamine</strong>. It blocks histamine receptors — the chemical that causes allergy symptoms like runny nose, itchy eyes, sneezing, and hives. Less drowsy than older antihistamines.',
+    mechanism: 'Selective H1-receptor antagonist — blocks histamine at peripheral and CNS H1 receptors.',
+    uses: 'Allergic rhinitis (hay fever, dust allergy), urticaria (hives), allergic conjunctivitis, mild-to-moderate allergic reactions.',
+    dosage: 'Adults and children >6 years: 10mg once daily. Can be taken morning or evening (evening if drowsiness occurs).',
+    sideEffects: 'Mild drowsiness (less than older antihistamines), dry mouth, headache, fatigue. Generally well tolerated.',
+    contraindications: 'Severe renal impairment (dose reduction needed), cetirizine/hydroxyzine allergy.',
+    interactions: 'Alcohol (increased sedation), CNS depressants, theophylline.',
+    warnings: 'Avoid driving or operating machinery if drowsiness occurs. Not for acute severe allergic reactions — use epinephrine (EpiPen) for anaphylaxis.',
+    ayurvedicParallel: { name: 'Haridra (Turmeric) + Pippali (Long Pepper)', description: 'In Ayurveda, allergies are seen as Vata-Kapha imbalance. Haridra (Curcumin) has anti-allergic and anti-inflammatory properties. Pippali supports lung health and reduces Kapha. These are complementary approaches for mild, chronic allergic tendencies.' },
+    source: 'WHO EML · NHS BNF · CDSCO India · ARIA Guidelines',
+    tier: 'Tier 1: High', evidenceLevel: 'HIGH',
+    disclaimer: 'Antihistamines treat symptoms but not the underlying cause of allergy. For severe allergic reactions (anaphylaxis), call 112 immediately.'
+  }
+};
+
+/* ── ABBREVIATION EXPANDER ── */
+const RX_ABBREVS = {
+  'bd': 'Twice daily (morning & evening)',
+  'tds': 'Three times daily',
+  'od': 'Once daily',
+  'hs': 'At bedtime',
+  'stat': 'Immediately / Single dose',
+  'prn': 'As needed / When required',
+  'pc': 'After meals',
+  'ac': 'Before meals',
+  'qid': 'Four times daily',
+  'sos': 'If required / As needed',
+  'mane': 'In the morning',
+  'nocte': 'At night',
+};
+
+/* ── LOOKUP FUNCTION ── */
+function lookupMedicine(name) {
+  const q = name.toLowerCase().trim();
+  // Direct key match
+  for (const [key, data] of Object.entries(MEDICINE_KB)) {
+    if (q.includes(key) || key.includes(q.split(' ')[0])) return data;
+  }
+  // Generic name match
+  for (const data of Object.values(MEDICINE_KB)) {
+    if (data.genericName && q.includes(data.genericName.toLowerCase())) return data;
+    if (data.name && q.includes(data.name.toLowerCase().split(' ')[0])) return data;
+  }
+  return null;
+}
+
+/* ── RENDER MEDICINE CARD ── */
+function renderMedCard(data, rawInput) {
+  const typeCls = data.type === 'Rx' ? 'badge-rx' : 'badge-otc';
+  return `
+    <div class="med-card">
+      <div class="med-card-head">
+        <div>
+          <div class="med-name">💊 ${data.name}</div>
+          <div class="med-dosage">${rawInput ? escHtml(rawInput) : ''}</div>
+        </div>
+        <span class="med-type-badge ${typeCls}">${data.type}</span>
+      </div>
+
+      <div class="human-explain">
+        🗣️ <strong>In Simple Language:</strong> ${data.humanExplanation}
+      </div>
+
+      <div class="med-card-body">
+        <div class="info-block">
+          <div class="info-block-label blue">What It Treats</div>
+          <p>${data.uses}</p>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label green">Dosage Guidance</div>
+          <p>${data.dosage}</p>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label amber">Side Effects</div>
+          <p>${data.sideEffects}</p>
+        </div>
+        <div class="info-block">
+          <div class="info-block-label red">Contraindications</div>
+          <p>${data.contraindications}</p>
+        </div>
+      </div>
+
+      ${data.interactions ? `
+      <div class="warn-box">
+        ⚠️ <strong>Drug Interactions:</strong> ${data.interactions}
+      </div>` : ''}
+
+      ${data.warnings ? `
+      <div class="warn-box" style="border-color:rgba(239,68,68,0.3); background:rgba(239,68,68,0.08);">
+        🚨 <strong>Warnings:</strong> ${data.warnings}
+      </div>` : ''}
+
+      ${data.ayurvedicParallel ? `
+      <div class="ayur-block">
+        <div class="ayur-label">🌿 Ayurvedic Parallel</div>
+        <div class="ayur-name">${data.ayurvedicParallel.name}</div>
+        <div class="ayur-desc">${data.ayurvedicParallel.description}</div>
+      </div>` : ''}
+
+      <div class="source-bar">
+        📚 <span class="src-org">${data.source}</span>
+        <span class="ev-chip">${data.tier}</span>
+        <span class="ev-chip">Evidence: ${data.evidenceLevel}</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderNotFound(name) {
+  return `
+    <div class="not-found-card">
+      <div style="font-size:16px; font-weight:800; color:#fff; margin-bottom:10px;">💊 ${escHtml(name)}</div>
+      <div style="font-size:13.5px; color:var(--muted); line-height:1.6; margin-bottom:14px;">
+        This medicine is not yet in the local knowledge base. For accurate information, consult:
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <a href="https://www.1mg.com/search/all?name=${encodeURIComponent(name)}" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:700; color:var(--sky); padding:6px 14px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); border-radius:8px; text-decoration:none;">🔗 1mg India</a>
+        <a href="https://medlineplus.gov/druginfo/meds/a601234.html" target="_blank" rel="noopener" style="font-size:12.5px; font-weight:700; color:var(--sky); padding:6px 14px; background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); border-radius:8px; text-decoration:none;">🔗 MedlinePlus</a>
+        <a href="pages/ai-assistant.html?q=${encodeURIComponent(name+' medicine information')}" style="font-size:12.5px; font-weight:700; color:var(--green); padding:6px 14px; background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2); border-radius:8px; text-decoration:none;">🤖 Ask RAG AI</a>
+      </div>
+      <div style="font-size:11px; color:var(--dim); margin-top:12px;">⚕️ Never rely solely on online sources. Ask your pharmacist or doctor for authoritative guidance.</div>
+    </div>
+  `;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── MAIN DECODE FUNCTIONS ── */
+function decodeMedicine() {
+  const val = document.getElementById('medInput').value.trim();
+  if (!val) return;
+  const resultArea = document.getElementById('resultArea');
+  resultArea.innerHTML = `<div class="loading-card"><div style="font-size:28px; margin-bottom:12px;">🔍</div><div style="font-size:14px; font-weight:700; color:var(--muted);">Searching medical knowledge base...</div></div>`;
+  
+  setTimeout(() => {
+    const data = lookupMedicine(val);
+    resultArea.innerHTML = data ? renderMedCard(data, val) : renderNotFound(val);
+  }, 600);
+}
+
+function decodeQuick(name) {
+  document.getElementById('medInput').value = name;
+  decodeMedicine();
+}
+
+function decodeRxText() {
+  const rx = document.getElementById('rxText').value.trim();
+  if (!rx) return;
+
+  // Split by comma, newline, semicolon
+  const parts = rx.split(/[,;\n]+/).map(s => s.trim()).filter(Boolean);
+  const resultArea = document.getElementById('resultArea');
+  resultArea.innerHTML = `<div class="loading-card"><div style="font-size:28px; margin-bottom:12px;">📋</div><div style="font-size:14px; font-weight:700; color:var(--muted);">Decoding ${parts.length} prescription item(s)...</div></div>`;
+
+  // Detect and display abbreviations first
+  const abbrevMatches = [];
+  for (const [abbrev, meaning] of Object.entries(RX_ABBREVS)) {
+    if (rx.toLowerCase().includes(abbrev)) abbrevMatches.push({ abbrev: abbrev.toUpperCase(), meaning });
+  }
+
+  setTimeout(() => {
+    let html = '';
+
+    if (abbrevMatches.length) {
+      html += `<div class="med-card" style="padding:18px 20px; margin-bottom:0;">
+        <div style="font-size:13px; font-weight:800; color:var(--sky); text-transform:uppercase; letter-spacing:1px; margin-bottom:12px;">📖 Prescription Abbreviations</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+          ${abbrevMatches.map(a => `<div style="background:rgba(56,189,248,0.08); border:1px solid rgba(56,189,248,0.2); padding:6px 14px; border-radius:8px; font-size:12.5px;"><strong style="color:var(--sky);">${a.abbrev}</strong> = ${a.meaning}</div>`).join('')}
+        </div>
+      </div>`;
+    }
+
+    for (const part of parts.slice(0, 8)) {
+      const data = lookupMedicine(part);
+      html += data ? renderMedCard(data, part) : renderNotFound(part);
+    }
+
+    resultArea.innerHTML = html || '<div class="not-found-card"><p style="color:var(--muted);">No recognizable medicine names found. Please enter medicine names separated by commas.</p></div>';
+  }, 1000);
+}
+</script>
+
+</body>
+</html>

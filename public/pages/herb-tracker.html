@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Herb Provenance — Supply Chain Traceability — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .tracker-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+    }
+
+    .search-container {
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+    .batch-input-wrap { position: relative; width: 100%; }
+    .batch-input {
+      width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); 
+      padding: 24px 32px 24px 60px; border-radius: 20px; color: white; font-size: 18px; outline: none;
+    }
+    .batch-input:focus { border-color: #06b6d4; background: rgba(255,255,255,0.06); }
+    .search-icon { position: absolute; left: 24px; top: 50%; transform: translateY(-50%); font-size: 20px; opacity: 0.5; }
+
+    /* Results UI */
+    .trace-results { display: none; width: 100%; max-width: 1100px; animation: fadeIn 0.8s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .trace-grid { display: grid; grid-template-columns: 1fr 400px; gap: 40px; }
+    
+    .timeline { position: relative; padding-left: 60px; margin-top: 40px; }
+    .timeline::before { content: ''; position: absolute; left: 29px; top: 0; bottom: 0; width: 2px; background: rgba(255,255,255,0.1); }
+    
+    .trace-item { position: relative; margin-bottom: 60px; }
+    .trace-dot { 
+      position: absolute; left: -31px; top: 0; width: 10px; height: 10px; background: #0f172a; border: 3px solid #06b6d4; border-radius: 50%; z-index: 2;
+    }
+    .trace-card { 
+      background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 24px; 
+    }
+    .trace-time { font-size: 11px; font-weight: 800; color: #06b6d4; margin-bottom: 8px; text-transform: uppercase; }
+    .trace-loc { font-size: 18px; font-weight: 800; margin-bottom: 4px; color: white; }
+    .trace-detail { font-size: 14px; color: var(--gray-400); line-height: 1.5; }
+
+    .certificate-card {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 32px;
+      padding: 40px;
+      height: fit-content;
+      position: sticky; top: 120px;
+    }
+
+    .cert-badge { 
+      background: #06b6d4; color: black; font-weight: 900; padding: 6px 16px; border-radius: 50px; font-size: 12px; display: inline-block; margin-bottom: 24px; 
+    }
+    .test-result { display: flex; justify-content: space-between; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .test-label { font-size: 13px; color: var(--gray-400); font-weight: 600; }
+    .test-val { font-size: 14px; font-weight: 800; color: #06b6d4; }
+
+    .farm-img { width: 100%; height: 200px; background: #1e293b; border-radius: 20px; margin-top: 24px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+    @media (max-width: 900px) { .trace-grid { grid-template-columns: 1fr; } .certificate-card { position: static; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="tracker-lab">
+  <div class="search-container">
+    <div style="font-size: 12px; font-weight: 800; color: #06b6d4; letter-spacing: 2px; margin-bottom: 12px;">HERBAL INTEGRITY PROTOCOL</div>
+    <h1 style="font-size: 40px; font-weight: 900; margin-bottom: 32px;">Trace Your Medicine</h1>
+    <div class="batch-input-wrap">
+      <div class="search-icon">🧬</div>
+      <input type="text" class="batch-input" id="batchCode" placeholder="Enter Batch ID (e.g. MIV-ASH-2024)..." onkeydown="if(event.key === 'Enter') trackBatch()">
+    </div>
+    <p style="color: var(--gray-500); font-size: 14px; margin-top: 20px;">Try: <strong>MIV-ASH-2024</strong> (Ashwagandha Batch)</p>
+  </div>
+
+  <div class="trace-results" id="resultsArea">
+     <div class="trace-grid">
+        <div class="trace-left">
+           <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 32px;">Provenance Journey</h2>
+           <div class="timeline">
+              <div class="trace-item">
+                 <div class="trace-dot"></div>
+                 <div class="trace-card">
+                    <div class="trace-time">Oct 12, 2024 • Phase 1</div>
+                    <div class="trace-loc">Sourcing: High Altitude Farm, Kerala</div>
+                    <p class="trace-detail">Raw Withania Somnifera (Ashwagandha) roots harvested under Sattvic astrological alignment. Organic soil certification verified.</p>
+                 </div>
+              </div>
+              <div class="trace-item">
+                 <div class="trace-dot"></div>
+                 <div class="trace-card">
+                    <div class="trace-time">Oct 18, 2024 • Phase 2</div>
+                    <div class="trace-loc">Processing: Co-operative Extract Lab</div>
+                    <p class="trace-detail">Roots cleaned in triphala solution and processed using traditional solar drying techniques to preserve alkaloid integrity.</p>
+                 </div>
+              </div>
+              <div class="trace-item">
+                 <div class="trace-dot"></div>
+                 <div class="trace-card">
+                    <div class="trace-time">Oct 24, 2024 • Phase 3</div>
+                    <div class="trace-loc">Validation: MedInVedic Central Lab</div>
+                    <p class="trace-detail">DNA barcoding performed. Heavy metal screening (Lead, Mercury, Arsenic) cleared. High withanolide concentration confirmed.</p>
+                 </div>
+              </div>
+              <div class="trace-item">
+                 <div class="trace-dot"></div>
+                 <div class="trace-card">
+                    <div class="trace-time">Oct 30, 2024 • Phase 4</div>
+                    <div class="trace-loc">Distributed: Bangalore Hub</div>
+                    <p class="trace-detail">Sealed in eco-friendly glass containers and shipped to regional distribution nodes.</p>
+                 </div>
+              </div>
+           </div>
+        </div>
+
+        <div class="trace-right">
+           <div class="certificate-card">
+              <div class="cert-badge">CERTIFIED AUTHENTIC</div>
+              <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">Quality Manifesto</h3>
+              
+              <div class="test-result">
+                 <div class="test-label">DNA Sequence Match</div>
+                 <div class="test-val">100.0%</div>
+              </div>
+              <div class="test-result">
+                 <div class="test-label">Heavy Metals</div>
+                 <div class="test-val" style="color:var(--primary);">NOT DETECTED</div>
+              </div>
+              <div class="test-result">
+                 <div class="test-label">Withanolide Content</div>
+                 <div class="test-val">5.8% (Target: >5.0%)</div>
+              </div>
+              <div class="test-result" style="border:none;">
+                 <div class="test-label">Farmer Identity</div>
+                 <div class="test-val">Verified (ID: #8821)</div>
+              </div>
+
+              <div class="farm-img">
+                 <img src="https://images.unsplash.com/photo-1599421141685-8475ef9d5884?auto=format&fit=crop&w=500&q=80" style="width:100%; height:100%; object-fit:cover;" alt="Farm">
+              </div>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 12px; text-align: center;">Vantage view from Farmer #8821's organic root plantation.</p>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  function trackBatch() {
+    const code = document.getElementById('batchCode').value.toUpperCase();
+    if (code !== 'MIV-ASH-2024') {
+      alert("Invalid Batch Code. Please use: MIV-ASH-2024 for this demonstration.");
+      return;
+    }
+
+    const res = document.getElementById('resultsArea');
+    res.style.display = 'block';
+    res.scrollIntoView({ behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

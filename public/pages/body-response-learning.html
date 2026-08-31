@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Swayam Lab — Body Response Learning AI — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .learning-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 40px 60px;
+    }
+
+    .lab-grid { display: grid; grid-template-columns: 1fr 350px; gap: 40px; margin-top: 60px; }
+
+    .intelligence-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .compatibility-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; margin-top: 32px; }
+    
+    .comp-card {
+      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
+      padding: 24px; border-radius: 24px; text-align: center; transition: 0.3s;
+    }
+    .comp-card:hover { transform: translateY(-5px); border-color: #6366f1; }
+
+    .score-circle {
+      width: 60px; height: 60px; border-radius: 50%; border: 4px solid #6366f1;
+      display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;
+      font-weight: 900; font-size: 18px;
+    }
+
+    .insight-panel {
+      background: rgba(15, 23, 42, 0.95); border: 1px solid rgba(79, 70, 229, 0.3);
+      border-radius: 32px; padding: 32px; height: fit-content; position: sticky; top: 120px;
+    }
+
+    .neural-bg {
+       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+       opacity: 0.05; pointer-events: none;
+    }
+
+    .efficacy-tag {
+       display: inline-block; padding: 4px 12px; border-radius: 50px; font-size: 10px; font-weight: 800;
+       text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;
+    }
+    .tag-high { background: rgba(16, 185, 129, 0.2); color: #a21d21; }
+    .tag-med { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="learning-lab">
+  <div style="margin-bottom: 48px;">
+     <div style="font-size: 12px; font-weight: 800; color: #6366f1; letter-spacing: 3px; margin-bottom: 8px;">SWAYAM LEARNING ENGINE</div>
+     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Your Biological Feedback Map</h1>
+     <p style="color: var(--gray-400); margin-top: 8px;">The AI physician that evolves based on what actually works for your body.</p>
+  </div>
+
+  <div class="lab-grid">
+     <div class="intelligence-box">
+        <svg class="neural-bg" viewBox="0 0 100 100">
+           <circle cx="20" cy="20" r="1" fill="white"/>
+           <circle cx="80" cy="20" r="1" fill="white"/>
+           <circle cx="50" cy="80" r="1" fill="white"/>
+           <line x1="20" y1="20" x2="80" y2="20" stroke="white" stroke-width="0.1"/>
+           <line x1="80" y1="20" x2="50" y2="80" stroke="white" stroke-width="0.1"/>
+           <line x1="50" y1="80" x2="20" y2="20" stroke="white" stroke-width="0.1"/>
+        </svg>
+
+        <h2 style="font-size: 24px; font-weight: 800; margin: 0 0 32px 0;">Treatment Compatibility Matrix</h2>
+        
+        <div class="compatibility-grid">
+           <!-- Card: Ashwagandha -->
+           <div class="comp-card">
+              <span class="efficacy-tag tag-high">98% Match</span>
+              <div class="score-circle">A+</div>
+              <strong>Ashwagandha</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Rapid onset of sleep stabilization (+30% REM).</p>
+           </div>
+           
+           <!-- Card: Brahmi -->
+           <div class="comp-card">
+              <span class="efficacy-tag tag-med">65% Match</span>
+              <div class="score-circle" style="border-color: #f97316;">B</div>
+              <strong>Brahmi</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Slow cognitive response. Requires fatty-medium (Ghee).</p>
+           </div>
+
+           <!-- Card: Metformin -->
+           <div class="comp-card">
+              <span class="efficacy-tag tag-high">92% Match</span>
+              <div class="score-circle">A</div>
+              <strong>Metformin</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">High gastric tolerance. Synergizes with lifestyle.</p>
+           </div>
+
+           <!-- Card: Turmeric -->
+           <div class="comp-card">
+              <span class="efficacy-tag tag-high">95% Match</span>
+              <div class="score-circle">A+</div>
+              <strong>Turmeric / Nano-Curcumin</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Exceptional inflammation reduction in joints.</p>
+           </div>
+        </div>
+
+        <div style="margin-top: 48px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05);">
+           <h3 style="font-weight: 800; margin-bottom: 24px;">Longitudinal Learning Status</h3>
+           <div style="background: rgba(255,255,255,0.03); border-radius: 20px; padding: 24px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:13px;">
+                 <span>Patient Profile Depth</span><span>84% Complete</span>
+              </div>
+              <div style="height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden;">
+                 <div style="height: 100%; width: 84%; background: #6366f1;"></div>
+              </div>
+              <p style="font-size: 12px; color: var(--gray-400); margin-top: 16px;">
+                 AI has analyzed 42 unique treatment events across 6 months.
+              </p>
+           </div>
+        </div>
+     </div>
+
+     <div class="insight-panel">
+        <div style="font-size: 32px; margin-bottom: 20px;">🪄</div>
+        <h3 style="font-size: 22px; font-weight: 900; margin-bottom: 16px;">AI Optimization Insight</h3>
+        <p style="color: var(--gray-300); line-height: 1.8; font-size: 15px;">
+           "Your body shows a **high metabolic affinity** for lipid-soluble botanicals. To optimize the 65% performance of Brahmi, the AI recommends switching from capsules to **Brahmi Ghrita** (Medicated Ghee) for superior neuro-absorption."
+        </p>
+        
+        <div style="margin-top: 32px; padding: 20px; background: rgba(16, 185, 129, 0.1); border-radius: 16px; border: 1px solid rgba(16, 185, 129, 0.2);">
+           <strong style="color: #a21d21; font-size: 13px;">✅ NEXT ACTION</strong>
+           <p style="font-size: 13px; margin-top: 8px;">Upgrade Brahmi protocol to lipid-infused format.</p>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

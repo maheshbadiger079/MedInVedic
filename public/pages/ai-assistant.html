@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedInVedic AI — RAG Health Intelligence Assistant</title>
+  <meta name="description" content="Evidence-grounded health intelligence. Ask about symptoms, medicines, and Ayurvedic remedies — answers retrieved from WHO, NHS, ICMR, and Charaka Samhita sources." />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <script src="../js/rag-knowledge-base.js"></script>
+  <script src="../js/rag-safety.js"></script>
+  <script src="../js/rag-retriever.js"></script>
+  <script src="../js/rag-generator.js"></script>
+  <script src="../js/i18n.js"></script>
+  <script src="../js/voice.js"></script>
+  <style>
+    :root {
+      --bg: #07080f;
+      --surface: #0f1120;
+      --border: #1e2240;
+      --blue: #3b82f6;
+      --sky: #38bdf8;
+      --green: #22c55e;
+      --amber: #f59e0b;
+      --red: #ef4444;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #475569;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* ── TOPBAR ── */
+    .ai-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 24px;
+      background: #0a0c18;
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+      gap: 12px; flex-wrap: wrap;
+    }
+    .ai-topbar-left { display: flex; align-items: center; gap: 14px; }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 6px 12px; border-radius: 8px; transition: 0.15s;
+    }
+    .back-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
+    .ai-logo-text { font-size: 16px; font-weight: 900; color: #fff; }
+    .ai-logo-sub { font-size: 11px; color: var(--muted); font-weight: 600; }
+
+    .rag-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+      color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      text-transform: uppercase; padding: 4px 12px; border-radius: 50px;
+    }
+    .rag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: p 2s infinite; }
+    @keyframes p { 0%,100%{opacity:0.5;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.3)} }
+
+    .lang-select {
+      background: var(--surface); border: 1px solid var(--border);
+      color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 12px; outline: none;
+    }
+
+    /* ── CHAT AREA ── */
+    .chat-area {
+      flex: 1; overflow-y: auto; padding: 24px;
+      display: flex; flex-direction: column; gap: 18px;
+      max-width: 900px; width: 100%; margin: 0 auto;
+      scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+    }
+
+    /* ── WELCOME SCREEN ── */
+    .welcome {
+      text-align: center; padding: 48px 20px 32px;
+    }
+    .welcome-icon { font-size: 48px; margin-bottom: 16px; }
+    .welcome h1 { font-size: clamp(26px, 5vw, 38px); font-weight: 900; color: #fff; margin-bottom: 10px; letter-spacing: -0.5px; }
+    .welcome p { font-size: 15px; color: var(--muted); max-width: 560px; margin: 0 auto 28px; line-height: 1.6; }
+
+    .sources-row {
+      display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-bottom: 32px;
+    }
+    .src-chip {
+      font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 50px;
+      background: rgba(56,189,248,0.08); border: 1px solid rgba(56,189,248,0.2); color: var(--sky);
+    }
+
+    .quick-chips { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+    .qchip {
+      background: rgba(255,255,255,0.04); border: 1px solid var(--border);
+      color: var(--muted); font-size: 13px; font-weight: 600;
+      padding: 9px 18px; border-radius: 50px; cursor: pointer; transition: 0.18s;
+    }
+    .qchip:hover { color: #fff; background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.4); }
+
+    /* ── MESSAGES ── */
+    .msg { max-width: 88%; animation: slideUp 0.25s ease-out; }
+    .msg-user { align-self: flex-end; }
+    .msg-ai { align-self: flex-start; }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+    .bubble-user {
+      background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.4);
+      color: #fff; padding: 12px 18px; border-radius: 18px 18px 4px 18px;
+      font-size: 14px; line-height: 1.6; font-weight: 500;
+    }
+    .bubble-ai {
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); padding: 18px 20px; border-radius: 18px 18px 18px 4px;
+      font-size: 14px; line-height: 1.6;
+    }
+    .msg-label { font-size: 11px; color: var(--dim); font-weight: 700; margin-bottom: 5px; }
+    .msg-user .msg-label { text-align: right; }
+
+    /* ── RESULT CARD ── */
+    .result-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 18px; overflow: hidden; width: 100%; min-width: min(600px, 100%);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .rc-head {
+      padding: 18px 20px; background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .rc-title { font-size: 17px; font-weight: 900; color: #fff; }
+    .rc-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+    .triage-badge {
+      font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px;
+      padding: 4px 12px; border-radius: 50px;
+    }
+    .triage-CRITICAL { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+    .triage-HIGH { background: rgba(245,158,11,0.12); color: var(--amber); border: 1px solid rgba(245,158,11,0.3); }
+    .triage-MODERATE { background: rgba(56,189,248,0.1); color: var(--sky); border: 1px solid rgba(56,189,248,0.25); }
+    .triage-LOW { background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .triage-NORMAL { background: rgba(34,197,94,0.08); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+
+    .rc-body { padding: 18px 20px; }
+
+    /* Tabs */
+    .rc-tabs { display: flex; gap: 4px; background: rgba(0,0,0,0.2); padding: 4px; border-radius: 10px; margin-bottom: 16px; }
+    .rc-tab { flex: 1; padding: 8px; border: none; background: none; color: var(--muted); font-size: 12px; font-weight: 700; border-radius: 7px; cursor: pointer; transition: 0.18s; text-transform: uppercase; letter-spacing: 0.5px; }
+    .rc-tab.active { background: rgba(255,255,255,0.08); color: #fff; }
+
+    .rc-pane { display: none; }
+    .rc-pane.active { display: block; }
+
+    .section-label { font-size: 10.5px; font-weight: 800; color: var(--sky); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 6px; display: block; }
+
+    .answer-block { font-size: 13.5px; color: var(--text); line-height: 1.65; margin-bottom: 14px; }
+
+    .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .info-cell { background: rgba(0,0,0,0.25); border-radius: 10px; padding: 12px; border: 1px solid rgba(255,255,255,0.05); }
+    .info-cell .info-key { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 800; margin-bottom: 4px; }
+    .info-cell .info-val { font-size: 12.5px; color: #fff; font-weight: 600; }
+
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+    .tag { font-size: 11.5px; font-weight: 600; padding: 4px 12px; border-radius: 50px; }
+    .tag-blue { background: rgba(59,130,246,0.1); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); }
+    .tag-green { background: rgba(34,197,94,0.1); color: #86efac; border: 1px solid rgba(34,197,94,0.2); }
+    .tag-amber { background: rgba(245,158,11,0.1); color: #fcd34d; border: 1px solid rgba(245,158,11,0.2); }
+    .tag-red { background: rgba(239,68,68,0.1); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
+
+    .source-bar {
+      display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+      padding: 10px 14px; background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; margin-top: 12px;
+      font-size: 11.5px; color: var(--muted);
+    }
+    .source-bar .src-org { font-weight: 800; color: var(--sky); }
+    .evidence-chip { font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 50px; background: rgba(34,197,94,0.1); color: var(--green); border: 1px solid rgba(34,197,94,0.2); }
+
+    .emergency-banner {
+      background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.35);
+      border-radius: 12px; padding: 12px 16px; margin-bottom: 14px;
+      font-size: 13.5px; font-weight: 700; color: #fca5a5; line-height: 1.5;
+    }
+    .emergency-banner strong { color: #fff; }
+
+    /* ── INPUT BAR ── */
+    .input-area {
+      flex-shrink: 0;
+      padding: 14px 24px 20px;
+      max-width: 900px; width: 100%; margin: 0 auto;
+    }
+
+    .safety-note {
+      font-size: 11px; color: var(--dim); text-align: center; margin-bottom: 10px; line-height: 1.5;
+    }
+
+    .input-row {
+      display: flex; gap: 8px; align-items: center;
+      background: var(--surface); border: 1.5px solid var(--border);
+      border-radius: 14px; padding: 8px 10px 8px 18px;
+      transition: 0.2s;
+    }
+    .input-row:focus-within { border-color: var(--blue); }
+
+    .chat-input {
+      flex: 1; background: none; border: none; color: #fff;
+      font-size: 15px; outline: none; font-family: inherit;
+    }
+    .chat-input::placeholder { color: var(--dim); }
+
+    .voice-btn, .send-btn {
+      width: 40px; height: 40px; border-radius: 10px;
+      border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: 0.18s; flex-shrink: 0;
+    }
+    .voice-btn { background: rgba(255,255,255,0.05); color: var(--muted); font-size: 17px; }
+    .voice-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+    .voice-btn.listening { background: rgba(239,68,68,0.15); color: #f87171; animation: p 1s infinite; }
+    .send-btn { background: var(--blue); color: #fff; }
+    .send-btn:hover { background: #2563eb; }
+
+    .quick-bar { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
+    .q-btn { font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 50px; cursor: pointer; transition: 0.15s; background: rgba(255,255,255,0.03); border: 1px solid var(--border); color: var(--muted); }
+    .q-btn:hover { color: #fff; border-color: rgba(255,255,255,0.2); }
+
+    /* ── TYPING ── */
+    .typing-dots { display: flex; gap: 5px; padding: 8px 0; }
+    .typing-dots span { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); animation: td 1.4s infinite; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes td { 0%,80%,100%{transform:scale(0.7);opacity:0.4} 40%{transform:scale(1);opacity:1} }
+
+    /* ── DISCLAIMER ── */
+    .footer-dis {
+      flex-shrink: 0; text-align: center; padding: 8px 16px;
+      font-size: 10.5px; color: var(--dim); background: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      .ai-topbar { padding: 10px 14px; }
+      .chat-area { padding: 14px; }
+      .input-area { padding: 10px 14px 16px; }
+      .info-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="ai-topbar">
+  <div class="ai-topbar-left">
+    <a href="../index.html" class="back-link">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Home
+    </a>
+    <div>
+      <div class="ai-logo-text">🏥 MedInVedic AI</div>
+      <div class="ai-logo-sub">RAG-Based Health Intelligence</div>
+    </div>
+  </div>
+  <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+    <div class="rag-pill"><div class="rag-dot"></div> RAG ACTIVE</div>
+    <select class="lang-select" id="langSel" onchange="changeLang(this.value)">
+      <option value="en-IN">English</option>
+      <option value="hi-IN">हिन्दी</option>
+      <option value="kn-IN">ಕನ್ನಡ</option>
+      <option value="ta-IN">Tamil</option>
+      <option value="te-IN">Telugu</option>
+      <option value="ml-IN">Malayalam</option>
+      <option value="mr-IN">Marathi</option>
+      <option value="bn-IN">Bengali</option>
+      <option value="gu-IN">Gujarati</option>
+    </select>
+    <a href="emergency.html" style="font-size:12px; font-weight:800; color:#f87171; text-decoration:none; padding:6px 12px; background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); border-radius:8px;">🚨 SOS</a>
+  </div>
+</div>
+
+<!-- CHAT MESSAGES -->
+<div class="chat-area" id="chatArea">
+
+  <!-- WELCOME -->
+  <div class="welcome" id="welcomeScreen">
+    <div class="welcome-icon">🧬</div>
+    <h1>High-Fidelity Health Intelligence</h1>
+    <p>Describe your symptoms or ask about medicines and Ayurvedic remedies. Every answer is retrieved from verified clinical sources — never fabricated.</p>
+    <div class="sources-row">
+      <span class="src-chip">WHO</span>
+      <span class="src-chip">NHS</span>
+      <span class="src-chip">CDC</span>
+      <span class="src-chip">ICMR</span>
+      <span class="src-chip">MoHFW</span>
+      <span class="src-chip">Charaka Samhita</span>
+      <span class="src-chip">AHA</span>
+      <span class="src-chip">AYUSH</span>
+    </div>
+    <div class="quick-chips">
+      <button class="qchip" onclick="quickAsk('fever symptoms and treatment')">🌡️ Fever</button>
+      <button class="qchip" onclick="quickAsk('dengue fever warning signs and platelet count')">🦟 Dengue</button>
+      <button class="qchip" onclick="quickAsk('diabetes blood sugar management ayurveda')">🍬 Diabetes</button>
+      <button class="qchip" onclick="quickAsk('headache migraine remedies')">🧠 Headache</button>
+      <button class="qchip" onclick="quickAsk('paracetamol dosage and side effects')">💊 Paracetamol</button>
+      <button class="qchip" onclick="quickAsk('blood pressure hypertension management')">❤️ Blood Pressure</button>
+      <button class="qchip" onclick="quickAsk('common cold sore throat home remedies')">🤧 Cold & Cough</button>
+      <button class="qchip" onclick="quickAsk('back pain relief exercise ayurveda')">🦴 Back Pain</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISCLAIMER NOTE -->
+<div class="footer-dis">
+  ⚕️ This AI retrieves information from verified medical sources. It does <strong>not</strong> diagnose or prescribe. For emergencies, call <strong>112</strong> immediately. Always consult a qualified doctor for personal medical decisions.
+</div>
+
+<!-- INPUT BAR -->
+<div class="input-area">
+  <div class="safety-note">
+    Evidence-grounded responses from WHO · NHS · ICMR · Charaka Samhita · AHA · CDC sources only. Not a substitute for professional medical care.
+  </div>
+  <div class="input-row">
+    <button class="voice-btn" id="voiceBtn" onclick="toggleVoice()" title="Voice input">🎙️</button>
+    <input class="chat-input" id="chatInput" placeholder="Ask about symptoms, medicines, Ayurvedic remedies..." autocomplete="off" onkeydown="if(event.key==='Enter') sendMessage()">
+    <button class="send-btn" onclick="sendMessage()" title="Send">
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+  <div class="quick-bar">
+    <button class="q-btn" onclick="quickAsk('fever symptoms')">🌡️ Fever</button>
+    <button class="q-btn" onclick="quickAsk('dengue platelet warning signs')">🦟 Dengue</button>
+    <button class="q-btn" onclick="quickAsk('chest pain emergency')">❤️ Chest Pain</button>
+    <button class="q-btn" onclick="quickAsk('paracetamol dosage')">💊 Medicines</button>
+    <button class="q-btn" onclick="quickAsk('blood pressure high ayurveda')">🩺 BP</button>
+    <button class="q-btn" onclick="window.location.href='voice-doctor.html'">🎙️ Voice AI</button>
+    <button class="q-btn" onclick="window.location.href='emergency.html'">🚨 SOS</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* ── WAIT FOR RAG MODULES ── */
+let RAG_READY = false;
+function checkRAGModules() {
+  if (typeof RAG_RETRIEVER !== 'undefined' && typeof RAG_GENERATOR !== 'undefined' && typeof RAG_SAFETY !== 'undefined') {
+    RAG_READY = true;
+    return true;
+  }
+  return false;
+}
+
+window.addEventListener('load', () => {
+  checkRAGModules();
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) {
+    document.getElementById('chatInput').value = decodeURIComponent(q);
+    setTimeout(sendMessage, 500);
+  }
+});
+
+/* ── CHAT STATE ── */
+let conversationHistory = [];
+let isListening = false;
+let speechRec = null;
+let currentLang = 'en-IN';
+
+/* ── DOM HELPERS ── */
+const chatArea = document.getElementById('chatArea');
+
+function hideWelcome() {
+  const w = document.getElementById('welcomeScreen');
+  if (w) w.style.display = 'none';
+}
+
+function scrollBottom() {
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function addUserMsg(text) {
+  hideWelcome();
+  const d = document.createElement('div');
+  d.className = 'msg msg-user';
+  d.innerHTML = `<div class="msg-label">👤 You</div><div class="bubble-user">${escHtml(text)}</div>`;
+  chatArea.appendChild(d);
+  scrollBottom();
+}
+
+function addAIMsg(html) {
+  const d = document.createElement('div');
+  d.className = 'msg msg-ai';
+  d.innerHTML = `<div class="msg-label">🤖 MedInVedic AI</div><div class="bubble-ai">${html}</div>`;
+  chatArea.appendChild(d);
+  scrollBottom();
+  return d;
+}
+
+function addTyping() {
+  const d = document.createElement('div');
+  d.className = 'msg msg-ai'; d.id = 'typing';
+  d.innerHTML = `<div class="msg-label">🤖 MedInVedic AI</div><div class="bubble-ai"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  chatArea.appendChild(d); scrollBottom();
+}
+function removeTyping() {
+  const t = document.getElementById('typing'); if (t) t.remove();
+}
+
+function escHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* ── SEND MESSAGE ── */
+function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = (input.value || '').trim();
+  if (!text) return;
+  input.value = '';
+  addUserMsg(text);
+  conversationHistory.push({ role: 'user', content: text });
+  addTyping();
+  setTimeout(() => processQuery(text), 1000);
+}
+
+function quickAsk(text) {
+  document.getElementById('chatInput').value = text;
+  sendMessage();
+}
+
+/* ── RAG QUERY PROCESSOR ── */
+function processQuery(query) {
+  removeTyping();
+
+  // Check if RAG modules loaded
+  if (!checkRAGModules()) {
+    // Graceful fallback using MEDICAL_KB if available
+    if (typeof window.MEDICAL_KB !== 'undefined') {
+      processFallbackQuery(query);
+    } else {
+      addAIMsg(`<div style="color:var(--amber);">⚠️ RAG modules are still loading. Please try again in a moment.</div>`);
+    }
+    return;
+  }
+
+  try {
+    // Safety triage first
+    const safetyResult = RAG_SAFETY.assess(query);
+
+    // Emergency interception
+    if (safetyResult.isEmergency) {
+      const emergencyHtml = `
+        <div class="emergency-banner">
+          <strong>🚨 EMERGENCY DETECTED — Call 112 Immediately</strong><br>
+          Your query contains emergency indicators. Do NOT wait for AI guidance.<br>
+          <a href="emergency.html" style="color:#fca5a5; font-weight:800;">→ Go to SOS Emergency Assistant</a>
+          &nbsp;|&nbsp; <a href="tel:112" style="color:#fca5a5; font-weight:800;">📞 Call 112 Now</a>
+        </div>
+        ${safetyResult.guidance ? `<div style="font-size:13px; color:var(--muted);">${safetyResult.guidance}</div>` : ''}
+      `;
+      addAIMsg(emergencyHtml);
+      conversationHistory.push({ role: 'ai', content: 'Emergency detected — redirected to emergency services.' });
+      return;
+    }
+
+    // RAG retrieval
+    const retrievalResult = RAG_RETRIEVER.retrieve(query);
+    const chunks = retrievalResult.results || retrievalResult.chunks || [];
+
+    // Generate structured response
+    const response = RAG_GENERATOR.buildStructuredResponse(query, safetyResult, chunks);
+
+    renderRAGResponse(response, safetyResult);
+    conversationHistory.push({ role: 'ai', content: response.directAnswer || 'Information retrieved.' });
+
+  } catch (err) {
+    console.error('RAG error:', err);
+    addAIMsg(`<div style="color:var(--amber);">⚠️ Unable to retrieve verified information for this query. Please try rephrasing, or <a href="emergency.html" style="color:var(--sky);">use SOS</a> for emergencies.</div>`);
+  }
+}
+
+/* ── RENDER RAG RESPONSE ── */
+function renderRAGResponse(response, safetyResult) {
+  const triage = safetyResult.intent || 'NORMAL';
+  const hasEvidence = response.evidenceStatus && response.evidenceStatus !== 'INSUFFICIENT';
+
+  if (!hasEvidence && !response.directAnswer) {
+    addAIMsg(`
+      <div style="font-size:13.5px; color:var(--text); line-height:1.6;">
+        <strong style="color:#fff;">Insufficient verified information found</strong><br><br>
+        ${response.message || 'I could not find verified clinical information for this specific query.'}<br><br>
+        <span style="color:var(--amber);">💡 Please consult a qualified doctor for personalized medical advice.</span>
+        ${response.recommendation ? `<br><br>📋 <strong>Suggestion:</strong> ${response.recommendation}` : ''}
+      </div>
+    `);
+    return;
+  }
+
+  const cardId = 'rc_' + Date.now();
+  const triageCls = `triage-${triage}`;
+  const sourcesHtml = (response.sources || []).slice(0, 3).map(s => `
+    <div class="source-bar">
+      📚 <span class="src-org">${s.source || s.org || 'Medical Source'}</span>
+      ${s.tier ? `<span class="evidence-chip">${s.tier}</span>` : ''}
+      ${s.evidence_level ? `<span class="evidence-chip">${s.evidence_level}</span>` : ''}
+      ${s.doc ? `<span style="font-size:11px; color:var(--dim);">· ${s.doc}</span>` : ''}
+    </div>
+  `).join('');
+
+  // Build tabs content
+  const modernHtml = buildModernTab(response);
+  const ayurvedaHtml = buildAyurvedaTab(response);
+  const selfcareHtml = buildSelfCareTab(response);
+
+  const html = `
+    <div class="result-card" id="${cardId}">
+      <div class="rc-head">
+        <div>
+          <div class="rc-title">${escHtml(response.conditionName || response.topic || 'Health Information')}</div>
+          <div class="rc-sub">RAG-Retrieved · Evidence-Grounded</div>
+        </div>
+        <span class="triage-badge ${triageCls}">🚦 ${triage}</span>
+      </div>
+      <div class="rc-body">
+        ${response.redFlags && response.redFlags.length ? `
+        <div class="emergency-banner" style="background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3); color:#fcd34d; margin-bottom:14px;">
+          ⚠️ <strong>Red Flags — Seek Medical Attention If:</strong><br>
+          ${response.redFlags.slice(0,3).map(f => `• ${f}`).join('<br>')}
+        </div>` : ''}
+
+        <div class="rc-tabs">
+          <button class="rc-tab active" onclick="switchRCTab(this, '${cardId}', 'modern')">Modern Medicine</button>
+          <button class="rc-tab" onclick="switchRCTab(this, '${cardId}', 'ayurveda')">Ayurveda</button>
+          <button class="rc-tab" onclick="switchRCTab(this, '${cardId}', 'selfcare')">Self-Care</button>
+        </div>
+
+        <div class="rc-pane active" id="${cardId}_modern">${modernHtml}</div>
+        <div class="rc-pane" id="${cardId}_ayurveda">${ayurvedaHtml}</div>
+        <div class="rc-pane" id="${cardId}_selfcare">${selfcareHtml}</div>
+
+        ${sourcesHtml}
+
+        <div style="margin-top:10px; font-size:11px; color:var(--dim); padding:8px; background:rgba(245,158,11,0.04); border:1px solid rgba(245,158,11,0.12); border-radius:8px;">
+          ⚕️ ${response.disclaimer || 'This information is for educational purposes only. Consult a qualified healthcare professional before making any medical decisions. Not a substitute for professional medical care.'}
+        </div>
+      </div>
+    </div>
+  `;
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'msg msg-ai';
+  wrapper.innerHTML = `<div class="msg-label">🤖 MedInVedic AI</div>${html}`;
+  chatArea.appendChild(wrapper);
+  scrollBottom();
+}
+
+function buildModernTab(r) {
+  const ans = r.directAnswer || r.overview || 'See evidence-based information below.';
+  const meds = r.medicines || r.medications || [];
+  const dosage = r.dosageGuidelines || r.dosage || '';
+  const contraindications = r.contraindications || '';
+  const interactions = r.drugInteractions || r.interactions || '';
+
+  let html = `<span class="section-label">Clinical Overview</span>
+  <div class="answer-block">${ans}</div>`;
+
+  if (dosage || contraindications) {
+    html += `<div class="info-grid">
+      ${dosage ? `<div class="info-cell"><div class="info-key">Dosage Guidance</div><div class="info-val">${dosage}</div></div>` : ''}
+      ${contraindications ? `<div class="info-cell"><div class="info-key">Contraindications</div><div class="info-val">${contraindications}</div></div>` : ''}
+    </div>`;
+  }
+
+  if (meds && meds.length) {
+    html += `<span class="section-label">Common Treatments</span>
+    <div class="tag-list">${meds.map(m => `<span class="tag tag-blue">💊 ${m}</span>`).join('')}</div>`;
+  }
+
+  if (interactions) {
+    html += `<div style="font-size:12.5px; color:var(--muted); padding:10px; background:rgba(239,68,68,0.05); border:1px solid rgba(239,68,68,0.12); border-radius:10px; margin-top:8px;">
+      ⚠️ <strong>Drug Interactions:</strong> ${interactions}
+    </div>`;
+  }
+
+  return html || '<div style="color:var(--muted);">Modern medicine information not retrieved for this query. Consult a pharmacist or doctor.</div>';
+}
+
+function buildAyurvedaTab(r) {
+  const ayur = r.ayurveda || r.ayurvedic || r.traditional || {};
+  const herbs = ayur.herbs || r.ayurvedicHerbs || [];
+  const remedies = ayur.remedies || r.ayurvedicRemedies || [];
+  const concept = ayur.concept || ayur.description || r.ayurvedicConcept || '';
+  const homeRemedies = r.homeRemedies || [];
+
+  let html = '';
+
+  if (concept) {
+    html += `<span class="section-label">Ayurvedic Perspective</span>
+    <div class="answer-block">${concept}</div>`;
+  }
+
+  if (herbs && herbs.length) {
+    html += `<span class="section-label">Recommended Herbs</span>
+    <div class="tag-list">${herbs.map(h => `<span class="tag tag-green">🌿 ${h}</span>`).join('')}</div>`;
+  }
+
+  if (remedies && remedies.length) {
+    html += `<span class="section-label">Classical Formulations</span>
+    <div class="answer-block">${Array.isArray(remedies) ? remedies.join(' • ') : remedies}</div>`;
+  }
+
+  if (homeRemedies && homeRemedies.length) {
+    html += `<span class="section-label">Home Remedies</span>
+    <div class="tag-list">${homeRemedies.map(h => `<span class="tag tag-amber">🏠 ${h}</span>`).join('')}</div>`;
+  }
+
+  if (!html) {
+    html = '<div style="color:var(--muted); font-size:13.5px;">Ayurvedic information not retrieved for this specific query. Please consult an Ayurvedic practitioner (Vaidya) for personalized advice.</div>';
+  }
+
+  html += `<div style="margin-top:10px; font-size:11px; color:var(--dim);">ℹ️ Ayurvedic information is based on traditional knowledge and classical texts (Charaka Samhita, Sushruta Samhita). Evidence levels vary. Always consult a qualified Ayurvedic physician before starting herbal treatment.</div>`;
+
+  return html;
+}
+
+function buildSelfCareTab(r) {
+  const care = r.selfCare || r.selfcare || r.lifestyle || [];
+  const when = r.whenToSeekCare || r.seekCare || r.seekHelp || '';
+  const prevention = r.prevention || [];
+
+  let html = '';
+
+  if (care && care.length) {
+    html += `<span class="section-label">Self-Care Steps</span>
+    <div class="tag-list">${(Array.isArray(care) ? care : [care]).map(c => `<span class="tag tag-green">✅ ${c}</span>`).join('')}</div>`;
+  }
+
+  if (prevention && prevention.length) {
+    html += `<span class="section-label">Prevention</span>
+    <div class="tag-list">${prevention.map(p => `<span class="tag tag-blue">🛡️ ${p}</span>`).join('')}</div>`;
+  }
+
+  if (when) {
+    html += `<span class="section-label">When to Seek Care</span>
+    <div style="background:rgba(239,68,68,0.06); border:1px solid rgba(239,68,68,0.15); border-radius:10px; padding:12px 14px; font-size:13.5px; color:var(--text);">
+      ${typeof when === 'string' ? when : when.join('<br>')}
+    </div>`;
+  }
+
+  if (!html) {
+    html = `<div style="color:var(--muted); font-size:13.5px;">General Self-Care Advice:<br><br>
+      ✅ Rest and stay hydrated<br>
+      ✅ Monitor your symptoms<br>
+      ✅ Consult a doctor if symptoms worsen or persist beyond 48 hours<br>
+      🚨 Call 112 for any emergency or life-threatening situation
+    </div>`;
+  }
+
+  return html;
+}
+
+/* ── FALLBACK (when RAG modules not loaded) ── */
+function processFallbackQuery(query) {
+  const q = query.toLowerCase();
+  const synonyms = {
+    "diabetes": ["sugar", "glucose", "insulin"], "blood pressure": ["hypertension", "bp", "high bp"],
+    "fever": ["temperature", "pyrexia", "high fever"], "dengue": ["mosquito fever", "platelet"],
+    "cough": ["coughing", "dry cough"], "headache": ["migraine", "head pain"],
+    "sore throat": ["throat pain", "pharyngitis"], "back pain": ["lumbago", "spine"],
+    "diarrhea": ["loose motion", "watery stools"], "abdominal pain": ["stomach pain", "stomach ache"]
+  };
+
+  let foundKey = null;
+  if (typeof window.MEDICAL_KB === 'object') {
+    for (const key in window.MEDICAL_KB) {
+      const kwds = [key, ...(synonyms[key] || [])];
+      if (kwds.some(k => q.includes(k))) { foundKey = key; break; }
+    }
+  }
+
+  if (foundKey && window.MEDICAL_KB[foundKey]) {
+    const d = window.MEDICAL_KB[foundKey];
+    addAIMsg(`<div style="font-size:13.5px; line-height:1.6;">
+      <strong style="color:#fff; font-size:15px;">📋 ${d.condition || foundKey}</strong><br><br>
+      ${d.description || ''}<br><br>
+      <span style="color:var(--muted); font-size:11.5px;">Source: MedInVedic Medical Knowledge Base · ⚕️ Not a diagnosis — consult your doctor.</span>
+    </div>`);
+  } else {
+    addAIMsg(`<div style="font-size:13.5px; color:var(--muted);">
+      I could not find specific verified information for your query in the loaded knowledge base.<br><br>
+      💡 Try asking about: <strong>fever, dengue, diabetes, blood pressure, headache, sore throat</strong>, or common medicines.<br><br>
+      🚨 For emergencies: <a href="emergency.html" style="color:var(--sky);">SOS Emergency Assistant</a> | Call <a href="tel:112" style="color:#f87171;">112</a>
+    </div>`);
+  }
+}
+
+/* ── TAB SWITCHER ── */
+function switchRCTab(btn, cardId, pane) {
+  const card = document.getElementById(cardId);
+  if (!card) return;
+  card.querySelectorAll('.rc-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  card.querySelectorAll('.rc-pane').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(`${cardId}_${pane}`);
+  if (target) target.classList.add('active');
+}
+
+/* ── VOICE INPUT ── */
+function toggleVoice() {
+  const btn = document.getElementById('voiceBtn');
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) { alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.'); return; }
+
+  if (isListening) {
+    if (speechRec) speechRec.stop();
+    isListening = false; btn.classList.remove('listening'); btn.textContent = '🎙️';
+    return;
+  }
+
+  speechRec = new SpeechRec();
+  speechRec.lang = currentLang;
+  speechRec.interimResults = false;
+  isListening = true; btn.classList.add('listening'); btn.textContent = '●';
+  document.getElementById('chatInput').placeholder = '🎙️ Listening...';
+
+  speechRec.onresult = (e) => {
+    document.getElementById('chatInput').value = e.results[0][0].transcript;
+    isListening = false; btn.classList.remove('listening'); btn.textContent = '🎙️';
+    document.getElementById('chatInput').placeholder = 'Ask about symptoms, medicines, Ayurvedic remedies...';
+  };
+  speechRec.onerror = speechRec.onend = () => {
+    isListening = false; btn.classList.remove('listening'); btn.textContent = '🎙️';
+    document.getElementById('chatInput').placeholder = 'Ask about symptoms, medicines, Ayurvedic remedies...';
+  };
+  speechRec.start();
+}
+
+/* ── LANGUAGE ── */
+function changeLang(code) {
+  currentLang = code;
+  addAIMsg(`🌐 Language set to <strong>${code.split('-')[0].toUpperCase()}</strong>. Voice input will use this language. Medical content remains in English to preserve clinical accuracy.`);
+}
+</script>
+
+</body>
+</html>

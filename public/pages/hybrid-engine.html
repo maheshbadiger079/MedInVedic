@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hybrid Treatment Forge — Integrative Bridge — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .hybrid-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 40px 60px;
+    }
+
+    .mode-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-bottom: 60px;
+    }
+
+    .mode-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .mode-card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.04); }
+    .mode-card.active { border-color: #a855f7; background: rgba(168, 85, 247, 0.1); box-shadow: 0 0 30px rgba(168, 85, 247, 0.2); }
+
+    .mode-icon { font-size: 40px; margin-bottom: 16px; }
+    .mode-title { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+    .mode-desc { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+
+    .forge-container {
+      background: rgba(15, 23, 42, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 40px;
+      padding: 48px;
+    }
+
+    .forge-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 40px; }
+
+    .protocol-box {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 24px;
+      padding: 32px;
+    }
+
+    .protocol-tag { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: #a855f7; margin-bottom: 16px; display: block; }
+    .item-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .item-name { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+    .item-reason { font-size: 13px; color: var(--gray-400); }
+
+    .hybrid-synergy-banner {
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(168, 85, 247, 0.2);
+      border-radius: 20px; padding: 24px; margin-top: 40px;
+    }
+
+    .safety-badge { 
+       display: inline-flex; align-items: center; gap: 8px; background: rgba(16, 185, 129, 0.1); 
+       color: #24aeb1; border: 1px solid rgba(16, 185, 129, 0.2); padding: 8px 16px; border-radius: 80px;
+       font-size: 12px; font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="hybrid-lab">
+  <div style="text-align: center; margin-bottom: 60px;">
+     <h1 style="font-size: 48px; font-weight: 900; margin: 0;">Hybrid Treatment Forge</h1>
+     <p style="color: var(--gray-400); margin-top: 12px;">Integrative clinical protocols for systemic resolution.</p>
+  </div>
+
+  <div class="mode-selector">
+     <div class="mode-card" id="modeAyu" onclick="setMode('ayu')">
+        <div class="mode-icon">🌿</div>
+        <div class="mode-title">Pure Ayurveda</div>
+        <p class="mode-desc">100% Traditional botanical and lifestyle protocols.</p>
+     </div>
+     <div class="mode-card" id="modeAllo" onclick="setMode('allo')">
+        <div class="mode-icon">💉</div>
+        <div class="mode-title">Pure Allopathy</div>
+        <p class="mode-desc">Evidence-based pharmaceutical interventions.</p>
+     </div>
+     <div class="mode-card active" id="modeHybrid" onclick="setMode('hybrid')">
+        <div class="mode-icon">🧬</div>
+        <div class="mode-title">Integrative Hybrid</div>
+        <p class="mode-desc">The synergistic bridge between both sciences.</p>
+     </div>
+  </div>
+
+  <div class="forge-container">
+     <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+           <span style="font-size: 13px; font-weight: 800; color: var(--gray-500);">SELECT CONDITION</span>
+           <select class="checkout-btn" style="background: transparent; border: 1px solid rgba(255,255,255,0.1); color: white; margin-top: 8px; font-size: 18px;" id="conditionSelector" onchange="generateProtocol()">
+              <option value="diabetes">Metabolic Syndrome / Diabetes</option>
+              <option value="hypertension">Cardiovascular / Hypertension</option>
+              <option value="gastritis">Acid Reflux / Gastritis</option>
+           </select>
+        </div>
+        <div class="safety-badge">✅ Safe for Co-Administration</div>
+     </div>
+
+     <div class="forge-grid" id="forgeGrid">
+        <!-- Dynamic content via JS -->
+     </div>
+
+     <div class="hybrid-synergy-banner" id="synergyBanner">
+        <strong style="color: #a855f7;">✨ HYBRID SYNERGY INSIGHT</strong>
+        <p style="margin-top: 12px; font-size: 15px; color: var(--gray-300); line-height: 1.6;" id="synergyText">
+           Ayurvedic Guggulu helps sensitize cell receptors, allowing for lower doses of Metformin while reducing the long-term risk of insulin resistance.
+        </p>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  let currentMode = 'hybrid';
+
+  function setMode(m) {
+    currentMode = m;
+    document.querySelectorAll('.mode-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('mode' + m.charAt(0).toUpperCase() + m.slice(1)).classList.add('active');
+    generateProtocol();
+  }
+
+  function generateProtocol() {
+    const condition = document.getElementById('conditionSelector').value;
+    const grid = document.getElementById('forgeGrid');
+    const synergy = document.getElementById('synergyBanner');
+    
+    let allo = [], ayu = [], synText = "";
+
+    if (condition === 'diabetes') {
+       allo = [{ name: "Metformin (500mg)", reason: "Inhibits liver glucose production." }];
+       ayu = [{ name: "Gudmar (Sugar Destroyer)", reason: "Blocks sugar receptors and stimulates pancreas." }];
+       synText = "Integrating Gudmar with Metformin allows for superior post-prandial control. Gudmar's 'Sodhana' properties reduce the metabolic waste often associated with long-term pharma use.";
+    } else if (condition === 'hypertension') {
+       allo = [{ name: "Amlodipine (5mg)", reason: "Calcium channel blocker for vascular dilation." }];
+       ayu = [{ name: "Arjuna Bark (Hriday-Tonic)", reason: "Strengthens heart muscle and regulates Pitta-heat." }];
+       synText = "Arjuna protects the heart muscle from oxidative stress, while Amlodipine handles acute pressure. Together they prevent high-pressure cardiomegaly.";
+    } else {
+       allo = [{ name: "Pantoprazole (40mg)", reason: "PPI to block gastric acid pumps." }];
+       ayu = [{ name: "Kamadudha Rasa", reason: "Cooling alkaline minerals to balance Pitta fire." }];
+       synText = "Kamadudha addresses the root Pitta cause, reducing reliance on PPIs which can interfere with nutrient absorption long-term.";
+    }
+
+    synergy.style.display = currentMode === 'hybrid' ? 'block' : 'none';
+    document.getElementById('synergyText').textContent = synText;
+
+    let html = "";
+    if (currentMode === 'allo' || currentMode === 'hybrid') {
+       html += `
+         <div class="protocol-box">
+            <span class="protocol-tag" style="color: #60a5fa;">Allopathic Protocol</span>
+            ${allo.map(i => `
+               <div class="item-row">
+                  <div>
+                     <div class="item-name">${i.name}</div>
+                     <div class="item-reason">${i.reason}</div>
+                  </div>
+                  <div style="font-size: 11px; font-weight: 800; color: var(--gray-600);">MORNING / NIGHT</div>
+               </div>
+            `).join('')}
+         </div>
+       `;
+    }
+
+    if (currentMode === 'ayu' || currentMode === 'hybrid') {
+       html += `
+         <div class="protocol-box">
+            <span class="protocol-tag" style="color: #4ade80;">Ayurvedic Protocol</span>
+            ${ayu.map(i => `
+               <div class="item-row">
+                  <div>
+                     <div class="item-name">${i.name}</div>
+                     <div class="item-reason">${i.reason}</div>
+                  </div>
+                  <div style="font-size: 11px; font-weight: 800; color: var(--gray-600);">EMPTY STOMACH</div>
+               </div>
+            `).join('')}
+         </div>
+       `;
+    }
+
+    grid.innerHTML = html;
+  }
+
+  // Init
+  generateProtocol();
+</script>
+
+</body>
+</html>

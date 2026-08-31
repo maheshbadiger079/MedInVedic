@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vikriti Monitor — Dosha Imbalance Tracker — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .imbalance-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 40px 60px;
+    }
+
+    .tracker-grid { display: grid; grid-template-columns: 450px 1fr; gap: 40px; }
+
+    .input-panel {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px;
+      padding: 40px;
+    }
+
+    .habit-group { margin-bottom: 32px; }
+    .habit-label { display: block; font-size: 13px; color: var(--gray-400); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
+    
+    .habit-options { display: flex; flex-wrap: wrap; gap: 10px; }
+    .habit-chip {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 18px; border-radius: 50px; font-size: 14px; cursor: pointer; transition: 0.3s;
+    }
+    .habit-chip:hover { border-color: #06b6d4; background: rgba(6,182,212,0.05); }
+    .habit-chip.active { background: #06b6d4; color: white; border-color: #06b6d4; }
+
+    /* Visualizer */
+    .visualizer-card {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 32px;
+      padding: 40px;
+      display: flex; flex-direction: column; align-items: center;
+      position: sticky; top: 120px;
+    }
+
+    .balance-container {
+      width: 100%; height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 40px;
+      margin: 40px 0;
+    }
+    .dosha-pillar { width: 60px; border-radius: 12px 12px 0 0; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
+    .pillar-label { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 800; color: var(--gray-400); }
+
+    .v-pillar { background: #06b6d4; }
+    .p-pillar { background: #ef4444; }
+    .k-pillar { background: #fbbf24; }
+
+    .deviation-warning {
+      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
+      padding: 24px; border-radius: 20px; width: 100%; margin-top: 40px; display: none;
+    }
+
+    .correction-box {
+      background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 24px; border-radius: 20px; width: 100%; margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="imbalance-lab">
+  <div style="margin-bottom: 48px;">
+     <div style="font-size: 12px; font-weight: 800; color: #06b6d4; letter-spacing: 3px; margin-bottom: 8px;">VIKRITI MONITOR</div>
+     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Real-time Dosha Balance</h1>
+     <p style="color: var(--gray-400); margin-top: 8px;">Track your systemic deviation from your natural Prakriti.</p>
+  </div>
+
+  <div class="tracker-grid">
+     <div class="input-panel">
+        <div class="habit-group">
+           <span class="habit-label">Dietary Intake (Last 24h)</span>
+           <div class="habit-options">
+              <div class="habit-chip" data-type="p" onclick="toggleChip(this)">🔥 Spicy/Oily</div>
+              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🧁 High Sugar</div>
+              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">❄️ Cold/Raw</div>
+              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌬️ Dry/Light</div>
+           </div>
+        </div>
+
+        <div class="habit-group">
+           <span class="habit-label">Rest & Recovery</span>
+           <div class="habit-options">
+              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌙 Late Night (post 11PM)</div>
+              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛌 Oversleeping (>9h)</div>
+              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🚫 Interrupted Sleep</div>
+           </div>
+        </div>
+
+        <div class="habit-group">
+           <span class="habit-label">Mental & Physical Intensity</span>
+           <div class="habit-options">
+              <div class="habit-chip" data-type="p" onclick="toggleChip(this)">😡 High Anger/Intensity</div>
+              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">😰 Anxiety/Rushing</div>
+              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛋️ Heavy Sedentary</div>
+           </div>
+        </div>
+
+        <button class="checkout-btn" style="width:100%; margin-top: 20px; background: #06b6d4;" onclick="calculateImbalance()">Update Systemic Balance →</button>
+     </div>
+
+     <div class="visualizer-card">
+        <h3 style="font-size: 20px; font-weight: 800; margin: 0;">Systemic Equilibrium Status</h3>
+        
+        <div class="balance-container">
+           <div class="dosha-pillar v-pillar" id="vBar" style="height: 33.3%;">
+              <div class="pillar-label">VATA</div>
+           </div>
+           <div class="dosha-pillar p-pillar" id="pBar" style="height: 33.3%;">
+              <div class="pillar-label">PITTA</div>
+           </div>
+           <div class="dosha-pillar k-pillar" id="kBar" style="height: 33.3%;">
+              <div class="pillar-label">KAPHA</div>
+           </div>
+        </div>
+
+        <div id="statusText" style="font-weight: 800; font-size: 18px; color: var(--primary); margin-top: 40px;">
+           STATUS: BALANCED (Swasthya)
+        </div>
+
+        <div class="deviation-warning" id="warningBox">
+           <strong style="color: #ef4444; font-size: 14px;">🚨 CRITICAL DEVIATION</strong>
+           <p style="font-size: 13px; color: var(--gray-300); margin-top: 8px;" id="warningMsg">
+              Systemic Vata is spiking due to late rest and dry diet.
+           </p>
+        </div>
+
+        <div class="correction-box">
+           <strong style="color: #a21d21; font-size: 14px;">⚡ IMMEDIATE CORRECTION</strong>
+           <p style="font-size: 14px; color: var(--gray-200); margin-top: 8px;" id="correctionMsg">
+              Sip warm ginger water and practice 5 minutes of focused breathing to stabilize Agni.
+           </p>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  function toggleChip(el) {
+    el.classList.toggle('active');
+  }
+
+  function calculateImbalance() {
+    const active = document.querySelectorAll('.habit-chip.active');
+    let vCount = 0, pCount = 0, kCount = 0;
+
+    active.forEach(chip => {
+      const type = chip.getAttribute('data-type');
+      if (type === 'v') vCount++;
+      if (type === 'p') pCount++;
+      if (type === 'k') kCount++;
+    });
+
+    const total = vCount + pCount + kCount || 3;
+    const vH = (vCount || 1) / total * 100;
+    const pH = (pCount || 1) / total * 100;
+    const kH = (kCount || 1) / total * 100;
+
+    document.getElementById('vBar').style.height = (vH + 10) + '%';
+    document.getElementById('pBar').style.height = (pH + 10) + '%';
+    document.getElementById('kBar').style.height = (kH + 10) + '%';
+
+    const statusText = document.getElementById('statusText');
+    const warningBox = document.getElementById('warningBox');
+    const warningMsg = document.getElementById('warningMsg');
+    const correctionMsg = document.getElementById('correctionMsg');
+
+    if (active.length > 2) {
+       statusText.textContent = "STATUS: VIKRITI (IMBALANCED)";
+       statusText.style.color = "#ef4444";
+       warningBox.style.display = 'block';
+       
+       if (vCount >= pCount && vCount >= kCount) {
+          warningMsg.textContent = "Elevated Vata detected. Nervous system and digestion are under significant air-element strain.";
+          correctionMsg.textContent = "Apply warm Sesame oil to feet (Padabhyanga) and consume a freshly cooked warm meal immediately.";
+       } else if (pCount >= vCount && pCount >= kCount) {
+          warningMsg.textContent = "Elevated Pitta detected. Internal heat is high, impacting inflammatory markers and temperament.";
+          correctionMsg.textContent = "Consume cold Aloe Vera juice or Coconut water. Avoid intense screen light and loud noises.";
+       } else {
+          warningMsg.textContent = "Elevated Kapha detected. Systemic heaviness and lethargy are accumulating in the channels.";
+          correctionMsg.textContent = "Perform 10 Sun Salutations (Suryanamaskar) and avoid cold/heavy dairy for the next 24 hours.";
+       }
+    } else {
+       statusText.textContent = "STATUS: BALANCED (Swasthya)";
+       statusText.style.color = "#a21d21";
+       warningBox.style.display = 'none';
+       correctionMsg.textContent = "Continue your current regimen. Maintain steady hydration and rhythmic rest.";
+    }
+  }
+</script>
+
+</body>
+</html>
