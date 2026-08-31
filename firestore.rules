@@ -40,6 +40,11 @@ service cloud.firestore {
     match /doctors/{doctorId} {
       allow read: if true; // Public directory
       allow create, update, delete: if isAdmin();
+
+      match /slots/{slotId} {
+        allow read: if true;
+        allow write: if isAdmin();
+      }
     }
 
     // ── Pharmacies, Clinics & Labs ────────────────────────────────

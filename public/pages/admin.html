@@ -35,17 +35,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f8f7f4;
-      --card: rgba(255,255,255,0.85);
-      --border: rgba(0,0,0,0.08);
-      --primary: #2d6a4f;
-      --primary-light: #52b788;
-      --accent: #e07a5f;
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.88);
+      --border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --accent: #15803d;
       --danger: #dc2626;
       --warn: #d97706;
       --info: #0284c7;
-      --text: #1a1a1a;
-      --muted: #666;
+      --text: #1a2e1a;
+      --muted: #52796f;
       --sidebar-w: 240px;
     }
 
@@ -1570,30 +1570,54 @@ async function loadPrescriptions() {
   const tbody = document.getElementById('rxTableBody');
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
   try {
-    const rxs = await API.admin.getPrescriptions();
-    if (!rxs.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📄</div><p>No prescriptions to review</p></div></td></tr>'; return; }
+    let rxs = [];
+    try {
+      const res = await fetch('/api/prescriptions/pending', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        rxs = data.prescriptions || [];
+      }
+    } catch (apiErr) {
+      console.warn('API getPrescriptions fallback:', apiErr);
+    }
+
+    if (!rxs.length) {
+      rxs = await API.admin.getPrescriptions().catch(() => []);
+    }
+
+    if (!rxs.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📄</div><p>No pending prescriptions to review</p></div></td></tr>'; return; }
     tbody.innerHTML = rxs.map(r => `
       <tr>
-        <td>#${r.id}</td>
-        <td>${r.file_name || '—'}</td>
-        <td style="color:var(--muted);font-size:12px;">User #${r.user_id}</td>
-        <td>${statusBadge(r.status)}</td>
-        <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
+        <td>#${(r.id || '').substring(0, 10)}</td>
+        <td>${r.fileName || r.file_name || 'prescription.pdf'}</td>
+        <td style="color:var(--muted);font-size:12px;">${r.userEmail || ('User #' + (r.user_id || r.userId || ''))}</td>
+        <td>${statusBadge(r.status || 'PENDING_REVIEW')}</td>
+        <td style="font-size:12px;max-width:160px;">${r.reviewReason || r.notes || '—'}</td>
         <td>
-          ${r.status !== 'verified' ? `<button class="btn btn-sm btn-success" onclick="verifyRx(${r.id},'verified')">✅ Verify</button>` : ''}
-          <button class="btn btn-sm btn-danger" onclick="verifyRx(${r.id},'rejected')">❌ Reject</button>
+          <button class="btn btn-sm btn-success" onclick="verifyRx('${r.id}','APPROVED')">✅ Approve</button>
+          <button class="btn btn-sm btn-danger" onclick="verifyRx('${r.id}','REJECTED')">❌ Reject</button>
         </td>
       </tr>`).join('');
-  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Failed</td></tr>'; }
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Failed to load prescriptions</td></tr>'; }
 }
 
-async function verifyRx(id, status) {
-  const notes = status === 'verified' ? prompt('Add verification notes (optional):') || '' : 'Rejected — insufficient information';
+async function verifyRx(id, decision) {
+  const reason = decision === 'APPROVED' ? (prompt('Add approval notes (optional):') || 'Verified by pharmacist') : (prompt('Enter reason for rejection:') || 'Illegible prescription');
   try {
-    await API.admin.verifyPrescription(id, status, notes);
-    toast(`Prescription ${status}`);
+    try {
+      await fetch(`/api/prescriptions/${id}/review`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+        body: JSON.stringify({ decision, reason })
+      });
+    } catch (e) {
+      await API.admin.verifyPrescription(id, decision.toLowerCase(), reason);
+    }
+    toast(`Prescription marked as ${decision}`);
     loadPrescriptions();
-  } catch (e) { toast('Failed', 'error'); }
+  } catch (e) { toast('Failed to update prescription', 'error'); }
 }
 
 // 8. CONSULTATIONS
