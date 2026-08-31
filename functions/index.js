@@ -765,6 +765,261 @@ function createApp() {
     }
   });
 
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 2 — WALLET & REFERRAL SYSTEM
+  // ─────────────────────────────────────────────────────────────
+
+  // GET /wallet — balance + recent transactions
+  app.get('/wallet', requireAuth, async (req, res) => {
+    try {
+      const walletDoc = await db.collection(COLLECTIONS.WALLETS).doc(req.user.id).get();
+      const balance = walletDoc.exists ? (walletDoc.data().balance || 0) : 0;
+      const txSnap = await db.collection(COLLECTIONS.WALLETS).doc(req.user.id)
+        .collection('transactions').orderBy('created_at', 'desc').limit(20).get();
+      const transactions = txSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      res.json({ success: true, balance, currency: 'INR', transactions });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /wallet/topup — verify Razorpay payment & credit wallet
+  app.post('/wallet/topup', requireAuth, async (req, res) => {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, amount } = req.body;
+    if (!razorpay_payment_id || !amount) return res.status(400).json({ error: 'payment_id and amount required' });
+    try {
+      if (razorpay_signature) {
+        const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+        const expectedSig = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET).update(body).digest('hex');
+        if (expectedSig !== razorpay_signature) return res.status(400).json({ error: 'Invalid payment signature' });
+      }
+      const topupAmount = Math.round(Number(amount));
+      const walletRef = db.collection(COLLECTIONS.WALLETS).doc(req.user.id);
+      await db.runTransaction(async (t) => {
+        const wd = await t.get(walletRef);
+        const current = wd.exists ? (wd.data().balance || 0) : 0;
+        const newBalance = current + topupAmount;
+        t.set(walletRef, { userId: req.user.id, balance: newBalance, currency: 'INR', updated_at: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+        t.set(walletRef.collection('transactions').doc(), {
+          type: 'CREDIT', amount: topupAmount, description: 'Wallet Top-up via Razorpay',
+          razorpayPaymentId: razorpay_payment_id, balance_after: newBalance,
+          created_at: admin.firestore.FieldValue.serverTimestamp()
+        });
+      });
+      await dispatchNotification(req.user.id, 'WALLET_TOPUP', 'in_app', { amount: topupAmount, message: `₹${topupAmount} added to your MedInVedic Wallet!` });
+      res.json({ success: true, credited: topupAmount, message: `₹${topupAmount} added to wallet` });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /referrals/generate — create unique referral code
+  app.post('/referrals/generate', requireAuth, async (req, res) => {
+    try {
+      const userDoc = await db.collection(COLLECTIONS.USERS).doc(req.user.id).get();
+      if (userDoc.exists && userDoc.data().referralCode) {
+        return res.json({ success: true, referralCode: userDoc.data().referralCode });
+      }
+      const code = 'MIV' + Math.random().toString(36).substring(2, 8).toUpperCase();
+      await db.collection(COLLECTIONS.USERS).doc(req.user.id).update({ referralCode: code });
+      res.json({ success: true, referralCode: code });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /referrals/apply — apply referral code (₹50 cashback to both)
+  app.post('/referrals/apply', requireAuth, async (req, res) => {
+    const { referralCode } = req.body;
+    if (!referralCode) return res.status(400).json({ error: 'referralCode required' });
+    try {
+      const userDoc = await db.collection(COLLECTIONS.USERS).doc(req.user.id).get();
+      if (userDoc.exists && userDoc.data().referralUsed) {
+        return res.status(400).json({ error: 'You have already used a referral code' });
+      }
+      const referrerSnap = await db.collection(COLLECTIONS.USERS).where('referralCode', '==', referralCode.toUpperCase()).limit(1).get();
+      if (referrerSnap.empty) return res.status(404).json({ error: 'Invalid referral code' });
+      const referrerId = referrerSnap.docs[0].id;
+      if (referrerId === req.user.id) return res.status(400).json({ error: 'Cannot use your own referral code' });
+      const CASHBACK = 50;
+      const batch = db.batch();
+      const referrerWalletRef = db.collection(COLLECTIONS.WALLETS).doc(referrerId);
+      const referrerWallet = await referrerWalletRef.get();
+      const referrerBalance = referrerWallet.exists ? (referrerWallet.data().balance || 0) : 0;
+      batch.set(referrerWalletRef, { balance: referrerBalance + CASHBACK, updated_at: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      batch.set(referrerWalletRef.collection('transactions').doc(), { type: 'CREDIT', amount: CASHBACK, description: `Referral bonus — ${req.user.email} joined`, created_at: admin.firestore.FieldValue.serverTimestamp() });
+      const newUserWalletRef = db.collection(COLLECTIONS.WALLETS).doc(req.user.id);
+      const newUserWallet = await newUserWalletRef.get();
+      const newUserBalance = newUserWallet.exists ? (newUserWallet.data().balance || 0) : 0;
+      batch.set(newUserWalletRef, { balance: newUserBalance + CASHBACK, updated_at: admin.firestore.FieldValue.serverTimestamp() }, { merge: true });
+      batch.set(newUserWalletRef.collection('transactions').doc(), { type: 'CREDIT', amount: CASHBACK, description: 'Welcome bonus — Referral code applied', created_at: admin.firestore.FieldValue.serverTimestamp() });
+      batch.update(db.collection(COLLECTIONS.USERS).doc(req.user.id), { referralUsed: true, referredBy: referrerId });
+      batch.set(db.collection(COLLECTIONS.REFERRALS).doc(), { referrerId, referredUserId: req.user.id, referralCode: referralCode.toUpperCase(), cashbackAmount: CASHBACK, created_at: admin.firestore.FieldValue.serverTimestamp() });
+      await batch.commit();
+      await dispatchNotification(referrerId, 'REFERRAL_BONUS', 'in_app', { message: `₹${CASHBACK} referral bonus credited!`, amount: CASHBACK });
+      await dispatchNotification(req.user.id, 'WELCOME_BONUS', 'in_app', { message: `₹${CASHBACK} welcome bonus credited! Start shopping.`, amount: CASHBACK });
+      res.json({ success: true, message: `₹${CASHBACK} cashback credited to both accounts!` });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 2 — DOCTOR SLOTS & SMART BOOKING (Jitsi Meet)
+  // ─────────────────────────────────────────────────────────────
+
+  // GET /doctors/:doctorId/slots — available slots for a date
+  app.get('/doctors/:doctorId/slots', async (req, res) => {
+    try {
+      const targetDate = req.query.date || new Date().toISOString().split('T')[0];
+      const slotsSnap = await db.collection(COLLECTIONS.DOCTORS).doc(req.params.doctorId)
+        .collection('slots').where('date', '==', targetDate).where('booked', '==', false).get();
+      const slots = slotsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Seed default slots if none exist (first-time setup)
+      if (slots.length === 0) {
+        const defaultSlots = ['09:00','09:30','10:00','10:30','11:00','11:30','14:00','14:30','15:00','15:30','16:00','16:30'];
+        for (const time of defaultSlots) {
+          await db.collection(COLLECTIONS.DOCTORS).doc(req.params.doctorId).collection('slots').add({ date: targetDate, time, booked: false, created_at: admin.firestore.FieldValue.serverTimestamp() });
+        }
+        return res.json({ success: true, date: targetDate, slots: defaultSlots.map(t => ({ time: t, booked: false })) });
+      }
+      res.json({ success: true, date: targetDate, slots });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /doctors/:doctorId/slots/book — atomically book slot + generate Jitsi link
+  app.post('/doctors/:doctorId/slots/book', requireAuth, async (req, res) => {
+    const { slotId, date, time, paymentDocId, notes } = req.body;
+    if (!slotId && !time) return res.status(400).json({ error: 'slotId or time required' });
+    try {
+      const doctorSnap = await db.collection(COLLECTIONS.DOCTORS).doc(req.params.doctorId).get();
+      if (!doctorSnap.exists) return res.status(404).json({ error: 'Doctor not found' });
+      const doctor = doctorSnap.data();
+      const roomName = `MedInVedic-${req.params.doctorId.substring(0, 6)}-${Date.now()}`;
+      const videoLink = `https://meet.jit.si/${roomName}`;
+      if (slotId) {
+        await db.runTransaction(async (t) => {
+          const slotRef = db.collection(COLLECTIONS.DOCTORS).doc(req.params.doctorId).collection('slots').doc(slotId);
+          const slotDoc = await t.get(slotRef);
+          if (!slotDoc.exists) throw new Error('Slot not found');
+          if (slotDoc.data().booked) throw new Error('Slot already booked — please choose another time');
+          t.update(slotRef, { booked: true, bookedBy: req.user.id, bookedAt: admin.firestore.FieldValue.serverTimestamp() });
+        });
+      }
+      const consultRef = await db.collection(COLLECTIONS.CONSULTATIONS).add({
+        doctorId: req.params.doctorId, doctorName: doctor.name || '', doctorSpecialization: doctor.specialization || '',
+        patientId: req.user.id, patientName: req.user.name || req.user.email,
+        slotId: slotId || null, date: date || new Date().toISOString().split('T')[0], time: time || '',
+        status: 'CONFIRMED', videoLink, notes: notes || '', paymentDocId: paymentDocId || '',
+        consultationFee: doctor.consultationFee || 199, created_at: admin.firestore.FieldValue.serverTimestamp()
+      });
+      await dispatchNotification(req.user.id, 'CONSULTATION_CONFIRMED', 'in_app', {
+        message: `✅ Consultation with ${doctor.name} confirmed! Join: ${videoLink}`,
+        videoLink, date, time, doctorName: doctor.name
+      });
+      await createAuditLog(req.user.id, 'customer', 'CONSULTATION_BOOKED', 'consultation', consultRef.id, { doctorId: req.params.doctorId, date, time });
+      res.json({ success: true, consultationId: consultRef.id, videoLink, status: 'CONFIRMED', date, time });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 2 — PRESCRIPTION UPLOAD & PHARMACIST REVIEW
+  // ─────────────────────────────────────────────────────────────
+
+  // POST /prescriptions/notify — record upload & alert admin
+  app.post('/prescriptions/notify', requireAuth, async (req, res) => {
+    const { orderId, storagePath, fileName } = req.body;
+    if (!storagePath) return res.status(400).json({ error: 'storagePath required' });
+    try {
+      const prescRef = await db.collection(COLLECTIONS.PRESCRIPTIONS).add({
+        userId: req.user.id, userEmail: req.user.email,
+        orderId: orderId || null, storagePath, fileName: fileName || 'prescription',
+        status: 'PENDING_REVIEW', uploadedAt: admin.firestore.FieldValue.serverTimestamp()
+      });
+      if (orderId) {
+        await db.collection(COLLECTIONS.ORDERS).doc(orderId).update({ prescriptionStatus: 'PENDING_REVIEW', prescriptionId: prescRef.id }).catch(() => {});
+      }
+      await dispatchNotification('admin', 'PRESCRIPTION_UPLOADED', 'in_app', {
+        message: `New prescription uploaded by ${req.user.email} for order ${orderId || 'N/A'}`,
+        prescriptionId: prescRef.id, userId: req.user.id
+      });
+      res.json({ success: true, prescriptionId: prescRef.id, status: 'PENDING_REVIEW' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // PUT /prescriptions/:id/review — pharmacist APPROVED / REJECTED
+  app.put('/prescriptions/:id/review', requireAdmin, async (req, res) => {
+    const { decision, reason } = req.body;
+    if (!['APPROVED', 'REJECTED'].includes(decision)) return res.status(400).json({ error: 'decision must be APPROVED or REJECTED' });
+    try {
+      const prescSnap = await db.collection(COLLECTIONS.PRESCRIPTIONS).doc(req.params.id).get();
+      if (!prescSnap.exists) return res.status(404).json({ error: 'Prescription not found' });
+      const presc = prescSnap.data();
+      await db.collection(COLLECTIONS.PRESCRIPTIONS).doc(req.params.id).update({
+        status: decision, reviewReason: reason || '', reviewedAt: admin.firestore.FieldValue.serverTimestamp(), reviewedBy: req.user.id
+      });
+      if (presc.orderId) {
+        await db.collection(COLLECTIONS.ORDERS).doc(presc.orderId).update({
+          prescriptionStatus: decision,
+          orderStatus: decision === 'APPROVED' ? 'CONFIRMED' : 'PRESCRIPTION_REJECTED'
+        }).catch(() => {});
+      }
+      await dispatchNotification(presc.userId, 'PRESCRIPTION_REVIEWED', 'in_app', {
+        message: decision === 'APPROVED' ? '✅ Your prescription is verified! Order is being processed.' : `❌ Prescription rejected: ${reason || 'Please upload a valid prescription.'}`,
+        decision, reason: reason || ''
+      });
+      await createAuditLog(req.user.id, 'admin', `PRESCRIPTION_${decision}`, 'prescription', req.params.id, { reason });
+      res.json({ success: true, decision, prescriptionId: req.params.id });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /prescriptions/pending — admin: pending review queue
+  app.get('/prescriptions/pending', requireAdmin, async (req, res) => {
+    try {
+      const snap = await db.collection(COLLECTIONS.PRESCRIPTIONS)
+        .where('status', '==', 'PENDING_REVIEW').orderBy('uploadedAt', 'desc').limit(50).get();
+      res.json({ success: true, prescriptions: snap.docs.map(d => ({ id: d.id, ...d.data() })), count: snap.size });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // ─────────────────────────────────────────────────────────────
+  // PHASE 2 — FCM PUSH NOTIFICATIONS
+  // ─────────────────────────────────────────────────────────────
+
+  // POST /notifications/register-token — save FCM token for user
+  app.post('/notifications/register-token', requireAuth, async (req, res) => {
+    const { fcmToken, device } = req.body;
+    if (!fcmToken) return res.status(400).json({ error: 'fcmToken required' });
+    try {
+      await db.collection(COLLECTIONS.USERS).doc(req.user.id).update({
+        fcmTokens: admin.firestore.FieldValue.arrayUnion(fcmToken),
+        lastDevice: device || 'web', updated_at: admin.firestore.FieldValue.serverTimestamp()
+      });
+      res.json({ success: true, message: 'Push notification token registered' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /notifications/send — admin: send FCM push to user
+  app.post('/notifications/send', requireAdmin, async (req, res) => {
+    const { userId, title, body, data } = req.body;
+    if (!userId || !title) return res.status(400).json({ error: 'userId and title required' });
+    try {
+      const userDoc = await db.collection(COLLECTIONS.USERS).doc(userId).get();
+      const fcmTokens = userDoc.exists ? (userDoc.data().fcmTokens || []) : [];
+      let sent = 0;
+      for (const token of fcmTokens.slice(0, 5)) {
+        try {
+          await admin.messaging().send({ token, notification: { title, body: body || '' }, data: data || {} });
+          sent++;
+        } catch (e) { console.warn('FCM send error:', e.message); }
+      }
+      await dispatchNotification(userId, 'PUSH', 'push', { title, body });
+      res.json({ success: true, sent, total_tokens: fcmTokens.length });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /notifications/my — user's notification inbox
+  app.get('/notifications/my', requireAuth, async (req, res) => {
+    try {
+      const snap = await db.collection(COLLECTIONS.NOTIFICATIONS)
+        .where('userId', '==', req.user.id).orderBy('created_at', 'desc').limit(30).get();
+      res.json({ success: true, notifications: snap.docs.map(d => ({ id: d.id, ...d.data() })) });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
   return app;
 }
 

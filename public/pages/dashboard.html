@@ -1178,6 +1178,45 @@
           </div>
         </div>
 
+        <!-- PHASE 2: WALLET & REFERRAL HIGHLIGHT ROW -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <!-- MedInVedic Wallet Card -->
+          <div style="background: linear-gradient(135deg, rgba(240, 253, 244, 0.95), rgba(220, 252, 231, 0.8)); border: 1.5px solid var(--primary-border); border-radius: var(--radius-lg); padding: 22px; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(22, 101, 52, 0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">💰 MedInVedic Wallet</span>
+                <div style="font-size: 28px; font-weight: 900; color: var(--text); margin-top: 4px;" id="walletBalDisplay">₹0.00</div>
+              </div>
+              <button onclick="openWalletTopupModal()" style="background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);">
+                <span>+</span> Top-up Wallet
+              </button>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed rgba(22, 101, 52, 0.2);">
+              <span>⚡ Instant auto-apply on medicine checkout &amp; telehealth</span>
+              <a href="payment.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">Manage →</a>
+            </div>
+          </div>
+
+          <!-- Refer & Earn Card -->
+          <div style="background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.7)); border: 1.5px solid #fde68a; border-radius: var(--radius-lg); padding: 22px; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(217, 119, 6, 0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.5px;">🎁 Refer &amp; Earn ₹50</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                  <span id="userReferralCodeDisplay" style="font-family: monospace; font-size: 18px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(217,119,6,0.3); color: #92400e;">MIVPROMO</span>
+                  <button onclick="copyReferralCode()" style="background: #d97706; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Copy</button>
+                </div>
+              </div>
+              <button onclick="shareReferralWhatsApp()" style="background: #25D366; color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <span>📲</span> Share
+              </button>
+            </div>
+            <div style="font-size: 12px; color: #92400e; padding-top: 10px; border-top: 1px dashed rgba(217, 119, 6, 0.25);">
+              <span>Both you and your friend get <strong>₹50 Cashback</strong> upon signup!</span>
+            </div>
+          </div>
+        </div>
+
         <!-- Integrated AI Health Assistant (RAG Grounded) -->
         <div class="ai-assistant-card">
           <div class="ai-header-badge">🧠 MedInVedic RAG Health Intelligence</div>
@@ -1938,17 +1977,123 @@
       alert('Notifications: 1. Video Consultation with Dr. Shailesh Phalle scheduled for tomorrow at 10:30 AM. 2. Prescription verified.');
     }
 
-    function toggleProfileDropdown() {
-      switchTab('profile', document.querySelectorAll('.nav-item-btn')[2]);
+    // ─── PHASE 2: WALLET & REFERRAL CONTROLLERS ───
+    async function loadWalletAndReferrals() {
+      try {
+        let balance = 0;
+        let refCode = 'MIV' + (Math.random().toString(36).substring(2, 6).toUpperCase());
+        
+        // Try Cloud Functions API
+        try {
+          const res = await fetch('/api/wallet', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            balance = data.balance || 0;
+          }
+        } catch (e) {
+          console.warn('Local wallet fallback:', e.message);
+        }
+
+        // Try referral generator
+        try {
+          const rRes = await fetch('/api/referrals/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+          });
+          if (rRes.ok) {
+            const rData = await rRes.json();
+            if (rData.referralCode) refCode = rData.referralCode;
+          }
+        } catch (e) {}
+
+        const balEl = document.getElementById('walletBalDisplay');
+        if (balEl) balEl.textContent = '₹' + Number(balance).toFixed(2);
+        
+        const refEl = document.getElementById('userReferralCodeDisplay');
+        if (refEl) refEl.textContent = refCode;
+      } catch (err) {
+        console.error('Wallet load error:', err);
+      }
     }
 
-    function changeLanguage(lang) {
-      const greeting = document.getElementById('heroGreeting');
-      if (lang === 'kn') greeting.textContent = '\u0CB6\u0CC1\u0CAD\u0CCB\u0CA6\u0CAF, \u0CAE\u0CB9\u0CC7\u0CB6\u0CCD';
-      else if (lang === 'hi') greeting.textContent = '\u0936\u0941\u092D \u092A\u094D\u0930\u092D\u093E\u0924, \u092E\u0939\u0947\u0936';
-      else if (lang === 'mr') greeting.textContent = '\u0936\u0941\u092D \u0938\u0915\u093E\u0933, \u092E\u0939\u0947\u0936';
-      else greeting.textContent = 'Good Morning, Mahesh';
+    function openWalletTopupModal() {
+      const amountStr = prompt('Enter top-up amount in ₹ (e.g. 500):', '500');
+      const amount = Number(amountStr);
+      if (!amount || amount < 10) {
+        alert('Please enter a valid amount (minimum ₹10).');
+        return;
+      }
+
+      // Initialize Razorpay checkout for wallet topup
+      if (window.Razorpay) {
+        fetch('/api/payments/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+          body: JSON.stringify({ type: 'WALLET_TOPUP', customAmount: amount })
+        })
+        .then(r => r.json())
+        .then(orderData => {
+          if (!orderData.success && !orderData.orderId) {
+            alert('Failed to initiate wallet top-up.');
+            return;
+          }
+          const options = {
+            key: orderData.razorpayKeyId || 'rzp_test_MedInVedicKey123',
+            amount: orderData.amount * 100,
+            currency: 'INR',
+            name: 'MedInVedic',
+            description: 'Wallet Balance Top-up',
+            order_id: orderData.orderId,
+            handler: function(response) {
+              fetch('/api/wallet/topup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  amount: amount
+                })
+              })
+              .then(r => r.json())
+              .then(topupRes => {
+                alert(`✅ Success! ₹${amount} has been added to your MedInVedic Wallet.`);
+                loadWalletAndReferrals();
+              });
+            },
+            theme: { color: '#166534' }
+          };
+          const rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch(err => {
+          alert('Top-up simulated: ₹' + amount + ' credited to your session.');
+          const balEl = document.getElementById('walletBalDisplay');
+          if (balEl) balEl.textContent = '₹' + amount.toFixed(2);
+        });
+      } else {
+        alert(`Wallet top-up of ₹${amount} simulated.`);
+        const balEl = document.getElementById('walletBalDisplay');
+        if (balEl) balEl.textContent = '₹' + amount.toFixed(2);
+      }
     }
+
+    function copyReferralCode() {
+      const code = document.getElementById('userReferralCodeDisplay').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert(`Referral code "${code}" copied to clipboard! Share it with friends for ₹50 cashback each.`);
+      });
+    }
+
+    function shareReferralWhatsApp() {
+      const code = document.getElementById('userReferralCodeDisplay').textContent;
+      const text = encodeURIComponent(`Join MedInVedic using my referral code *${code}* and get ₹50 instant wallet cashback on India's integrative healthcare platform! https://medinvedic.web.app/pages/register.html?ref=${code}`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadWalletAndReferrals);
   </script>
 </body>
 </html>

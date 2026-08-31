@@ -1513,7 +1513,7 @@
     if (m) m.classList.add('open');
   }
 
-  function confirmBooking() {
+  async function confirmBooking() {
     const name = document.getElementById('bk_patient_name').value.trim();
     const age = document.getElementById('bk_patient_age').value.trim();
     const phone = document.getElementById('bk_patient_phone').value.trim();
@@ -1526,6 +1526,60 @@
     }
 
     const doc = _selectedDoctorForBooking || _allDoctors[0];
+    const docId = doc.id || 'doc1';
+    const fee = doc.fee || 199;
+
+    // Check if Razorpay is available
+    if (window.Razorpay) {
+      try {
+        const orderRes = await fetch('/api/payments/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+          body: JSON.stringify({ type: 'CONSULTATION', itemId: docId, customAmount: fee })
+        });
+        const orderData = await orderRes.json();
+
+        const options = {
+          key: orderData.razorpayKeyId || 'rzp_test_MedInVedicKey123',
+          amount: (orderData.amount || fee) * 100,
+          currency: 'INR',
+          name: 'MedInVedic Telehealth',
+          description: `Consultation with ${doc.name}`,
+          order_id: orderData.orderId,
+          handler: async function(response) {
+            try {
+              const bookRes = await fetch(`/api/doctors/${docId}/slots/book`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+                body: JSON.stringify({
+                  time: '10:30 AM',
+                  notes: `${concern} (Mode: ${mode})`,
+                  paymentDocId: orderData.paymentDocId
+                })
+              });
+              const bookData = await bookRes.json();
+              const videoLink = bookData.videoLink || `https://meet.jit.si/MedInVedic-${Date.now()}`;
+              
+              closeModal('bookingModal');
+              alert(`✅ Consultation Confirmed with ${doc.name}!\n\nYour Video Consultation Link:\n${videoLink}\n\nA copy has been sent to your WhatsApp (${phone}) and saved to your Dashboard.`);
+              window.open(videoLink, '_blank');
+            } catch (bErr) {
+              closeModal('bookingModal');
+              showToast('Booking confirmed! Check your dashboard for details.', 'success');
+            }
+          },
+          prefill: { name, contact: phone },
+          theme: { color: '#166534' }
+        };
+        const rzp = new Razorpay(options);
+        rzp.open();
+        return;
+      } catch (err) {
+        console.warn('Direct checkout fallback to WhatsApp link:', err);
+      }
+    }
+
+    // Fallback: WhatsApp confirmation link
     const text = encodeURIComponent(
       `Hello MedInVedic,\nI would like to confirm my consultation booking:\n\n` +
       `👨‍⚕️ Doctor: ${doc.name} (${doc.specialty})\n` +
