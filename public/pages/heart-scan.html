@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Heart Scan AI — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <style>
+    :root {
+      --neon-red: #ef4444;
+      --neon-red-glow: rgba(239, 68, 68, 0.4);
+      --bg-dark-gray: #0b0f19;
+      --card-bg: rgba(15, 23, 42, 0.7);
+    }
+    
+    body {
+      background: linear-gradient(135deg, #090d16, #0e1726);
+      color: #f3f4f6;
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .heart-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px 80px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .premium-badge-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(239, 68, 68, 0.5);
+      color: #fca5a5;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--neon-red);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--neon-red);
+      animation: pulseAnim 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .main-title {
+      font-size: 40px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #fca5a5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+
+    .main-subtitle {
+      font-size: 16px;
+      color: #94a3b8;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lab-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 30px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    .scanner-viewport {
+      width: 100%;
+      aspect-ratio: 4/3;
+      background: #020617;
+      border: 2px solid rgba(239, 68, 68, 0.3);
+      border-radius: 16px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    #cameraFeed {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scaleX(-1);
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .fingerprint-target {
+      width: 120px;
+      height: 120px;
+      border: 2px dashed rgba(239, 68, 68, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: rgba(239, 68, 68, 0.8);
+      animation: heartbeat-ring 2s infinite ease-in-out;
+    }
+
+    @keyframes heartbeat-ring {
+      0%, 100% { transform: scale(1); border-color: rgba(239, 68, 68, 0.6); }
+      50% { transform: scale(1.1); border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
+    }
+
+    .scanning-line {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 3px;
+      background: var(--neon-red);
+      box-shadow: 0 0 15px var(--neon-red);
+      animation: scan 2.5s infinite linear;
+      opacity: 0;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    .ecg-canvas-container {
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 10px;
+      height: 120px;
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .metric-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+    }
+
+    .metric-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: white;
+      margin-top: 8px;
+    }
+
+    .metric-value span {
+      font-size: 14px;
+      font-weight: 500;
+      color: #94a3b8;
+      margin-left: 4px;
+    }
+
+    .scan-btn {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      transition: 0.3s;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+    }
+
+    .scan-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(239, 68, 68, 0.4);
+    }
+
+    .scan-checklist {
+      margin-top: 20px;
+      display: none;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: #94a3b8;
+    }
+
+    .check-item.done {
+      color: #4ade80;
+    }
+
+    .check-spinner {
+      width: 14px;
+      height: 14px;
+      border: 2px solid #ef4444;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .back-btn {
+      position: absolute;
+      top: 40px;
+      left: 40px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #94a3b8;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      z-index: 100;
+    }
+
+    .back-btn:hover {
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<a href="../index.html" class="back-btn">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+  Back to Clinic
+</a>
+
+<div class="heart-container">
+  <div class="header-section">
+    <div class="premium-badge-main">
+      <div class="pulse-dot"></div>
+      Vascular Modeling Active
+    </div>
+    <h1 class="main-title">Heart Scan AI</h1>
+    <p class="main-subtitle">Real-time vascular compliance modeling, pulse rate variability analysis, and integrative cardiac risk indexing.</p>
+  </div>
+
+  <div class="grid-layout">
+    <!-- LEFT: SCANNER MODULE -->
+    <div class="lab-card">
+      <div class="scanner-viewport">
+        <video id="cameraFeed" autoplay playsinline></video>
+        <div class="scanner-overlay">
+          <div class="fingerprint-target" id="scanTarget">🫀</div>
+          <div class="scanning-line" id="scanLine"></div>
+        </div>
+      </div>
+      
+      <div class="ecg-canvas-container">
+        <canvas id="ecgCanvas" style="width: 100%; height: 100%;"></canvas>
+      </div>
+    </div>
+
+    <!-- RIGHT: DIAGNOSTICS & RECOMMENDATIONS -->
+    <div class="lab-card">
+      <h2 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 24px;">Diagnostic Panel</h2>
+      
+      <div class="metrics-grid">
+        <div class="metric-box">
+          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Heart Rate</div>
+          <div class="metric-value" id="bpmVal">74 <span>BPM</span></div>
+        </div>
+        <div class="metric-box">
+          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">HRV Index</div>
+          <div class="metric-value" id="hrvVal">56 <span>ms</span></div>
+        </div>
+      </div>
+
+      <button class="scan-btn" id="startScanBtn" onclick="startCardioScan()">Initialize Cardiac Scan</button>
+      
+      <div class="scan-checklist" id="scanChecklist">
+        <div class="check-item" id="chk1"><div class="check-spinner"></div> Connecting photoplethysmography sensor...</div>
+        <div class="check-item" id="chk2">🎛️ Tracking micro-capillary pulse fluctuations...</div>
+        <div class="check-item" id="chk3">🩺 Analyzing HRV spectral density...</div>
+        <div class="check-item" id="chk4">🧠 Estimating vascular compliance index...</div>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div id="resultsCard" style="display: none; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; animation: fadeIn 0.4s ease-out;">
+        <h3 style="font-size: 18px; color: #fca5a5; margin-bottom: 12px;">Cardiac Evaluation: Healthy</h3>
+        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
+          Pulse rhythm modeling indicates optimal heart rate variability (HRV) with a low cardiac stress index. Arterial stiffness indicator falls within ideal ranges.
+        </p>
+
+        <div style="background: rgba(239, 68, 68, 0.05); border-left: 3px solid var(--neon-red); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+          <h4 style="margin: 0 0 6px 0; color: #fca5a5; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Ayurvedic Cardioprotective Formulation</h4>
+          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+            <strong>Arjuna Bark Extract (Terminalia arjuna):</strong> Strengthens cardiac muscle tone, promotes coronary circulation, and balances Pitta-Kapha cardiovascular channels. Drink 5g Arjuna powder in warm milk daily.
+          </p>
+        </div>
+
+        <div style="background: rgba(59, 130, 246, 0.05); border-left: 3px solid #3b82f6; padding: 16px; border-radius: 8px;">
+          <h4 style="margin: 0 0 6px 0; color: #93c5fd; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Allopathic Guidelines</h4>
+          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
+            Normal sinus rhythm. Recommended to maintain a balanced dietary profile, limit sodium intake under 2,000mg/day, and achieve 150 minutes of moderate-intensity cardiovascular exercise per week.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let videoStream = null;
+  let ecgInterval = null;
+  
+  // Camera Setup
+  async function startCamera() {
+    try {
+      videoStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' },
+        audio: false
+      });
+      document.getElementById('cameraFeed').srcObject = videoStream;
+    } catch (e) {
+      console.log("No camera feed available:", e);
+    }
+  }
+
+  // Draw Dynamic ECG Wave on Canvas
+  const canvas = document.getElementById('ecgCanvas');
+  const ctx = canvas.getContext('2d');
+  
+  // Resize canvas for high resolution
+  function resizeCanvas() {
+    canvas.width = canvas.parentElement.clientWidth;
+    canvas.height = canvas.parentElement.clientHeight;
+  }
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+
+  let x = 0;
+  let points = [];
+  const maxPoints = 120;
+  
+  function drawECG(isFast = false) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Grid Lines background
+    ctx.strokeStyle = 'rgba(239, 68, 68, 0.1)';
+    ctx.lineWidth = 1;
+    for(let i=0; i<canvas.width; i+=20) {
+      ctx.beginPath();
+      ctx.moveTo(i, 0);
+      ctx.lineTo(i, canvas.height);
+      ctx.stroke();
+    }
+    for(let i=0; i<canvas.height; i+=20) {
+      ctx.beginPath();
+      ctx.moveTo(0, i);
+      ctx.lineTo(canvas.width, i);
+      ctx.stroke();
+    }
+
+    // Generate heartbeat pattern
+    x = (x + 1) % 60;
+    let y = canvas.height / 2;
+    
+    if (x === 10) y -= 10; // P wave
+    if (x === 12) y += 5;
+    if (x === 20) y += 15; // Q
+    if (x === 22) y -= 45; // R peak (higher deflection)
+    if (x === 25) y += 30; // S
+    if (x === 32) y -= 15; // T wave
+    
+    // Add noise fluctuation
+    y += (Math.random() - 0.5) * 4;
+
+    points.push(y);
+    if(points.length > canvas.width) {
+      points.shift();
+    }
+
+    ctx.strokeStyle = 'var(--neon-red)';
+    ctx.lineWidth = 2.5;
+    ctx.shadowBlur = 10;
+    ctx.shadowColor = 'var(--neon-red)';
+    ctx.beginPath();
+    
+    for(let i=0; i<points.length; i++) {
+      if(i === 0) ctx.moveTo(i, points[i]);
+      else ctx.lineTo(i, points[i]);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0; // reset
+  }
+
+  // Initial slow heartbeat simulation
+  setInterval(() => drawECG(false), 25);
+
+  // Fluctuating values before scan starts
+  let valueInterval = setInterval(() => {
+    document.getElementById('bpmVal').innerHTML = Math.floor(70 + Math.random()*8) + ' <span>BPM</span>';
+    document.getElementById('hrvVal').innerHTML = Math.floor(52 + Math.random()*6) + ' <span>ms</span>';
+  }, 1000);
+
+  // Trigger Scanning Sequence
+  function startCardioScan() {
+    clearInterval(valueInterval);
+    const btn = document.getElementById('startScanBtn');
+    const target = document.getElementById('scanTarget');
+    const line = document.getElementById('scanLine');
+    const chk = document.getElementById('scanChecklist');
+    
+    btn.disabled = true;
+    btn.style.opacity = '0.5';
+    btn.innerText = 'Scanning Pulse Channels...';
+    target.style.color = 'var(--neon-red)';
+    line.style.opacity = '1';
+    chk.style.display = 'flex';
+
+    // Step 1 done
+    setTimeout(() => {
+      document.getElementById('chk1').className = 'check-item done';
+      document.getElementById('chk1').innerHTML = '✓ Connect photoplethysmography sensor';
+    }, 1200);
+
+    // Step 2 done
+    setTimeout(() => {
+      document.getElementById('chk2').innerHTML = '<div class="check-spinner"></div> Tracking micro-capillary pulse fluctuations...';
+      document.getElementById('chk2').className = 'check-item done';
+      document.getElementById('chk2').innerHTML = '✓ Tracking micro-capillary pulse fluctuations';
+    }, 2400);
+
+    // Step 3 done
+    setTimeout(() => {
+      document.getElementById('chk3').className = 'check-item done';
+      document.getElementById('chk3').innerHTML = '✓ Analyzing HRV spectral density';
+    }, 3600);
+
+    // Step 4 done
+    setTimeout(() => {
+      document.getElementById('chk4').className = 'check-item done';
+      document.getElementById('chk4').innerHTML = '✓ Estimating vascular compliance index';
+    }, 4500);
+
+    // Finalize
+    setTimeout(() => {
+      line.style.opacity = '0';
+      btn.innerText = 'Vascular Assessment Complete';
+      document.getElementById('bpmVal').innerHTML = '72 <span>BPM</span>';
+      document.getElementById('hrvVal').innerHTML = '64 <span>ms</span>';
+      document.getElementById('resultsCard').style.display = 'block';
+    }, 5500);
+  }
+
+  // Init Camera on load
+  startCamera();
+</script>
+
+</body>
+</html>

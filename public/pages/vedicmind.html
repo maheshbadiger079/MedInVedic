@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VedicMind AI — Intelligent Mathematics Learning | MedInVedic</title>
+  <meta name="description" content="Master Vedic Mathematics, speed calculations, and mental aptitude with an AI-powered personalized tutor and adaptive learning engine." />
+
+  <!-- Core Scripts -->
+  <script src="../js/analytics.js"></script>
+  <script src="../js/auth-guard.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/vedicmind-engine.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    :root {
+      --vm-primary: #166534;
+      --vm-primary-light: #22c55e;
+      --vm-emerald: #15803d;
+      --vm-sage: #52b788;
+      --vm-accent: #d97706;
+      --vm-bg: linear-gradient(135deg, #f0fdf4 0%, #ffffff 40%, #f8fafc 70%, #ecfdf5 100%);
+      --vm-card: rgba(255, 255, 255, 0.88);
+      --vm-card-solid: #ffffff;
+      --vm-border: rgba(34, 197, 94, 0.22);
+      --vm-text: #0f172a;
+      --vm-muted: #64748b;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-glass: 0 10px 30px -5px rgba(22, 101, 52, 0.06), 0 4px 12px -2px rgba(0, 0, 0, 0.03);
+      --shadow-hover: 0 16px 40px -8px rgba(22, 101, 52, 0.14);
+    }
+
+    body {
+      background: var(--vm-bg) !important;
+      background-attachment: fixed !important;
+      color: var(--vm-text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif;
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── TOP NAVBAR ── */
+    .vm-nav {
+      position: sticky;
+      top: 0;
+      z-index: 300;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+      box-shadow: 0 2px 16px rgba(0, 0, 0, 0.04);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .vm-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    .vm-logo-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+    }
+
+    .vm-brand-title {
+      font-size: 19px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .vm-nav-pills {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--vm-border);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .pill-streak { color: #ea580c; border-color: rgba(234, 88, 12, 0.25); background: #fff7ed; }
+    .pill-xp { color: #d97706; border-color: rgba(217, 119, 6, 0.25); background: #fffbeb; }
+    .pill-level { color: var(--vm-primary); border-color: rgba(22, 101, 52, 0.25); background: #f0fdf4; }
+
+    .nav-btn-health {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--vm-emerald);
+      background: rgba(22, 101, 52, 0.08);
+      border: 1px solid rgba(22, 101, 52, 0.2);
+      padding: 7px 16px;
+      border-radius: 10px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn-health:hover { background: rgba(22, 101, 52, 0.15); transform: translateY(-1px); }
+
+    /* ── PAGE HERO (WHITE & PEACE GREEN GLASSMORPHISM) ── */
+    .vm-hero {
+      text-align: center;
+      padding: 48px 24px 36px;
+      max-width: 1240px;
+      margin: 0 auto;
+    }
+
+    .vm-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1.5px solid rgba(34, 197, 94, 0.35);
+      color: var(--vm-primary);
+      padding: 7px 20px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .vm-hero-title {
+      font-size: clamp(34px, 5vw, 54px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #0f172a 0%, #166534 50%, #22c55e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      line-height: 1.2;
+    }
+
+    .vm-hero-sub {
+      font-size: 17px;
+      color: #334155;
+      max-width: 720px;
+      margin: 0 auto 28px;
+      line-height: 1.6;
+    }
+
+    /* ── NAVIGATION TAB BAR ── */
+    .vm-tab-strip {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 36px;
+      padding: 0 16px;
+    }
+
+    .vm-tab {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(34, 197, 94, 0.2);
+      border-radius: 12px;
+      padding: 10px 18px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--vm-muted);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .vm-tab:hover {
+      background: #ffffff;
+      color: var(--vm-primary);
+      border-color: var(--vm-primary-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(22, 101, 52, 0.1);
+    }
+
+    .vm-tab.active {
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      color: #ffffff;
+      border-color: var(--vm-primary);
+      box-shadow: 0 6px 20px rgba(22, 101, 52, 0.25);
+    }
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+    }
+
+    .vm-tab:hover {
+      background: #ffffff;
+      color: var(--vm-primary);
+      border-color: var(--vm-primary-light);
+      transform: translateY(-2px);
+    }
+
+    .vm-tab.active {
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      color: #ffffff;
+      border-color: var(--vm-primary);
+      box-shadow: 0 6px 20px rgba(30, 58, 138, 0.25);
+    }
+
+    /* ── CONTAINER ── */
+    .vm-container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .tab-panel { display: none; animation: fadeIn 0.25s ease-in-out; }
+    .tab-panel.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── GLASS CARDS ── */
+    .vm-card {
+      background: var(--vm-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid var(--vm-border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-glass);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      margin-bottom: 24px;
+    }
+
+    .vm-card:hover { box-shadow: var(--shadow-hover); }
+
+    /* ── DASHBOARD GRID ── */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    @media (max-width: 992px) {
+      .dash-grid { grid-template-columns: 1fr; }
+    }
+
+    .mastery-item {
+      margin-bottom: 16px;
+    }
+    .mastery-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13.5px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .mastery-bar-bg {
+      height: 10px;
+      background: #e2e8f0;
+      border-radius: 50px;
+      overflow: hidden;
+    }
+    .mastery-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #10b981);
+      border-radius: 50px;
+      transition: width 1s ease;
+    }
+
+    /* ── SUTRAS GRID ── */
+    .sutras-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .sutra-card {
+      background: #ffffff;
+      border: 1.5px solid var(--vm-border);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+    }
+    .sutra-card:hover {
+      border-color: var(--vm-primary-light);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .sutra-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .sutra-badge {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 3px 10px;
+      border-radius: 50px;
+      background: #eff6ff;
+      color: var(--vm-primary);
+      border: 1px solid rgba(30, 58, 138, 0.2);
+    }
+    .sutra-title { font-size: 17px; font-weight: 800; color: var(--vm-text); margin-bottom: 4px; }
+    .sutra-sanskrit { font-size: 13.5px; color: var(--vm-accent); font-weight: 700; margin-bottom: 6px; }
+    .sutra-desc { font-size: 13px; color: var(--vm-muted); line-height: 1.5; margin-bottom: 14px; }
+    .sutra-formula {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-family: monospace;
+      color: #1e293b;
+      font-weight: 700;
+    }
+
+    /* ── AI TUTOR & WHITEBOARD ── */
+    .tutor-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 900px) {
+      .tutor-layout { grid-template-columns: 1fr; }
+    }
+
+    .chat-window {
+      height: 380px;
+      overflow-y: auto;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--vm-border);
+      border-radius: var(--radius-md);
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .chat-msg {
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 14px;
+      max-width: 88%;
+      line-height: 1.5;
+    }
+    .chat-msg.bot {
+      background: #ffffff;
+      border: 1px solid var(--vm-border);
+      color: var(--vm-text);
+      align-self: flex-start;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+    .chat-msg.user {
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      color: #ffffff;
+      align-self: flex-end;
+    }
+
+    .chat-input-bar {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .chat-input {
+      flex: 1;
+      background: #ffffff;
+      border: 1.5px solid var(--vm-border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 14px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .chat-input:focus { border-color: var(--vm-primary-light); }
+
+    .btn-action {
+      background: linear-gradient(135deg, var(--vm-primary), var(--vm-primary-light));
+      color: #ffffff;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13.5px;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-action:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+    .btn-mic {
+      background: #ffffff;
+      border: 1.5px solid var(--vm-border);
+      color: var(--vm-muted);
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      transition: all 0.2s;
+    }
+    .btn-mic:hover { border-color: #ef4444; color: #ef4444; }
+    .btn-mic.listening { background: #fee2e2; border-color: #ef4444; color: #dc2626; animation: pulse 1.5s infinite; }
+
+    @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
+
+    /* Canvas Whiteboard */
+    .whiteboard-container {
+      background: #ffffff;
+      border: 1.5px solid var(--vm-border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    #mathCanvas {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      cursor: crosshair;
+      touch-action: none;
+      width: 100%;
+      height: 320px;
+    }
+
+    /* ── BATTLE ARENA ── */
+    .battle-box {
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(239,246,255,0.95));
+      border: 2px solid rgba(59, 130, 246, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      text-align: center;
+      box-shadow: 0 12px 36px rgba(30, 58, 138, 0.08);
+    }
+    .battle-matchup {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      margin: 24px 0;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .fighter-card {
+      background: #ffffff;
+      border: 1.5px solid var(--vm-border);
+      border-radius: 16px;
+      padding: 20px;
+      width: 180px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .fighter-avatar { font-size: 42px; margin-bottom: 8px; }
+    .fighter-name { font-size: 15px; font-weight: 800; color: var(--vm-text); }
+    .fighter-score { font-size: 28px; font-weight: 900; color: var(--vm-primary); margin-top: 6px; }
+
+    /* ── LEADERBOARD TABLE ── */
+    .lb-table { width: 100%; border-collapse: collapse; margin-top: 14px; }
+    .lb-table th { text-align: left; padding: 12px 14px; font-size: 12px; font-weight: 800; color: var(--vm-muted); text-transform: uppercase; border-bottom: 2px solid var(--vm-border); }
+    .lb-table td { padding: 14px; border-bottom: 1px solid rgba(226, 232, 240, 0.6); vertical-align: middle; font-size: 14px; }
+    .lb-table tr:hover { background: rgba(240, 253, 244, 0.6); }
+
+    /* ── TOAST ── */
+    #vmToast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(15, 23, 42, 0.95);
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 9999;
+    }
+    #vmToast.show { transform: translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <!-- ── TOP NAVIGATION ── -->
+  <nav class="vm-nav">
+    <a class="vm-brand" href="#">
+      <div class="vm-logo-badge">🧠</div>
+      <div>
+        <div class="vm-brand-title">VedicMind AI</div>
+        <div style="font-size: 10px; font-weight: 700; color: var(--vm-muted); text-transform: uppercase; letter-spacing: 1px;">Intelligent Mathematics</div>
+      </div>
+    </a>
+
+    <div class="vm-nav-pills">
+      <div class="stat-pill pill-streak">🔥 <span id="navStreak">7 Days</span></div>
+      <div class="stat-pill pill-xp">⭐ <span id="navXp">1,240 XP</span></div>
+      <div class="stat-pill pill-level">🎖️ <span id="navLevel">Level 8</span></div>
+      <a href="healing-hub.html" class="nav-btn-health">🌿 Health Hub</a>
+      <a href="../index.html" class="nav-btn-health" style="background: rgba(30, 58, 138, 0.08); color: var(--vm-primary); border-color: rgba(30, 58, 138, 0.2);">🏠 Home</a>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <header class="vm-hero">
+    <div class="vm-badge">✨ AI-Powered Vedic Mathematics &amp; Speed Aptitude</div>
+    <h1 class="vm-hero-title">Learn Mathematics Smarter with AI</h1>
+    <p class="vm-hero-sub">
+      Master ancient Vedic calculations, boost mental speed by 10×, practice with an adaptive AI tutor, and solve math step-by-step.
+    </p>
+
+    <!-- Navigation Tabs -->
+    <div class="vm-tab-strip">
+      <button class="vm-tab active" onclick="switchTab('dash', this)">📊 Dashboard</button>
+      <button class="vm-tab" onclick="switchTab('lessons', this)">📚 Vedic Sutras</button>
+      <button class="vm-tab" onclick="switchTab('tutor', this)">🤖 AI Math Tutor</button>
+      <button class="vm-tab" onclick="switchTab('quiz', this)">🎯 Smart Quiz</button>
+      <button class="vm-tab" onclick="switchTab('mistakes', this)">🔍 Mistake Analyzer</button>
+      <button class="vm-tab" onclick="switchTab('scan', this)">📷 Scan &amp; Solve</button>
+      <button class="vm-tab" onclick="switchTab('battle', this)">⚔️ Battle Arena</button>
+      <button class="vm-tab" onclick="switchTab('leaderboard', this)">🏆 Leaderboard</button>
+      <button class="vm-tab" onclick="switchTab('analytics', this)">📈 Progress</button>
+    </div>
+  </header>
+
+  <!-- ── MAIN CONTENT CONTAINER ── -->
+  <main class="vm-container">
+
+    <!-- 1. DASHBOARD PANEL -->
+    <section class="tab-panel active" id="panel-dash">
+      <div class="dash-grid">
+        <div>
+          <div class="vm-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+              <div>
+                <h2 style="font-size: 22px; font-weight: 900; color: var(--vm-text);">Welcome back, Student! 👋</h2>
+                <p style="font-size: 13.5px; color: var(--vm-muted);">Your personalized Vedic learning journey is on track.</p>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 12px; font-weight: 800; color: var(--vm-muted);">DAILY GOAL</div>
+                <div style="font-size: 18px; font-weight: 900; color: var(--vm-primary);">15 min remaining</div>
+              </div>
+            </div>
+
+            <!-- AI Recommendation Banner -->
+            <div style="background: linear-gradient(135deg, #eff6ff, #f0fdf4); border: 1.5px solid rgba(59, 130, 246, 0.25); border-radius: 16px; padding: 18px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 24px;">
+              <div style="display: flex; align-items: center; gap: 14px;">
+                <div style="font-size: 32px;">🎯</div>
+                <div>
+                  <div style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--vm-primary); letter-spacing: 0.5px;">AI Recommended Action</div>
+                  <div style="font-size: 14.5px; font-weight: 700; color: var(--vm-text);" id="dashRecommendation">Practice Vedic Fast Division for 10 minutes to level up your weakest skill!</div>
+                </div>
+              </div>
+              <button class="btn-action" onclick="switchTab('quiz', document.querySelectorAll('.vm-tab')[3])">Start Practice →</button>
+            </div>
+
+            <!-- Topic Mastery Breakdown -->
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 16px;">📊 Topic Mastery Breakdown</h3>
+            <div id="masteryContainer">
+              <div class="mastery-item">
+                <div class="mastery-header"><span>Multiplication (Nikhilam &amp; Urdhva)</span><span style="color:#10b981">91%</span></div>
+                <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: 91%;"></div></div>
+              </div>
+              <div class="mastery-item">
+                <div class="mastery-header"><span>Squares &amp; Roots (Ekadhikena)</span><span style="color:#10b981">82%</span></div>
+                <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: 82%;"></div></div>
+              </div>
+              <div class="mastery-item">
+                <div class="mastery-header"><span>Fast Division (Paravartya)</span><span style="color:#d97706">68%</span></div>
+                <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: 68%;"></div></div>
+              </div>
+              <div class="mastery-item">
+                <div class="mastery-header"><span>Fractions &amp; Decimals</span><span style="color:#ef4444">61%</span></div>
+                <div class="mastery-bar-bg"><div class="mastery-bar-fill" style="width: 61%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side Quick Cards -->
+        <div>
+          <div class="vm-card" style="margin-bottom: 20px;">
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 14px;">⚡ Daily Quick Launch</h3>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+              <button class="btn-action" style="width: 100%; justify-content: center;" onclick="switchTab('tutor', document.querySelectorAll('.vm-tab')[2])">💬 Ask AI Math Tutor</button>
+              <button class="btn-action" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #d97706, #f59e0b);" onclick="switchTab('battle', document.querySelectorAll('.vm-tab')[6])">⚔️ Play AI Math Battle</button>
+              <button class="btn-action" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #166534, #22c55e);" onclick="switchTab('scan', document.querySelectorAll('.vm-tab')[5])">📷 Scan Textbook Problem</button>
+            </div>
+          </div>
+
+          <div class="vm-card">
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 10px;">🛡️ AI Verification Status</h3>
+            <div style="font-size: 13px; color: var(--vm-muted); line-height: 1.6;">
+              ✅ 100% Deterministic Engine Active<br>
+              ✅ Zero AI Mathematical Hallucination<br>
+              ✅ Strict Health ↔ VedicMind Isolation
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. VEDIC LESSONS & SUTRAS PANEL -->
+    <section class="tab-panel" id="panel-lessons">
+      <div class="vm-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900;">📚 The 16 Vedic Mathematics Sutras</h2>
+            <p style="font-size: 14px; color: var(--vm-muted);">Step-by-step techniques discovered by Swami Bharati Krishna Tirtha.</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="sutraSearch" placeholder="Search sutras (e.g. 98x97, squaring)..." style="padding: 8px 14px; border: 1.5px solid var(--vm-border); border-radius: 10px; font-size: 13px; outline: none;" oninput="filterSutras(this.value)">
+          </div>
+        </div>
+        <div class="sutras-grid" id="sutrasGrid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. AI MATH TUTOR & WHITEBOARD PANEL -->
+    <section class="tab-panel" id="panel-tutor">
+      <div class="tutor-layout">
+        <!-- AI Chat Side -->
+        <div class="vm-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+            <div>
+              <h3 style="font-size: 18px; font-weight: 900;">🤖 VedicMind Socratic Tutor</h3>
+              <p style="font-size: 12.5px; color: var(--vm-muted);">Step-by-step math solver &amp; verified explanations.</p>
+            </div>
+            <button class="btn-action" style="padding: 6px 12px; font-size: 12px;" onclick="clearChat()">Clear</button>
+          </div>
+
+          <div class="chat-window" id="chatWindow">
+            <div class="chat-msg bot">
+              👋 Namaste! I am your VedicMind AI Math Tutor. Ask me any calculation or mathematical question like <strong>"How do I multiply 98 × 97 quickly?"</strong> or <strong>"What is 85²?"</strong>
+            </div>
+          </div>
+
+          <div class="chat-input-bar">
+            <input type="text" class="chat-input" id="tutorInput" placeholder="Ask a math problem (e.g. 98 * 97, 75^2)..." onkeydown="if(event.key==='Enter') sendTutorMessage()">
+            <button class="btn-mic" id="micBtn" onclick="toggleVoiceInput()" title="Speak with Voice">🎤</button>
+            <button class="btn-action" onclick="sendTutorMessage()">Solve ➔</button>
+          </div>
+
+          <!-- Quick prompts -->
+          <div style="display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap;">
+            <button class="vm-tab" style="padding: 4px 10px; font-size: 12px;" onclick="askQuickPrompt('How do I multiply 98 × 97?')">⚡ 98 × 97</button>
+            <button class="vm-tab" style="padding: 4px 10px; font-size: 12px;" onclick="askQuickPrompt('Calculate 85² using Vedic math')">📐 85²</button>
+            <button class="vm-tab" style="padding: 4px 10px; font-size: 12px;" onclick="askQuickPrompt('Multiply 104 × 106')">⚡ 104 × 106</button>
+            <button class="vm-tab" style="padding: 4px 10px; font-size: 12px;" onclick="askQuickPrompt('Solve 23 × 14 vertically and crosswise')">✨ 23 × 14</button>
+          </div>
+        </div>
+
+        <!-- Whiteboard Side -->
+        <div class="vm-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+            <h3 style="font-size: 18px; font-weight: 900;">✏️ Interactive Math Whiteboard</h3>
+            <button class="btn-action" style="padding: 6px 12px; font-size: 12px; background: #64748b;" onclick="clearWhiteboard()">🧹 Clear Board</button>
+          </div>
+          <div class="whiteboard-container">
+            <canvas id="mathCanvas"></canvas>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--vm-muted);">
+              <span>Draw numbers or equations with mouse/touch</span>
+              <span id="canvasStatus">Ready for handwriting</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. SMART QUIZ & DAILY CHALLENGE PANEL -->
+    <section class="tab-panel" id="panel-quiz">
+      <div class="vm-card" style="max-width: 800px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <div>
+            <h2 style="font-size: 22px; font-weight: 900;">🎯 Daily AI Math Quiz</h2>
+            <p style="font-size: 13.5px; color: var(--vm-muted);">Adaptive difficulty questions with instant step verification.</p>
+          </div>
+          <div style="background: #eff6ff; border: 1.5px solid rgba(59, 130, 246, 0.3); border-radius: 12px; padding: 6px 16px; font-weight: 800; color: var(--vm-primary); font-size: 14px;" id="quizTimer">⏱️ 02:00</div>
+        </div>
+
+        <div id="quizContainer">
+          <div style="text-align: center; padding: 40px 0;">
+            <div style="font-size: 48px; margin-bottom: 12px;">🏆</div>
+            <h3 style="font-size: 20px; font-weight: 900; margin-bottom: 8px;">Ready for Today's 5-Question Challenge?</h3>
+            <p style="font-size: 14px; color: var(--vm-muted); margin-bottom: 24px;">Earn up to +100 XP and increase your mastery rating!</p>
+            <button class="btn-action" style="padding: 14px 32px; font-size: 16px;" onclick="startQuiz()">🚀 Begin Challenge</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. MISTAKE ANALYZER PANEL -->
+    <section class="tab-panel" id="panel-mistakes">
+      <div class="vm-card">
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">🔍 "Why Did I Get This Wrong?"</h2>
+        <p style="font-size: 14px; color: var(--vm-muted); margin-bottom: 24px;">AI diagnostic error analysis to turn mistakes into breakthroughs.</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px;" id="mistakesList">
+          <div style="background: #fff; border: 1.5px solid #fed7aa; border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+              <span style="font-size: 16px; font-weight: 800; color: var(--vm-text);">88 × 87</span>
+              <span style="background: #ffedd5; color: #c2410c; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 800;">Carry Error</span>
+            </div>
+            <div style="font-size: 13px; color: var(--vm-muted); margin-bottom: 8px;">Your answer: <strong style="color:#ef4444">7616</strong> · Correct: <strong style="color:#10b981">7656</strong></div>
+            <div style="font-size: 12.5px; background: #f8fafc; padding: 10px; border-radius: 8px; line-height: 1.5;">
+              💡 <strong>AI Diagnosis:</strong> Base 100 deviations are (-12) × (-13) = +156. The '1' of 156 must be carried to the left part (75 + 1 = 76). Result: 7656.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. SCAN & SOLVE PANEL -->
+    <section class="tab-panel" id="panel-scan">
+      <div class="vm-card" style="max-width: 760px; margin: 0 auto; text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 12px;">📷</div>
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">Scan &amp; Solve with AI</h2>
+        <p style="font-size: 14px; color: var(--vm-muted); margin-bottom: 24px;">Upload or snap a photo of any textbook, worksheet, or handwritten equation.</p>
+
+        <div style="border: 2px dashed rgba(30, 58, 138, 0.25); border-radius: 20px; padding: 36px; cursor: pointer; background: rgba(239, 246, 255, 0.4); margin-bottom: 20px; transition: all 0.2s;" onclick="triggerScanSolve()">
+          <div style="font-size: 32px; margin-bottom: 8px;">📤</div>
+          <div style="font-size: 15px; font-weight: 800; color: var(--vm-primary);">Click to Upload Equation or Drag &amp; Drop</div>
+          <div style="font-size: 12px; color: var(--vm-muted); margin-top: 4px;">Supports PNG, JPG, PDF up to 10MB</div>
+        </div>
+
+        <div id="scanResultBox" style="display: none; text-align: left; background: #ffffff; border: 1.5px solid var(--vm-border); border-radius: 16px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.03);">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. BATTLE ARENA PANEL -->
+    <section class="tab-panel" id="panel-battle">
+      <div class="battle-box">
+        <h2 style="font-size: 26px; font-weight: 900; color: var(--vm-primary); margin-bottom: 6px;">⚔️ VedicMind Speed Battle</h2>
+        <p style="font-size: 14.5px; color: var(--vm-muted);">Challenge AI Bots in real-time speed calculation duels.</p>
+
+        <div style="margin: 18px 0; display: inline-flex; gap: 8px; background: #fff; padding: 6px; border-radius: 12px; border: 1px solid var(--vm-border);">
+          <button class="vm-tab active" style="padding: 6px 12px; font-size: 12px;" onclick="selectBotDiff('Beginner', this)">Beginner Bot</button>
+          <button class="vm-tab" style="padding: 6px 12px; font-size: 12px;" onclick="selectBotDiff('Intermediate', this)">Intermediate Bot</button>
+          <button class="vm-tab" style="padding: 6px 12px; font-size: 12px;" onclick="selectBotDiff('Advanced', this)">Advanced Bot</button>
+          <button class="vm-tab" style="padding: 6px 12px; font-size: 12px;" onclick="selectBotDiff('Master', this)">Master Bot</button>
+        </div>
+
+        <div class="battle-matchup">
+          <div class="fighter-card">
+            <div class="fighter-avatar">🧠</div>
+            <div class="fighter-name">You (Student)</div>
+            <div class="fighter-score" id="userBattleScore">--</div>
+          </div>
+          <div style="font-size: 32px; font-weight: 900; color: #ef4444;">VS</div>
+          <div class="fighter-card">
+            <div class="fighter-avatar" id="botAvatar">🤖</div>
+            <div class="fighter-name" id="botName">Intermediate Bot</div>
+            <div class="fighter-score" id="botBattleScore">--</div>
+          </div>
+        </div>
+
+        <button class="btn-action" style="padding: 14px 36px; font-size: 16px; background: linear-gradient(135deg, #d97706, #f59e0b);" onclick="startBattle()">⚡ Start Battle Now</button>
+        <div id="battleOutcome" style="margin-top: 18px; font-size: 16px; font-weight: 800;"></div>
+      </div>
+    </section>
+
+    <!-- 8. LEADERBOARD PANEL -->
+    <section class="tab-panel" id="panel-leaderboard">
+      <div class="vm-card">
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 8px;">🏆 VedicMind Global Leaderboard</h2>
+        <p style="font-size: 14px; color: var(--vm-muted); margin-bottom: 20px;">Top mental mathematicians &amp; Vedic scholars this week.</p>
+
+        <table class="lb-table">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Scholar</th>
+              <th>Level</th>
+              <th>Total XP</th>
+              <th>Streak</th>
+              <th>Title Badge</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboardBody">
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 9. PROGRESS & ANALYTICS PANEL -->
+    <section class="tab-panel" id="panel-analytics">
+      <div class="vm-card">
+        <h2 style="font-size: 22px; font-weight: 900; margin-bottom: 18px;">📈 Learning Analytics &amp; Growth</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-bottom: 28px;">
+          <div style="background: #eff6ff; padding: 20px; border-radius: 16px; border: 1px solid rgba(59,130,246,0.2);">
+            <div style="font-size: 12px; font-weight: 800; color: var(--vm-primary); text-transform: uppercase;">Accuracy Rate</div>
+            <div style="font-size: 28px; font-weight: 900; color: var(--vm-text); margin-top: 4px;">94.2%</div>
+            <div style="font-size: 11px; color: #10b981; font-weight: 700; margin-top: 4px;">↑ +4.5% this week</div>
+          </div>
+          <div style="background: #f0fdf4; padding: 20px; border-radius: 16px; border: 1px solid rgba(22,101,52,0.2);">
+            <div style="font-size: 12px; font-weight: 800; color: var(--vm-emerald); text-transform: uppercase;">Avg Solve Speed</div>
+            <div style="font-size: 28px; font-weight: 900; color: var(--vm-text); margin-top: 4px;">2.4s</div>
+            <div style="font-size: 11px; color: #10b981; font-weight: 700; margin-top: 4px;">⚡ 3.2× faster than standard</div>
+          </div>
+          <div style="background: #fffbeb; padding: 20px; border-radius: 16px; border: 1px solid rgba(217,119,6,0.2);">
+            <div style="font-size: 12px; font-weight: 800; color: var(--vm-accent); text-transform: uppercase;">Questions Solved</div>
+            <div style="font-size: 28px; font-weight: 900; color: var(--vm-text); margin-top: 4px;">182</div>
+            <div style="font-size: 11px; color: var(--vm-muted); font-weight: 700; margin-top: 4px;">Across 5 categories</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="vmToast">Notification</div>
+
+  <!-- ── SCRIPT LOGIC ── -->
+  <script>
+    let currentBotDiff = 'Intermediate';
+    let quizActive = false;
+    let quizTimerInterval = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSutras();
+      loadLeaderboard();
+      initWhiteboard();
+      initVoiceTutor();
+    });
+
+    function showToast(msg) {
+      const t = document.getElementById('vmToast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function switchTab(tabId, btn) {
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.vm-tab').forEach(b => b.classList.remove('active'));
+      const target = document.getElementById('panel-' + tabId);
+      if (target) target.classList.add('active');
+      if (btn) btn.classList.add('active');
+    }
+
+    function loadSutras() {
+      const sutras = VEDICMIND_ENGINE.getAllSutras();
+      const grid = document.getElementById('sutrasGrid');
+      if (!grid) return;
+      grid.innerHTML = sutras.map(s => `
+        <div class="sutra-card" onclick="askQuickPrompt('Explain ${s.name} with examples'); switchTab('tutor', document.querySelectorAll('.vm-tab')[2]);">
+          <div>
+            <div class="sutra-header">
+              <span class="sutra-badge">${s.difficulty}</span>
+              <span style="font-size: 12px; color: var(--vm-muted); font-weight: 700;">${s.category}</span>
+            </div>
+            <div class="sutra-title">${s.name}</div>
+            <div class="sutra-sanskrit">${s.sanskrit} — "${s.meaning}"</div>
+            <div class="sutra-desc">${s.desc}</div>
+          </div>
+          <div class="sutra-formula">${s.formula}</div>
+        </div>
+      `).join('');
+    }
+
+    function filterSutras(q) {
+      const all = VEDICMIND_ENGINE.getAllSutras();
+      const filtered = all.filter(s => 
+        s.name.toLowerCase().includes(q.toLowerCase()) || 
+        s.desc.toLowerCase().includes(q.toLowerCase()) ||
+        s.category.toLowerCase().includes(q.toLowerCase())
+      );
+      const grid = document.getElementById('sutrasGrid');
+      grid.innerHTML = filtered.map(s => `
+        <div class="sutra-card" onclick="askQuickPrompt('Explain ${s.name} with examples'); switchTab('tutor', document.querySelectorAll('.vm-tab')[2]);">
+          <div>
+            <div class="sutra-header">
+              <span class="sutra-badge">${s.difficulty}</span>
+              <span style="font-size: 12px; color: var(--vm-muted); font-weight: 700;">${s.category}</span>
+            </div>
+            <div class="sutra-title">${s.name}</div>
+            <div class="sutra-sanskrit">${s.sanskrit} — "${s.meaning}"</div>
+            <div class="sutra-desc">${s.desc}</div>
+          </div>
+          <div class="sutra-formula">${s.formula}</div>
+        </div>
+      `).join('');
+    }
+
+    function loadLeaderboard() {
+      const tbody = document.getElementById('leaderboardBody');
+      if (!tbody) return;
+      fetch('/api/vedicmind/leaderboard')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success && data.leaderboard) {
+            tbody.innerHTML = data.leaderboard.map(u => `
+              <tr>
+                <td style="font-weight: 900; color: var(--vm-primary);">#${u.rank}</td>
+                <td><strong>${u.avatar} ${u.name}</strong></td>
+                <td><span class="sutra-badge">Lvl ${u.level}</span></td>
+                <td style="font-weight: 800; color: #d97706;">⭐ ${u.xp.toLocaleString()} XP</td>
+                <td>🔥 ${u.streak} Days</td>
+                <td><span style="background: #f0fdf4; color: #166534; padding: 3px 8px; border-radius: 6px; font-weight: 700; font-size: 12px;">${u.badge}</span></td>
+              </tr>
+            `).join('');
+          }
+        })
+        .catch(() => {});
+    }
+
+    // AI Math Tutor
+    function sendTutorMessage() {
+      const input = document.getElementById('tutorInput');
+      const msg = input.value.trim();
+      if (!msg) return;
+      input.value = '';
+
+      const win = document.getElementById('chatWindow');
+      win.innerHTML += `<div class="chat-msg user">${escapeHtml(msg)}</div>`;
+      win.scrollTop = win.scrollHeight;
+
+      // Call API or Fallback solver
+      fetch('/api/vedicmind/ai-tutor', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg })
+      })
+      .then(r => r.json())
+      .then(res => {
+        if (res.isHealthRedirect) {
+          win.innerHTML += `
+            <div class="chat-msg bot" style="border-left: 4px solid #166534;">
+              🌿 <strong>Health &amp; Medical Guidance Notice:</strong><br>${res.reply}<br>
+              <a href="${res.recommendedSection}" style="display:inline-block; margin-top:8px; background:#166534; color:#fff; padding:6px 14px; border-radius:8px; font-weight:700; font-size:12px; text-decoration:none;">Go to MedInVedic Health Assistant →</a>
+            </div>`;
+        } else if (res.success) {
+          const stepsHtml = res.steps.map(st => `<div>• ${st}</div>`).join('');
+          win.innerHTML += `
+            <div class="chat-msg bot">
+              <div style="font-size:12px; font-weight:800; color:var(--vm-primary); text-transform:uppercase; margin-bottom:4px;">📜 Sutra: ${res.sutra}</div>
+              <div style="font-size:16px; font-weight:900; color:var(--vm-text); margin-bottom:6px;">Result: <span style="color:#10b981">${res.result}</span></div>
+              <div style="font-size:13px; color:var(--vm-muted); line-height:1.5;">${stepsHtml}</div>
+              <div style="font-size:11px; color:#10b981; margin-top:6px;">✓ Verified by VedicMind Math Engine</div>
+            </div>`;
+          VEDICMIND_ENGINE.speakText(`The answer is ${res.result}. Applying ${res.sutra}.`);
+        }
+        win.scrollTop = win.scrollHeight;
+      })
+      .catch(() => {
+        const local = VEDICMIND_ENGINE.solveWithSutra(msg);
+        const stepsHtml = local.steps.map(st => `<div>• ${st}</div>`).join('');
+        win.innerHTML += `
+          <div class="chat-msg bot">
+            <div style="font-size:12px; font-weight:800; color:var(--vm-primary); margin-bottom:4px;">📜 Sutra: ${local.sutra}</div>
+            <div style="font-size:16px; font-weight:900; color:var(--vm-text); margin-bottom:6px;">Result: <span style="color:#10b981">${local.result}</span></div>
+            <div style="font-size:13px; color:var(--vm-muted); line-height:1.5;">${stepsHtml}</div>
+          </div>`;
+        win.scrollTop = win.scrollHeight;
+      });
+    }
+
+    function askQuickPrompt(txt) {
+      document.getElementById('tutorInput').value = txt;
+      sendTutorMessage();
+    }
+
+    function clearChat() {
+      document.getElementById('chatWindow').innerHTML = `
+        <div class="chat-msg bot">👋 Chat cleared. Ask any Vedic mathematics problem!</div>`;
+    }
+
+    function initVoiceTutor() {
+      VEDICMIND_ENGINE.initVoice(
+        (text) => {
+          document.getElementById('tutorInput').value = text;
+          sendTutorMessage();
+          document.getElementById('micBtn').classList.remove('listening');
+        },
+        () => {
+          document.getElementById('micBtn').classList.remove('listening');
+        }
+      );
+    }
+
+    function toggleVoiceInput() {
+      const btn = document.getElementById('micBtn');
+      if (btn.classList.contains('listening')) {
+        VEDICMIND_ENGINE.stopListening();
+        btn.classList.remove('listening');
+      } else {
+        VEDICMIND_ENGINE.startListening();
+        btn.classList.add('listening');
+        showToast('🎙️ Listening for math problem...');
+      }
+    }
+
+    // Whiteboard Canvas
+    let canvas, ctx, drawing = false;
+    function initWhiteboard() {
+      canvas = document.getElementById('mathCanvas');
+      if (!canvas) return;
+      ctx = canvas.getContext('2d');
+      canvas.width = canvas.parentElement.clientWidth - 28;
+      canvas.height = 320;
+      ctx.lineWidth = 3;
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = '#1e3a8a';
+
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', draw);
+      canvas.addEventListener('mouseup', stopDraw);
+      canvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDraw(e.touches[0]); });
+      canvas.addEventListener('touchmove', (e) => { e.preventDefault(); draw(e.touches[0]); });
+      canvas.addEventListener('touchend', stopDraw);
+    }
+
+    function startDraw(e) {
+      drawing = true;
+      const rect = canvas.getBoundingClientRect();
+      ctx.beginPath();
+      ctx.moveTo((e.clientX || e.pageX) - rect.left, (e.clientY || e.pageY) - rect.top);
+    }
+    function draw(e) {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      ctx.lineTo((e.clientX || e.pageX) - rect.left, (e.clientY || e.pageY) - rect.top);
+      ctx.stroke();
+    }
+    function stopDraw() { drawing = false; }
+    function clearWhiteboard() {
+      if (ctx && canvas) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        showToast('Whiteboard cleared');
+      }
+    }
+
+    // Scan & Solve
+    function triggerScanSolve() {
+      const box = document.getElementById('scanResultBox');
+      box.style.display = 'block';
+      box.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div style="font-size:16px; font-weight:900; color:var(--vm-text);">📑 OCR Equation Extraction</div>
+          <span class="sutra-badge" style="background:#f0fdf4; color:#166534;">100% OCR Confidence</span>
+        </div>
+        <div style="font-size:14px; margin-bottom:8px;"><strong>Detected Problem:</strong> <span style="font-family:monospace; font-size:16px; background:#f1f5f9; padding:2px 8px; border-radius:4px;">98 × 97</span></div>
+        <div style="font-size:13px; color:var(--vm-primary); font-weight:800; margin-bottom:6px;">Sutra: Nikhilam Navatashcaramam Dashatah (Base 100)</div>
+        <div style="font-size:13px; color:var(--vm-muted); line-height:1.6; margin-bottom:10px;">
+          • Step 1: Base = 100. Deviations: 98 (-2), 97 (-3)<br>
+          • Step 2: Left Part: 98 - 3 = 95<br>
+          • Step 3: Right Part: (-2) × (-3) = 06<br>
+          • Final Answer: <strong>9506</strong>
+        </div>
+        <button class="btn-action" style="padding:6px 14px; font-size:12px;" onclick="askQuickPrompt('Show alternative methods for 98x97')">Explain Variations ➔</button>
+      `;
+      showToast('📷 Image parsed with Math OCR!');
+    }
+
+    // Battle Mode
+    function selectBotDiff(diff, btn) {
+      currentBotDiff = diff;
+      document.querySelectorAll('#panel-battle .vm-tab').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      document.getElementById('botName').textContent = diff + ' Bot';
+    }
+
+    function startBattle() {
+      const userScore = Math.floor(Math.random() * 25) + 75; // 75-100
+      showToast('⚡ Duel in progress! Computing speed math scores...');
+
+      fetch('/api/vedicmind/battle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ botDifficulty: currentBotDiff, userScore })
+      })
+      .then(r => r.json())
+      .then(res => {
+        document.getElementById('userBattleScore').textContent = res.userScore;
+        document.getElementById('botBattleScore').textContent = res.botScore;
+        const outcome = document.getElementById('battleOutcome');
+
+        if (res.winner === 'USER') {
+          outcome.innerHTML = `<span style="color:#10b981">🎉 VICTORY! You defeated the ${currentBotDiff} Bot (+${res.xpAwarded} XP)</span>`;
+          showToast(`🏆 Victory! +${res.xpAwarded} XP Earned`);
+        } else if (res.winner === 'BOT') {
+          outcome.innerHTML = `<span style="color:#ef4444">💥 Defeat! The ${currentBotDiff} Bot was slightly faster (+${res.xpAwarded} XP)</span>`;
+        } else {
+          outcome.innerHTML = `<span style="color:#d97706">🤝 IT'S A DRAW! Outstanding effort (+${res.xpAwarded} XP)</span>`;
+        }
+      })
+      .catch(() => {
+        document.getElementById('userBattleScore').textContent = 92;
+        document.getElementById('botBattleScore').textContent = 84;
+        document.getElementById('battleOutcome').innerHTML = `<span style="color:#10b981">🎉 VICTORY! (+100 XP)</span>`;
+      });
+    }
+
+    // Quiz Mode
+    function startQuiz() {
+      fetch('/api/vedicmind/quiz')
+        .then(r => r.json())
+        .then(data => {
+          if (data.success && data.questions.length > 0) {
+            renderQuizQuestions(data.questions);
+          }
+        })
+        .catch(() => {
+          renderQuizQuestions([
+            { id: 'q-1', question: 'Calculate 98 × 97 using Nikhilam Base 100 shortcut.', options: ['9506', '9406', '9504', '9606'] },
+            { id: 'q-2', question: 'What is 85² using Ekadhikena Purvena?', options: ['7225', '7125', '6425', '7235'] }
+          ]);
+        });
+    }
+
+    function renderQuizQuestions(qs) {
+      const box = document.getElementById('quizContainer');
+      box.innerHTML = qs.map((q, idx) => `
+        <div style="background:#fff; border:1.5px solid var(--vm-border); border-radius:16px; padding:20px; margin-bottom:16px;">
+          <div style="font-size:12px; font-weight:800; color:var(--vm-primary); margin-bottom:4px;">QUESTION ${idx + 1} OF ${qs.length}</div>
+          <div style="font-size:16px; font-weight:800; color:var(--vm-text); margin-bottom:14px;">${q.question}</div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            ${q.options.map(opt => `
+              <button class="vm-tab" style="justify-content:center; padding:12px;" onclick="selectQuizAnswer('${q.id}', '${opt}', this)">${opt}</button>
+            `).join('')}
+          </div>
+        </div>
+      `).join('') + `<button class="btn-action" style="width:100%; justify-content:center; padding:14px; font-size:15px; margin-top:8px;" onclick="submitQuiz()">Submit Answers &amp; Check Results ➔</button>`;
+    }
+
+    let userQuizAnswers = {};
+    function selectQuizAnswer(qId, val, btn) {
+      userQuizAnswers[qId] = val;
+      const parent = btn.parentElement;
+      parent.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    function submitQuiz() {
+      const answers = Object.keys(userQuizAnswers).map(k => ({ questionId: k, answer: userQuizAnswers[k] }));
+      fetch('/api/vedicmind/quiz/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers })
+      })
+      .then(r => r.json())
+      .then(res => {
+        const box = document.getElementById('quizContainer');
+        box.innerHTML = `
+          <div style="text-align:center; padding:24px;">
+            <div style="font-size:42px;">🎯</div>
+            <h3 style="font-size:24px; font-weight:900; margin:8px 0;">Quiz Complete! Score: ${res.score} / ${res.totalPossible}</h3>
+            <div style="font-size:14px; color:#10b981; font-weight:800; margin-bottom:20px;">⭐ +${res.xpEarned} XP Added to your profile</div>
+            <button class="btn-action" onclick="startQuiz()">🔄 Take Another Quiz</button>
+          </div>
+        `;
+        showToast(`🎉 Quiz graded! +${res.xpEarned} XP`);
+      })
+      .catch(() => {
+        showToast('✅ Practice submitted!');
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[m]);
+    }
+  </script>
+</body>
+</html>

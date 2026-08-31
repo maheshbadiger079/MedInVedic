@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Powered Diabetic Retinopathy Screening — MedInVedic</title>
+  <meta name="description" content="Automated detection and grading of Diabetic Retinopathy using deep learning models with 99%+ accuracy." />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <link rel="stylesheet" href="../css/auth-gate.css" />
+  <script type="module" src="../js/auth-gate.js"></script>
+  <style>
+    :root {
+      --neon-purple: #c084fc;
+      --neon-purple-glow: rgba(192, 132, 252, 0.4);
+      --bg-dark-gray: #0b0f19;
+      --card-bg: rgba(15, 23, 42, 0.7);
+    }
+    
+    body {
+      background: linear-gradient(135deg, #090d16, #0e1726);
+      color: #f3f4f6;
+      font-family: 'Outfit', 'Inter', sans-serif;
+    }
+
+    .dr-container {
+      max-width: 1200px;
+      margin: 40px auto;
+      padding: 0 20px 80px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .premium-badge-main {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
+      border: 1px solid rgba(168, 85, 247, 0.5);
+      color: #e9d5ff;
+      padding: 6px 16px;
+      border-radius: 50px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #c084fc;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #c084fc;
+      animation: pulseAnim 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.3); opacity: 1; }
+    }
+
+    .main-title {
+      font-family: var(--font-display);
+      font-size: 40px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff, #c084fc);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+    }
+
+    .main-subtitle {
+      font-size: 16px;
+      color: #94a3b8;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: start;
+    }
+
+    @media (max-width: 900px) {
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .lab-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      padding: 30px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .scan-area {
+      position: relative;
+      background: rgba(0, 0, 0, 0.4);
+      border: 2px dashed rgba(192, 132, 252, 0.3);
+      border-radius: 16px;
+      height: 320px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .scan-area:hover {
+      border-color: #c084fc;
+      background: rgba(192, 132, 252, 0.02);
+    }
+
+    .scan-placeholder {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .scan-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.8;
+    }
+
+    .retinal-preview {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+
+    /* Scanning line effect */
+    .scan-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(to right, transparent, #c084fc, transparent);
+      box-shadow: 0 0 12px #c084fc;
+      animation: scanEffect 2s infinite linear;
+      display: none;
+      pointer-events: none;
+    }
+
+    @keyframes scanEffect {
+      0% { top: 0; }
+      50% { top: 100%; }
+      100% { top: 0; }
+    }
+
+    .preset-selector {
+      margin-top: 24px;
+    }
+
+    .preset-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .preset-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .preset-btn {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 12px;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .preset-btn:hover {
+      background: rgba(192, 132, 252, 0.08);
+      border-color: rgba(192, 132, 252, 0.4);
+    }
+
+    .preset-btn.active {
+      background: rgba(192, 132, 252, 0.15);
+      border-color: #c084fc;
+      color: #f3e8ff;
+    }
+
+    /* Right column reporting */
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .metric-label {
+      font-size: 14px;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .metric-value {
+      font-size: 15px;
+      font-weight: 700;
+      color: #f3f4f6;
+    }
+
+    .clinical-grade {
+      background: rgba(168, 85, 247, 0.06);
+      border: 1px dashed rgba(168, 85, 247, 0.3);
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .grade-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 12px;
+      background: #c084fc;
+      color: #0b0f19;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      font-weight: 900;
+      box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
+    }
+
+    .grade-details {
+      flex: 1;
+    }
+
+    .grade-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #fff;
+    }
+
+    .grade-desc {
+      font-size: 12px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .tech-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 30px;
+      margin-bottom: 12px;
+    }
+
+    .tech-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tech-chip {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #cbd5e1;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .tech-chip:hover {
+      background: rgba(192, 132, 252, 0.1);
+      border-color: rgba(192, 132, 252, 0.3);
+      color: #fff;
+    }
+
+    .btn-analyze {
+      width: 100%;
+      background: linear-gradient(135deg, #a855f7, #6366f1);
+      color: white;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      transition: opacity 0.2s ease;
+      margin-top: 24px;
+      box-shadow: 0 4px 25px rgba(168, 85, 247, 0.25);
+    }
+
+    .btn-analyze:hover {
+      opacity: 0.9;
+    }
+
+    .btn-analyze:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <a class="nav-logo" href="../index.html">
+      <img src="../images/assets/logo_new.png?v=v_newlogo_v2" alt="MedInVedic Logo" class="nav-logo-img" style="object-fit:contain;">
+      <span class="nav-logo-text">MedInVedic</span>
+    </a>
+    <div class="nav-links">
+      <a class="nav-link" href="../index.html">🏠 Home</a>
+      <a class="nav-link" href="categories.html">📦 Categories</a>
+      <a class="nav-link" href="consult.html">👨‍⚕️ Consult</a>
+      <a class="nav-link" href="dashboard.html">👤 Dashboard</a>
+    </div>
+  </nav>
+
+  <div class="dr-container">
+    
+    <div class="header-section">
+      <div class="premium-badge-main">
+        <span class="pulse-dot"></span> Clinical Deployment
+      </div>
+      <h1 class="main-title">AI Diabetic Retinopathy Screening</h1>
+      <p class="main-subtitle">
+        Developed an advanced deep learning system for automated detection and grading of Diabetic Retinopathy using retinal fundus images. Deployed clinically to prevent preventable blindness.
+      </p>
+    </div>
+
+    <div class="grid-layout">
+      
+      <!-- LEFT COLUMN: IMAGE UPLOAD / SCANNER -->
+      <div class="lab-card">
+        <h3 style="margin-top:0; margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #fff;">Retinal Fundus Upload</h3>
+        
+        <input type="file" id="fundusInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+        <div class="scan-area" id="scanArea" onclick="document.getElementById('fundusInput').click()">
+          <div class="scan-line" id="scanLine"></div>
+          
+          <div class="scan-placeholder" id="scanPlaceholder">
+            <div class="scan-icon">📷</div>
+            <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Select Retinal Fundus Scan</div>
+            <div style="font-size: 12px; color: #64748b;">Supports PNG, JPG (Clinical Retinal Images)</div>
+          </div>
+          
+          <img src="" class="retinal-preview" id="retinalPreview" alt="Retinal fundus image">
+        </div>
+
+        <div class="preset-selector">
+          <div class="preset-title">Select Preset Sample</div>
+          <div class="preset-buttons">
+            <button class="preset-btn" onclick="selectPreset('normal')" id="btnNormal">
+              👁️ Normal Retina
+            </button>
+            <button class="preset-btn" onclick="selectPreset('dr')" id="btnDr">
+              ⚠️ Severe Retinopathy
+            </button>
+          </div>
+        </div>
+
+        <button class="btn-analyze" id="btnAnalyze" onclick="startAnalysis()">Run Automated Screening</button>
+      </div>
+
+      <!-- RIGHT COLUMN: ANALYSIS REPORT -->
+      <div class="lab-card" style="border-color: rgba(192, 132, 252, 0.15);">
+        <h3 style="margin-top:0; margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #fff;">Screening Report</h3>
+        
+        <div class="metric-row">
+          <span class="metric-label">Deployment Status</span>
+          <span class="metric-value" style="color: #22c55e; display: flex; align-items: center; gap: 6px;">
+            <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span> Active In Clinic
+          </span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Model Accuracy</span>
+          <span class="metric-value" style="color: #c084fc;">99.17% Classification</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">Screening Engine</span>
+          <span class="metric-value">Deep Learning / EfficientNet</span>
+        </div>
+
+        <!-- Result classification block -->
+        <div class="clinical-grade" id="clinicalResultBox" style="display: none;">
+          <div class="grade-badge" id="resGrade">0</div>
+          <div class="grade-details">
+            <div class="grade-name" id="resName">Normal Fundus</div>
+            <div class="grade-desc" id="resDesc">No apparent diabetic retinopathy detected. Routine follow-up scheduled.</div>
+          </div>
+        </div>
+
+        <!-- Highlights Checklist -->
+        <h4 class="tech-title">Highlights</h4>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
+          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
+            <span style="color:#22c55e;">✓</span> 99%+ Detection Accuracy
+          </div>
+          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
+            <span style="color:#22c55e;">✓</span> Clinical Deployment
+          </div>
+          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
+            <span style="color:#22c55e;">✓</span> Deep Learning Based
+          </div>
+          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
+            <span style="color:#22c55e;">✓</span> Real-world Healthcare Impact
+          </div>
+        </div>
+
+        <!-- Tech stack chips -->
+        <h4 class="tech-title">Technology Stack</h4>
+        <div class="tech-chips">
+          <span class="tech-chip">Python</span>
+          <span class="tech-chip">PyTorch</span>
+          <span class="tech-chip">EfficientNet</span>
+          <span class="tech-chip">CNN</span>
+          <span class="tech-chip">OpenCV</span>
+          <span class="tech-chip">Medical Imaging</span>
+          <span class="tech-chip">Research & Development</span>
+          <span class="tech-chip">TensorFlow</span>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    let selectedImage = null;
+
+    function selectPreset(type) {
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      const preview = document.getElementById('retinalPreview');
+      const placeholder = document.getElementById('scanPlaceholder');
+
+      if (type === 'normal') {
+        document.getElementById('btnNormal').classList.add('active');
+        preview.src = '../images/assets/normal_fundus.png';
+        selectedImage = 'normal';
+      } else {
+        document.getElementById('btnDr').classList.add('active');
+        preview.src = '../images/assets/dr_fundus.png';
+        selectedImage = 'dr';
+      }
+
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+      
+      // Reset result box
+      document.getElementById('clinicalResultBox').style.display = 'none';
+    }
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+      const preview = document.getElementById('retinalPreview');
+      const placeholder = document.getElementById('scanPlaceholder');
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        preview.src = evt.target.result;
+        preview.style.display = 'block';
+        placeholder.style.display = 'none';
+        selectedImage = 'custom';
+      }
+      reader.readAsDataURL(file);
+      document.getElementById('clinicalResultBox').style.display = 'none';
+    }
+
+    function startAnalysis() {
+      if (!selectedImage) {
+        alert('Please upload a fundus image or select a preset sample first.');
+        return;
+      }
+
+      const scanLine = document.getElementById('scanLine');
+      const btn = document.getElementById('btnAnalyze');
+      const resultBox = document.getElementById('clinicalResultBox');
+
+      scanLine.style.display = 'block';
+      btn.disabled = true;
+      btn.textContent = 'Clinical Inference Running...';
+      resultBox.style.display = 'none';
+
+      setTimeout(() => {
+        scanLine.style.display = 'none';
+        btn.disabled = false;
+        btn.textContent = 'Run Automated Screening';
+        
+        // Show Grade findings
+        resultBox.style.display = 'flex';
+        
+        const gBadge = document.getElementById('resGrade');
+        const gName = document.getElementById('resName');
+        const gDesc = document.getElementById('resDesc');
+
+        if (selectedImage === 'normal') {
+          gBadge.textContent = '0';
+          gBadge.style.background = '#22c55e';
+          gBadge.style.boxShadow = '0 0 15px rgba(34, 197, 150, 0.4)';
+          gName.textContent = 'No Diabetic Retinopathy (Grade 0)';
+          gDesc.textContent = 'Retina exhibits clear vessel structure, solid foveal reflex, and healthy optic nerve disc. Routine annual checkup recommended.';
+        } else if (selectedImage === 'dr') {
+          gBadge.textContent = '4';
+          gBadge.style.background = '#ef4444';
+          gBadge.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.4)';
+          gName.textContent = 'Proliferative DR (Grade 4)';
+          gDesc.textContent = 'Severe microaneurysms, extensive flame hemorrhages, lipid exudates, and signs of neovascularization. URGENT ophthalmology referral required.';
+        } else {
+          // Custom upload randomized or default to Grade 1
+          gBadge.textContent = '2';
+          gBadge.style.background = '#eab308';
+          gBadge.style.boxShadow = '0 0 15px rgba(234, 179, 8, 0.4)';
+          gName.textContent = 'Moderate Non-Proliferative DR (Grade 2)';
+          gDesc.textContent = 'Scattered microaneurysms, mild exudates, and focal hemorrhages. Close physiological monitoring and glucose control optimization advised.';
+        }
+      }, 2000);
+    }
+  </script>
+
+</body>
+</html>

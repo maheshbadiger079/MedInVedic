@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Genomic Ayurveda — DNA mapping — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .dna-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+      position: relative;
+    }
+
+    .helix-bg {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 80% 20%, rgba(99, 102, 241, 0.1), transparent);
+      z-index: -1;
+    }
+
+    .glass-wizard {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 48px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .dna-input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 32px; }
+    .dna-group label { display: block; font-size: 13px; color: var(--gray-400); margin-bottom: 8px; font-weight: 700; }
+    .dna-select {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+      padding: 16px; border-radius: 12px; color: white; font-size: 15px; outline: none;
+    }
+
+    .btn-map { 
+      width: 100%; margin-top: 32px; background: #6366f1; color: white; border: none; padding: 20px; 
+      border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s;
+    }
+    .btn-map:hover { box-shadow: 0 10px 30px rgba(99,102,241,0.3); transform: translateY(-2px); }
+
+    /* Results UI */
+    .genomic-display { display: none; width: 100%; max-width: 1000px; margin-top: 60px; animation: fadeIn 0.8s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .genomic-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 40px;
+    }
+
+    .helix-animation {
+      height: 300px; width: 100%;
+      background: rgba(99, 102, 241, 0.05);
+      border-radius: 20px;
+      display: flex; align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .helix-core { font-size: 60px; animation: pulse 2s infinite ease-in-out; }
+    @keyframes pulse { 0% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 0.5; } }
+
+    .snp-row { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+    .snp-name { font-size: 16px; font-weight: 800; color: #6366f1; margin-bottom: 4px; }
+    .snp-ayur { font-size: 14px; font-weight: 700; color: var(--gray-200); margin-bottom: 8px; }
+    .snp-desc { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+
+    .epigenetic-box {
+      background: rgba(99, 102, 241, 0.1); border: 1px solid rgba(99, 102, 241, 0.2);
+      padding: 24px; border-radius: 20px; margin-top: 32px;
+    }
+
+    .loading-dna { 
+       position: fixed; inset: 0; background: rgba(15, 23, 42, 0.98); z-index: 1000;
+       display: none; flex-direction: column; align-items: center; justify-content: center;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="loading-dna" id="loader">
+   <div style="font-size: 80px; margin-bottom: 24px; animation: spin 3s infinite linear;">🧬</div>
+   <h2 style="font-weight: 900; letter-spacing: 4px;">SEQUENCING DOSHA MARKERS...</h2>
+   <p style="color: var(--gray-400); margin-top: 12px;">Bridging Molecular Biology with Metabolic Wisdom</p>
+</div>
+
+<div class="dna-lab">
+  <div class="helix-bg"></div>
+
+  <div class="glass-wizard">
+     <div style="text-align: center; margin-bottom: 40px;">
+        <div style="font-size: 12px; font-weight: 800; color: #6366f1; letter-spacing: 2px; margin-bottom: 12px;">MOLECULAR AYURVEDA</div>
+        <h1 style="font-size: 36px; font-weight: 900;">Genomic Dosha Mapping</h1>
+        <p style="color: var(--gray-400); max-width: 500px; margin: 12px auto 0;">Map your genetic predispositions to your Ayurvedic constitution.</p>
+     </div>
+
+     <div style="background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; text-align: center; cursor: pointer;" onclick="alert('Raw Data Upload: Compatible with 23andMe / AncestryDNA results.')">
+        <div style="font-size: 32px; margin-bottom: 8px;">📊</div>
+        <div style="font-weight: 800; font-size: 15px;">Upload Raw Genetic Data (.txt / .zip)</div>
+     </div>
+
+     <div style="text-align: center; margin: 24px 0; color: var(--gray-600); font-weight: 900; font-size: 13px;">— OR SELECT SPECIFIC MARKERS —</div>
+
+     <div class="dna-input-grid">
+        <div class="dna-group">
+           <label>ACTN3 (Muscle Gene)</label>
+           <select class="dna-select" id="actn3">
+              <option value="XX">XX (Slow-twitch, Vata tendency)</option>
+              <option value="RR">RR (Fast-twitch, Pitta/Kapha tendency)</option>
+              <option value="RX">RX (Balanced/Mixed)</option>
+           </select>
+        </div>
+        <div class="dna-group">
+           <label>CYP1A2 (Caffeine Metabolism)</label>
+           <select class="dna-select" id="cyp">
+              <option value="fast">Fast (Lower Pitta reactivity)</option>
+              <option value="slow">Slow (High Pitta/Nerve sensitivity)</option>
+           </select>
+        </div>
+        <div class="dna-group">
+           <label>ACE Gene (Performance)</label>
+           <select class="dna-select" id="ace">
+              <option value="II">II (Endurance oriented)</option>
+              <option value="DD">DD (Power oriented)</option>
+           </select>
+        </div>
+        <div class="dna-group">
+           <label>PPAR-gamma (Metabolism)</label>
+           <select class="dna-select" id="ppar">
+              <option value="high">High density (Kapha link)</option>
+              <option value="low">Low density (Vata link)</option>
+           </select>
+        </div>
+     </div>
+
+     <button class="btn-map" onclick="performMapping()">Sequencing Alignment →</button>
+  </div>
+
+  <div class="genomic-display" id="resultArea">
+     <div class="genomic-card">
+        <div class="card-left">
+           <div class="helix-animation">
+              <div class="helix-core">🧬</div>
+           </div>
+           <div style="text-align: center; margin-top: 32px;">
+              <div style="font-weight: 800; font-size: 14px; text-transform: uppercase; color: var(--gray-500); letter-spacing: 2px;">Predicted Baseline</div>
+              <h2 style="font-size: 32px; font-weight: 900;" id="predictedDosha">Pitta-Kapha</h2>
+              <div style="font-size: 13px; color: #6366f1; font-weight: 700; margin-top: 8px;">92.4% Genomic Alignment</div>
+           </div>
+        </div>
+
+        <div class="card-right">
+           <h3 style="margin: 0 0 32px 0; font-size: 24px; font-weight: 900;">Genomic Architecture</h3>
+           
+           <div class="snp-row">
+              <div class="snp-name">ACTN3 Alignment</div>
+              <div class="snp-ayur">Constitutional Power (Pitta-Kapha)</div>
+              <p class="snp-desc" id="actnDesc">Your RR genotype correlates with increased muscle density and anaerobic power, aligning with a Pitta-dominant physical structure.</p>
+           </div>
+
+           <div class="snp-row">
+              <div class="snp-name">CYP1A2 Metabolic Speed</div>
+              <div class="snp-ayur" id="cypAyur">Pitta Reactive Baseline</div>
+              <p class="snp-desc" id="cypDesc">Slow caffeine metabolism indicates high neuro-sensitivity, suggesting a predisposition to Pitta overflow during stress.</p>
+           </div>
+
+           <div class="epigenetic-box">
+              <div style="font-weight: 800; font-size: 14px; color: #6366f1; margin-bottom: 12px; text-transform: uppercase;">Epigenetic Strategy</div>
+              <p style="font-size: 14px; color: var(--gray-200); line-height: 1.6;" id="epiStrategy">
+                 To "turn off" your genetic inflammatory predispositions, focus on Pitta-balancing Ahara (Diet) and Brahmi-based neuro-tonics to support your CYP1A2 pathway.
+              </p>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  function performMapping() {
+    const loader = document.getElementById('loader');
+    loader.style.display = 'flex';
+
+    const actn = document.getElementById('actn3').value;
+    const cyp = document.getElementById('cyp').value;
+
+    setTimeout(() => {
+      loader.style.display = 'none';
+      
+      let dosha = "Pitta-Vata";
+      if (actn === 'RR') dosha = "Pitta-Kapha";
+      if (actn === 'XX') dosha = "Vata-Kapha";
+
+      document.getElementById('predictedDosha').textContent = dosha;
+      
+      if (actn === 'RR') {
+        document.getElementById('actnDesc').textContent = "Your RR genotype (Double R allele) provides enhanced muscle fiber recruitment, confirming a strong Pitta-Kapha physical foundation for strength.";
+      } else if (actn === 'XX') {
+        document.getElementById('actnDesc').textContent = "The XX genotype indicates a high percentage of slow-twitch fibers, perfectly mirroring the Vata-dominant lean, endurance-based constitution.";
+      }
+
+      if (cyp === 'slow') {
+        document.getElementById('cypAyur').textContent = "Pitta/Nerve Sensitive Baseline";
+        document.getElementById('cypDesc').textContent = "Genetics suggest slower metabolic clearance of stimulants. In Ayurveda, this matches high Sensitivity and Pitta elevation in the nervous system.";
+      } else {
+        document.getElementById('cypAyur').textContent = "Stable Metabolic Baseline";
+        document.getElementById('cypDesc').textContent = "Efficient metabolic pathways suggest a more stable Pitta/Agni foundation.";
+      }
+
+      document.getElementById('resultArea').style.display = 'block';
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }, 3000);
+  }
+</script>
+
+</body>
+</html>

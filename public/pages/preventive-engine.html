@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Preventive Engine — Disease Prediction — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .preventive-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+    }
+
+    .prediction-wizard {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 48px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .form-section { margin-bottom: 40px; }
+    .section-title { font-size: 14px; color: #ef4444; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 24px; display: block; }
+
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    .input-group label { display: block; font-size: 13px; color: var(--gray-400); margin-bottom: 8px; font-weight: 700; }
+    .iv-input {
+      width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+      padding: 16px; border-radius: 12px; color: white; font-size: 15px; outline: none;
+    }
+
+    .btn-predict { 
+      width: 100%; margin-top: 32px; background: #ef4444; color: white; border: none; padding: 20px; 
+      border-radius: 16px; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s;
+    }
+    .btn-predict:hover { box-shadow: 0 10px 30px rgba(239,68,68,0.3); transform: translateY(-2px); }
+
+    /* Results */
+    .results-wrap { display: none; width: 100%; max-width: 1100px; margin-top: 60px; animation: fadeIn 0.8s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+    .risk-radar-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 32px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .risk-meter {
+      height: 200px; width: 200px; border-radius: 50%; border: 15px solid rgba(255,255,255,0.05);
+      position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      margin: 0 auto;
+    }
+    .meter-val { font-size: 48px; font-weight: 900; color: #ef4444; }
+    .meter-label { font-size: 11px; font-weight: 800; color: var(--gray-500); text-transform: uppercase; }
+
+    .path-timeline { position: relative; padding-left: 40px; margin-top: 32px; }
+    .path-timeline::before { content: ''; position: absolute; left: 19px; top: 0; bottom: 0; width: 2px; background: rgba(239, 68, 68, 0.2); }
+    
+    .path-step { position: relative; margin-bottom: 32px; }
+    .path-dot { position: absolute; left: -26px; top: 0; width: 12px; height: 12px; border: 3px solid #ef4444; border-radius: 50%; background: #0f172a; }
+    .path-content { background: rgba(255,255,255,0.02); border-radius: 16px; padding: 20px; }
+    .step-time { font-size: 11px; font-weight: 800; color: #ef4444; margin-bottom: 4px; }
+    .step-title { font-size: 16px; font-weight: 800; margin-bottom: 4px; }
+    .step-desc { font-size: 13px; color: var(--gray-400); line-height: 1.5; }
+
+    .intervention-banner {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 20px; padding: 24px; margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="preventive-lab">
+  <div class="prediction-wizard">
+     <div style="text-align: center; margin-bottom: 48px;">
+        <div style="font-size: 12px; font-weight: 800; color: #ef4444; letter-spacing: 4px; margin-bottom: 12px;">PATHOLOGICAL FORESIGHT</div>
+        <h1 style="font-size: 36px; font-weight: 900;">Disease Prediction Engine</h1>
+        <p style="color: var(--gray-400); margin-top: 8px;">Map your trajectory to intervene before pathology manifests.</p>
+     </div>
+
+     <div class="form-section">
+        <span class="section-title">Metabolic Baseline</span>
+        <div class="input-grid">
+           <div class="input-group">
+              <label>Elevated Dosha</label>
+              <select class="iv-input" id="highDosha">
+                 <option value="Kapha">Kapha (Moisture/Density)</option>
+                 <option value="Pitta">Pitta (Heat/Intensity)</option>
+                 <option value="Vata">Vata (Air/Dryness)</option>
+              </select>
+           </div>
+           <div class="input-group">
+              <label>Digestive Strength (Agni)</label>
+              <select class="iv-input" id="agni">
+                 <option value="weak">Manda (Sluggish)</option>
+                 <option value="high">Tikshna (Intense)</option>
+                 <option value="variable">Visha (Irregular)</option>
+              </select>
+           </div>
+        </div>
+     </div>
+
+     <div class="form-section">
+        <span class="section-title">Lifestyle Vectors</span>
+        <div class="input-grid">
+           <div class="input-group">
+              <label>Primary Diet</label>
+              <select class="iv-input" id="diet">
+                 <option value="sugar">High Sugar/Refined</option>
+                 <option value="salt">High Salt/Spicy</option>
+                 <option value="dry">Dry/Processed Foods</option>
+              </select>
+           </div>
+           <div class="input-group">
+              <label>Primary Activity</label>
+              <select class="iv-input" id="activity">
+                 <option value="sedentary">Mostly Sedentary</option>
+                 <option value="extreme">Extreme Physical/Manual</option>
+                 <option value="stress">High Mental Stress</option>
+              </select>
+           </div>
+        </div>
+     </div>
+
+     <button class="btn-predict" onclick="runPrediction()">Generate Pathological Roadmap →</button>
+  </div>
+
+  <div class="results-wrap" id="resultsArea">
+     <div class="risk-radar-card">
+        <div class="radar-left">
+           <div class="risk-meter">
+              <div class="meter-val" id="riskScore">68%</div>
+              <div class="meter-label">Trajectory Risk</div>
+           </div>
+           
+           <div style="margin-top: 40px; text-align: center;">
+              <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 12px;">Predicted Outcome</h3>
+              <div style="background: rgba(239, 68, 68, 0.1); color: #ef4444; padding: 12px 24px; border-radius: 12px; font-weight: 800; display: inline-block;" id="predOutcome">
+                 Early Metabolic Syndrome
+              </div>
+           </div>
+
+           <div class="intervention-banner">
+              <div style="font-weight: 800; font-size: 13px; color: var(--primary); margin-bottom: 8px;">🛡️ STRATEGIC INTERVENTION</div>
+              <p style="font-size: 13px; color: var(--gray-300); line-height: 1.5;" id="interveneText">
+                 By shifting to Kapha-pacifying diet and 20 mins cardio daily, you can reduce this risk by 85% within 12 months.
+              </p>
+           </div>
+        </div>
+
+        <div class="radar-right">
+           <h3 style="margin: 0 0 24px 0; font-size: 20px; font-weight: 800;">Pathological Timeline</h3>
+           <div class="path-timeline" id="timelineList">
+              <!-- Dynamic -->
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  function runPrediction() {
+    const dosha = document.getElementById('highDosha').value;
+    const agni = document.getElementById('agni').value;
+    const diet = document.getElementById('diet').value;
+    const activity = document.getElementById('activity').value;
+
+    let outcome = "Metabolic Imbalance";
+    let score = 50;
+    let path = [];
+
+    if (dosha === 'Kapha' && diet === 'sugar') {
+      outcome = "Metabolic Syndrome / Madumeha";
+      score = 82;
+      path = [
+        { time: "Next 2 Years", title: "Meda Dhatu Sluggishness", desc: "Fatty tissues begin to obstruct metabolic channels (Srotas)." },
+        { time: "Year 5", title: "Pre-Diabetes State", desc: "Insulin sensitivity drops due to Kapha-heavy stagnation." },
+        { time: "Year 10", title: "Chronic Pathology", desc: "Manifestation of clinically observable type-2 diabetes." }
+      ];
+    } else if (dosha === 'Pitta' && diet === 'salt') {
+      outcome = "Hypertension / Raktachapa";
+      score = 75;
+      path = [
+        { time: "Next 2 Years", title: "Rakta Dhatu Heat", desc: "Blood toxicity increases, leading to arterial pressure." },
+        { time: "Year 5", title: "Chronic Inflammation", desc: "Vascular walls experience sustained Pitta-based erosion." },
+        { time: "Year 10", title: "Secondary Complications", desc: "Increased risk of cardiac and renal strain." }
+      ];
+    } else {
+      outcome = "Nerve Degeneration / Vata Vyadhi";
+      score = 65;
+      path = [
+        { time: "Next 2 Years", title: "Majja Dhatu Depletion", desc: "Nerve tissue lubrication decreases due to Vata dryness." },
+        { time: "Year 5", title: "Systemic Atrophy", desc: "Joint mobility and cognitive speed show early decline." },
+        { time: "Year 10", title: "Chronic Debility", desc: "Permanent Vata-based neurological symptoms appear." }
+      ];
+    }
+
+    document.getElementById('riskScore').textContent = score + '%';
+    document.getElementById('predOutcome').textContent = outcome;
+    document.getElementById('timelineList').innerHTML = path.map(p => `
+       <div class="path-step">
+          <div class="path-dot"></div>
+          <div class="path-content">
+             <div class="step-time">${p.time}</div>
+             <div class="step-title">${p.title}</div>
+             <p class="step-desc">${p.desc}</p>
+          </div>
+       </div>
+    `).join('');
+
+    document.getElementById('resultsArea').style.display = 'block';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

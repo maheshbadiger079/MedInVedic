@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon-512.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedInVedic — Where Modern Medicine Meets Ancient Ayurveda</title>
+  <meta name="description" content="India's premier healthcare platform combining modern evidence-based pharmaceuticals with ancient Ayurvedic wisdom. RAG-grounded health intelligence and doctor discovery." />
+  
+  <link rel="stylesheet" href="css/style.css?v=v_Landing_v1" />
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+  
+  <script src="js/analytics.js"></script>
+  <script src="js/auth-guard.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #f8fafc;
+      color: #1e293b;
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(226, 232, 240, 0.8) 0px, transparent 50%),
+        radial-gradient(at 90% 20%, rgba(241, 245, 249, 0.9) 0px, transparent 50%),
+        radial-gradient(at 50% 90%, rgba(226, 232, 240, 0.6) 0px, transparent 50%);
+    }
+    a { text-decoration: none; color: inherit; }
+
+    /* ── NAVBAR (Clean Glassmorphic) ── */
+    .landing-nav {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(255, 255, 255, 0.82);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+      padding: 0 32px;
+      height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-brand img {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: contain;
+      border: 1px solid #e2e8f0;
+    }
+    .nav-brand-text {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+    .nav-link {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #475569;
+      transition: all 0.2s;
+    }
+    .nav-link:hover { color: #0f172a; }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-ghost {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .btn-ghost:hover {
+      background: #ffffff;
+      border-color: #0f172a;
+    }
+    .btn-cta {
+      background: #0f172a;
+      border: 1.5px solid #0f172a;
+      color: #ffffff;
+      padding: 9px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.15);
+      transition: all 0.2s;
+    }
+    .btn-cta:hover {
+      background: #1e293b;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.25);
+    }
+
+    /* ── HERO SECTION ── */
+    .hero-section {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 72px 24px 48px;
+      text-align: center;
+    }
+    .hero-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 6px 18px;
+      border-radius: 50px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+    .hero-title {
+      font-size: 52px;
+      font-weight: 900;
+      line-height: 1.15;
+      color: #0f172a;
+      letter-spacing: -1.2px;
+      margin-bottom: 18px;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #0f172a 40%, #475569 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-sub {
+      font-size: 17.5px;
+      color: #475569;
+      max-width: 760px;
+      margin: 0 auto 36px;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+    .hero-btns {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    /* ── DEMO VIDEO CONTAINER (Glassmorphic White / Slate) ── */
+    .demo-video-wrapper {
+      max-width: 1000px;
+      margin: 56px auto 72px;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1.5px solid rgba(226, 232, 240, 0.9);
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+      position: relative;
+    }
+    .demo-header {
+      padding: 16px 24px;
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .demo-header-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .demo-badge {
+      background: #0f172a;
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+    .video-box {
+      position: relative;
+      width: 100%;
+      background: #000000;
+      aspect-ratio: 16 / 9;
+    }
+    .video-box iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .demo-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .notebooklm-btn {
+      padding: 9px 20px;
+      background: #0f172a;
+      border: 1.5px solid #0f172a;
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 800;
+      border-radius: 50px;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .notebooklm-btn:hover {
+      transform: translateY(-1px);
+      background: #1e293b;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(15, 23, 42, 0.2);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .sec-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .sec-title {
+      font-size: 32px;
+      font-weight: 900;
+      color: #0f172a;
+      text-align: center;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+    .sec-sub {
+      font-size: 15px;
+      color: #475569;
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+    .step-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 28px 24px;
+      text-align: center;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      transition: all 0.2s;
+    }
+    .step-card:hover {
+      transform: translateY(-4px);
+      background: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+    .step-num {
+      width: 48px;
+      height: 48px;
+      background: #f1f5f9;
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 17px;
+      font-weight: 900;
+      margin: 0 auto 16px;
+    }
+    .step-card h3 { font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .step-card p { font-size: 13.5px; color: #475569; line-height: 1.5; }
+
+    /* ── FEATURES GRID ── */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .feat-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px) saturate(180%);
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.04);
+      transition: all 0.2s;
+    }
+    .feat-card:hover {
+      transform: translateY(-4px);
+      background: #ffffff;
+      border-color: #0f172a;
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+    }
+    .feat-icon { font-size: 34px; margin-bottom: 16px; }
+    .feat-card h3 { font-size: 19px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .feat-card p { font-size: 13.5px; color: #475569; line-height: 1.5; margin-bottom: 16px; }
+    .feat-pill {
+      display: inline-block;
+      font-size: 11.5px;
+      font-weight: 800;
+      color: #0f172a;
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── RAG TEASER (Frosted Glass Panel) ── */
+    .rag-teaser-box {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      border: 1.5px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 36px;
+      margin-top: 64px;
+      box-shadow: 0 12px 36px rgba(15, 23, 42, 0.05);
+    }
+    .rag-input-row {
+      display: flex;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .rag-input {
+      flex: 1;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 12px;
+      padding: 14px 18px;
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 600;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .rag-input:focus { border-color: #0f172a; background: #ffffff; }
+    .rag-output {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 13.5px;
+      line-height: 1.6;
+      color: #334155;
+    }
+
+    /* ── FOOTER ── */
+    .landing-footer {
+      border-top: 1px solid #e2e8f0;
+      padding: 36px 32px;
+      text-align: center;
+      color: #64748b;
+      font-size: 13px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    /* ── MOBILE RESPONSIVE STYLES ── */
+    @media (max-width: 768px) {
+      .landing-nav {
+        padding: 0 16px;
+        height: 64px;
+      }
+      .nav-brand-text {
+        font-size: 17px;
+      }
+      .nav-links {
+        display: none;
+      }
+      .nav-actions {
+        gap: 8px;
+      }
+      .nav-actions .btn-ghost, .nav-actions .btn-cta {
+        padding: 7px 12px;
+        font-size: 12px;
+      }
+
+      .hero-section {
+        padding: 36px 16px 24px;
+      }
+      .hero-chip {
+        font-size: 11.5px;
+        padding: 5px 12px;
+        margin-bottom: 18px;
+        max-width: 100%;
+        text-align: center;
+        white-space: normal;
+        line-height: 1.4;
+      }
+      .hero-title {
+        font-size: 28px;
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+        margin-bottom: 14px;
+      }
+      .hero-sub {
+        font-size: 14.5px;
+        margin-bottom: 24px;
+        line-height: 1.5;
+      }
+      .hero-btns {
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+      }
+      .hero-btns button {
+        width: 100%;
+        padding: 13px 20px !important;
+        font-size: 14px !important;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .demo-video-wrapper {
+        margin: 32px 0 40px;
+        border-radius: 18px;
+      }
+      .demo-header {
+        padding: 12px 16px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .video-box {
+        padding: 16px 8px !important;
+        min-height: auto !important;
+      }
+      .video-box img {
+        max-height: 260px !important;
+        width: 100%;
+        object-fit: contain;
+      }
+      .demo-footer {
+        padding: 14px 16px;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+        text-align: center;
+      }
+      .demo-footer > div {
+        justify-content: center;
+      }
+      .notebooklm-btn {
+        width: 100%;
+        justify-content: center;
+        text-align: center;
+        padding: 11px 16px;
+      }
+
+      .sec-container {
+        padding: 40px 16px;
+      }
+      .sec-title {
+        font-size: 24px;
+      }
+      .sec-sub {
+        font-size: 14px;
+        margin-bottom: 28px;
+      }
+      .steps-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .feat-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .feat-card, .step-card {
+        padding: 20px 18px;
+      }
+
+      .rag-teaser-box {
+        padding: 24px 16px;
+        margin-top: 32px;
+        border-radius: 18px;
+      }
+      .rag-input-row {
+        flex-direction: column;
+        gap: 10px;
+      }
+      .rag-input {
+        width: 100%;
+        padding: 12px 14px;
+        font-size: 13.5px;
+      }
+      .rag-teaser-box .btn-cta {
+        width: 100%;
+        padding: 12px;
+        font-size: 14px;
+      }
+      .rag-output {
+        padding: 14px;
+        font-size: 12.5px;
+        word-break: break-word;
+      }
+
+      .landing-footer {
+        padding: 28px 16px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="landing-nav">
+  <div class="nav-brand">
+    <img src="images/assets/logo.png" alt="MedInVedic">
+    <span class="nav-brand-text">MedInVedic</span>
+  </div>
+  <div class="nav-links">
+    <a href="#how-it-works" class="nav-link">How It Works</a>
+    <a href="#features" class="nav-link">Features</a>
+    <a href="#demo-video" class="nav-link">Platform Overview</a>
+    <a href="#ai-teaser" class="nav-link">AI Assistant</a>
+  </div>
+  <div class="nav-actions">
+    <button class="btn-ghost" onclick="openLoginModal()">Sign In</button>
+    <button class="btn-cta" onclick="openRegisterModal()">Create Account</button>
+  </div>
+</nav>
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+  <div class="hero-chip">✨ India's 1st Dual Healthcare Platform</div>
+  <h1 class="hero-title">Where <span>Modern Medicine</span> Meets Ancient Ayurveda</h1>
+  <p class="hero-sub">
+    Access evidence-grounded allopathic drug intelligence, authentic Ayurvedic remedies, board-certified doctor consultations, and instant AI triage in one unified platform.
+  </p>
+  <div class="hero-btns">
+    <button class="btn-cta" style="padding: 14px 28px; font-size: 15px;" onclick="scrollToVideo()">
+      ✨ Explore Dual Platform ↓
+    </button>
+    <button class="btn-ghost" style="padding: 14px 28px; font-size: 15px;" onclick="openRegisterModal()">
+      Get Started Free →
+    </button>
+  </div>
+
+  <!-- DUAL HEALTHCARE PLATFORM SHOWCASE -->
+  <div class="demo-video-wrapper" id="demo-video">
+    <div class="demo-header">
+      <div class="demo-header-title">
+        <span>🌿 India's 1st Dual Healthcare Platform & AI Case Study</span>
+        <span class="demo-badge">PLATFORM ARCHITECTURE</span>
+      </div>
+      <div style="font-size: 12px; color: #64748b;">Dual Healthcare Intelligence</div>
+    </div>
+    <div class="video-box" style="background: #ffffff; padding: 32px 20px; display: flex; align-items: center; justify-content: center; min-height: 480px; aspect-ratio: auto;">
+      <img src="images/assets/medinvedic_dual_platform.png" alt="MedInVedic Dual Healthcare Platform" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 16px;" />
+    </div>
+    <div class="demo-footer">
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; font-weight: 600;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        <span>Access the Interactive NotebookLM Clinical Case File</span>
+      </div>
+      <a href="https://notebooklm.google.com/notebook/42b9e7e0-825d-4c35-9182-b97b71c2a2b0/artifact/aaf4c60b-2fe3-4267-8ce2-155514b7202e" target="_blank" class="notebooklm-btn">
+        Explore NotebookLM Workspace ↗
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="sec-container" id="how-it-works">
+  <h2 class="sec-title">How MedInVedic Works</h2>
+  <p class="sec-sub">Four simple steps to complete evidence-based dual healthcare management.</p>
+  
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>Search or Ask AI</h3>
+      <p>Query medicines, symptoms, or remedies using text or voice in 50+ languages.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>RAG Grounded Search</h3>
+      <p>Our AI retrieves verified CDSCO/WHO/ICMR and Ayurvedic references. Zero hallucinations.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>Consult Specialists</h3>
+      <p>Connect with board-certified Allopathy doctors & Ayurvedic Vaidyas with instant booking.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <h3>Digital Pharmacy Care</h3>
+      <p>Order verified prescription & OTC medicines with Schedule H/H1 pharmacist gating.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES GRID -->
+<section class="sec-container" id="features">
+  <h2 class="sec-title">Platform Features</h2>
+  <p class="sec-sub">Designed for maximum patient safety, clinical grounding, and ease of use.</p>
+
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon">💊</div>
+      <h3>Modern Medicine Hub</h3>
+      <p>Comprehensive pharmaceutical database with CDSCO/WHO citations, drug interaction checker, and duplicate active ingredient detection.</p>
+      <span class="feat-pill">Evidence Grounded</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🌿</div>
+      <h3>Ayurvedic Wellness</h3>
+      <p>Prakriti analysis, adaptogen formulations, home remedies, and authentic herbal references from Charaka and Sushruta Samhita.</p>
+      <span class="feat-pill">Authentic Wisdom</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">👨‍⚕️</div>
+      <h3>Doctor Discovery</h3>
+      <p>Verified medical council registrations, experience badges, appointment scheduling, and clinical summary report generation.</p>
+      <span class="feat-pill">Certified Experts</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🤖</div>
+      <h3>RAG AI Assistant</h3>
+      <p>Evidence-grounded medical Q&A enforcing NO-EVIDENCE → NO-MEDICAL-CLAIM anti-hallucination policy and emergency 112 triage.</p>
+      <span class="feat-pill">Clinical Safety</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🗣️</div>
+      <h3>Vani Vaidya Voice AI</h3>
+      <p>Voice-first consultation supporting 50+ languages with code-switching support (Hinglish, Kanglish) and speech synthesis.</p>
+      <span class="feat-pill">50+ Languages</span>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon">🚨</div>
+      <h3>SOS Emergency Engine</h3>
+      <p>Instant emergency protocol triage for acute chest pain, stroke (FAST), CPR guidance, and 112 emergency dispatcher directive.</p>
+      <span class="feat-pill">24/7 Safety</span>
+    </div>
+  </div>
+</section>
+
+<!-- INTERACTIVE RAG TEASER -->
+<section class="sec-container" id="ai-teaser">
+  <div class="rag-teaser-box">
+    <div style="font-size: 11.5px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Try MedInVedic RAG AI</div>
+    <h2 style="font-size: 24px; font-weight: 900; color: #0f172a; margin-top: 4px;">Experience Grounded Medical Intelligence</h2>
+    <p style="font-size: 13.5px; color: #475569; margin-top: 4px;">Type a medicine or symptom query to test verified pharmacopoeia retrieval.</p>
+    
+    <div class="rag-input-row">
+      <input type="text" id="demoQueryInput" class="rag-input" placeholder="e.g. Paracetamol warnings or Ashwagandha benefits..." value="Paracetamol 500mg indications and warnings">
+      <button class="btn-cta" onclick="testDemoRAG()">Test RAG Response</button>
+    </div>
+
+    <div class="rag-output" id="demoRagOutput">
+      <strong>[Verified RAG Response]:</strong> Paracetamol (Acetaminophen 500mg) is indicated for fever reduction (antipyretic) and mild-to-moderate analgesia.
+      <br><span style="color:#b91c1c; font-weight:600;">⚠ Precaution:</span> Maximum 4000mg/day. Avoid combining with alcohol (hepatotoxicity risk).
+      <br><span style="color:#475569; font-size:11px; font-weight:600;">Official Citations: [1] CDSCO Allopathic Guidelines [2] WHO Essential Medicines List (2023)</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="landing-footer">
+  <div>© 2026 MedInVedic Healthcare Platform. All rights reserved.</div>
+  <div style="margin-top: 8px; font-size: 12px; color: #52525b;">
+    Educational Information Platform · Not a substitute for direct professional medical advice.
+  </div>
+</footer>
+
+<script>
+  // Demo Video Event Tracking
+  document.addEventListener('DOMContentLoaded', () => {
+    // Configurable Video URL from env variable if provided
+    if (window.VITE_DEMO_VIDEO_URL) {
+      const iframe = document.getElementById('medinVedicIframe');
+      if (iframe) iframe.src = window.VITE_DEMO_VIDEO_URL;
+    }
+
+    const iframe = document.getElementById('medinVedicIframe');
+    if (iframe && window.AnalyticsEngine) {
+      window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.DEMO_VIEW);
+    }
+  });
+
+  function scrollToVideo() {
+    document.getElementById('demo-video').scrollIntoView({ behavior: 'smooth' });
+    if (window.AnalyticsEngine) {
+      window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.DEMO_VIEW);
+    }
+  }
+
+  function openLoginModal() {
+    if (window.AnalyticsEngine) {
+      window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.SIGN_IN_CLICKED);
+    }
+    window.location.href = 'pages/login.html';
+  }
+
+  function openRegisterModal() {
+    if (window.AnalyticsEngine) {
+      window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.REGISTRATION_STARTED);
+    }
+    window.location.href = 'pages/register.html';
+  }
+
+  function testDemoRAG() {
+    const q = document.getElementById('demoQueryInput').value.trim();
+    if (window.AnalyticsEngine) {
+      window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.RAG_QUERY, { query: q, source: 'landing_demo' });
+    }
+    const out = document.getElementById('demoRagOutput');
+    out.innerHTML = `⏳ <em>Retrieving verified evidence for "${q}"...</em>`;
+    setTimeout(() => {
+      out.innerHTML = `
+        <strong>[Verified RAG Response]:</strong> Information retrieved for "<strong>${q}</strong>".
+        <br>MedInVedic RAG system verifies clinical pharmacopoeia and Ayurvedic literature before formulating grounded responses.
+        <br><span style="color:#34d399">✓ Zero Hallucination Policy Enforced</span> · <span style="color:#38bdf8; font-size:11px;">Citations: CDSCO / WHO / Charaka Samhita</span>
+      `;
+    }, 600);
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "medinvedic-app",
+  "version": "1.0.0",
+  "description": "MedInVedic Mobile App",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx -y http-server public -p 3000",
+    "cap:sync": "npx cap sync",
+    "cap:android": "npx cap open android",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/cli": "^7.0.0",
+    "@capacitor/core": "^7.0.0"
+  }
+}

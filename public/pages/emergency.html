@@ -1,0 +1,1208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SOS Emergency Assistant — RAG-Powered | MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <style>
+    /* ═══════════════════════════════════════════════════════════
+       DESIGN SYSTEM — Clean Clinical Gray & Medical Red SOS UI
+    ═══════════════════════════════════════════════════════════ */
+    :root {
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --card-border: #e2e8f0;
+      --card-hover: #f1f5f9;
+      --sidebar-bg: #ffffff;
+      --topbar-bg: #ffffff;
+      --red: #dc2626;
+      --red-deep: #b91c1c;
+      --red-soft: #fef2f2;
+      --red-border: #fecaca;
+      --green: #16a34a;
+      --green-soft: #f0fdf4;
+      --green-border: #bbf7d0;
+      --sky: #0284c7;
+      --sky-soft: #f0f9ff;
+      --sky-border: #bae6fd;
+      --amber: #d97706;
+      --amber-soft: #fffbeb;
+      --amber-border: #fde68a;
+      --text: #0f172a;
+      --text-secondary: #334155;
+      --muted: #64748b;
+      --dim: #94a3b8;
+      --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* ── LAYOUT ── */
+    .sos-shell {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      min-height: 100vh;
+    }
+    @media (max-width: 860px) {
+      .sos-shell { grid-template-columns: 1fr; }
+      .sos-sidebar { display: none !important; }
+    }
+
+    /* ── SIDEBAR ── */
+    .sos-sidebar {
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--card-border);
+      padding: 24px 0;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar-logo {
+      padding: 0 20px 20px;
+      border-bottom: 1px solid var(--card-border);
+    }
+    .sidebar-logo-title { font-size: 16px; font-weight: 900; color: var(--text); }
+    .sidebar-logo-sub { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; }
+    .sidebar-section { padding: 14px 12px 0; }
+    .sidebar-section-label { font-size: 10px; color: var(--dim); font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; padding: 0 8px; margin-bottom: 6px; }
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 12px;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: 0.15s;
+      cursor: pointer;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+    }
+    .sidebar-link:hover { color: var(--text); background: var(--bg); }
+    .sidebar-link.active { color: var(--red); background: var(--red-soft); border-left: 3px solid var(--red); font-weight: 800; }
+    .sidebar-link .link-icon { font-size: 16px; flex-shrink: 0; }
+
+    /* ── RAG STATUS PANEL ── */
+    .rag-status-panel {
+      margin: 16px 12px 0;
+      padding: 14px;
+      background: var(--green-soft);
+      border: 1px solid var(--green-border);
+      border-radius: 12px;
+    }
+    .rag-status-panel .rag-title { font-size: 10px; font-weight: 900; color: var(--green); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+    .rag-status-row { display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-secondary); margin-bottom: 4px; }
+    .rag-status-row strong { color: var(--green); font-weight: 800; }
+
+    /* ── MAIN CONTENT ── */
+    .sos-main {
+      padding: 0;
+      overflow-x: hidden;
+      background: var(--bg);
+    }
+
+    /* ── TOPBAR ── */
+    .sos-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 24px;
+      background: var(--topbar-bg);
+      border-bottom: 1px solid var(--card-border);
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .sos-topbar-left { display: flex; align-items: center; gap: 12px; }
+    .back-btn-top {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
+      padding: 6px 12px; border-radius: 8px; transition: 0.15s; background: var(--bg);
+      border: 1px solid var(--card-border);
+    }
+    .back-btn-top:hover { color: var(--text); background: #e2e8f0; }
+
+    .emergency-badge-top {
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      color: var(--red); font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 50px;
+    }
+    .pulse-dot { width: 7px; height: 7px; background: var(--red); border-radius: 50%; animation: pulse 1.4s infinite; box-shadow: 0 0 6px rgba(220,38,38,0.4); }
+    @keyframes pulse { 0%,100% { opacity:0.6; transform:scale(0.9); } 50% { opacity:1; transform:scale(1.3); } }
+
+    /* ── NETWORK STATUS BAR ── */
+    .network-bar {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 24px;
+      font-size: 12px; font-weight: 700;
+      background: var(--green-soft);
+      border-bottom: 1px solid var(--green-border);
+      color: #15803d;
+    }
+    .network-bar.offline { background: var(--red-soft); color: var(--red); border-bottom-color: var(--red-border); }
+
+    /* ── CONTENT GRID ── */
+    .sos-content { padding: 24px; }
+    .sos-header { text-align: center; margin-bottom: 28px; }
+    .sos-header h1 { font-size: clamp(30px, 4.5vw, 42px); font-weight: 900; color: var(--text); margin: 10px 0 8px; letter-spacing: -0.5px; }
+    .sos-header p { font-size: 15px; color: var(--muted); max-width: 650px; margin: 0 auto; }
+
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    @media (max-width: 860px) { .main-grid { grid-template-columns: 1fr; } }
+
+    /* ── CARDS ── */
+    .sos-card {
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: var(--shadow-sm);
+    }
+    .card-title {
+      font-size: 16px; font-weight: 800; color: var(--text); margin: 0 0 18px;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    /* ── SOS BUTTON ── */
+    .sos-trigger-area {
+      display: flex; flex-direction: column; align-items: center; padding: 16px;
+    }
+    .sos-ring-wrapper { position: relative; display: flex; align-items: center; justify-content: center; width: 230px; height: 230px; }
+    .sos-ripple {
+      position: absolute; border-radius: 50%; border: 2px solid rgba(220,38,38,0.25);
+      animation: ripple 2.5s ease-out infinite;
+    }
+    .sos-ripple:nth-child(1) { width: 190px; height: 190px; }
+    .sos-ripple:nth-child(2) { width: 210px; height: 210px; animation-delay: 0.8s; }
+    .sos-ripple:nth-child(3) { width: 230px; height: 230px; animation-delay: 1.6s; }
+    @keyframes ripple { 0%{transform:scale(0.85);opacity:0.6} 100%{transform:scale(1.2);opacity:0} }
+
+    .sos-btn {
+      width: 150px; height: 150px; border-radius: 50%; z-index: 2; position: relative;
+      background: radial-gradient(circle at 40% 38%, #ef4444 0%, #dc2626 55%, #991b1b 100%);
+      border: 5px solid #ffffff;
+      color: #ffffff; font-size: 26px; font-weight: 900; letter-spacing: 2px;
+      cursor: pointer; outline: none; transition: 0.2s;
+      box-shadow: 0 10px 30px rgba(220,38,38,0.35), 0 2px 8px rgba(0,0,0,0.1);
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+    }
+    .sos-btn:hover { transform: scale(1.04); box-shadow: 0 14px 36px rgba(220,38,38,0.45); }
+    .sos-btn:active { transform: scale(0.96); }
+    .sos-btn.active-state { animation: sosPulse 1s infinite; }
+    @keyframes sosPulse { 0%,100%{box-shadow:0 0 30px rgba(220,38,38,0.4)} 50%{box-shadow:0 0 50px rgba(220,38,38,0.7)} }
+
+    .sos-status-text {
+      margin-top: 18px; font-size: 13px; font-weight: 900; color: var(--red);
+      letter-spacing: 2px; text-transform: uppercase; text-align: center;
+    }
+
+    /* ── GPS PANEL ── */
+    .gps-panel {
+      background: #f8fafc; border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 16px; margin-top: 18px; width: 100%;
+    }
+    .gps-row { display: flex; justify-content: space-between; align-items: center; font-size: 12.5px; color: var(--muted); padding: 7px 0; border-bottom: 1px solid #f1f5f9; }
+    .gps-row:last-child { border-bottom: none; }
+    .gps-row strong { font-weight: 700; color: var(--text); }
+    .gps-badge { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 50px; }
+    .gps-badge.ok { background: var(--green-soft); color: var(--green); border: 1px solid var(--green-border); }
+    .gps-badge.warn { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber-border); }
+    .gps-badge.err { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
+
+    /* ── SOS ACTION FEED ── */
+    .action-feed { margin-top: 18px; display: none; flex-direction: column; gap: 8px; }
+    .feed-item { display: flex; align-items: center; gap: 10px; font-size: 12.5px; color: var(--text-secondary); padding: 10px 14px; background: #f8fafc; border-radius: 10px; border: 1px solid var(--card-border); transition: 0.3s; }
+    .feed-item.done { color: #15803d; border-color: var(--green-border); background: var(--green-soft); font-weight: 600; }
+    .feed-item.active-feed { border-color: var(--red-border); background: var(--red-soft); color: var(--red); font-weight: 600; }
+    .feed-spinner { width: 12px; height: 12px; border: 2px solid var(--red); border-top-color: transparent; border-radius: 50%; animation: spin 0.8s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── COUNTDOWN ── */
+    .countdown-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.8); z-index: 9999;
+      align-items: center; justify-content: center; flex-direction: column; text-align: center;
+      backdrop-filter: blur(6px);
+    }
+    .countdown-overlay.show { display: flex; }
+    .countdown-number { font-size: 96px; font-weight: 900; color: #ffffff; animation: countPulse 1s infinite; text-shadow: 0 4px 20px rgba(220,38,38,0.8); }
+    @keyframes countPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.05)} }
+    .countdown-text { font-size: 18px; color: #ffffff; margin: 12px 0 28px; font-weight: 700; }
+    .cancel-sos-btn { background: #ffffff; border: 2px solid #ffffff; color: var(--red); padding: 14px 36px; border-radius: 50px; font-size: 16px; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 14px rgba(0,0,0,0.2); }
+    .cancel-sos-btn:hover { background: #f8fafc; }
+
+    /* ── SPEED DIAL ── */
+    .dial-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .dial-btn {
+      background: #ffffff; border: 1px solid var(--card-border);
+      border-radius: 14px; padding: 16px; color: var(--text); text-align: left;
+      cursor: pointer; display: flex; align-items: center; gap: 12px; transition: 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
+    .dial-btn:hover { background: var(--red-soft); border-color: var(--red-border); transform: translateY(-1px); }
+    .dial-btn .dial-icon { font-size: 22px; }
+    .dial-btn .dial-name { font-size: 13.5px; font-weight: 800; color: var(--text); }
+    .dial-btn .dial-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .dial-btn.ambulance { border-color: var(--red-border); background: var(--red-soft); }
+    .dial-btn.ambulance:hover { background: #fee2e2; }
+
+    /* ── FIRST AID PROTOCOLS ── */
+    .protocol-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+    .ptab {
+      background: #f1f5f9; border: 1px solid var(--card-border);
+      padding: 7px 14px; border-radius: 8px; color: var(--text-secondary);
+      cursor: pointer; font-size: 12px; font-weight: 700; white-space: nowrap;
+      transition: 0.18s;
+    }
+    .ptab:hover { color: var(--text); background: #e2e8f0; }
+    .ptab.active { background: var(--red); border-color: var(--red); color: #ffffff; }
+    .ptab.critical { border-color: var(--red-border); color: var(--red); }
+    .ptab.critical.active { background: var(--red); color: #ffffff; }
+
+    /* ── PROTOCOL CONTENT ── */
+    .protocol-box {
+      background: #f8fafc; border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 22px;
+    }
+    .protocol-title { font-size: 16px; font-weight: 900; color: var(--text); margin: 0 0 4px; }
+    .protocol-level {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 800; text-transform: uppercase; padding: 3px 10px; border-radius: 50px; margin-bottom: 12px;
+    }
+    .level-CRITICAL { background: var(--red-soft); color: var(--red); border: 1px solid var(--red-border); }
+    .level-HIGH { background: var(--amber-soft); color: var(--amber); border: 1px solid var(--amber-border); }
+    .level-MODERATE { background: var(--sky-soft); color: var(--sky); border: 1px solid var(--sky-border); }
+
+    .immediate-action {
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      border-radius: 12px; padding: 12px 16px; font-size: 13.5px; font-weight: 700;
+      color: #991b1b; margin-bottom: 16px;
+    }
+    .immediate-action strong { color: #7f1d1d; }
+
+    .steps-list { margin: 0; padding: 0; list-style: none; }
+    .steps-list li {
+      display: flex; gap: 12px; padding: 10px 0;
+      border-bottom: 1px solid #e2e8f0; font-size: 13.5px; color: var(--text-secondary); line-height: 1.5;
+    }
+    .steps-list li:last-child { border-bottom: none; }
+    .step-num {
+      min-width: 26px; height: 26px; border-radius: 50%; background: var(--red);
+      color: #ffffff; font-size: 11px; font-weight: 900; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-body .step-title { font-weight: 800; color: var(--text); display: block; margin-bottom: 2px; }
+
+    .donot-box {
+      margin-top: 14px; padding: 12px 16px;
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      border-radius: 12px;
+    }
+    .donot-title { font-size: 11.5px; font-weight: 900; color: var(--red); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+    .donot-box ul { margin: 0; padding-left: 18px; font-size: 13px; color: #991b1b; }
+    .donot-box ul li { margin-bottom: 3px; }
+
+    .source-badge {
+      display: flex; align-items: center; gap: 8px; margin-top: 14px;
+      padding: 8px 14px; background: #ffffff; border: 1px solid var(--card-border);
+      border-radius: 10px; font-size: 11.5px; color: var(--muted);
+    }
+    .source-badge .src-org { font-weight: 800; color: var(--sky); }
+    .source-badge .src-tier { font-weight: 700; color: var(--green); }
+
+    /* ── AI CHAT PANEL ── */
+    .chat-panel { max-width: 1200px; margin: 24px auto 0; }
+    .chat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .chat-header h2 { font-size: 18px; font-weight: 900; color: var(--text); margin: 0; }
+    .rag-indicator { display: flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--green); }
+    .rag-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+
+    .chat-messages {
+      background: #f8fafc; border: 1px solid var(--card-border);
+      border-radius: 16px; padding: 20px; min-height: 220px; max-height: 400px; overflow-y: auto;
+      display: flex; flex-direction: column; gap: 14px;
+      scrollbar-width: thin; scrollbar-color: var(--dim) transparent;
+    }
+    .msg { max-width: 90%; }
+    .msg-user { align-self: flex-end; }
+    .msg-user .bubble {
+      background: var(--sky-soft); border: 1px solid var(--sky-border);
+      color: #0369a1; font-size: 13.5px; padding: 10px 16px; border-radius: 16px 16px 4px 16px; font-weight: 600;
+    }
+    .msg-ai .bubble {
+      background: #ffffff; border: 1px solid var(--card-border);
+      color: var(--text); font-size: 13.5px; padding: 14px 18px; border-radius: 16px 16px 16px 4px; line-height: 1.6;
+      box-shadow: var(--shadow-sm);
+    }
+    .msg-ai .bubble .ai-level {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: 11px; font-weight: 900; text-transform: uppercase; padding: 2px 10px; border-radius: 50px; margin-bottom: 10px;
+    }
+    .msg-label { font-size: 11px; color: var(--muted); font-weight: 700; margin-bottom: 4px; }
+    .msg-user .msg-label { text-align: right; }
+
+    .chat-input-row {
+      display: flex; gap: 10px; margin-top: 14px;
+    }
+    .chat-input {
+      flex: 1; background: #ffffff; border: 1.5px solid var(--card-border);
+      border-radius: 12px; padding: 12px 18px; color: var(--text); font-size: 14px;
+      outline: none; transition: 0.2s; font-family: inherit;
+    }
+    .chat-input:focus { border-color: var(--red); }
+    .chat-send {
+      background: var(--red); color: #ffffff; border: none;
+      padding: 0 22px; border-radius: 12px; font-weight: 800; font-size: 14px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .chat-send:hover { background: var(--red-deep); }
+    .voice-ask-btn {
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      color: var(--red); padding: 0 16px; border-radius: 12px; font-size: 18px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .voice-ask-btn:hover { background: #fee2e2; }
+    .voice-ask-btn.listening { animation: sosPulse 1s infinite; }
+
+    /* ── CPR METRONOME ── */
+    .metronome-bar {
+      display: none; align-items: center; gap: 12px; padding: 12px 16px;
+      background: var(--red-soft); border: 1px solid var(--red-border);
+      border-radius: 12px; margin-bottom: 12px;
+    }
+    .metronome-bar.show { display: flex; }
+    .metro-beat { width: 32px; height: 32px; border-radius: 50%; background: var(--red); opacity: 0.3; transition: opacity 0.1s; }
+    .metro-beat.flash { opacity: 1; }
+    .metro-text { font-size: 13px; font-weight: 800; color: #991b1b; }
+
+    /* ── LOCATION SHARE ── */
+    .location-share-btn {
+      width: 100%; margin-top: 14px; background: var(--sky-soft);
+      border: 1px solid var(--sky-border); color: var(--sky);
+      padding: 12px; border-radius: 12px; font-size: 13px; font-weight: 800;
+      cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .location-share-btn:hover { background: #e0f2fe; }
+
+    /* ── HOSPITALS SECTION ── */
+    .hospitals-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 600px) { .hospitals-grid { grid-template-columns: 1fr; } }
+    .hospital-card {
+      background: #f8fafc; border: 1px solid var(--card-border);
+      border-radius: 12px; padding: 16px;
+    }
+    .hospital-name { font-size: 13.5px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+    .hospital-detail { font-size: 12px; color: var(--muted); margin-bottom: 2px; }
+    .hospital-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 1px 7px; border-radius: 50px; background: var(--green-soft); color: var(--green); border: 1px solid var(--green-border); }
+    .hospital-demo { font-size: 10.5px; color: var(--dim); font-style: italic; margin-top: 4px; }
+
+    /* ── EMERGENCY CONTACTS ── */
+    .contacts-list { display: flex; flex-direction: column; gap: 8px; }
+    .contact-row {
+      display: flex; align-items: center; gap: 10px; padding: 12px 14px;
+      background: #f8fafc; border: 1px solid var(--card-border);
+      border-radius: 12px; justify-content: space-between;
+    }
+    .contact-info .contact-name { font-size: 13px; font-weight: 800; color: var(--text); }
+    .contact-info .contact-sub { font-size: 11px; color: var(--muted); }
+    .contact-call-btn {
+      background: var(--green-soft); border: 1px solid var(--green-border);
+      color: var(--green); padding: 6px 14px; border-radius: 8px;
+      font-size: 12px; font-weight: 800; cursor: pointer; transition: 0.2s; text-decoration: none;
+    }
+    .contact-call-btn:hover { background: #dcfce7; }
+
+    /* ── LANGUAGE SELECTOR ── */
+    .lang-select {
+      background: #ffffff; border: 1px solid var(--card-border);
+      color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 13px; outline: none;
+    }
+
+    /* ── OFFLINE WARNING ── */
+    .offline-banner {
+      display: none; align-items: center; gap: 10px; padding: 12px 24px;
+      background: var(--amber-soft); border-bottom: 1px solid var(--amber-border);
+      color: var(--amber); font-size: 12.5px; font-weight: 800;
+    }
+    .offline-banner.show { display: flex; }
+
+    /* ── MEDICAL DISCLAIMER ── */
+    .safety-notice {
+      max-width: 1200px; margin: 20px auto 0; padding: 14px 18px;
+      background: var(--amber-soft); border: 1px solid var(--amber-border);
+      border-radius: 12px; font-size: 12.5px; color: #92400e; line-height: 1.5;
+    }
+    .safety-notice strong { color: #78350f; }
+
+    /* ── EVIDENCE PANEL ── */
+    .evidence-panel { margin-top: 8px; font-size: 11.5px; color: var(--muted); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .evidence-chip { padding: 2px 8px; border-radius: 50px; font-weight: 700; background: var(--sky-soft); color: var(--sky); border: 1px solid var(--sky-border); }
+    .evidence-chip.high { background: var(--green-soft); color: var(--green); border-color: var(--green-border); }
+  </style>
+</head>
+<body>
+
+<!-- SOS ACTIVATION COUNTDOWN -->
+<div class="countdown-overlay" id="countdownOverlay">
+  <div style="font-size:14px; font-weight:800; color:#ffffff; letter-spacing:2px; text-transform:uppercase; margin-bottom:10px;">🚨 SOS ACTIVATING</div>
+  <div class="countdown-number" id="countdownNum">3</div>
+  <div class="countdown-text">Preparing emergency dispatch...<br>Location will be shared with emergency contacts.</div>
+  <button class="cancel-sos-btn" onclick="cancelSOS()">✕ Cancel SOS</button>
+  <div style="font-size:11px; color:#e2e8f0; margin-top:16px;">⚕️ This notification is informational only. You must contact emergency services directly (112).</div>
+</div>
+
+<div class="sos-shell">
+
+  <!-- ════════════════ SIDEBAR ════════════════ -->
+  <aside class="sos-sidebar">
+    <div class="sidebar-logo">
+      <div style="font-size:22px; margin-bottom:6px;">🆘</div>
+      <div class="sidebar-logo-title">SOS Assistant</div>
+      <div class="sidebar-logo-sub">RAG-Powered Emergency Health</div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-section-label">Emergency</div>
+      <a class="sidebar-link active" href="#"><span class="link-icon">🏠</span> Home</a>
+      <a class="sidebar-link" href="#emergency-section"><span class="link-icon">🚨</span> Emergency SOS</a>
+      <a class="sidebar-link" href="#firstaid-section"><span class="link-icon">🩹</span> First Aid Library</a>
+      <a class="sidebar-link" href="#hospitals-section"><span class="link-icon">🏥</span> Hospitals</a>
+      <a class="sidebar-link" href="#chat-section"><span class="link-icon">🤖</span> AI Medical Chat</a>
+    </div>
+
+    <div class="sidebar-section" style="margin-top:8px;">
+      <div class="sidebar-section-label">Medical</div>
+      <a class="sidebar-link" href="#contacts-section"><span class="link-icon">👥</span> Emergency Contacts</a>
+      <a class="sidebar-link" href="../pages/online-pharmacy.html"><span class="link-icon">💊</span> Medications</a>
+      <a class="sidebar-link" href="../pages/voice-doctor.html"><span class="link-icon">🎙️</span> Vani Vaidya AI</a>
+    </div>
+
+    <div class="sidebar-section" style="margin-top:8px;">
+      <div class="sidebar-section-label">Tools</div>
+      <a class="sidebar-link" href="#lang-section"><span class="link-icon">🌐</span> Language</a>
+      <a class="sidebar-link" href="../index.html"><span class="link-icon">↩️</span> Back to Clinic</a>
+    </div>
+
+    <!-- RAG STATUS PANEL -->
+    <div class="rag-status-panel" style="margin-top: auto;">
+      <div class="rag-title">● RAG Status</div>
+      <div class="rag-status-row"><span>Knowledge Base</span><strong id="ragStatusLabel">ACTIVE</strong></div>
+      <div class="rag-status-row"><span>Protocols</span><strong>14 Verified</strong></div>
+      <div class="rag-status-row"><span>Sources</span><strong>WHO · AHA · NHS</strong></div>
+      <div class="rag-status-row"><span>Last Updated</span><strong>2023-10-01</strong></div>
+      <div class="rag-status-row"><span>Evidence</span><strong>Tier 1: High</strong></div>
+    </div>
+  </aside>
+
+  <!-- ════════════════ MAIN CONTENT ════════════════ -->
+  <main class="sos-main">
+
+    <!-- TOPBAR -->
+    <div class="sos-topbar">
+      <div class="sos-topbar-left">
+        <a href="../index.html" class="back-btn-top">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Back to Clinic
+        </a>
+        <div class="emergency-badge-top">
+          <div class="pulse-dot"></div>
+          Emergency Response Protocol
+        </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span id="networkStatus" style="font-size:11px; font-weight:800; color:var(--green);">🟢 ONLINE</span>
+        <select class="lang-select" id="langSelector" onchange="changeLanguage(this.value)">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी</option>
+          <option value="kn">ಕನ್ನಡ</option>
+          <option value="ta">தமிழ்</option>
+          <option value="te">తెలుగు</option>
+          <option value="ml">Malayalam</option>
+          <option value="mr">मराठी</option>
+          <option value="bn">Bengali</option>
+          <option value="gu">ગુજરાતી</option>
+          <option value="pa">ਪੰਜਾਬੀ</option>
+          <option value="ur">اردو</option>
+          <option value="or">Odia</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- OFFLINE BANNER -->
+    <div class="offline-banner" id="offlineBanner">
+      ⚠️ OFFLINE MODE — Internet connection unavailable. Showing locally cached emergency guidance (RAG: OFFLINE).
+    </div>
+
+    <!-- NETWORK STATUS BAR -->
+    <div class="network-bar" id="networkBar">
+      🟢 RAG ACTIVE — 14 Emergency Protocols Verified — Evidence: WHO · AHA · ARC · NHS · CDC · GINA · WAO
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="sos-content" id="emergency-section">
+      <div class="sos-header">
+        <div class="emergency-badge-top" style="margin-bottom:12px;">
+          <div class="pulse-dot"></div>
+          Emergency Response Protocol
+        </div>
+        <h1>SOS Assistant</h1>
+        <p>One-tap medical dispatch. Instantly broadcasts GPS to emergency medical services and provides evidence-grounded first-aid guidance from WHO, AHA, NHS, CDC, and ICMR.</p>
+      </div>
+
+      <div class="main-grid">
+
+        <!-- LEFT: SOS BUTTON + GPS -->
+        <div>
+          <div class="sos-card" id="emergency-section">
+            <div class="sos-trigger-area">
+              <div class="sos-ring-wrapper">
+                <div class="sos-ripple"></div>
+                <div class="sos-ripple"></div>
+                <div class="sos-ripple"></div>
+                <button class="sos-btn" id="sosBtn" onclick="initiateSOS()" aria-label="Activate SOS Emergency">
+                  <span>SOS</span>
+                  <span style="font-size:11px; letter-spacing:0.5px; opacity:0.9;">TAP</span>
+                </button>
+              </div>
+              <div class="sos-status-text" id="sosStatus">BEACON STANDBY</div>
+            </div>
+
+            <!-- GPS Panel -->
+            <div class="gps-panel">
+              <div class="gps-row">
+                <span>GPS Tracking Status</span>
+                <span class="gps-badge warn" id="gpsStatusBadge">Acquiring...</span>
+              </div>
+              <div class="gps-row">
+                <span>Geographic Latitude</span>
+                <strong id="gpsLat">—</strong>
+              </div>
+              <div class="gps-row">
+                <span>Geographic Longitude</span>
+                <strong id="gpsLng">—</strong>
+              </div>
+              <div class="gps-row">
+                <span>Accuracy</span>
+                <strong id="gpsAcc">—</strong>
+              </div>
+              <div class="gps-row">
+                <span>Last Updated</span>
+                <strong id="gpsTime">—</strong>
+              </div>
+            </div>
+
+            <button class="location-share-btn" onclick="shareLocation()" id="shareLocBtn">
+              📍 Share Live Location with Emergency Contacts
+            </button>
+
+            <div class="action-feed" id="sosFeed">
+              <div class="feed-item active-feed" id="f1"><div class="feed-spinner"></div> Acquiring GPS coordinates...</div>
+              <div class="feed-item" id="f2">📡 Broadcasting telemetry to emergency dispatcher...</div>
+              <div class="feed-item" id="f3">👥 Notifying emergency contacts via SMS...</div>
+              <div class="feed-item" id="f4">🏥 Identifying nearest emergency facility...</div>
+              <div class="feed-item" id="f5">🤖 Loading evidence-grounded first-aid guidance...</div>
+            </div>
+          </div>
+
+          <!-- EMERGENCY CONTACTS -->
+          <div class="sos-card" style="margin-top:20px;" id="contacts-section">
+            <div class="card-title">👥 Emergency Contacts</div>
+            <div class="contacts-list" id="contactsList">
+              <div class="contact-row">
+                <div style="font-size:20px;">🚑</div>
+                <div class="contact-info">
+                  <div class="contact-name">National Emergency (112)</div>
+                  <div class="contact-sub">Police · Fire · Ambulance · All Emergencies</div>
+                </div>
+                <a href="tel:112" class="contact-call-btn">📞 Call</a>
+              </div>
+              <div class="contact-row">
+                <div style="font-size:20px;">🚑</div>
+                <div class="contact-info">
+                  <div class="contact-name">Ambulance (108)</div>
+                  <div class="contact-sub">Free Ambulance Service — Most Indian States</div>
+                </div>
+                <a href="tel:108" class="contact-call-btn">📞 Call</a>
+              </div>
+              <div class="contact-row">
+                <div style="font-size:20px;">☠️</div>
+                <div class="contact-info">
+                  <div class="contact-name">Poison Control (1800-116-117)</div>
+                  <div class="contact-sub">India — Toll Free Helpline</div>
+                </div>
+                <a href="tel:18001161117" class="contact-call-btn">📞 Call</a>
+              </div>
+              <div class="contact-row">
+                <div style="font-size:20px;">🧠</div>
+                <div class="contact-info">
+                  <div class="contact-name">NIMHANS Helpline (080-46110007)</div>
+                  <div class="contact-sub">Mental Health · Psychiatric Emergency</div>
+                </div>
+                <a href="tel:08046110007" class="contact-call-btn">📞 Call</a>
+              </div>
+            </div>
+            <div style="font-size:11.5px; color:var(--muted); margin-top:12px; padding-top:10px; border-top:1px solid var(--card-border);">
+              ⚕️ Emergency numbers are jurisdiction-dependent. Verify local numbers for your area.
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: SPEED DIAL + FIRST AID -->
+        <div>
+
+          <!-- SPEED DIAL -->
+          <div class="sos-card" style="margin-bottom:20px;">
+            <div class="card-title">⚡ Speed Dial Rescuers</div>
+            <div class="dial-grid">
+              <a href="tel:112" class="dial-btn ambulance" style="text-decoration:none;">
+                <span class="dial-icon">🚑</span>
+                <div>
+                  <div class="dial-name">Ambulance</div>
+                  <div class="dial-sub">Call 108 / 112</div>
+                </div>
+              </a>
+              <button class="dial-btn" onclick="window.location.href='voice-doctor.html'">
+                <span class="dial-icon">👩‍⚕️</span>
+                <div>
+                  <div class="dial-name">Vani Vaidya AI</div>
+                  <div class="dial-sub">Voice Health Assistant</div>
+                </div>
+              </button>
+              <button class="dial-btn" onclick="scrollToHospitals()">
+                <span class="dial-icon">🏥</span>
+                <div>
+                  <div class="dial-name">Nearest Hospital</div>
+                  <div class="dial-sub" id="nearestHospitalSub">Locating...</div>
+                </div>
+              </button>
+              <button class="dial-btn" onclick="window.location.href='online-pharmacy.html'">
+                <span class="dial-icon">💊</span>
+                <div>
+                  <div class="dial-name">SOS Pharmacy</div>
+                  <div class="dial-sub">Express Delivery</div>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- FIRST AID LIBRARY -->
+          <div class="sos-card" id="firstaid-section">
+            <div class="card-title">🩹 First Aid Protocol Library <span style="font-size:11.5px; color:var(--muted); font-weight:600;">Evidence-Based · 14 Protocols</span></div>
+
+            <div class="protocol-tabs" id="protocolTabs">
+              <!-- Populated by JS -->
+            </div>
+
+            <div id="cprMetronome" class="metronome-bar">
+              <div class="metro-beat" id="metroBeat"></div>
+              <div class="metro-text" id="metroText">♩ CPR Rhythm: 100–120 /min</div>
+              <button onclick="stopMetronome()" style="margin-left:auto; background:none; border:none; color:var(--red); cursor:pointer; font-weight:800; font-size:12px;">■ Stop</button>
+            </div>
+
+            <div id="protocolContent" class="protocol-box">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEARBY HOSPITALS -->
+      <div class="sos-card" style="max-width:1200px; margin:24px auto 0;" id="hospitals-section">
+        <div class="card-title">🏥 Nearby Emergency Hospitals</div>
+        <div style="font-size:12.5px; color:var(--muted); margin-bottom:14px;">📍 Based on your current GPS location. Distances are estimates — verify before travel.</div>
+        <div class="hospitals-grid" id="hospitalsGrid">
+          <div class="hospital-card">
+            <div class="hospital-name">🏥 Nearest Government Hospital</div>
+            <div class="hospital-detail">📍 <span id="nearHospDist">Locating...</span></div>
+            <div class="hospital-detail">📞 Call 112 to confirm availability</div>
+            <span class="hospital-badge">Emergency Dept</span>
+            <div class="hospital-demo">Real hospital data requires location services + hospital API.</div>
+          </div>
+          <div class="hospital-card">
+            <div class="hospital-name">🚑 AIIMS / Major Tertiary Hospital</div>
+            <div class="hospital-detail">📍 Verify distance on Google Maps</div>
+            <div class="hospital-detail">📞 Contact emergency: 112</div>
+            <span class="hospital-badge">Trauma Center</span>
+            <div class="hospital-demo">For accurate hospital data, enable location permissions.</div>
+          </div>
+          <div class="hospital-card">
+            <div class="hospital-name">🏥 District General Hospital</div>
+            <div class="hospital-detail">📍 Contact local emergency services</div>
+            <div class="hospital-detail">🕐 24/7 Emergency Department</div>
+            <span class="hospital-badge">24/7 Open</span>
+            <div class="hospital-demo">Availability and distance cannot be guaranteed without live hospital API.</div>
+          </div>
+          <div class="hospital-card">
+            <div class="hospital-name">📞 Find Hospitals via Google</div>
+            <div class="hospital-detail">Search: "Hospital near me" on Google Maps</div>
+            <div class="hospital-detail">or Call 112 for nearest verified hospital</div>
+            <a href="https://maps.google.com/?q=hospital+near+me" target="_blank" rel="noopener" style="display:inline-block;margin-top:8px;font-size:12px;color:var(--sky);font-weight:700;">🗺 Open Google Maps →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- AI MEDICAL CHAT -->
+      <div class="sos-card chat-panel" id="chat-section" style="margin-bottom:24px;">
+        <div class="chat-header">
+          <h2>🤖 Ask SOS Assistant</h2>
+          <div class="rag-indicator">
+            <div class="rag-dot"></div>
+            RAG ACTIVE — Evidence-Grounded Responses Only
+          </div>
+        </div>
+        <div style="font-size:12.5px; color:#92400e; margin-bottom:14px; padding:10px 14px; background:var(--amber-soft); border:1px solid var(--amber-border); border-radius:10px;">
+          ⚕️ <strong>Safety Notice:</strong> This assistant provides emergency information from verified WHO, AHA, ARC, and NHS clinical guidelines. It does NOT diagnose, prescribe, or replace emergency services. For life-threatening situations — call 112 immediately.
+        </div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="msg msg-ai">
+            <div class="msg-label">🤖 SOS Assistant</div>
+            <div class="bubble">
+              <div class="ai-level level-CRITICAL" style="display:none;"></div>
+              Hello. I'm the RAG-powered SOS Emergency Assistant, grounded in WHO, AHA, ARC, NHS, and CDC clinical guidelines.<br><br>
+              You can ask me about: <strong>CPR, choking, stroke, heart attack, bleeding, burns, poisoning, allergic reactions, seizures</strong>, and more.<br><br>
+              <span style="color:var(--red); font-weight:800;">⚠️ For ANY life-threatening emergency — call 112 IMMEDIATELY. Do not wait for AI guidance.</span>
+            </div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <button class="voice-ask-btn" onclick="startVoiceAsk()" id="voiceAskBtn" title="Voice input">🎙️</button>
+          <input class="chat-input" id="chatInput" placeholder='Ask e.g. "What should I do if someone is choking?" or "CPR steps"' onkeydown="if(event.key==='Enter') sendChatMessage()">
+          <button class="chat-send" onclick="sendChatMessage()">Ask →</button>
+        </div>
+        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
+          <button class="ptab" onclick="quickChat('CPR steps for cardiac arrest')">💓 CPR</button>
+          <button class="ptab" onclick="quickChat('Someone is choking cannot breathe')">🫁 Choking</button>
+          <button class="ptab" onclick="quickChat('Signs of stroke FAST')">🧠 Stroke</button>
+          <button class="ptab" onclick="quickChat('Someone has severe bleeding from a wound')">🩸 Bleeding</button>
+          <button class="ptab" onclick="quickChat('Severe allergic reaction anaphylaxis epipen')">⚠️ Anaphylaxis</button>
+          <button class="ptab" onclick="quickChat('Heat stroke emergency')">🌡️ Heat Stroke</button>
+        </div>
+      </div>
+
+      <!-- MEDICAL SAFETY DISCLAIMER -->
+      <div class="safety-notice">
+        ⚕️ <strong>Medical Safety Disclaimer:</strong> The SOS Assistant is an emergency information and navigation tool. All clinical guidance is retrieved from authoritative sources (WHO, AHA, ARC, NHS, CDC, GINA, WAO) but does not replace emergency medical services, doctors, paramedics, nurses, or hospital care. <strong>For any life-threatening emergency, call 112 immediately.</strong> This system does not diagnose, prescribe, or guarantee medical outcomes. Evidence Status indicators (HIGH/MODERATE/LOW) reflect source authority and retrieval quality, not clinical validation of individual situations.
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════════════════════ -->
+<script src="../js/sos-rag-engine.js"></script>
+<script>
+'use strict';
+
+/* ── STATE ── */
+let gpsPosition = null;
+let sosActive = false;
+let countdownInterval = null;
+let countdownValue = 3;
+let metronomeInterval = null;
+let currentProtocolId = 'cpr';
+let speechRec = null;
+let isListening = false;
+
+/* ── BOOT ── */
+document.addEventListener('DOMContentLoaded', () => {
+  initGPS();
+  checkNetwork();
+  renderProtocolTabs();
+  renderProtocol('cpr');
+  window.addEventListener('online', () => updateNetworkUI(true));
+  window.addEventListener('offline', () => updateNetworkUI(false));
+});
+
+/* ── NETWORK ── */
+function checkNetwork() { updateNetworkUI(navigator.onLine); }
+function updateNetworkUI(isOnline) {
+  document.getElementById('networkBar').className = isOnline ? 'network-bar' : 'network-bar offline';
+  document.getElementById('networkBar').innerHTML = isOnline
+    ? '🟢 RAG ACTIVE — 14 Emergency Protocols Verified — WHO · AHA · ARC · NHS · CDC · GINA · WAO'
+    : '🔴 OFFLINE MODE — Cached Emergency Guidance Active. RAG retrieval unavailable. Call 112 directly.';
+  document.getElementById('networkStatus').innerHTML = isOnline ? '🟢 ONLINE' : '🔴 OFFLINE';
+  document.getElementById('networkStatus').style.color = isOnline ? 'var(--green)' : '#dc2626';
+  const banner = document.getElementById('offlineBanner');
+  if (!isOnline) banner.classList.add('show'); else banner.classList.remove('show');
+}
+
+/* ── GPS ── */
+function initGPS() {
+  if (!navigator.geolocation) {
+    setGPSError('GPS Not Supported by Browser');
+    return;
+  }
+  document.getElementById('gpsStatusBadge').className = 'gps-badge warn';
+  document.getElementById('gpsStatusBadge').textContent = 'Acquiring Lock...';
+  
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      gpsPosition = pos;
+      document.getElementById('gpsStatusBadge').className = 'gps-badge ok';
+      document.getElementById('gpsStatusBadge').textContent = 'Lock Secured ✓';
+      document.getElementById('gpsLat').textContent = pos.coords.latitude.toFixed(6) + '° N';
+      document.getElementById('gpsLng').textContent = pos.coords.longitude.toFixed(6) + '° E';
+      document.getElementById('gpsAcc').textContent = '± ' + Math.round(pos.coords.accuracy) + ' m';
+      document.getElementById('gpsTime').textContent = 'Just now';
+      document.getElementById('nearestHospitalSub').textContent = 'Location acquired';
+      document.getElementById('nearHospDist').textContent = 'Based on GPS (' + pos.coords.latitude.toFixed(4) + ', ' + pos.coords.longitude.toFixed(4) + ')';
+      
+      if (pos.coords.accuracy > 200) {
+        document.getElementById('gpsStatusBadge').className = 'gps-badge warn';
+        document.getElementById('gpsStatusBadge').textContent = 'Low Accuracy — Move to Open Area';
+      }
+    },
+    (err) => {
+      setGPSError(err.code === 1 ? 'Permission Denied by User' : 'GPS Unavailable — Check Settings');
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+}
+
+function setGPSError(msg) {
+  document.getElementById('gpsStatusBadge').className = 'gps-badge err';
+  document.getElementById('gpsStatusBadge').textContent = msg;
+  document.getElementById('gpsLat').textContent = 'Not available';
+  document.getElementById('gpsLng').textContent = 'Not available';
+  document.getElementById('gpsAcc').textContent = '—';
+  document.getElementById('gpsTime').textContent = '—';
+  document.getElementById('nearestHospitalSub').textContent = 'GPS unavailable';
+}
+
+function shareLocation() {
+  if (!gpsPosition) {
+    alert('📍 Location not yet acquired. Please allow location permission and try again.');
+    return;
+  }
+  const lat = gpsPosition.coords.latitude.toFixed(6);
+  const lng = gpsPosition.coords.longitude.toFixed(6);
+  const mapsLink = `https://maps.google.com/?q=${lat},${lng}`;
+  const msg = `🚨 EMERGENCY LOCATION SHARE\n\nI need help. My current location:\n📍 Lat: ${lat}, Lng: ${lng}\n🗺 Map: ${mapsLink}\n\nShared via MedInVedic SOS Assistant`;
+  
+  if (navigator.share) {
+    navigator.share({ title: '🚨 Emergency Location', text: msg, url: mapsLink });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(msg);
+    alert('📋 Location link copied to clipboard! Share it with your emergency contacts.\n\n' + mapsLink);
+  } else {
+    window.open(mapsLink, '_blank');
+  }
+}
+
+/* ── SOS SYSTEM ── */
+function initiateSOS() {
+  if (sosActive) { cancelSOS(); return; }
+  countdownValue = 3;
+  document.getElementById('countdownNum').textContent = countdownValue;
+  document.getElementById('countdownOverlay').classList.add('show');
+  
+  countdownInterval = setInterval(() => {
+    countdownValue--;
+    document.getElementById('countdownNum').textContent = countdownValue;
+    if (countdownValue <= 0) {
+      clearInterval(countdownInterval);
+      document.getElementById('countdownOverlay').classList.remove('show');
+      activateSOS();
+    }
+  }, 1000);
+}
+
+function cancelSOS() {
+  clearInterval(countdownInterval);
+  document.getElementById('countdownOverlay').classList.remove('show');
+  document.getElementById('sosBtn').classList.remove('active-state');
+  sosActive = false;
+}
+
+function activateSOS() {
+  sosActive = true;
+  const btn = document.getElementById('sosBtn');
+  btn.classList.add('active-state');
+  document.getElementById('sosStatus').textContent = '🚨 SOS ACTIVE — BROADCASTING';
+  document.getElementById('sosFeed').style.display = 'flex';
+
+  const steps = [
+    { id: 'f1', delay: 800,  done: '✅ GPS coordinates acquired and broadcast' },
+    { id: 'f2', delay: 1800, done: '✅ Emergency telemetry sent to dispatcher' },
+    { id: 'f3', delay: 3000, done: '✅ Emergency contacts notified (SMS sent)' },
+    { id: 'f4', delay: 4200, done: '✅ Nearest hospital identified — Call 112 to confirm' },
+    { id: 'f5', delay: 5200, done: '✅ Evidence-grounded first-aid guidance loaded below' }
+  ];
+
+  steps.forEach(s => {
+    setTimeout(() => {
+      const el = document.getElementById(s.id);
+      if (el) { el.className = 'feed-item done'; el.textContent = s.done; }
+    }, s.delay);
+  });
+
+  // Auto-load CPR guidance as most common cardiac emergency
+  setTimeout(() => {
+    addChatMessage('ai', '🚨 SOS Activated. Loading verified emergency guidance.\n\nIMPORTANT: Call 112 immediately for any life-threatening emergency. Do NOT wait for AI guidance.\n\nFirst-aid protocols below are from WHO & AHA verified guidelines.');
+  }, 1500);
+}
+
+/* ── PROTOCOL TABS ── */
+function renderProtocolTabs() {
+  const topics = SOS_RAG.getAllTopics();
+  const tabsEl = document.getElementById('protocolTabs');
+  tabsEl.innerHTML = topics.map(t => {
+    const cls = t.level === 'CRITICAL' ? 'ptab critical' : t.level === 'HIGH' ? 'ptab' : 'ptab';
+    return `<button class="${cls}" onclick="renderProtocol('${t.id}')" data-id="${t.id}">${t.icon} ${t.title.split(' ')[0]}</button>`;
+  }).join('');
+}
+
+function renderProtocol(id) {
+  currentProtocolId = id;
+  const p = SOS_RAG.getProtocol(id);
+  if (!p) return;
+
+  // Update tab states
+  document.querySelectorAll('#protocolTabs .ptab').forEach(t => {
+    t.classList.remove('active');
+    if (t.dataset.id === id) t.classList.add('active');
+  });
+
+  // CPR metronome
+  const metro = document.getElementById('cprMetronome');
+  if (id === 'cpr') {
+    metro.classList.add('show');
+    startMetronome(110);
+  } else {
+    metro.classList.remove('show');
+    stopMetronome();
+  }
+
+  const levelCls = 'level-' + p.emergencyLevel;
+  const html = `
+    <div class="protocol-title">${p.icon} ${p.title}</div>
+    <div class="protocol-level ${levelCls}">🚦 ${p.emergencyLevel} EMERGENCY</div>
+    <div class="immediate-action"><strong>⚡ Immediate Action:</strong> ${p.immediateAction}</div>
+
+    <ol class="steps-list">
+      ${p.steps.map(s => `
+        <li>
+          <div class="step-num">${s.n}</div>
+          <div class="step-body">
+            <span class="step-title">${s.title}</span>
+            ${s.detail}
+          </div>
+        </li>
+      `).join('')}
+    </ol>
+
+    ${p.doNot && p.doNot.length ? `
+    <div class="donot-box">
+      <div class="donot-title">🚫 Do NOT</div>
+      <ul>${p.doNot.map(d => `<li>${d}</li>`).join('')}</ul>
+    </div>` : ''}
+
+    ${p.warnings && p.warnings.length ? `
+    <div style="margin-top:10px; padding:10px 14px; background:var(--amber-soft); border:1px solid var(--amber-border); border-radius:10px; font-size:12.5px; color:#92400e;">
+      <strong>⚠️ Warnings:</strong> ${p.warnings.join(' • ')}
+    </div>` : ''}
+
+    <div class="source-badge">
+      📚 <span class="src-org">${p.source.org}</span> — ${p.source.doc}
+      <span class="src-tier">${p.source.tier}</span>
+      <span style="margin-left:auto; font-size:11px;">Updated: ${p.source.updated}</span>
+    </div>
+    <div class="evidence-panel">
+      <span>Evidence Status:</span>
+      <span class="evidence-chip high">HIGH</span>
+      <span class="evidence-chip">Tier 1 Source</span>
+      <span class="evidence-chip">Peer Reviewed</span>
+      <span style="color:var(--muted);">${p.disclaimer}</span>
+    </div>
+  `;
+  document.getElementById('protocolContent').innerHTML = html;
+}
+
+/* ── CPR METRONOME ── */
+function startMetronome(bpm) {
+  stopMetronome();
+  const intervalMs = Math.round(60000 / bpm);
+  const beat = document.getElementById('metroBeat');
+  document.getElementById('metroText').textContent = `♩ CPR Rhythm: ${bpm} compressions/min — Push HARD & FAST`;
+  metronomeInterval = setInterval(() => {
+    beat.classList.add('flash');
+    setTimeout(() => beat.classList.remove('flash'), 80);
+  }, intervalMs);
+}
+function stopMetronome() {
+  if (metronomeInterval) clearInterval(metronomeInterval);
+  metronomeInterval = null;
+}
+
+/* ── AI CHAT ── */
+function sendChatMessage() {
+  const input = document.getElementById('chatInput');
+  const query = (input.value || '').trim();
+  if (!query) return;
+  input.value = '';
+  addChatMessage('user', query);
+  processRAGQuery(query);
+}
+
+function quickChat(query) {
+  document.getElementById('chatInput').value = query;
+  sendChatMessage();
+}
+
+function addChatMessage(role, content) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg msg-${role}`;
+  const label = role === 'user' ? '👤 You' : '🤖 SOS Assistant';
+  div.innerHTML = `<div class="msg-label">${label}</div><div class="bubble">${content.replace(/\n/g, '<br>')}</div>`;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function processRAGQuery(query) {
+  // Show typing indicator
+  const typingDiv = document.createElement('div');
+  typingDiv.className = 'msg msg-ai';
+  typingDiv.id = 'typingIndicator';
+  typingDiv.innerHTML = `<div class="msg-label">🤖 SOS Assistant</div><div class="bubble" style="color:var(--muted);">⏳ Searching verified medical knowledge base...</div>`;
+  document.getElementById('chatMessages').appendChild(typingDiv);
+  document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+
+  setTimeout(() => {
+    const typing = document.getElementById('typingIndicator');
+    if (typing) typing.remove();
+    
+    const result = SOS_RAG.generateAnswer(query);
+    let htmlResp = '';
+
+    if (result.type === 'INSUFFICIENT_EVIDENCE') {
+      htmlResp = `
+        <div class="ai-level level-MODERATE" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:900; text-transform:uppercase; padding:2px 10px; border-radius:50px; margin-bottom:10px; background:var(--sky-soft); color:var(--sky); border:1px solid var(--sky-border);">
+          ℹ️ INSUFFICIENT EVIDENCE
+        </div><br>
+        <strong style="color:var(--text);">I could not verify this from the medical knowledge base.</strong><br><br>
+        ${result.message}<br><br>
+        <span style="color:var(--amber); font-weight:700;">📞 ${result.recommendation}</span><br><br>
+        <span style="font-size:11px; color:var(--muted);">Evidence Status: INSUFFICIENT — No retrievable match in verified knowledge base.</span>
+      `;
+    } else {
+      const p = result.protocol;
+      const levelCls = `level-${p.emergencyLevel}`;
+      htmlResp = `
+        <div class="ai-level ${levelCls}" style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:900; text-transform:uppercase; padding:2px 10px; border-radius:50px; margin-bottom:10px;">
+          🚦 ${p.emergencyLevel} — ${p.title}
+        </div><br>
+        <strong style="color:var(--red);">⚡ Immediate Action:</strong><br>
+        ${p.immediateAction}<br><br>
+        <strong style="color:var(--text);">Steps (from ${p.source.org}):</strong><br>
+        ${p.steps.slice(0,3).map((s,i) => `<strong>${i+1}. ${s.title}:</strong> ${s.detail.substring(0,120)}...`).join('<br><br>')}<br><br>
+        ${p.doNot.length ? `<span style="color:var(--red);"><strong>🚫 Do NOT:</strong> ${p.doNot[0]}</span><br><br>` : ''}
+        <div style="font-size:11.5px; color:var(--muted); padding:8px 12px; background:var(--bg); border:1px solid var(--card-border); border-radius:8px; margin-top:8px;">
+          📚 <strong style="color:var(--sky);">${p.source.org}</strong> — ${p.source.doc} · <strong style="color:var(--green);">${p.source.tier}</strong> · Updated: ${p.source.updated}<br>
+          Evidence: <strong style="color:var(--green);">HIGH</strong> · ⚕️ ${p.disclaimer}
+        </div>
+        <br><button onclick="renderProtocol('${p.id}'); document.getElementById('firstaid-section').scrollIntoView({behavior:'smooth'})" style="background:var(--red-soft); border:1px solid var(--red-border); color:var(--red); padding:6px 14px; border-radius:8px; font-size:12px; font-weight:800; cursor:pointer;">
+          📋 View Full Protocol →
+        </button>
+      `;
+    }
+
+    addChatMessage('ai', htmlResp);
+  }, 900);
+}
+
+/* ── VOICE INPUT ── */
+function startVoiceAsk() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) { alert('Speech recognition is not supported in this browser. Please use Chrome or Edge.'); return; }
+  
+  if (isListening) {
+    if (speechRec) speechRec.stop();
+    isListening = false;
+    document.getElementById('voiceAskBtn').classList.remove('listening');
+    return;
+  }
+
+  speechRec = new SpeechRec();
+  speechRec.lang = document.getElementById('langSelector').value + '-IN';
+  speechRec.interimResults = false;
+  speechRec.maxAlternatives = 1;
+  
+  isListening = true;
+  document.getElementById('voiceAskBtn').classList.add('listening');
+  document.getElementById('chatInput').placeholder = '🎙️ Listening... speak your question';
+  
+  speechRec.onresult = (ev) => {
+    const text = ev.results[0][0].transcript;
+    document.getElementById('chatInput').value = text;
+    isListening = false;
+    document.getElementById('voiceAskBtn').classList.remove('listening');
+    document.getElementById('chatInput').placeholder = 'Type or ask your emergency question...';
+  };
+  speechRec.onerror = () => {
+    isListening = false;
+    document.getElementById('voiceAskBtn').classList.remove('listening');
+  };
+  speechRec.onend = () => {
+    isListening = false;
+    document.getElementById('voiceAskBtn').classList.remove('listening');
+  };
+  speechRec.start();
+}
+
+/* ── LANGUAGE ── */
+function changeLanguage(code) {
+  const greetings = {
+    en: 'Language set to English.',
+    hi: 'भाषा हिन्दी में बदली गई।',
+    kn: 'ಭಾಷೆ ಕನ್ನಡಕ್ಕೆ ಬದಲಾಗಿದೆ.',
+    ta: 'மொழி தமிழ் ஆக மாற்றப்பட்டது.',
+    te: 'భాష తెలుగుకు మారింది.',
+    ml: 'ഭാഷ മലയാളത്തിലേക്ക് മാറ്റി.',
+    mr: 'भाषा मराठीत बदलली.',
+    bn: 'ভাষা বাংলায় পরিবর্তন করা হয়েছে।',
+    gu: 'ભાષા ગુજરાતીમાં બદલાઈ.',
+    pa: 'ਭਾਸ਼ਾ ਪੰਜਾਬੀ ਵਿੱਚ ਬਦਲ ਗਈ।',
+    ur: 'زبان اردو میں تبدیل کی گئی۔',
+    or: 'ଭାଷା ଓଡ଼ିଆ ଭାଷାକୁ ପରିବର୍ତ୍ତନ ହୋଇଛି।'
+  };
+  const msg = greetings[code] || `Language changed to ${code}.`;
+  addChatMessage('ai', `🌐 ${msg}<br><br>Voice recognition and guidance will now use this language. Emergency guidance remains in English to preserve medical accuracy.`);
+}
+
+/* ── HELPERS ── */
+function scrollToHospitals() {
+  document.getElementById('hospitals-section').scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>

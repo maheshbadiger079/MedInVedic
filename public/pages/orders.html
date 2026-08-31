@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8">
+  <title>My Orders - MedInVedic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <script src="../js/api.js?v=v_202603310200"></script>
+  <script src="../js/i18n.js?v=v_202603310200"></script>
+  <style>
+    body {
+      background: var(--bg);
+      background-image: var(--gradient-mesh);
+      margin: 0;
+      color: var(--text-color);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header-section h1 {
+      font-family: var(--font-display);
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-section p {
+      color: var(--gray-400);
+      font-size: 16px;
+    }
+
+    /* Order Card */
+    .order-card {
+      background: var(--surface);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 24px;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: rgba(59, 130, 246, 0.3);
+    }
+
+    .order-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 4px; height: 100%;
+      background: var(--blue);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--glass-border);
+    }
+
+    .order-info h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      margin: 0 0 4px 0;
+    }
+
+    .order-info .date {
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .order-status {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-processing { background: rgba(59, 130, 246, 0.1); color: var(--blue); }
+    .status-shipped { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
+    .status-delivered { background: rgba(16, 185, 129, 0.1); color: var(--primary); }
+    .status-cancelled { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+
+    .order-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .item-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .item-details {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .item-emoji {
+      width: 40px;
+      height: 40px;
+      background: var(--surface-light);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: white;
+    }
+
+    .item-qty {
+      font-size: 13px;
+      color: var(--gray-400);
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 16px;
+      border-top: 1px dashed var(--glass-border);
+    }
+
+    .order-total {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+    }
+
+    .order-total span {
+      color: var(--blue);
+    }
+
+    .btn-details {
+      padding: 8px 16px;
+      background: var(--surface-light);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-details:hover {
+      background: var(--blue);
+      border-color: var(--blue);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 80px 20px;
+      background: var(--surface);
+      border: 1px dashed var(--glass-border);
+      border-radius: var(--radius-lg);
+    }
+
+    .empty-state .icon {
+      font-size: 64px;
+      margin-bottom: 24px;
+      opacity: 0.5;
+    }
+
+    .empty-state h2 {
+      color: white;
+      margin-bottom: 12px;
+    }
+
+    .empty-state p {
+      color: var(--gray-400);
+      margin-bottom: 32px;
+    }
+
+    .shop-btn {
+      display: inline-block;
+      padding: 14px 28px;
+      background: var(--gradient);
+      color: white;
+      border-radius: 14px;
+      text-decoration: none;
+      font-weight: 700;
+      transition: transform 0.3s;
+    }
+
+    .shop-btn:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header-section">
+      <h1>My Orders</h1>
+      <p>View and track your medical history & purchases</p>
+    </div>
+
+    <!-- Toggle Tabs -->
+    <div style="display: flex; gap: 10px; margin-bottom: 30px; justify-content: center;">
+      <button id="tabOrders" class="btn-details active" onclick="switchTab('orders')" style="padding: 12px 24px;">📦 Product Orders</button>
+      <button id="tabTxs" class="btn-details" onclick="switchTab('txs')" style="padding: 12px 24px;">💸 Payment History</button>
+    </div>
+
+    <div id="ordersList">
+       <div style="text-align:center; padding:40px;">
+         <div class="loading-spinner"></div>
+         <p>Fetching your records...</p>
+       </div>
+    </div>
+  </div>
+
+  <script>
+    let currentTab = 'orders';
+    let allOrders = [];
+    let allTxs = [];
+
+    async function fetchData() {
+      const token = localStorage.getItem('mv_token');
+      if (!token) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const current_api_base = (typeof API_BASE !== 'undefined') ? API_BASE : 
+        ((window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost')
+          ? `http://${window.location.hostname}:3001/api`
+          : '/api');
+
+      try {
+        const headers = { 'Authorization': 'Bearer ' + token };
+        
+        // Fetch Orders
+        const resO = await fetch(current_api_base + '/orders/my', { headers });
+        if (resO.ok) allOrders = await resO.json();
+
+        // Fetch Transactions
+        const resT = await fetch(current_api_base + '/transactions', { headers });
+        if (resT.ok) allTxs = await resT.json();
+
+        renderContent();
+      } catch (err) {
+        console.error(err);
+        document.getElementById('ordersList').innerHTML = `
+          <div class="empty-state">
+            <div class="icon">❌</div>
+            <h2>Error loading data</h2>
+            <p>${err.message}</p>
+          </div>
+        `;
+      }
+    }
+
+    function switchTab(tab) {
+      currentTab = tab;
+      document.getElementById('tabOrders').classList.toggle('active', tab === 'orders');
+      document.getElementById('tabTxs').classList.toggle('active', tab === 'txs');
+      renderContent();
+    }
+
+    function renderContent() {
+      if (currentTab === 'orders') renderOrders(allOrders);
+      else renderTransactions(allTxs);
+    }
+
+    function renderOrders(orders) {
+      const container = document.getElementById('ordersList');
+      if (!orders || orders.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">📦</div>
+            <h2>No orders yet</h2>
+            <p>Looks like you haven't placed any orders with us yet.</p>
+            <a href="categories.html" class="shop-btn">Explore Pharmacy</a>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = orders.map(order => {
+        const statusClass = 'status-' + (order.status || 'processing').toLowerCase();
+        const dateStr = new Date(order.created_at).toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'short', year: 'numeric'
+        });
+        
+        return `
+          <div class="order-card">
+            <div class="order-header">
+              <div class="order-info">
+                <h3>Order #${order.order_id}</h3>
+                <div class="date">${dateStr}</div>
+              </div>
+              <div class="order-status ${statusClass}">${order.status}</div>
+            </div>
+            <div class="order-items">
+              ${order.items.slice(0, 3).map(item => `
+                <div class="item-row">
+                  <div class="item-details">
+                    <div class="item-emoji">${item.emoji || '💊'}</div>
+                    <div class="item-name">${item.name} (x${item.qty})</div>
+                  </div>
+                  <div class="item-price">₹${item.price * item.qty}</div>
+                </div>
+              `).join('')}
+            </div>
+            <div class="order-footer">
+              <div class="order-total">Total: <span>₹${order.total_amount}</span></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderTransactions(txs) {
+      const container = document.getElementById('ordersList');
+      if (!txs || txs.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">💸</div>
+            <h2>No transactions yet</h2>
+            <p>Your payment history (donations, wallet topups) will appear here.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = txs.map(tx => {
+        const dateStr = new Date(tx.created_at).toLocaleDateString('en-IN', {
+          day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+        return `
+          <div class="order-card" style="border-left: 4px solid ${tx.type === 'credit' ? 'var(--primary)' : 'var(--blue)'}">
+            <div class="order-header" style="border:none; margin-bottom:0; padding-bottom:0;">
+              <div class="order-info">
+                <h3 style="color: ${tx.type === 'credit' ? 'var(--primary)' : 'white'}">${tx.purpose || 'Transaction'}</h3>
+                <div class="date">${dateStr} • ID: ${tx.payment_id || 'N/A'}</div>
+              </div>
+              <div class="order-total" style="font-size: 20px;">
+                ${tx.type === 'credit' ? '+' : '-'}₹${tx.amount}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', fetchData);
+  </script>
+
+</body>
+</html>

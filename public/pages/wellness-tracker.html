@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mind-Body Wellness Tracker — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .wellness-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 100px 24px 60px;
+    }
+
+    .tracker-wizard {
+      width: 100%;
+      max-width: 800px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 48px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+    }
+
+    .q-group { margin-bottom: 40px; }
+    .q-label { font-size: 14px; color: var(--gray-400); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; display: block; }
+    
+    .mood-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .mood-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 20px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .mood-card:hover { border-color: #ec4899; background: rgba(236,72,153,0.05); }
+    .mood-card.active { border-color: #ec4899; background: rgba(236,72,153,0.1); box-shadow: 0 0 20px rgba(236,72,153,0.2); }
+    .mood-emoji { font-size: 32px; margin-bottom: 8px; display: block; }
+
+    .slider-wrap { position: relative; padding: 20px 0; }
+    .range-slider { 
+      width: 100%; height: 6px; background: rgba(255,255,255,0.1); border-radius: 10px; outline: none; -webkit-appearance: none; 
+    }
+    .range-slider::-webkit-slider-thumb { 
+      -webkit-appearance: none; width: 24px; height: 24px; background: #ec4899; border-radius: 50%; cursor: pointer; box-shadow: 0 0 15px rgba(236,72,153,0.5);
+    }
+
+    .btn-analyze { 
+      width: 100%; background: #ec4899; color: white; border: none; padding: 20px; border-radius: 16px; 
+      font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s;
+    }
+    .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(236,72,153,0.3); }
+
+    /* Results UI */
+    .results-display { display: none; margin-top: 60px; width: 100%; max-width: 900px; animation: slideUp 0.8s ease-out; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    .balance-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px;
+      padding: 40px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .guna-bar-wrap { margin-bottom: 24px; }
+    .guna-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
+    .guna-outer { height: 8px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+    .guna-inner { height: 100%; border-radius: 10px; transition: 1s ease-out; width: 0; }
+
+    .advice-box {
+      background: rgba(236, 72, 153, 0.05);
+      border: 1px solid rgba(236, 72, 153, 0.1);
+      border-radius: 20px;
+      padding: 24px;
+      margin-top: 24px;
+    }
+
+    @media (max-width: 800px) { .balance-card { grid-template-columns: 1fr; } .mood-grid { grid-template-columns: 1fr 1fr; } }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="wellness-lab">
+  <div class="tracker-wizard">
+     <div style="text-align:center; margin-bottom: 48px;">
+        <div style="font-size: 12px; font-weight: 800; color: #ec4899; letter-spacing: 2px; margin-bottom: 8px;">MANAS EQUILIBRIUM</div>
+        <h1 style="font-size: 32px; font-weight: 900;">Daily State Reflection</h1>
+     </div>
+
+     <div class="q-group">
+        <span class="q-label">How do you feel right now?</span>
+        <div class="mood-grid">
+           <div class="mood-card" onclick="selectMood('Sattva', this)">
+              <span class="mood-emoji">✨</span>
+              <div style="font-weight:700; font-size:14px;">Calm/Clear</div>
+           </div>
+           <div class="mood-card" onclick="selectMood('Rajas', this)">
+              <span class="mood-emoji">🔥</span>
+              <div style="font-weight:700; font-size:14px;">Restless</div>
+           </div>
+           <div class="mood-card" onclick="selectMood('Tamas', this)">
+              <span class="mood-emoji">☁️</span>
+              <div style="font-weight:700; font-size:14px;">Heavy/Dull</div>
+           </div>
+           <div class="mood-card" onclick="selectMood('Anxiety', this)">
+              <span class="mood-emoji">🍃</span>
+              <div style="font-weight:700; font-size:14px;">Anxious</div>
+           </div>
+        </div>
+     </div>
+
+     <div class="q-group">
+        <span class="q-label">Current Stress Level (1-10)</span>
+        <div class="slider-wrap">
+           <input type="range" min="1" max="10" value="5" class="range-slider" id="stressRange">
+           <div style="display: flex; justify-content: space-between; margin-top: 12px; font-size: 12px; color: var(--gray-500);">
+              <span>Zen</span>
+              <span>High Alert</span>
+           </div>
+        </div>
+     </div>
+
+     <div class="q-group">
+        <span class="q-label">Last Night's Sleep Quality</span>
+        <select class="input-field" id="sleepQual" style="width: 100%; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 16px; border-radius: 12px; color: white;">
+           <option value="high">Deep & Restful (Ojas building)</option>
+           <option value="mid">Average / Standard</option>
+           <option value="low">Interrupted / Light (Vata spike)</option>
+        </select>
+     </div>
+
+     <button class="btn-analyze" onclick="analyzeWellness()">Analyze Mind-Body State</button>
+  </div>
+
+  <div class="results-display" id="resultsArea">
+     <div class="balance-card">
+        <div class="guna-intel">
+           <h3 style="margin: 0 0 24px 0; font-size: 24px; font-weight: 800;">Mental Guna Analysis</h3>
+           <div class="guna-bar-wrap">
+              <div class="guna-label"><span>SATTVA (Purity/Clarity)</span><span id="valSattva">0%</span></div>
+              <div class="guna-outer"><div class="guna-inner" id="barSattva" style="background:var(--primary);"></div></div>
+           </div>
+           <div class="guna-bar-wrap">
+              <div class="guna-label"><span>RAJAS (Activity/Passion)</span><span id="valRajas">0%</span></div>
+              <div class="guna-outer"><div class="guna-inner" id="barRajas" style="background:#fbbf24;"></div></div>
+           </div>
+           <div class="guna-bar-wrap">
+              <div class="guna-label"><span>TAMAS (Inertia/Darkness)</span><span id="valTamas">0%</span></div>
+              <div class="guna-outer"><div class="guna-inner" id="barTamas" style="background:var(--gray-500);"></div></div>
+           </div>
+        </div>
+
+        <div class="wellness-insight">
+           <h3 style="margin: 0 0 16px 0; font-size: 20px;">The Holistic Verdict</h3>
+           <p style="color: var(--gray-400); font-size: 15px; line-height: 1.6;" id="verdictText">
+              Analysis based on your current inputs...
+           </p>
+           
+           <div class="advice-box">
+              <div style="font-weight: 800; font-size: 13px; margin-bottom: 8px; color: #ec4899;">🧘 CLINICAL CARE MODALITY</div>
+              <div id="remedyText" style="font-size: 14px; color: var(--gray-200);">Suggestion appearing soon...</div>
+           </div>
+
+           <div style="margin-top: 32px; padding: 24px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.2); border-radius: 20px; text-align: center;">
+             <div style="font-size: 20px; margin-bottom: 8px;">🧬</div>
+             <div style="font-size: 14px; font-weight: 800; color: white; margin-bottom: 8px;">Unlock Molecular Insights</div>
+             <p style="font-size: 12px; color: var(--gray-400); margin-bottom: 16px;">Get a detailed DNA-based Dosha report and personalized 30-day longevity protocol from our experts.</p>
+             <button onclick="unlockPremiumReport()" style="background: var(--blue); color: white; border: none; padding: 12px 24px; border-radius: 50px; font-weight: 700; cursor: pointer; font-size: 12px; transition: 0.3s;">Unlock Full Report (₹499)</button>
+           </div>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+<script>
+  let selectedMood = '';
+  
+  function unlockPremiumReport() {
+    const amount = 499;
+    window.location.href = `payment.html?amount=${amount}&purpose=Premium%20Genomic%20Wellness%20Report`;
+  }
+
+  function selectMood(m, el) {
+    selectedMood = m;
+    document.querySelectorAll('.mood-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function analyzeWellness() {
+    if (!selectedMood) return alert("Select your current mood first");
+
+    const stress = parseInt(document.getElementById('stressRange').value);
+    const sleep = document.getElementById('sleepQual').value;
+
+    let sattva = 40, rajas = 30, tamas = 30;
+
+    if (selectedMood === 'Sattva') { sattva = 80; rajas = 10; tamas = 10; }
+    if (selectedMood === 'Rajas') { rajas = 70; sattva = 20; tamas = 10; }
+    if (selectedMood === 'Tamas') { tamas = 70; sattva = 10; rajas = 20; }
+    if (selectedMood === 'Anxiety') { rajas = 60; tamas = 20; sattva = 20; }
+
+    // Stress impact
+    if (stress > 7) { rajas += 20; sattva -= 10; }
+    if (sleep === 'low') { tamas += 20; sattva -= 10; }
+
+    // Normalize
+    const total = sattva + rajas + tamas;
+    sattva = Math.round((sattva / total) * 100);
+    rajas = Math.round((rajas / total) * 100);
+    tamas = 100 - sattva - rajas;
+
+    document.getElementById('valSattva').textContent = sattva + '%';
+    document.getElementById('barSattva').style.width = sattva + '%';
+    document.getElementById('valRajas').textContent = rajas + '%';
+    document.getElementById('barRajas').style.width = rajas + '%';
+    document.getElementById('valTamas').textContent = tamas + '%';
+    document.getElementById('barTamas').style.width = tamas + '%';
+
+    let verdict = "";
+    let remedy = "";
+
+    if (sattva > 60) {
+      verdict = "You are in a state of high clarity and peace. Your mind is currently supporting deep physical healing.";
+      remedy = "Maintain with 10 mins of gratitude meditation.";
+    } else if (rajas > 50) {
+      verdict = "High Rajas identified. This restlessness correlates with Vata/Pitta spikes. Your nervous system is overstimulated.";
+      remedy = "Nadi Shodhana Pranayama (Alternate nostril breathing) for 5 minutes.";
+    } else {
+      verdict = "Tamasic heaviness detected. This suggest Kapha accumulation in the mind. Low energy levels are impacting throughput.";
+      remedy = "Vigorous movement or dry brushing (Udvartana) to wake up the senses.";
+    }
+
+    document.getElementById('verdictText').textContent = verdict;
+    document.getElementById('remedyText').textContent = remedy;
+
+    document.getElementById('resultsArea').style.display = 'block';
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+
+</body>
+</html>

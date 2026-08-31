@@ -1,0 +1,56 @@
+# ─── Node / JS ───────────────────────────────────────────────────────────────
+node_modules/
+**/node_modules/
+dist/
+dist-ssr/
+*.local
+
+# ─── Environment secrets ──────────────────────────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Databases & Runtime state ───────────────────────────────────────────────
+*.sqlite
+*.db
+*.sqlite-journal
+
+# ─── Firebase ─────────────────────────────────────────────────────────────────
+.firebase/
+
+# ─── Android / Capacitor build artefacts ─────────────────────────────────────
+android/build/
+android/app/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+*.keystore
+
+# ─── Flutter / medinvedic_mobile_app build artefacts ─────────────────────────
+medinvedic_mobile_app/build/
+medinvedic_mobile_app/.dart_tool/
+medinvedic_mobile_app/.flutter-plugins
+medinvedic_mobile_app/.flutter-plugins-dependencies
+medinvedic_mobile_app/*.lock
+
+# ─── Temp / generated ─────────────────────────────────────────────────────────
+tmp/
+scratch/
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ─── Editors ──────────────────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+Thumbs.db

@@ -1,0 +1,1 @@
+ C:\\Users\\mahes\\Videos\\MedInVedic\\medinvedic_mobile_app\\.dart_tool\\flutter_build\\fa5b6dc8cc4d0eec2e6f153168e799fc\\native_assets.yaml: 

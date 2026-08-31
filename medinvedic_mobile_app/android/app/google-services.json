@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "541158956459",
+    "project_id": "medinvedic",
+    "storage_bucket": "medinvedic.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:541158956459:android:663bf231b3e688758dc6ee",
+        "android_client_info": {
+          "package_name": "com.medinvedic.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "541158956459-fohrbi1m3kfb1ff30gi1gtqc1vod51k1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.medinvedic.app",
+            "certificate_hash": "3d32e834c59871394801b78880fe36500d14acf4"
+          }
+        },
+        {
+          "client_id": "541158956459-b85u3ebfm861fmvpnl0kp4no0ov8dg4l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAIp84FvbivzJK6KYhvFFYiaRJxbI8GafU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "541158956459-b85u3ebfm861fmvpnl0kp4no0ov8dg4l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8">
+  <title>Register - MedInVedic</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <script src="../js/api.js?v=v_202603310200"></script>
+  <script src="../js/i18n.js?v=v_202603310200"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg);
+      background-image: var(--gradient-mesh);
+      margin: 0;
+      position: relative;
+      overflow-y: auto;
+      padding: 24px 16px;
+    }
+
+    /* Floating Orbs */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(80px);
+    }
+    body::before {
+      width: 400px; height: 400px;
+      background: rgba(59, 130, 246, 0.2);
+      top: -100px; left: -100px;
+      animation: float 20s infinite alternate;
+    }
+    body::after {
+      width: 300px; height: 300px;
+      background: rgba(16, 185, 129, 0.2);
+      bottom: -50px; right: -50px;
+      animation: float 15s infinite alternate-reverse;
+    }
+    @keyframes float {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .auth-card {
+      background: #ffffff;
+      padding: 40px;
+      border-radius: 20px;
+      border: 1px solid #e4e4e7;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+    }
+
+    .auth-logo {
+      width: 60px;
+      height: 60px;
+      background: #18181b;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      margin: 0 auto 20px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      color: #ffffff;
+    }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 800;
+      color: #18181b;
+      margin-bottom: 8px;
+      letter-spacing: -1px;
+    }
+
+    p.subtitle {
+      color: #71717a;
+      font-size: 14px;
+      margin-bottom: 28px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #18181b;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 18px;
+      background: #faf7f2;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      color: #18181b;
+      font-family: var(--font);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    input:focus {
+      border-color: #18181b;
+      background: #ffffff;
+      box-shadow: 0 0 0 4px rgba(24, 24, 27, 0.08);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 14px;
+      background: #18181b;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      font-family: var(--font);
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .submit-btn:hover {
+      background: #27272a;
+      transform: translateY(-2px);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+      color: #71717a;
+      font-size: 12px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e4e4e7;
+    }
+
+    .social-btns {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      background: #faf7f2;
+      border: 1px solid #e4e4e7;
+      border-radius: 12px;
+      color: #18181b;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .social-btn:hover {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      transform: translateY(-2px);
+    }
+
+    .footer-link {
+      color: #71717a;
+      font-size: 13px;
+    }
+
+    .footer-link a {
+      color: #18181b;
+      text-decoration: underline;
+      font-weight: 700;
+    }
+    
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <div class="auth-logo">🌿</div>
+    <h2>Create Account</h2>
+    <p class="subtitle">Join India's Dual Healthcare Marketplace</p>
+    
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="name" placeholder="John Doe">
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="name@company.com">
+    </div>
+    
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="••••••••">
+    </div>
+    
+    <button class="submit-btn" onclick="registerUser()">Sign Up</button>
+    
+    <div class="divider">or sign up with</div>
+    
+    <div class="social-btns">
+      <button class="social-btn" onclick="socialLogin('google')">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="18" height="18"> Sign in with Google
+      </button>
+    </div>
+    
+    <div class="footer-link">
+      Already have an account? <a href="login.html">Sign In</a>
+    </div>
+  </div>
+
+  <script type="module">
+    import { registerUser as firebaseRegister, signInWithGoogle, auth } from '../js/firebase-config.js';
+    import { getRedirectResult } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+    /* ── Handle Google redirect result on page load ── */
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result && result.user) {
+          console.log('✅ Google Sign-Up Success:', result.user.email);
+          window.location.href = '../index.html';
+        }
+      } catch (err) {
+        if (err.code !== 'auth/no-current-user') {
+          console.error('Redirect error:', err);
+        }
+      }
+    });
+
+    /* ── Google Sign-Up ── */
+    window.socialLogin = async function(provider) {
+      if (provider === 'google') {
+        try {
+          const btn = document.querySelector('.social-btn');
+          if (btn) { btn.disabled = true; btn.textContent = 'Redirecting to Google...'; }
+          await signInWithGoogle();
+          // page will redirect and come back — handled above
+        } catch (err) {
+          console.error('Google auth error:', err);
+          alert('Google sign-in failed: ' + err.message);
+        }
+      }
+    };
+
+    /* ── Email / Password Registration ── */
+    window.registerUser = async function() {
+      const n = document.getElementById('name').value.trim();
+      const e = document.getElementById('email').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if (!n || !e || !p) return alert('Please enter your name, email and password.');
+
+      const btn = document.querySelector('.submit-btn');
+      const original = btn ? btn.textContent : 'Create Account';
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Creating account…';
+      }
+
+      try {
+        let authUser;
+        try {
+          authUser = await firebaseRegister(e, p, n);
+        } catch (fErr) {
+          console.warn('Firebase register fallback to API client:', fErr);
+        }
+
+        try {
+          await window.API.auth.register(n, e, p, '');
+        } catch (apiErr) {
+          console.warn('API register sync note:', apiErr);
+        }
+
+        const isAdmin = (e === 'admin@medinvedic.com' || e === 'maheshbadiger079@gmail.com');
+        const userObj = {
+          uid: (authUser && (authUser.uid || authUser.id)) || 'u_' + Math.random().toString(36).substring(2, 9),
+          email: e,
+          displayName: n,
+          role: isAdmin ? 'SUPER_ADMIN' : 'USER'
+        };
+        localStorage.setItem('mv_auth_user', JSON.stringify(userObj));
+        localStorage.setItem('mv_user_role', isAdmin ? 'SUPER_ADMIN' : 'USER');
+
+        if (isAdmin) {
+          window.location.replace('admin.html');
+        } else {
+          window.location.replace('../index.html');
+        }
+      } catch (err) {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = original;
+        }
+        const msg = {
+          'auth/email-already-in-use': 'This email is already registered. Try signing in instead.',
+          'auth/weak-password':        'Password must be at least 6 characters.',
+          'auth/invalid-email':        'Please enter a valid email address.'
+        }[err.code] || err.message || 'Registration failed. Please try again.';
+        alert(msg);
+      }
+    };
+
+    /* ── Enter key shortcut ── */
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') window.registerUser();
+    });
+  </script>
+</body>
+</html>

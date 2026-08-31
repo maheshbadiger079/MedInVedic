@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo-Health Intelligence — Hyper-Local Ayurveda — MedInVedic</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    
+    .geo-lab { 
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 100px 40px 60px;
+    }
+
+    .map-container {
+      width: 100%; height: 400px; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 40px; position: relative; overflow: hidden; margin-bottom: 40px;
+    }
+    
+    .map-overlay {
+      position: absolute; inset: 0; border-radius: 40px;
+      background: radial-gradient(circle at center, transparent 0%, rgba(15,23,42,0.8) 100%);
+      z-index: 2; pointer-events: none;
+    }
+
+    .env-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 60px; }
+    .env-card {
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 24px; border-radius: 24px; text-align: center;
+    }
+    .env-val { font-size: 28px; font-weight: 900; display: block; margin-top: 8px; }
+    .env-label { font-size: 11px; font-weight: 800; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1px; }
+
+    .intelligence-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+
+    .local-herbs-box {
+      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 32px; padding: 40px;
+    }
+
+    .herb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .herb-card { background: rgba(255,255,255,0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05); }
+
+    .defense-panel {
+      background: linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(15, 23, 42, 0.95));
+      border: 1px solid rgba(6, 182, 212, 0.2);
+      border-radius: 32px; padding: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a class="nav-logo" href="../index.html">
+    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+    <span class="nav-logo-text">MedInVedic</span>
+  </a>
+</nav>
+
+<div class="geo-lab">
+  <div style="margin-bottom: 48px;">
+     <div style="font-size: 11px; font-weight: 800; color: #06b6d4; letter-spacing: 4px; margin-bottom: 12px;">DESHA PARIKSHA AI</div>
+     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Geo-Health Intelligence</h1>
+     <p style="color: var(--gray-400); margin-top: 12px;">Hyper-local Ayurvedic protocols based on your real-time environment.</p>
+  </div>
+
+  <div class="map-container">
+     <div class="map-overlay"></div>
+     <div style="position:absolute; top:40px; left:40px; z-index:10; background:rgba(0,0,0,0.8); padding:16px 24px; border-radius:50px; border:1px solid rgba(255,255,255,0.1);">
+        <span style="font-size:11px; color:var(--gray-500); font-weight:800; display:block;">LOCATION DETECTED</span>
+        <strong style="font-size:18px;">Bengaluru, Karnataka</strong>
+     </div>
+     <!-- Mock map markers -->
+     <div style="position:absolute; top:50%; left:50%; width:20px; height:20px; background:#06b6d4; border-radius:50%; transform:translate(-50%, -50%); box-shadow:0 0 30px #06b6d4; animation:pulseCyan 2s infinite;"></div>
+  </div>
+
+  <div class="env-grid">
+     <div class="env-card">
+        <span class="env-label">Temperature</span>
+        <span class="env-val">28°C</span>
+     </div>
+     <div class="env-card">
+        <span class="env-label">Air Quality (AQI)</span>
+        <span class="env-val" style="color: #f97316;">184 (Poor)</span>
+     </div>
+     <div class="env-card">
+        <span class="env-label">Humidity</span>
+        <span class="env-val">62%</span>
+     </div>
+     <div class="env-card">
+        <span class="env-label">Season (Ritu)</span>
+        <span class="env-val">Vasanta / Summer</span>
+     </div>
+  </div>
+
+  <div class="intelligence-grid">
+     <div class="local-herbs-box">
+        <h2 style="font-size: 24px; font-weight: 900; margin: 0 0 12px 0;">Hyper-Local Flora</h2>
+        <p style="color: var(--gray-400); font-size: 14px;">Herbs with high bio-potency currently growing in your climate zone.</p>
+        
+        <div class="herb-grid">
+           <div class="herb-card">
+              <strong style="color: #06b6d4;">🌿 Moringa (Sajina)</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Abundant in Karnataka. Use leaves twice weekly for blood purification and bone density.</p>
+           </div>
+           <div class="herb-card">
+              <strong style="color: #06b6d4;">🌿 Neem (Nimba)</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Peak toxicity extraction window. Chew 2 leaves for seasonal Pitta-Pachana (heat clearing).</p>
+           </div>
+           <div class="herb-card">
+              <strong style="color: #06b6d4;">🌿 Curry Leaves</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Fresh harvest available. Optimal for metabolism during this humid spell.</p>
+           </div>
+           <div class="herb-card">
+              <strong style="color: #06b6d4;">🌿 Brahmi</strong>
+              <p style="font-size: 12px; color: var(--gray-500); margin-top: 8px;">Low-water stress variant. Highly potent for stress-relief in high-tech zones.</p>
+           </div>
+        </div>
+     </div>
+
+     <div class="defense-panel">
+        <h2 style="font-size: 24px; font-weight: 900; margin: 0 0 20px 0;">Atmospheric Defense</h2>
+        
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 24px; border-radius: 20px; margin-bottom: 24px;">
+           <strong style="color: #f97316; font-size: 14px;">💨 AQI DEFENSE ADVICE</strong>
+           <p style="margin-top: 12px; color: var(--gray-200); line-height: 1.6; font-size: 15px;">
+              Your current AQI is 184. To prevent lung-Vata stagnation and particle buildup, the AI recommends performing <strong>Nasya (Nasal lubrication)</strong> with 2 drops of Anu Taila precisely at 8:00 AM.
+           </p>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 24px; border-radius: 20px;">
+           <strong style="color: #06b6d4; font-size: 14px;">🌩️ SEASONAL THREAT</strong>
+           <p style="margin-top: 12px; color: var(--gray-200); line-height: 1.6; font-size: 15px;">
+              Vasanta Ritu is transitioning into Summer heat. Expect a rise in Pitta-related skin inflammation and dehydration. Switch to <strong>Fennel and Cumin water</strong> for your main hydration source.
+           </p>
+        </div>
+     </div>
+  </div>
+</div>
+
+<script src="../js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All Categories — MedInVedic</title>
+  <meta name="description" content="Browse all modern medicines and Ayurvedic products by category on MedInVedic." />
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <link rel="stylesheet" href="../css/auth-gate.css">
+  <script src="https://checkout.razorpay.com/v1/checkout.js?v=v_202603310200"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js?v=v_202603310200"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js?v=v_202603310200"></script>
+  <script type="module" src="../js/auth-gate.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js?v=v_202603310200"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js?v=v_202603310200"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js?v=v_202603310200"></script>
+  <script>
+    const _fbConfig = { apiKey: "AIzaSyDLLUM3tq0DgQ9hqmeyrsHs8Qn4OqyT8I8", authDomain: "medinvedic.firebaseapp.com", projectId: "medinvedic", storageBucket: "medinvedic.firebasestorage.app", messagingSenderId: "541158956459", appId: "1:541158956459:web:22ad5e814e7c508a8dc6ee", measurementId: "G-RW9JCDWBQ7" };
+    if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
+    const db = firebase.firestore(), auth = firebase.auth(), storage = firebase.storage();
+  </script>
+  <!-- i18n Multilanguage -->
+  <script src="../js/i18n.js?v=v_202603310200"></script>
+  <script src="../js/voice.js?v=v_Platinum_v88"></script>
+  <style>
+    .cat-tab-img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav class="navbar">
+    <a class="nav-logo" href="../index.html">
+      <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
+      <span class="nav-logo-text">MedInVedic</span>
+    </a>
+    <div class="nav-location-mini" onclick="openLocationModal()" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #24aeb1; cursor: pointer; background: rgba(36, 174, 177, 0.05); padding: 8px 16px; border-radius: 50px; margin-left: 20px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+      <span id="deliveryLocationHeader">Pune 412115</span>
+    </div>
+
+    <button class="nav-menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+  </nav>
+
+  <!-- ── SIDEBAR DRAWER ── -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="nav-logo">
+        <span class="nav-logo-text">MedInVedic</span>
+      </div>
+      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+    </div>
+    <div class="sidebar-body">
+      <a href="../index.html" class="sidebar-link">Home</a>
+
+      <a href="categories.html" class="sidebar-link active">Categories</a>
+      <a href="online-pharmacy.html" class="sidebar-link" style="color: #24aeb1; font-weight: 800;">Online Pharmacy</a>
+      <a href="consult.html" class="sidebar-link">Consult</a>
+      <a href="healing-hub.html" class="sidebar-link">Healing Hub</a>
+
+      <div style="margin-top:20px; padding:0 20px;">
+        <hr style="opacity:0.1;">
+      </div>
+      <a href="login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
+      <a href="#" class="sidebar-link" onclick="openCart(); toggleSidebar(); return false;">🛒 My Cart</a>
+    </div>
+    <div class="sidebar-footer">
+      <button class="logout-btn" onclick="API.auth.logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- SEARCH OVERLAY (shared) -->
+  <div id="searchOverlay">
+    <div class="search-modal">
+      <button class="search-close" onclick="closeSearch()">✕</button>
+      <h2 class="iv-style-6" id="searchQueryTitle">Search Results</h2>
+      <div class="search-results-grid">
+        <div>
+          <div class="search-col-header modern">Modern Medicine</div>
+          <div id="searchModern"></div>
+        </div>
+        <div>
+          <div class="search-col-header ayurvedic">Ayurvedic Remedies</div>
+          <div id="searchAyur"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="iv-style-68">
+
+    <!-- TABS -->
+    <div class="iv-style-225">
+      <button class="iv-style-69" id="tabModern" onclick="switchTab('modern')">
+        <img src="../images/assets/modern_cat.png" class="cat-tab-img" alt="Modern">
+        Modern Medicines
+      </button>
+      <button class="iv-style-70" id="tabAyur" onclick="switchTab('ayur')">
+        <img src="../images/assets/ayur_cat.png" class="cat-tab-img" alt="Ayurvedic">
+        Ayurvedic
+      </button>
+    </div>
+
+    <!-- MODERN SECTION -->
+    <div id="sectionModern">
+      <div style="margin: 24px 0 16px; display: flex; align-items: center; gap: 8px;">
+        <div style="width: 4px; height: 18px; background: var(--blue); border-radius: 4px;"></div>
+        <h3
+          style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400);">
+          Browse by Category</h3>
+      </div>
+      <div class="category-capsule-grid" id="modernCatGrid"></div>
+      <div style="margin-top: 40px;">
+        <div class="iv-style-227" id="modernCatFilters">
+          <button class="cat-tab active blue" onclick="filterCatModern('all',this)">All Products</button>
+        </div>
+        <div class="iv-style-228" id="modernCatProducts"></div>
+      </div>
+    </div>
+
+    <!-- AYUR SECTION -->
+    <div id="sectionAyur" class="d-none">
+      <div style="margin: 24px 0 16px; display: flex; align-items: center; gap: 8px;">
+        <div style="width: 4px; height: 18px; background: var(--primary); border-radius: 4px;"></div>
+        <h3
+          style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400);">
+          Browse by Category</h3>
+      </div>
+      <div class="category-capsule-grid" id="ayurCatGrid"></div>
+      <div style="margin-top: 40px;">
+        <div class="iv-style-227" id="ayurCatFilters">
+          <button class="cat-tab active green" onclick="filterCatAyur('all',this)">All Remedies</button>
+        </div>
+        <div class="iv-style-228" id="ayurCatProducts"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRODUCT & CART MODALS -->
+  <div class="modal-overlay" id="productModal">
+    <div class="modal-box"></div>
+  </div>
+  <div class="cart-panel" id="cartPanel">
+    <div class="cart-header">
+      <h3>Cart</h3><button class="cart-close" onclick="closeCartPanel()">✕</button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="empty-cart">
+        <p>Empty</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div><button class="checkout-btn"
+        onclick="initiateCheckout()">Checkout</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="prescriptionModal">
+    <div class="modal-box iv-style-16">
+      <button class="iv-style-17" onclick="closePrescriptionModal()">✕</button>
+      <h2 class="iv-style-71">Upload Prescription</h2>
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('rxFileInput').click()">
+        <div class="upload-text">Drag & drop or click</div>
+        <div class="upload-subtext">JPG, PNG, PDF • Max 10 MB</div>
+      </div>
+      <input type="file" id="rxFileInput" accept="image/*,.pdf" class="d-none"
+        onchange="handlePrescriptionUpload(this.files[0])" aria-label="Upload prescription file">
+      <div class="iv-style-22" id="uploadStatus"></div>
+    </div>
+  </div>
+
+
+  <!-- AI Chatbot Removed -->
+
+
+  <!-- Location Picker Modal (Platinum Standard - Image 1) -->
+  <div id="locationPickerModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 32px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(40px);">
+      <div style="padding: 30px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
+        <h2 style="font-size: 20px; font-weight: 800; color: white;">Where do you want the delivery?</h2>
+        <button onclick="closeLocationModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">✕</button>
+      </div>
+      <div style="padding: 24px;">
+        <p style="font-size: 14px; color: var(--gray-400); margin-bottom: 24px;">Select delivery address to check product availability, offers, and more.</p>
+        
+        <div style="display: flex; gap: 16px; margin-bottom: 30px;">
+          <div style="flex: 1; border: 2px dashed var(--glass-border); border-radius: 20px; padding: 24px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02);" onclick="openAddAddressModal()">
+            <div style="font-size: 24px; margin-bottom: 8px;">➕</div>
+            <div style="font-size: 14px; font-weight: 700; color: white;">Add New</div>
+          </div>
+          <div style="flex: 1; border: 1px solid var(--glass-border); background: var(--surface); border-radius: 20px; padding: 24px; text-align: center; cursor: pointer;" onclick="selectSavedAddress('Home', 'Pune 412115')">
+            <div style="font-size: 24px; margin-bottom: 8px;">🏠</div>
+            <div style="font-size: 14px; font-weight: 700; color: white;">Home</div>
+            <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Pune 412115</p>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03);" onclick="promptPinCode()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #24aeb1;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Enter a PIN Code
+          </button>
+          <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03);" onclick="detectLocation()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #24aeb1;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
+            Detect my location
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add Address Modal (Image 2 Parity) -->
+  <div id="addAddressModal" class="modal-overlay">
+    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 32px; background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(40px);">
+      <div style="padding: 24px; background: #24aeb1; color: white; display: flex; align-items: center; gap: 16px;">
+        <button onclick="closeAddAddressModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 24px;">←</button>
+        <span style="font-size: 18px; font-weight: 700;">Add delivery address</span>
+      </div>
+      <div style="padding: 24px;">
+        <h3 style="font-size: 18px; margin-bottom: 8px; color: white;">Address details</h3>
+        <p style="font-size: 13px; color: var(--gray-400); margin-bottom: 24px;">To add a new address, search for your area, landmark, street name or apartment.</p>
+        
+        <div style="background: rgba(255,255,255,0.05); border-radius: 50px; padding: 4px 20px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--glass-border); margin-bottom: 30px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" placeholder="Search for area, landmark" style="background: none; border: none; color: white; padding: 12px 0; width: 100%; outline: none; font-size: 14px;">
+        </div>
+
+        <div style="text-align: center; position: relative; margin: 30px 0;">
+          <hr style="opacity: 0.1;">
+          <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #161e2e; padding: 0 16px; font-size: 12px; color: var(--gray-500);">OR</span>
+        </div>
+
+        <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); padding: 16px; gap: 16px;" onclick="detectLocation()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#24aeb1" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
+          <div style="text-align: left;">
+            <div style="font-weight: 700; color: #24aeb1;">Use current location</div>
+            <div style="font-size: 11px; color: var(--gray-500);">Using GPS</div>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="../js/app.js?v=v_202603310200"></script>
+  <script>
+    const MODERN_CATEGORIES = [
+      { name: 'Fever & Pain', icon: 'Rx', count: 48 },
+      { name: 'Cold & Cough', icon: 'Rx', count: 36 },
+      { name: 'Diabetes Care', icon: 'Rx', count: 24 },
+      { name: 'Heart Health', icon: 'Rx', count: 32 },
+      { name: 'Digestion', icon: 'Rx', count: 41 },
+      { name: 'Antibiotics', icon: 'Rx', count: 28 }
+    ];
+
+    const AYUR_CATEGORIES = [
+      { name: 'Immunity', icon: 'Ayur', count: 52 },
+      { name: 'Stress Relief', icon: 'Ayur', count: 35 },
+      { name: 'Skincare', icon: 'Ayur', count: 44 },
+      { name: 'Digestion', icon: 'Ayur', count: 38 },
+      { name: 'Cognitive Health', icon: 'Ayur', count: 22 },
+      { name: 'Anti-inflammatory', icon: 'Ayur', count: 19 },
+      { name: 'Vitality', icon: 'Ayur', count: 15 },
+      { name: 'Diabetes Care', icon: 'Ayur', count: 28 }
+    ];
+
+    function switchTab(tab) {
+      const isModern = tab === 'modern';
+      document.getElementById('sectionModern').style.display = isModern ? 'block' : 'none';
+      document.getElementById('sectionAyur').style.display = isModern ? 'none' : 'block';
+      document.getElementById('tabModern').style.background = isModern ? 'var(--blue)' : 'transparent';
+      document.getElementById('tabModern').style.color = isModern ? 'white' : 'var(--gray-600)';
+      document.getElementById('tabAyur').style.background = isModern ? 'transparent' : 'var(--primary)';
+      document.getElementById('tabAyur').style.color = isModern ? 'var(--gray-600)' : 'white';
+    }
+
+    function filterCatModern(cat, btn) {
+      document.querySelectorAll('#modernCatFilters .cat-tab').forEach(t => t.classList.remove('active', 'blue'));
+      btn.classList.add('active', 'blue');
+      const list = cat === 'all' ? MODERN_MEDICINES : MODERN_MEDICINES.filter(p => p.category === cat);
+      document.getElementById('modernCatProducts').innerHTML = list.map(p => renderProductCard(p, 'blue')).join('');
+    }
+
+    function filterCatAyur(cat, btn) {
+      document.querySelectorAll('#ayurCatFilters .cat-tab').forEach(t => t.classList.remove('active', 'green'));
+      btn.classList.add('active', 'green');
+      const list = cat === 'all' ? AYURVEDIC_PRODUCTS : AYURVEDIC_PRODUCTS.filter(p => p.category === cat || p.category.includes(cat));
+      document.getElementById('ayurCatProducts').innerHTML = list.map(p => renderProductCard(p, 'green')).join('');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateCartBadge();
+
+      // Modern category grid
+      document.getElementById('modernCatGrid').innerHTML = MODERN_CATEGORIES.map(c => `
+    <div class="category-capsule" onclick="filterCatModern('${c.name}', this)">
+      <span class="capsule-name">${c.name}</span>
+    </div>
+  `).join('');
+
+      // Ayur category grid
+      document.getElementById('ayurCatGrid').innerHTML = AYUR_CATEGORIES.map(c => `
+    <div class="category-capsule ayur" onclick="filterCatAyur('${c.name}', this)">
+      <span class="capsule-name">${c.name}</span>
+    </div>
+  `).join('');
+
+      // Render filter buttons dynamically
+      const mCats = [...new Set(MODERN_MEDICINES.map(p => p.category))];
+      mCats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-tab';
+        btn.textContent = cat;
+        btn.onclick = () => filterCatModern(cat, btn);
+        document.getElementById('modernCatFilters').appendChild(btn);
+      });
+
+      const aCats = [...new Set(AYURVEDIC_PRODUCTS.map(p => p.category))];
+      aCats.forEach(cat => {
+        const btn = document.createElement('button');
+        btn.className = 'cat-tab';
+        btn.textContent = cat;
+        btn.onclick = () => filterCatAyur(cat, btn);
+        document.getElementById('ayurCatFilters').appendChild(btn);
+      });
+
+      filterCatModern('all', document.querySelector('#modernCatFilters .cat-tab'));
+      filterCatAyur('all', document.querySelector('#ayurCatFilters .cat-tab'));
+
+      document.getElementById('productModal')?.addEventListener('click', function (e) {
+        if (!e.target.closest('.modal-box')) closeProductModal();
+      });
+      document.getElementById('searchOverlay')?.addEventListener('click', function (e) {
+        if (!e.target.closest('.search-modal')) closeSearch();
+      });
+    });
+  </script>
+  <script>
+    function openLocationModal() { document.getElementById('locationPickerModal').classList.add('open'); }
+    function closeLocationModal() { document.getElementById('locationPickerModal').classList.remove('open'); }
+    function openAddAddressModal() { closeLocationModal(); document.getElementById('addAddressModal').classList.add('open'); }
+    function closeAddAddressModal() { document.getElementById('addAddressModal').classList.remove('open'); }
+    
+    function detectLocation() {
+      if (typeof showToast === 'function') showToast("📍 Fetching GPS coordinates...", "info");
+      else alert("Fetching GPS coordinates...");
+      
+      closeLocationModal(); 
+      closeAddAddressModal();
+      
+      const loc = "Viman Nagar, Pune";
+      document.querySelectorAll('#deliveryLocation Header, #deliveryLocation').forEach(el => el.innerText = loc);
+      if (typeof showToast === 'function') showToast("✓ Location set to " + loc, "success");
+    }
+
+    function promptPinCode() {
+      const pin = prompt("Enter Pincode (6 digits):");
+      if(pin && pin.length === 6) {
+        const loc = "Pincode: " + pin;
+        document.querySelectorAll('#deliveryLocationHeader, #deliveryLocation').forEach(el => el.innerText = loc);
+        closeLocationModal();
+        if (typeof showToast === 'function') showToast("✓ Delivery zone updated: " + pin, "success");
+      } else if(pin) {
+        alert("Please enter a valid 6-digit Pincode.");
+      }
+    }
+
+    function selectSavedAddress(name, details) {
+      const loc = details;
+      document.querySelectorAll('#deliveryLocationHeader, #deliveryLocation').forEach(el => el.innerText = loc);
+      closeLocationModal();
+      if (typeof triggerHaptic === 'function') triggerHaptic('light');
+      if (typeof showToast === 'function') showToast("✓ Delivery address: " + name, "success");
+    }
+  </script>
+</body>
+
+</html>
