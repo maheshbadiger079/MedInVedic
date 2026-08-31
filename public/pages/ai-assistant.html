@@ -16,23 +16,30 @@
   <script src="../js/voice.js"></script>
   <style>
     :root {
-      --bg: #07080f;
-      --surface: #0f1120;
-      --border: #1e2240;
-      --blue: #3b82f6;
-      --sky: #38bdf8;
-      --green: #22c55e;
-      --amber: #f59e0b;
-      --red: #ef4444;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-      --dim: #475569;
+      --bg: #f8faf8;
+      --surface: rgba(255, 255, 255, 0.94);
+      --border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --blue: #0284c7;
+      --sky: #0284c7;
+      --green: #166534;
+      --amber: #d97706;
+      --red: #dc2626;
+      --text: #1a2e1a;
+      --muted: #52796f;
+      --dim: #8ba89e;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.06) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.06) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.6) 0px, transparent 100%);
       color: var(--text);
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       height: 100vh;
@@ -45,7 +52,9 @@
     .ai-topbar {
       display: flex; align-items: center; justify-content: space-between;
       padding: 12px 24px;
-      background: #0a0c18;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
       gap: 12px; flex-wrap: wrap;
@@ -56,17 +65,17 @@
       color: var(--muted); text-decoration: none; font-size: 13px; font-weight: 600;
       padding: 6px 12px; border-radius: 8px; transition: 0.15s;
     }
-    .back-link:hover { color: #fff; background: rgba(255,255,255,0.05); }
-    .ai-logo-text { font-size: 16px; font-weight: 900; color: #fff; }
+    .back-link:hover { color: var(--primary); background: rgba(22, 101, 52, 0.08); }
+    .ai-logo-text { font-size: 16px; font-weight: 900; color: var(--primary); }
     .ai-logo-sub { font-size: 11px; color: var(--muted); font-weight: 600; }
 
     .rag-pill {
       display: inline-flex; align-items: center; gap: 6px;
-      background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
-      color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: 1px;
+      background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+      color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: 1px;
       text-transform: uppercase; padding: 4px 12px; border-radius: 50px;
     }
-    .rag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: p 2s infinite; }
+    .rag-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--primary-light); animation: p 2s infinite; }
     @keyframes p { 0%,100%{opacity:0.5;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.3)} }
 
     .lang-select {

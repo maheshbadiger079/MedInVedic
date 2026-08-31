@@ -3,125 +3,129 @@
 <head>
   <link rel="icon" type="image/png" href="../favicon.png">
   <link rel="apple-touch-icon" href="../favicon.png">
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI Prakriti Pariksha — Body Type Analysis — MedInVedic</title>
+  <title>AI Prakriti Pariksha — Ayurvedic Constitution — MedInVedic</title>
   <link rel="stylesheet" href="../css/style.css" />
+  <script src="../js/analytics.js"></script>
+  <script src="../js/auth-guard.js"></script>
   <style>
-    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    
-    .prakriti-lab { 
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.90);
+      --card-border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --accent: #15803d;
+      --text: #1a2e1a;
+      --muted: #52796f;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
+    }
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.6) 0px, transparent 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
       min-height: 100vh;
+    }
+    .prakriti-lab { 
+      min-height: calc(100vh - 64px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 100px 24px 60px;
+      padding: 40px 20px 60px;
     }
-
     .wizard-box {
       width: 100%;
-      max-width: 800px;
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 40px;
-      padding: 48px;
+      max-width: 760px;
+      background: var(--card);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      padding: 40px 36px;
       backdrop-filter: blur(24px);
+      box-shadow: 0 20px 50px rgba(22, 101, 52, 0.08);
+      position: relative;
     }
-
-    .step-indicator { display: flex; gap: 8px; margin-bottom: 40px; }
-    .step-dot { flex: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; transition: 0.3s; }
-    .step-dot.active { background: #f97316; }
+    .step-indicator { display: flex; gap: 10px; margin-bottom: 32px; }
+    .step-dot { flex: 1; height: 6px; background: rgba(22, 101, 52, 0.12); border-radius: 4px; transition: 0.3s; }
+    .step-dot.active { background: var(--gradient); }
 
     .q-step { display: none; }
-    .q-step.active { display: block; animation: fadeIn 0.5s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .q-step.active { display: block; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .q-title { font-size: 24px; font-weight: 900; margin-bottom: 32px; }
+    .q-title { font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 24px; }
     
-    .option-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+    .option-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
     .option-card {
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.08);
-      padding: 24px;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1.5px solid rgba(22, 101, 52, 0.15);
+      padding: 20px;
+      border-radius: 16px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: all 0.2s;
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .option-card:hover { border-color: #f97316; background: rgba(249,115,22,0.05); }
-    .option-card.selected { border-color: #f97316; background: rgba(249,115,22,0.1); }
+    .option-card:hover { border-color: var(--primary-light); background: #fff; transform: translateY(-1px); }
+    .option-card.selected { border-color: var(--primary); background: rgba(240, 253, 244, 0.8); box-shadow: 0 4px 14px rgba(22, 101, 52, 0.1); }
     
-    .radio-circle { width: 20px; height: 20px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; position: relative; }
-    .option-card.selected .radio-circle::after { content: ''; position: absolute; width: 10px; height: 10px; background: #f97316; border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+    .radio-circle { width: 20px; height: 20px; border: 2px solid rgba(22, 101, 52, 0.3); border-radius: 50%; position: relative; flex-shrink: 0; }
+    .option-card.selected .radio-circle { border-color: var(--primary); }
+    .option-card.selected .radio-circle::after { content: ''; position: absolute; width: 10px; height: 10px; background: var(--primary); border-radius: 50%; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
-    .nav-btns { display: flex; justify-content: space-between; margin-top: 40px; }
-    .btn-action { background: #f97316; color: white; border: none; padding: 18px 40px; border-radius: 12px; font-weight: 800; cursor: pointer; }
-    .btn-action.secondary { background: transparent; border: 1px solid rgba(255,255,255,0.1); }
+    .nav-btns { display: flex; justify-content: space-between; margin-top: 32px; }
+    .btn-action { background: var(--gradient); color: white; border: none; padding: 14px 32px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 16px rgba(22, 101, 52, 0.2); transition: all 0.2s; }
+    .btn-action:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(22, 101, 52, 0.28); }
+    .btn-action.secondary { background: transparent; border: 1.5px solid var(--card-border); color: var(--text); box-shadow: none; }
 
     /* Results */
-    .result-view { display: none; width: 100%; max-width: 1000px; animation: slideUp 0.8s ease-out; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+    .result-view { display: none; width: 100%; max-width: 900px; animation: slideUp 0.6s ease-out; }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-    .grid-result { display: grid; grid-template-columns: 350px 1fr; gap: 40px; }
+    .grid-result { display: grid; grid-template-columns: 320px 1fr; gap: 24px; }
     .pie-container {
-      background: rgba(255,255,255,0.03); border-radius: 32px; padding: 40px; text-align: center;
+      background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 32px; text-align: center; box-shadow: 0 10px 30px rgba(22, 101, 52, 0.06);
     }
 
-    .dosha-bar { margin-bottom: 24px; }
-    .db-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 8px; }
-    .db-outer { height: 10px; background: rgba(255,255,255,0.05); border-radius: 10px; overflow: hidden; }
+    .dosha-bar { margin-bottom: 20px; }
+    .db-label { display: flex; justify-content: space-between; font-size: 13px; font-weight: 800; margin-bottom: 6px; }
+    .db-outer { height: 10px; background: rgba(22, 101, 52, 0.1); border-radius: 10px; overflow: hidden; }
     .db-inner { height: 100%; border-radius: 10px; transition: 1.5s ease-out; width: 0; }
 
     .insight-card {
-      background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255,255,255,0.1); border-radius: 32px; padding: 40px;
+      background: var(--card); border: 1px solid var(--card-border); border-radius: 24px; padding: 36px; box-shadow: 0 10px 30px rgba(22, 101, 52, 0.06);
+    }
+    @media (max-width: 800px) {
+      .grid-result { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
 
-<nav class="navbar">
-  <a class="nav-logo" href="../index.html">
-    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
-    <span class="nav-logo-text">MedInVedic</span>
+<nav class="navbar" style="background:rgba(255,255,255,0.9); border-bottom:1px solid var(--card-border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(16px);">
+  <a class="nav-logo" href="../index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--primary); font-weight:900; font-size:18px;">
+    <div style="width:36px; height:36px; background:var(--gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff;">🌿</div>
+    <span>MedInVedic</span>
   </a>
-  <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-  </button>
+  <div style="display:flex; gap:16px;">
+    <a href="dashboard.html" style="text-decoration:none; color:var(--muted); font-size:13.5px; font-weight:600;">Dashboard</a>
+    <a href="healing-hub.html" style="text-decoration:none; color:var(--muted); font-size:13.5px; font-weight:600;">Healing Hub</a>
+    <a href="prakriti-analysis.html" style="text-decoration:none; color:var(--primary); font-size:13.5px; font-weight:700;">🧬 Prakriti Test</a>
+  </div>
 </nav>
-
-
-<!-- ── SIDEBAR DRAWER ── -->
-<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-<div class="sidebar" id="sidebar">
-  <div class="sidebar-header">
-    <div class="nav-logo">
-      <span class="nav-logo-text">MedInVedic</span>
-    </div>
-    <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
-  </div>
-  <div class="sidebar-body">
-    <a href="../index.html" class="sidebar-link">🏠 Home</a>
-    <a href="ai-assistant.html" class="sidebar-link" style="color: #3b82f6; font-weight: 800;">🧠 AI Health Assistant</a>
-    <a href="voice-doctor.html" class="sidebar-link" style="color: #22c55e; font-weight: 800;">🎙️ Vani Vaidya (Voice AI)</a>
-    <a href="categories.html" class="sidebar-link">📦 Categories</a>
-    <a href="consult.html" class="sidebar-link">👨‍⚕️ Consult</a>
-    <a href="healing-hub.html" class="sidebar-link">✨ Healing Hub</a>
-    <a href="prakriti-analysis.html" class="sidebar-link active">🧬 Prakriti Test</a>
-    
-    <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
-    <a href="login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
-  </div>
-</div>
-
 
 <div class="prakriti-lab">
   <div class="wizard-box" id="wizardBox">
-     <div style="text-align: center; margin-bottom: 32px;">
-        <div style="font-size: 11px; font-weight: 800; color: #f97316; letter-spacing: 3px; margin-bottom: 8px;">CONSTITUTIONAL ANALYSIS</div>
-        <h1 style="font-size: 32px; font-weight: 900; margin: 0;">Prakriti Pariksha</h1>
+     <div style="text-align: center; margin-bottom: 28px;">
+        <div style="font-size: 11px; font-weight: 800; color: var(--primary); letter-spacing: 2.5px; text-transform:uppercase; margin-bottom: 6px;">AYURVEDIC CONSTITUTIONAL PARIKSHA</div>
+        <h1 style="font-size: 28px; font-weight: 900; color:var(--text); margin: 0;">AI Prakriti Analysis</h1>
+        <p style="font-size: 13.5px; color: var(--muted); margin-top: 6px;">Discover your unique Vata, Pitta, and Kapha biological blueprint.</p>
      </div>
 
      <div class="step-indicator">
@@ -132,64 +136,64 @@
 
      <!-- STEP 1: PHYSICAL -->
      <div class="q-step active" id="step1">
-        <div class="q-title">Describe your physical frame & skin:</div>
+        <div class="q-title">1. Describe your physical frame &amp; skin:</div>
         <div class="option-grid">
            <div class="option-card" onclick="setAnswer(1, 'v', this)">
               <div class="radio-circle"></div>
-              <div><strong>Thin & Lean</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Dry skin, prominent joints, difficulty gaining weight.</p></div>
+              <div><strong style="color:var(--text);">Thin &amp; Lean</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Dry skin, prominent joints, difficulty gaining weight, active movement.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(1, 'p', this)">
               <div class="radio-circle"></div>
-              <div><strong>Medium & Athletic</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Oily skin, many moles/freckles, easy weight control.</p></div>
+              <div><strong style="color:var(--text);">Medium &amp; Athletic</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Warm/Oily skin, prone to redness/freckles, efficient metabolism.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(1, 'k', this)">
               <div class="radio-circle"></div>
-              <div><strong>Broad & Strong</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Soft/Dense skin, large bones, easy weight gain.</p></div>
+              <div><strong style="color:var(--text);">Broad &amp; Strong</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Soft/Dense skin, solid bone structure, easy weight gain, high endurance.</p></div>
            </div>
         </div>
      </div>
 
      <!-- STEP 2: METABOLISM -->
      <div class="q-step" id="step2">
-        <div class="q-title">Describe your typical appetite:</div>
+        <div class="q-title">2. Describe your digestion &amp; appetite:</div>
         <div class="option-grid">
            <div class="option-card" onclick="setAnswer(2, 'v', this)">
               <div class="radio-circle"></div>
-              <div><strong>Irregular</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Forget to eat, variable hunger, gas/bloating common.</p></div>
+              <div><strong style="color:var(--text);">Irregular &amp; Variable</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Fluctuating hunger, sometimes forget meals, occasional bloating or dry stool.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(2, 'p', this)">
               <div class="radio-circle"></div>
-              <div><strong>Strong & Sharp</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Can't skip meals, intense hunger, high thirst.</p></div>
+              <div><strong style="color:var(--text);">Strong &amp; Intense</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Cannot skip meals easily, gets irritable when hungry, high thirst.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(2, 'k', this)">
               <div class="radio-circle"></div>
-              <div><strong>Steady & Low</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Can skip meals easily, slow digestion, feel heavy after eating.</p></div>
+              <div><strong style="color:var(--text);">Steady &amp; Slow</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Can comfortably skip meals, slow metabolic rate, feeling heavy post-lunch.</p></div>
            </div>
         </div>
      </div>
 
      <!-- STEP 3: MENTAL -->
      <div class="q-step" id="step3">
-        <div class="q-title">How do you handle stress?</div>
+        <div class="q-title">3. How do you naturally respond to stress?</div>
         <div class="option-grid">
            <div class="option-card" onclick="setAnswer(3, 'v', this)">
               <div class="radio-circle"></div>
-              <div><strong>Anxiety & Worry</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Overthinking, restless mind, trouble sleeping.</p></div>
+              <div><strong style="color:var(--text);">Restlessness &amp; Overthinking</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Fast-paced mind, racing thoughts, tendency toward light sleep.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(3, 'p', this)">
               <div class="radio-circle"></div>
-              <div><strong>Irritation & Anger</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Impatience, argumentative, competitive drive.</p></div>
+              <div><strong style="color:var(--text);">Intensity &amp; Determination</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">High drive, impatience with delays, passionate problem solving.</p></div>
            </div>
            <div class="option-card" onclick="setAnswer(3, 'k', this)">
               <div class="radio-circle"></div>
-              <div><strong>Calm & Withdrawal</strong><p style="margin:4px 0 0; font-size:13px; color:var(--gray-400);">Slow to react, silent, emotional eating/sleeping.</p></div>
+              <div><strong style="color:var(--text);">Calm &amp; Methodical</strong><p style="margin:4px 0 0; font-size:13px; color:var(--muted);">Takes time to process, peaceful disposition, deep sleeper.</p></div>
            </div>
         </div>
      </div>
 
      <div class="nav-btns">
         <button class="btn-action secondary" id="prevBtn" onclick="changeStep(-1)" style="display:none;">Previous</button>
-        <button class="btn-action" id="nextBtn" onclick="changeStep(1)">Next Step</button>
+        <button class="btn-action" id="nextBtn" onclick="changeStep(1)">Next Step →</button>
      </div>
   </div>
 
@@ -197,40 +201,45 @@
   <div class="result-view" id="resultView">
      <div class="grid-result">
         <div class="pie-container">
-           <div style="font-size: 64px; margin-bottom: 24px;">🧬</div>
-           <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 32px;">Your Dosha Balance</h3>
+           <div style="font-size: 54px; margin-bottom: 16px;">🧬</div>
+           <h3 style="font-size: 20px; font-weight: 800; margin-bottom: 24px; color:var(--text);">Your Dosha Distribution</h3>
            
            <div class="dosha-bar">
-              <div class="db-label"><span>VATA</span><span id="vVal">0%</span></div>
-              <div class="db-outer"><div class="db-inner" id="vBar" style="background:#06b6d4;"></div></div>
+              <div class="db-label"><span>VATA (Air &amp; Ether)</span><span id="vVal" style="color:#0284c7;">0%</span></div>
+              <div class="db-outer"><div class="db-inner" id="vBar" style="background:#0284c7;"></div></div>
            </div>
            <div class="dosha-bar">
-              <div class="db-label"><span>PITTA</span><span id="pVal">0%</span></div>
-              <div class="db-outer"><div class="db-inner" id="pBar" style="background:#ef4444;"></div></div>
+              <div class="db-label"><span>PITTA (Fire &amp; Water)</span><span id="pVal" style="color:#dc2626;">0%</span></div>
+              <div class="db-outer"><div class="db-inner" id="pBar" style="background:#dc2626;"></div></div>
            </div>
            <div class="dosha-bar">
-              <div class="db-label"><span>KAPHA</span><span id="kVal">0%</span></div>
-              <div class="db-outer"><div class="db-inner" id="kBar" style="background:#fbbf24;"></div></div>
+              <div class="db-label"><span>KAPHA (Earth &amp; Water)</span><span id="kVal" style="color:#d97706;">0%</span></div>
+              <div class="db-outer"><div class="db-inner" id="kBar" style="background:#d97706;"></div></div>
            </div>
         </div>
 
         <div class="insight-card">
-           <h2 style="font-size: 32px; font-weight: 900; margin: 0 0 16px 0;" id="doshaTitle">Vata-Pitta Prakriti</h2>
-           <p style="color: var(--gray-300); line-height: 1.8; font-size: 16px;" id="doshaDesc">
-              Analysis derived from your physical and metabolic profile indicates a dual-balanced constitution. You possess high creative energy with a strong directed focus.
+           <div style="display:inline-block; background:rgba(34,197,94,0.15); color:var(--primary); font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; margin-bottom:10px;">ANALYSIS COMPLETE</div>
+           <h2 style="font-size: 28px; font-weight: 900; margin: 0 0 12px 0; color:var(--text);" id="doshaTitle">Vata-Pitta Prakriti</h2>
+           <p style="color: var(--muted); line-height: 1.7; font-size: 14.5px;" id="doshaDesc">
+              Analysis indicates a dynamic constitution. You balance high creative energy with sharp analytical execution.
            </p>
 
-           <div style="margin-top: 40px; padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.05);">
-              <h3 style="font-weight: 800; margin-bottom: 20px;">Personalized Defense Protocol:</h3>
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                 <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px;">
-                    <strong style="color: #f97316;">🌿 Key Herbs</strong>
-                    <p style="font-size: 13px; color: var(--gray-400); margin-top: 8px;" id="herbTip">Ashwagandha to ground the nervous system.</p>
+           <div style="margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--card-border);">
+              <h3 style="font-weight: 800; font-size: 16px; margin-bottom: 16px;">Personalized Wellness Protocol:</h3>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                 <div style="background: rgba(240,253,244,0.7); border:1px solid var(--card-border); padding: 18px; border-radius: 14px;">
+                    <strong style="color: var(--primary);">🌿 Recommended Herbs</strong>
+                    <p style="font-size: 12.5px; color: var(--muted); margin-top: 6px;" id="herbTip">Ashwagandha to balance nervous fatigue and Brahmi for mental clarity.</p>
                  </div>
-                 <div style="background: rgba(255,255,255,0.03); padding: 20px; border-radius: 16px;">
-                    <strong style="color: #f97316;">🌙 Lifestyle</strong>
-                    <p style="font-size: 13px; color: var(--gray-400); margin-top: 8px;" id="lifeTip">Maintain a strict 10 PM sleep schedule to prevent burnout.</p>
+                 <div style="background: rgba(240,253,244,0.7); border:1px solid var(--card-border); padding: 18px; border-radius: 14px;">
+                    <strong style="color: var(--primary);">🌙 Lifestyle Harmony</strong>
+                    <p style="font-size: 12.5px; color: var(--muted); margin-top: 6px;" id="lifeTip">Maintain consistent meal timings and warm, nourishing soups.</p>
                  </div>
+              </div>
+              <div style="margin-top:20px; display:flex; gap:12px;">
+                <a href="ai-diet.html" style="flex:1; text-align:center; padding:12px; background:var(--gradient); color:#fff; text-decoration:none; font-weight:700; border-radius:10px; font-size:13px;">View Tailored Diet Plan →</a>
+                <a href="consult.html" style="flex:1; text-align:center; padding:12px; background:#fff; border:1.5px solid var(--card-border); color:var(--primary); text-decoration:none; font-weight:700; border-radius:10px; font-size:13px;">Consult Vaidya Doctor</a>
               </div>
            </div>
         </div>
@@ -238,75 +247,62 @@
   </div>
 </div>
 
-<script src="../js/app.js"></script>
 <script>
   let currentStep = 1;
-  let answers = { v: 0, p: 0, k: 0 };
+  let stepAnswers = { 1: null, 2: null, 3: null };
 
   function setAnswer(step, val, el) {
-    // Clear selected in this step
     const parent = el.closest('.option-grid');
     parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
-    
-    // In a real app we'd track step-specific, but for this demo we'll just sum.
-    // Reset answers for this step simplified:
-    answers[val] += 33.3; 
+    stepAnswers[step] = val;
   }
 
-  function changeStep(n) {
-    if (currentStep === 3 && n === 1) {
-       showResults();
-       return;
+  function changeStep(dir) {
+    if (dir === 1 && !stepAnswers[currentStep]) {
+      alert('Please choose an option to continue.');
+      return;
+    }
+    
+    currentStep += dir;
+    if (currentStep > 3) {
+      showResults();
+      return;
     }
 
-    document.getElementById('step' + currentStep).classList.remove('active');
-    document.querySelectorAll('.step-dot')[currentStep-1].classList.remove('active');
-    
-    currentStep += n;
-    
+    document.querySelectorAll('.q-step').forEach(s => s.classList.remove('active'));
     document.getElementById('step' + currentStep).classList.add('active');
-    document.querySelectorAll('.step-dot')[currentStep-1].classList.add('active');
+
+    document.querySelectorAll('.step-dot').forEach((d, i) => {
+      d.classList.toggle('active', i < currentStep);
+    });
 
     document.getElementById('prevBtn').style.display = currentStep > 1 ? 'block' : 'none';
-    document.getElementById('nextBtn').textContent = currentStep === 3 ? 'Finalize Analysis' : 'Next Step';
+    document.getElementById('nextBtn').textContent = currentStep === 3 ? 'View Analysis 🧬' : 'Next Step →';
   }
 
   function showResults() {
     document.getElementById('wizardBox').style.display = 'none';
     document.getElementById('resultView').style.display = 'block';
 
-    // Mock refined calculations
-    const v = Math.round(Math.random() * 40 + 20);
-    const p = Math.round(Math.random() * 30 + 10);
-    const k = 100 - v - p;
+    const tally = { v: 0, p: 0, k: 0 };
+    Object.values(stepAnswers).forEach(v => { if (v) tally[v]++; });
 
-    document.getElementById('vVal').textContent = v + '%';
-    document.getElementById('vBar').style.width = v + '%';
-    document.getElementById('pVal').textContent = p + '%';
-    document.getElementById('pBar').style.width = p + '%';
-    document.getElementById('kVal').textContent = k + '%';
-    document.getElementById('kBar').style.width = k + '%';
+    const total = 3;
+    const vPct = Math.round((tally.v / total) * 100);
+    const pPct = Math.round((tally.p / total) * 100);
+    const kPct = Math.round((tally.k / total) * 100);
 
-    // Descriptions
-    if (v > p && v > k) {
-      document.getElementById('doshaTitle').textContent = "Vata Dominant";
-      document.getElementById('doshaDesc').textContent = "Your Prakriti is characterized by the Air and Ether elements. You are naturally creative, quick-thinking, and lean. When out of balance, you may experience dry skin, anxiety, or irregular digestion.";
-      document.getElementById('herbTip').textContent = "Ashwagandha (Grounding) and Shatavari.";
-      document.getElementById('lifeTip').textContent = "Oil massage (Abhyanga) and warm, cooked meals.";
-    } else if (p > v && p > k) {
-      document.getElementById('doshaTitle').textContent = "Pitta Dominant";
-      document.getElementById('doshaDesc').textContent = "You are governed by Fire and Water. You have a sharp intellect, strong digestion, and a medium build. Balance is maintained through cooling activities and managing intensity.";
-      document.getElementById('herbTip').textContent = "Amalaki and cooling Brahmi.";
-      document.getElementById('lifeTip').textContent = "Avoid excessive heat and maintain work-life boundaries.";
-    } else {
-      document.getElementById('doshaTitle').textContent = "Kapha Dominant";
-      document.getElementById('doshaDesc').textContent = "Earth and Water are your core elements. You possess great stamina, a calm temperament, and a sturdy frame. Stimulating activities and light diets are key to your vitality.";
-      document.getElementById('herbTip').textContent = "Trikatu (Digestive fire) and Tulsi.";
-      document.getElementById('lifeTip').textContent = "Early wakeup and vigorous physical cardio daily.";
-    }
+    document.getElementById('vVal').textContent = vPct + '%';
+    document.getElementById('pVal').textContent = pPct + '%';
+    document.getElementById('kVal').textContent = kPct + '%';
+
+    setTimeout(() => {
+      document.getElementById('vBar').style.width = vPct + '%';
+      document.getElementById('pBar').style.width = pPct + '%';
+      document.getElementById('kBar').style.width = kPct + '%';
+    }, 100);
   }
 </script>
-
 </body>
 </html>
