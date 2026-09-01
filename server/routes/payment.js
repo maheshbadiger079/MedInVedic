@@ -11,8 +11,8 @@ const Razorpay = require('razorpay');
 const router = express.Router();
 
 // Initialize Razorpay Instance
-const key_id = process.env.RAZORPAY_KEY_ID || 'rzp_test_TWeYnZSNVtPrKQ';
-const key_secret = process.env.RAZORPAY_KEY_SECRET || 'MM50c3joG1xAQepHCc3bQSHb';
+const key_id = process.env.RAZORPAY_KEY_ID || 'rzp_test_TWfQ3jmPx1jYvE';
+const key_secret = process.env.RAZORPAY_KEY_SECRET || '4abCQQ5ouc19p7JPdNNt4j5i';
 
 let razorpay = null;
 try {
