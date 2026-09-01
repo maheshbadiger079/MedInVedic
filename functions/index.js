@@ -1020,8 +1020,231 @@ function createApp() {
     } catch (err) { res.status(500).json({ error: err.message }); }
   });
 
+
+  // ─────────────────────────────────────────────────────────────────────────
+  // PHASE 5 — ADMIN REVENUE INTELLIGENCE, LEADS CRM & PARTNER MANAGEMENT
+  // ─────────────────────────────────────────────────────────────────────────
+
+  // GET /admin/revenue/summary — Live revenue KPIs
+  app.get('/admin/revenue/summary', requireAdmin, async (req, res) => {
+    try {
+      const [ordersSnap, subsSnap, consultsSnap, usersSnap] = await Promise.all([
+        db.collection(COLLECTIONS.ORDERS).get(),
+        db.collection(COLLECTIONS.SUBSCRIPTIONS).get(),
+        db.collection(COLLECTIONS.CONSULTATIONS).get(),
+        db.collection(COLLECTIONS.USERS).get()
+      ]);
+
+      const orders = ordersSnap.docs.map(d => d.data());
+      const subscriptions = subsSnap.docs.map(d => d.data());
+      const consultations = consultsSnap.docs.map(d => d.data());
+
+      const pharmacyGMV = orders
+        .filter(o => o.status !== 'CANCELLED')
+        .reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+
+      const membershipMRR = subscriptions
+        .filter(s => s.status === 'active')
+        .reduce((sum, s) => {
+          const plan = s.plan || 'monthly';
+          return sum + (plan === 'yearly' ? Math.round((s.amount || 999) / 12) : (s.amount || 99));
+        }, 0);
+
+      const consultationRevenue = consultations
+        .filter(c => c.status === 'COMPLETED' || c.paymentStatus === 'paid')
+        .reduce((s, c) => s + Math.round((parseFloat(c.fee) || 0) * 0.15), 0);
+
+      const pharmacyNetRevenue = Math.round(pharmacyGMV * 0.12);
+      const totalNetRevenue = pharmacyNetRevenue + membershipMRR + consultationRevenue;
+      const targetRevenue = 100000;
+      const targetPct = Math.min(Math.round((totalNetRevenue / targetRevenue) * 100), 100);
+
+      const now = Date.now();
+      const monthStart = new Date(); monthStart.setDate(1); monthStart.setHours(0,0,0,0);
+      const monthGMV = orders
+        .filter(o => o.status !== 'CANCELLED' && o.created_at && new Date(o.created_at.seconds ? o.created_at.seconds * 1000 : o.created_at).getTime() > monthStart.getTime())
+        .reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+
+      res.json({
+        success: true,
+        data: {
+          pharmacyGMV: Math.round(pharmacyGMV),
+          monthGMV: Math.round(monthGMV),
+          membershipMRR,
+          consultationRevenue,
+          pharmacyNetRevenue,
+          totalNetRevenue,
+          targetRevenue,
+          targetPct,
+          totalOrders: orders.length,
+          activeMembers: subscriptions.filter(s => s.status === 'active').length,
+          totalUsers: usersSnap.size,
+          completedConsultations: consultations.filter(c => c.status === 'COMPLETED').length
+        }
+      });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /admin/revenue/trends — 7-day daily GMV breakdown
+  app.get('/admin/revenue/trends', requireAdmin, async (req, res) => {
+    try {
+      const ordersSnap = await db.collection(COLLECTIONS.ORDERS).get();
+      const orders = ordersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+      const trends = [];
+      for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        d.setHours(0,0,0,0);
+        const dEnd = new Date(d); dEnd.setHours(23,59,59,999);
+        const label = d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric' });
+        const gmv = orders
+          .filter(o => {
+            if (o.status === 'CANCELLED') return false;
+            const ts = o.created_at ? (o.created_at.seconds ? o.created_at.seconds * 1000 : new Date(o.created_at).getTime()) : 0;
+            return ts >= d.getTime() && ts <= dEnd.getTime();
+          })
+          .reduce((s, o) => s + (parseFloat(o.total) || 0), 0);
+        trends.push({ label, gmv: Math.round(gmv) });
+      }
+
+      res.json({ success: true, trends });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /admin/leads — All CRM leads
+  app.get('/admin/leads', requireAdmin, async (req, res) => {
+    try {
+      const snap = await db.collection(COLLECTIONS.LEADS).orderBy('createdAt', 'desc').limit(100).get();
+      res.json({ success: true, leads: snap.docs.map(d => ({ id: d.id, ...d.data() })) });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /admin/leads — Create a new lead
+  app.post('/admin/leads', requireAdmin, async (req, res) => {
+    const { name, phone, email, type, source, priority, assignedTo } = req.body;
+    if (!name || !phone) return res.status(400).json({ error: 'name and phone required' });
+    try {
+      const lead = {
+        name, phone, email: email || '',
+        type: type || 'Consultation',
+        source: source || 'organic',
+        priority: priority || 'Normal',
+        assignedTo: assignedTo || '',
+        status: 'New',
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      const ref = await db.collection(COLLECTIONS.LEADS).add(lead);
+      await logAdminAction(db, req.user.email, 'CREATE_LEAD', 'leads', { leadId: ref.id, name }, 'SUCCESS', req.ip);
+      res.json({ success: true, id: ref.id, lead });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // PUT /admin/leads/:id — Update lead status or assignment
+  app.put('/admin/leads/:id', requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    const updates = { ...req.body, updatedAt: new Date().toISOString() };
+    const VALID_STATUSES = ['New', 'In Progress', 'Converted', 'Lost'];
+    if (updates.status && !VALID_STATUSES.includes(updates.status)) {
+      return res.status(400).json({ error: `Invalid status. Must be one of: ${VALID_STATUSES.join(', ')}` });
+    }
+    try {
+      await db.collection(COLLECTIONS.LEADS).doc(id).update(updates);
+      await logAdminAction(db, req.user.email, 'UPDATE_LEAD', 'leads', { leadId: id, ...updates }, 'SUCCESS', req.ip);
+      res.json({ success: true, message: 'Lead updated' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /admin/partners — All partners
+  app.get('/admin/partners', requireAdmin, async (req, res) => {
+    try {
+      let snap;
+      try {
+        snap = await db.collection('partners').orderBy('createdAt', 'desc').limit(100).get();
+      } catch(e) {
+        snap = await db.collection('partners').limit(100).get();
+      }
+      res.json({ success: true, partners: snap.docs.map(d => ({ id: d.id, ...d.data() })) });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // POST /admin/partners — Register a new partner
+  app.post('/admin/partners', requireAdmin, async (req, res) => {
+    const { name, type, city, commissionRate, settlementCycle, contactPerson, email } = req.body;
+    if (!name || !type) return res.status(400).json({ error: 'name and type required' });
+    try {
+      const partner = {
+        name, type, city: city || '',
+        commissionRate: parseFloat(commissionRate) || 10,
+        settlementCycle: settlementCycle || 'Monthly',
+        contactPerson: contactPerson || '',
+        email: email || '',
+        outstanding: 0,
+        status: 'Active',
+        createdAt: new Date().toISOString(),
+        lastSettledAt: null
+      };
+      const ref = await db.collection('partners').add(partner);
+      await logAdminAction(db, req.user.email, 'CREATE_PARTNER', 'partners', { partnerId: ref.id, name }, 'SUCCESS', req.ip);
+      res.json({ success: true, id: ref.id, partner });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // PUT /admin/partners/:id/settle — Mark partner settlement as paid
+  app.put('/admin/partners/:id/settle', requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    try {
+      const docRef = db.collection('partners').doc(id);
+      const snap = await docRef.get();
+      if (!snap.exists) return res.status(404).json({ error: 'Partner not found' });
+      const outstanding = snap.data().outstanding || 0;
+      await docRef.update({ outstanding: 0, lastSettledAt: new Date().toISOString() });
+      await logAdminAction(db, req.user.email, 'SETTLE_PARTNER', 'partners', { partnerId: id, amount: outstanding }, 'SUCCESS', req.ip);
+      res.json({ success: true, message: `Settlement of ₹${outstanding} processed`, settledAmount: outstanding });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // PUT /admin/partners/:id — Update partner details
+  app.put('/admin/partners/:id', requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    const updates = { ...req.body, updatedAt: new Date().toISOString() };
+    try {
+      await db.collection('partners').doc(id).update(updates);
+      await logAdminAction(db, req.user.email, 'UPDATE_PARTNER', 'partners', { partnerId: id }, 'SUCCESS', req.ip);
+      res.json({ success: true, message: 'Partner updated' });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // GET /admin/audit — Full audit log with optional filters
+  app.get('/admin/audit', requireAdmin, async (req, res) => {
+    try {
+      const { severity, search, from, to, limit: lim } = req.query;
+      let query = db.collection(COLLECTIONS.AUDIT_LOGS).orderBy('timestamp', 'desc');
+      if (severity) query = query.where('severity', '==', severity.toUpperCase());
+      query = query.limit(parseInt(lim) || 200);
+      const snap = await query.get();
+      let logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      if (search) {
+        const q = search.toLowerCase();
+        logs = logs.filter(l => (l.admin || '').toLowerCase().includes(q) || (l.action || '').toLowerCase().includes(q));
+      }
+      if (from) {
+        const fromTs = new Date(from).getTime();
+        logs = logs.filter(l => new Date(l.timestamp).getTime() >= fromTs);
+      }
+      if (to) {
+        const toTs = new Date(to).getTime();
+        logs = logs.filter(l => new Date(l.timestamp).getTime() <= toTs);
+      }
+      res.json({ success: true, logs });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+  });
+
+  // ─────────────────────────────────────────────────────────────────────────
   return app;
 }
+
 
 exports.api = functions.https.onRequest((req, res) => {
   if (!cachedApp) {

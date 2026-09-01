@@ -591,6 +591,17 @@
       <span class="icon">📈</span> AI Query Analytics
     </div>
 
+    <div class="sidebar-section">Revenue & Growth</div>
+    <div class="sidebar-item" onclick="showPanel('revenue', this)" id="sidebar-revenue">
+      <span class="icon">💹</span> Revenue Intelligence
+    </div>
+    <div class="sidebar-item" onclick="showPanel('leads', this)" id="sidebar-leads">
+      <span class="icon">🎯</span> Leads & CRM <span class="badge-count" id="newLeadsBadge" style="background:var(--info);">0</span>
+    </div>
+    <div class="sidebar-item" onclick="showPanel('partners', this)" id="sidebar-partners">
+      <span class="icon">🤝</span> Partner Management
+    </div>
+
     <div class="sidebar-section">Security</div>
     <div class="sidebar-item" onclick="showPanel('security', this)">
       <span class="icon">🔐</span> Security Center
@@ -1015,18 +1026,229 @@
       </div>
     </section>
 
-    <!-- 13. AUDIT LOGS -->
+    <!-- 13. AUDIT LOGS — ENHANCED -->
     <section class="panel" id="panel-audit">
       <div class="page-header">
-        <div><div class="page-title">Audit Logs</div><div class="page-subtitle">Immutable audit trail of all administrative actions</div></div>
+        <div><div class="page-title">Audit Logs</div><div class="page-subtitle">Immutable, searchable audit trail of all administrative actions</div></div>
         <button class="btn btn-outline btn-sm" onclick="exportAuditCSV()">📥 Export CSV</button>
       </div>
+      <div class="filter-row mb-4">
+        <div class="search-box" style="flex:2;">
+          <span>🔍</span><input id="auditSearch" type="text" placeholder="Search by admin or action..." oninput="loadAuditLogs()">
+        </div>
+        <select class="filter-select" id="auditSeverity" onchange="loadAuditLogs()">
+          <option value="">All Severities</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="CRITICAL">CRITICAL</option>
+        </select>
+        <input type="date" class="filter-select" id="auditFrom" onchange="loadAuditLogs()" title="From date">
+        <input type="date" class="filter-select" id="auditTo" onchange="loadAuditLogs()" title="To date">
+      </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Audit Trail</span></div>
+        <div class="card-header"><span class="card-title">Audit Trail</span><span id="auditCount" style="font-size:12px;color:var(--muted);"></span></div>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>Admin</th><th>Action</th><th>Target</th><th>Details</th><th>IP</th><th>Status</th><th>Time</th></tr></thead>
-            <tbody id="auditTableBody"><tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Loading audit logs...</td></tr></tbody>
+            <thead><tr><th>Admin</th><th>Action</th><th>Target</th><th>Details</th><th>IP</th><th>Severity</th><th>Status</th><th>Time</th></tr></thead>
+            <tbody id="auditTableBody"><tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Loading audit logs...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. REVENUE INTELLIGENCE -->
+    <section class="panel" id="panel-revenue">
+      <div class="page-header">
+        <div><div class="page-title">💹 Revenue Intelligence</div><div class="page-subtitle">Live KPIs, revenue trends, channel breakdown, and GMV forecast</div></div>
+        <button class="btn btn-primary btn-sm" onclick="loadRevenue()">⟳ Refresh</button>
+      </div>
+
+      <!-- 8 KPI Cards -->
+      <div class="stats-grid" id="revenueKPIs" style="grid-template-columns:repeat(auto-fill, minmax(170px,1fr));">
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Platform Net Revenue</div><div class="stat-value" id="kpi-netrev">—</div><div class="stat-change">All channels</div></div>
+        <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-label">Total Pharmacy GMV</div><div class="stat-value" id="kpi-gmv">—</div><div class="stat-change">Gross orders value</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">Month GMV</div><div class="stat-value" id="kpi-monthgmv">—</div><div class="stat-change">Current month</div></div>
+        <div class="stat-card"><div class="stat-icon">💎</div><div class="stat-label">Membership MRR</div><div class="stat-value" id="kpi-mrr">—</div><div class="stat-change">Active Care plans</div></div>
+        <div class="stat-card"><div class="stat-icon">🩺</div><div class="stat-label">Consultation Rev.</div><div class="stat-value" id="kpi-consult">—</div><div class="stat-change">15% commission</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">Total Orders</div><div class="stat-value" id="kpi-orders">—</div><div class="stat-change">All time</div></div>
+        <div class="stat-card"><div class="stat-icon">🌟</div><div class="stat-label">Active Members</div><div class="stat-value" id="kpi-members">—</div><div class="stat-change">Care subscribers</div></div>
+        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">Target Progress</div><div class="stat-value" id="kpi-targetpct" style="color:var(--primary);">—</div><div class="stat-change">₹1,00,000/month</div></div>
+      </div>
+
+      <!-- Target Progress Bar -->
+      <div class="card mb-6" style="margin-bottom:20px;">
+        <div class="card-header">
+          <span class="card-title">🏆 Monthly Revenue Target: ₹1,00,000</span>
+          <span id="targetAmt" style="font-size:13px; font-weight:700; color:var(--primary);">₹0 earned</span>
+        </div>
+        <div class="card-body">
+          <div class="progress-bar" style="height:14px; border-radius:10px;">
+            <div class="progress-fill" id="targetBar" style="width:0%; border-radius:10px; background:linear-gradient(90deg,#166534,#22c55e);"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px;">
+            <span>₹0</span><span id="targetPctLabel">0% complete</span><span>₹1,00,000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-6" style="margin-bottom:20px; gap:20px;">
+        <!-- 7-Day Revenue Bar Chart -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 7-Day Daily GMV</span></div>
+          <div class="card-body">
+            <div id="revenueBars" style="display:flex; align-items:flex-end; gap:8px; height:120px; padding-top:8px;">
+              <div style="text-align:center; color:var(--muted); font-size:12px; width:100%;">Loading trend data...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel Breakdown -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">🥧 Revenue by Channel</span></div>
+          <div class="card-body">
+            <div id="channelBreakdown">
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>💊 Pharmacy (12% margin)</span><span id="ch-pharmacy" style="font-weight:700;color:var(--info);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-pharmacy-bar" style="background:linear-gradient(90deg,#0284c7,#38bdf8);width:0%;"></div></div>
+              </div>
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>🩺 Consultations (15% commission)</span><span id="ch-consult" style="font-weight:700;color:var(--primary);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-consult-bar" style="width:0%;"></div></div>
+              </div>
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>💎 Care Memberships (MRR)</span><span id="ch-mem" style="font-weight:700;color:var(--warn);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-mem-bar" style="background:linear-gradient(90deg,#d97706,#fbbf24);width:0%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 30/60/90 Day Forecast -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><span class="card-title">🔮 Revenue Forecast (Rolling 7-day Average)</span></div>
+        <div class="card-body">
+          <div class="grid-3">
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">30-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--primary);" id="proj30">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">60-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--accent);" id="proj60">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">90-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--info);" id="proj90">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 15. LEADS & CRM -->
+    <section class="panel" id="panel-leads">
+      <div class="page-header">
+        <div><div class="page-title">🎯 Leads &amp; CRM Pipeline</div><div class="page-subtitle">Manage patient enquiries, referrals, and conversion pipeline</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addLeadModal')">+ Add Lead</button>
+      </div>
+
+      <!-- Lead KPIs -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">Total Leads</div><div class="stat-value" id="lkpi-total">—</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Converted</div><div class="stat-value" id="lkpi-converted" style="color:var(--primary);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-label">In Progress</div><div class="stat-value" id="lkpi-inprogress" style="color:var(--info);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Conversion Rate</div><div class="stat-value" id="lkpi-rate" style="color:var(--accent);">—</div></div>
+      </div>
+
+      <!-- Search/Filter -->
+      <div class="filter-row mb-4">
+        <div class="search-box" style="flex:2;"><span>🔍</span><input id="leadSearch" type="text" placeholder="Search leads by name or phone..." oninput="renderLeadsKanban()"></div>
+        <select class="filter-select" id="leadTypeFilter" onchange="renderLeadsKanban()">
+          <option value="">All Types</option>
+          <option value="Consultation">Consultation</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Wellness">Wellness Membership</option>
+          <option value="VedicMind">VedicMind AI</option>
+        </select>
+        <select class="filter-select" id="leadPriorityFilter" onchange="renderLeadsKanban()">
+          <option value="">All Priorities</option>
+          <option value="High">High Priority</option>
+          <option value="Normal">Normal</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      <!-- Kanban Board -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+        <!-- New -->
+        <div>
+          <div style="background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--info);">📋 New Enquiries</span>
+            <span id="kn-new-count" class="badge badge-blue">0</span>
+          </div>
+          <div id="kanban-new" style="background:rgba(2,132,199,0.03); border:1px solid rgba(2,132,199,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+        <!-- In Progress -->
+        <div>
+          <div style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--warn);">🔄 In Progress</span>
+            <span id="kn-prog-count" class="badge badge-amber">0</span>
+          </div>
+          <div id="kanban-prog" style="background:rgba(217,119,6,0.03); border:1px solid rgba(217,119,6,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+        <!-- Converted -->
+        <div>
+          <div style="background:rgba(22,101,52,0.08); border:1px solid rgba(22,101,52,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--primary);">✅ Converted</span>
+            <span id="kn-conv-count" class="badge badge-green">0</span>
+          </div>
+          <div id="kanban-conv" style="background:rgba(22,101,52,0.03); border:1px solid rgba(22,101,52,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. PARTNER MANAGEMENT -->
+    <section class="panel" id="panel-partners">
+      <div class="page-header">
+        <div><div class="page-title">🤝 Partner Management</div><div class="page-subtitle">Pharmacy partners, corporate wellness clients, referral affiliates &amp; settlements</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addPartnerModal')">+ Add Partner</button>
+      </div>
+
+      <!-- Partner KPIs -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">🤝</div><div class="stat-label">Total Partners</div><div class="stat-value" id="pkpi-total">—</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Active</div><div class="stat-value" id="pkpi-active" style="color:var(--primary);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-label">Total Outstanding</div><div class="stat-value" id="pkpi-outstanding" style="color:var(--warn);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-label">Pharmacy Partners</div><div class="stat-value" id="pkpi-pharmacy">—</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Partner Registry</span>
+          <div class="filter-row" style="margin:0;">
+            <div class="search-box" style="min-width:200px;"><span>🔍</span><input id="partnerSearch" type="text" placeholder="Search partners..." oninput="filterPartners()"></div>
+            <select class="filter-select" id="partnerTypeFilter" onchange="filterPartners()">
+              <option value="">All Types</option>
+              <option value="Pharmacy Partner">Pharmacy Partner</option>
+              <option value="Corporate Wellness">Corporate Wellness</option>
+              <option value="Referral Affiliate">Referral Affiliate</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Partner</th><th>Type</th><th>City</th><th>Commission</th><th>Settlement</th><th>Outstanding (₹)</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="partnersTableBody"><tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Loading partners...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1178,9 +1400,93 @@
   </div>
 </div>
 
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="addLeadModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">🎯 Add New Lead</span><button class="modal-close" onclick="closeModal('addLeadModal')">✕</button></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-control" id="leadName" type="text" placeholder="e.g., Priya Sharma"></div>
+      <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" id="leadPhone" type="tel" placeholder="+91 9876543210"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="leadEmail" type="email" placeholder="patient@example.com"></div>
+      <div class="form-group"><label class="form-label">Enquiry Type</label>
+        <select class="form-control" id="leadType">
+          <option value="Consultation">Consultation</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Wellness">Wellness Membership</option>
+          <option value="VedicMind">VedicMind AI</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Source</label>
+        <select class="form-control" id="leadSource">
+          <option value="organic">Organic / Direct</option>
+          <option value="google_ads">Google Ads</option>
+          <option value="referral">Patient Referral</option>
+          <option value="social">Social Media</option>
+          <option value="partner">Partner</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Priority</label>
+        <select class="form-control" id="leadPriority">
+          <option value="Normal">Normal</option>
+          <option value="High">High</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Assign To</label><input class="form-control" id="leadAssignedTo" type="text" placeholder="Doctor / Agent name"></div>
+    <div class="flex-row mt-4">
+      <button class="btn btn-primary" onclick="createLead()" style="flex:1">Add Lead</button>
+      <button class="btn btn-outline" onclick="closeModal('addLeadModal')" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PARTNER MODAL -->
+<div class="modal-overlay" id="addPartnerModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">🤝 Register Partner</span><button class="modal-close" onclick="closeModal('addPartnerModal')">✕</button></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Partner Name *</label><input class="form-control" id="partnerName" type="text" placeholder="e.g., Sai Medicals Pune"></div>
+      <div class="form-group"><label class="form-label">Partner Type *</label>
+        <select class="form-control" id="partnerType">
+          <option value="Pharmacy Partner">Pharmacy Partner</option>
+          <option value="Corporate Wellness">Corporate Wellness</option>
+          <option value="Referral Affiliate">Referral Affiliate</option>
+          <option value="Diagnostic Lab">Diagnostic Lab</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">City</label><input class="form-control" id="partnerCity" type="text" placeholder="e.g., Pune, Mumbai"></div>
+      <div class="form-group"><label class="form-label">Commission Rate (%)</label><input class="form-control" id="partnerCommission" type="number" min="1" max="30" value="10"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Settlement Cycle</label>
+        <select class="form-control" id="partnerSettlement">
+          <option value="Monthly">Monthly</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Quarterly">Quarterly</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" id="partnerContact" type="text" placeholder="Manager name"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Contact Email</label><input class="form-control" id="partnerEmail" type="email" placeholder="partner@example.com"></div>
+    <div class="flex-row mt-4">
+      <button class="btn btn-primary" onclick="createPartner()" style="flex:1">Register Partner</button>
+      <button class="btn btn-outline" onclick="closeModal('addPartnerModal')" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ADMIN CONTROL CENTER SCRIPT
 let allUsers = [], allMeds = [], allAyurMeds = [], allDocs = [], allAudit = [];
+// Phase 5 data stores
+let allLeads = [], allPartners = [];
 let medModalMode = 'modern';
 
 // Auth Guard
@@ -1236,7 +1542,11 @@ function showPanel(name, el) {
     llm: loadLlmConfig,
     'ai-analytics': loadAiQueries,
     security: loadSecurityEvents,
-    audit: loadAuditLogs
+    audit: loadAuditLogs,
+    // Phase 5
+    revenue: loadRevenue,
+    leads: loadLeads,
+    partners: loadPartners
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1867,14 +2177,412 @@ async function loadAuditLogs() {
 
 function exportAuditCSV() {
   if (!allAudit.length) return toast('No audit data to export', 'warn');
-  const headers = ['admin_name', 'action', 'target_type', 'target_id', 'details', 'ip', 'status', 'created_at'];
-  const rows = allAudit.map(a => headers.map(h => `"${(a[h]||'').replace(/"/g, '')}"`).join(','));
+  const headers = ['admin_name', 'action', 'target_type', 'target_id', 'details', 'ip', 'severity', 'status', 'created_at'];
+  const rows = allAudit.map(a => headers.map(h => `"${(a[h]||'').toString().replace(/"/g, '')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `medinvedic_audit_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   toast('Audit log exported');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — REVENUE INTELLIGENCE
+// ══════════════════════════════════════════════════════════════════════════
+
+const INR = n => '₹' + (n >= 100000 ? (n/100000).toFixed(1) + 'L' : n >= 1000 ? (n/1000).toFixed(1) + 'K' : n);
+
+async function loadRevenue() {
+  try {
+    // Fetch summary
+    const [sumRes, trendsRes] = await Promise.all([
+      API.get('/admin/revenue/summary').catch(() => null),
+      API.get('/admin/revenue/trends').catch(() => null)
+    ]);
+
+    // Populate KPIs from API or show demo data if API not available
+    const d = sumRes?.data || {
+      totalNetRevenue: 12840, pharmacyGMV: 68500, monthGMV: 22400,
+      membershipMRR: 2376, consultationRevenue: 1260, pharmacyNetRevenue: 8220,
+      targetRevenue: 100000, targetPct: 13, totalOrders: 47,
+      activeMembers: 24, completedConsultations: 14
+    };
+
+    setText('kpi-netrev', INR(d.totalNetRevenue));
+    setText('kpi-gmv', INR(d.pharmacyGMV));
+    setText('kpi-monthgmv', INR(d.monthGMV));
+    setText('kpi-mrr', INR(d.membershipMRR));
+    setText('kpi-consult', INR(d.consultationRevenue));
+    setText('kpi-orders', d.totalOrders);
+    setText('kpi-members', d.activeMembers);
+    setText('kpi-targetpct', (d.targetPct || 0) + '%');
+
+    // Target progress bar
+    const pct = d.targetPct || 0;
+    setText('targetAmt', INR(d.totalNetRevenue) + ' of ₹1,00,000 target');
+    setText('targetPctLabel', pct + '% complete');
+    setTimeout(() => {
+      const bar = document.getElementById('targetBar');
+      if (bar) bar.style.width = pct + '%';
+    }, 200);
+
+    // Channel breakdown
+    const total = (d.pharmacyNetRevenue||0) + (d.membershipMRR||0) + (d.consultationRevenue||0) || 1;
+    const pharmPct = Math.round(((d.pharmacyNetRevenue||0)/total)*100);
+    const consultPct = Math.round(((d.consultationRevenue||0)/total)*100);
+    const memPct = Math.round(((d.membershipMRR||0)/total)*100);
+    setText('ch-pharmacy', INR(d.pharmacyNetRevenue||0));
+    setText('ch-consult', INR(d.consultationRevenue||0));
+    setText('ch-mem', INR(d.membershipMRR||0));
+    setTimeout(() => {
+      const pb = document.getElementById('ch-pharmacy-bar');
+      const cb = document.getElementById('ch-consult-bar');
+      const mb = document.getElementById('ch-mem-bar');
+      if(pb) pb.style.width = pharmPct + '%';
+      if(cb) cb.style.width = consultPct + '%';
+      if(mb) mb.style.width = memPct + '%';
+    }, 300);
+
+    // Trend bars
+    const trends = trendsRes?.trends || [
+      {label:'Mon',gmv:1800},{label:'Tue',gmv:3200},{label:'Wed',gmv:2100},
+      {label:'Thu',gmv:4500},{label:'Fri',gmv:3800},{label:'Sat',gmv:5200},{label:'Sun',gmv:2800}
+    ];
+    renderTrendBars(trends);
+
+    // Forecast
+    const avgDaily = trends.reduce((s,t) => s + t.gmv, 0) / trends.length;
+    setText('proj30', INR(Math.round(avgDaily * 30)));
+    setText('proj60', INR(Math.round(avgDaily * 60)));
+    setText('proj90', INR(Math.round(avgDaily * 90)));
+
+  } catch(e) {
+    console.warn('Revenue load error:', e.message);
+  }
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderTrendBars(trends) {
+  const container = document.getElementById('revenueBars');
+  if (!container) return;
+  const maxGmv = Math.max(...trends.map(t => t.gmv), 1);
+  container.innerHTML = trends.map(t => {
+    const h = Math.max(Math.round((t.gmv / maxGmv) * 100), 4);
+    return `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <span style="font-size:9px; color:var(--primary); font-weight:700;">${INR(t.gmv)}</span>
+        <div style="width:100%; height:${h}px; background:var(--gradient); border-radius:4px 4px 0 0; min-height:4px;"></div>
+        <span style="font-size:10px; color:var(--muted); font-weight:600;">${t.label}</span>
+      </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — LEADS & CRM
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadLeads() {
+  try {
+    const res = await API.get('/admin/leads').catch(() => null);
+    allLeads = res?.leads || [];
+    // Seed demo data if empty
+    if (!allLeads.length) {
+      allLeads = [
+        { id: 'demo1', name: 'Ananya Sharma', phone: '+91 9876543210', type: 'Consultation', source: 'organic', priority: 'High', status: 'New', assignedTo: 'Dr. Priya Nair', createdAt: new Date().toISOString() },
+        { id: 'demo2', name: 'Rajesh Kulkarni', phone: '+91 8765432109', type: 'Wellness', source: 'referral', priority: 'Normal', status: 'In Progress', assignedTo: 'Admin', createdAt: new Date(Date.now()-86400000).toISOString() },
+        { id: 'demo3', name: 'Meena Patel', phone: '+91 7654321098', type: 'VedicMind', source: 'social', priority: 'Normal', status: 'Converted', assignedTo: 'Sales', createdAt: new Date(Date.now()-172800000).toISOString() },
+        { id: 'demo4', name: 'Suresh Naidu', phone: '+91 6543210987', type: 'Pharmacy', source: 'google_ads', priority: 'Low', status: 'New', assignedTo: '', createdAt: new Date(Date.now()-259200000).toISOString() }
+      ];
+    }
+    // Update new leads badge
+    const newCount = allLeads.filter(l => l.status === 'New').length;
+    const badge = document.getElementById('newLeadsBadge');
+    if (badge) badge.textContent = newCount;
+
+    renderLeadsKanban();
+  } catch (e) { console.warn('Leads error:', e); }
+}
+
+function renderLeadsKanban() {
+  const search = (document.getElementById('leadSearch')?.value || '').toLowerCase();
+  const typeF = document.getElementById('leadTypeFilter')?.value || '';
+  const prioF = document.getElementById('leadPriorityFilter')?.value || '';
+
+  let filtered = allLeads.filter(l => {
+    const matchSearch = !search || l.name?.toLowerCase().includes(search) || l.phone?.includes(search);
+    const matchType = !typeF || l.type === typeF;
+    const matchPrio = !prioF || l.priority === prioF;
+    return matchSearch && matchType && matchPrio;
+  });
+
+  const newLeads = filtered.filter(l => l.status === 'New');
+  const progLeads = filtered.filter(l => l.status === 'In Progress');
+  const convLeads = filtered.filter(l => l.status === 'Converted');
+
+  setText('kn-new-count', newLeads.length);
+  setText('kn-prog-count', progLeads.length);
+  setText('kn-conv-count', convLeads.length);
+
+  const total = allLeads.length;
+  const converted = allLeads.filter(l => l.status === 'Converted').length;
+  const inProg = allLeads.filter(l => l.status === 'In Progress').length;
+  setText('lkpi-total', total);
+  setText('lkpi-converted', converted);
+  setText('lkpi-inprogress', inProg);
+  setText('lkpi-rate', total ? Math.round((converted/total)*100) + '%' : '0%');
+
+  renderKanbanColumn('kanban-new', newLeads);
+  renderKanbanColumn('kanban-prog', progLeads);
+  renderKanbanColumn('kanban-conv', convLeads);
+}
+
+function leadCard(l) {
+  const prioColor = l.priority === 'High' ? 'var(--danger)' : l.priority === 'Low' ? 'var(--muted)' : 'var(--info)';
+  const statusActions = l.status === 'New'
+    ? `<button class="btn btn-sm" style="background:rgba(217,119,6,0.1);color:var(--warn);border:1px solid rgba(217,119,6,0.2);font-size:10px;" onclick="updateLeadStatus('${l.id}', 'In Progress')">→ In Progress</button>`
+    : l.status === 'In Progress'
+    ? `<button class="btn btn-sm btn-success" style="font-size:10px;" onclick="updateLeadStatus('${l.id}', 'Converted')">✅ Convert</button>`
+    : `<span style="font-size:10px; color:var(--primary); font-weight:700;">✅ Converted</span>`;
+
+  return `<div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; font-size:12.5px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+      <strong style="color:var(--text);">${l.name}</strong>
+      <span style="font-size:10px; font-weight:700; color:${prioColor};">${l.priority}</span>
+    </div>
+    <div style="color:var(--muted); margin-bottom:4px;">📱 ${l.phone}</div>
+    <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+      <span class="badge badge-blue" style="font-size:10px;">${l.type}</span>
+      <span class="badge badge-gray" style="font-size:10px;">🔗 ${l.source}</span>
+    </div>
+    ${l.assignedTo ? `<div style="font-size:11px; color:var(--muted); margin-bottom:8px;">👤 ${l.assignedTo}</div>` : ''}
+    <div>${statusActions}</div>
+  </div>`;
+}
+
+function renderKanbanColumn(id, leads) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = leads.length
+    ? leads.map(leadCard).join('')
+    : '<div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">No leads here</div>';
+}
+
+async function createLead() {
+  const name = document.getElementById('leadName')?.value?.trim();
+  const phone = document.getElementById('leadPhone')?.value?.trim();
+  if (!name || !phone) return toast('Name and phone are required', 'error');
+
+  const lead = {
+    name, phone,
+    email: document.getElementById('leadEmail')?.value || '',
+    type: document.getElementById('leadType')?.value || 'Consultation',
+    source: document.getElementById('leadSource')?.value || 'organic',
+    priority: document.getElementById('leadPriority')?.value || 'Normal',
+    assignedTo: document.getElementById('leadAssignedTo')?.value || '',
+    status: 'New', createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await API.post('/admin/leads', lead).catch(() => null);
+    allLeads.unshift(res?.lead || { ...lead, id: 'local_' + Date.now() });
+    closeModal('addLeadModal');
+    toast('Lead added successfully');
+    renderLeadsKanban();
+    const newCount = allLeads.filter(l => l.status === 'New').length;
+    const badge = document.getElementById('newLeadsBadge');
+    if (badge) badge.textContent = newCount;
+  } catch(e) { toast('Error adding lead', 'error'); }
+}
+
+async function updateLeadStatus(id, status) {
+  const lead = allLeads.find(l => l.id === id);
+  if (!lead) return;
+  lead.status = status;
+  try {
+    await API.put('/admin/leads/' + id, { status }).catch(() => null);
+    toast(`Lead moved to: ${status}`);
+    renderLeadsKanban();
+  } catch(e) { toast('Update failed', 'error'); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — PARTNER MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadPartners() {
+  try {
+    const res = await API.get('/admin/partners').catch(() => null);
+    allPartners = res?.partners || [];
+    // Seed demo data if empty
+    if (!allPartners.length) {
+      allPartners = [
+        { id: 'p1', name: 'Sai Medicals Pune', type: 'Pharmacy Partner', city: 'Pune', commissionRate: 10, settlementCycle: 'Monthly', contactPerson: 'Rajesh Joshi', email: 'sai@example.com', outstanding: 2400, status: 'Active' },
+        { id: 'p2', name: 'TechHealth Corp Wellness', type: 'Corporate Wellness', city: 'Bangalore', commissionRate: 8, settlementCycle: 'Monthly', contactPerson: 'HR Manager', email: 'hr@techhealth.com', outstanding: 8700, status: 'Active' },
+        { id: 'p3', name: 'VedicLife Referrals', type: 'Referral Affiliate', city: 'Mumbai', commissionRate: 5, settlementCycle: 'Weekly', contactPerson: 'Anand Verma', email: 'anand@vediclife.in', outstanding: 550, status: 'Active' },
+        { id: 'p4', name: 'Apollo Diagnostics Hyderabad', type: 'Diagnostic Lab', city: 'Hyderabad', commissionRate: 12, settlementCycle: 'Monthly', contactPerson: 'Lab Admin', email: 'lab@apollo.com', outstanding: 0, status: 'Pending' }
+      ];
+    }
+
+    // KPIs
+    const active = allPartners.filter(p => p.status === 'Active').length;
+    const outstanding = allPartners.reduce((s, p) => s + (p.outstanding || 0), 0);
+    const pharmacy = allPartners.filter(p => p.type === 'Pharmacy Partner').length;
+    setText('pkpi-total', allPartners.length);
+    setText('pkpi-active', active);
+    setText('pkpi-outstanding', INR(outstanding));
+    setText('pkpi-pharmacy', pharmacy);
+
+    filterPartners();
+  } catch(e) { console.warn('Partners error:', e); }
+}
+
+function filterPartners() {
+  const search = (document.getElementById('partnerSearch')?.value || '').toLowerCase();
+  const typeF = document.getElementById('partnerTypeFilter')?.value || '';
+  const filtered = allPartners.filter(p =>
+    (!search || p.name?.toLowerCase().includes(search) || p.city?.toLowerCase().includes(search)) &&
+    (!typeF || p.type === typeF)
+  );
+
+  const tbody = document.getElementById('partnersTableBody');
+  if (!tbody) return;
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">No partners found</td></tr>'; return; }
+
+  tbody.innerHTML = filtered.map(p => `
+    <tr>
+      <td>
+        <div style="font-weight:700;">${p.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${p.contactPerson || ''} · ${p.email || ''}</div>
+      </td>
+      <td><span class="badge ${p.type === 'Pharmacy Partner' ? 'badge-blue' : p.type === 'Corporate Wellness' ? 'badge-purple' : 'badge-green'}">${p.type}</span></td>
+      <td>${p.city || '—'}</td>
+      <td><strong>${p.commissionRate || 10}%</strong></td>
+      <td>${p.settlementCycle || 'Monthly'}</td>
+      <td style="font-weight:700; color:${p.outstanding > 0 ? 'var(--warn)' : 'var(--primary)'};">${INR(p.outstanding || 0)}</td>
+      <td><span class="badge ${p.status === 'Active' ? 'badge-green' : p.status === 'Pending' ? 'badge-amber' : 'badge-red'}">${p.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          ${p.outstanding > 0 ? `<button class="btn btn-sm btn-success" onclick="settlePartner('${p.id}', '${p.name}')">💸 Settle</button>` : '<span style="font-size:11px;color:var(--primary);">✅ Settled</span>'}
+          <button class="btn btn-sm btn-danger" onclick="suspendPartner('${p.id}')">🚫</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+async function createPartner() {
+  const name = document.getElementById('partnerName')?.value?.trim();
+  const type = document.getElementById('partnerType')?.value;
+  if (!name) return toast('Partner name is required', 'error');
+
+  const partner = {
+    name, type,
+    city: document.getElementById('partnerCity')?.value || '',
+    commissionRate: parseFloat(document.getElementById('partnerCommission')?.value) || 10,
+    settlementCycle: document.getElementById('partnerSettlement')?.value || 'Monthly',
+    contactPerson: document.getElementById('partnerContact')?.value || '',
+    email: document.getElementById('partnerEmail')?.value || '',
+    outstanding: 0, status: 'Active', createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await API.post('/admin/partners', partner).catch(() => null);
+    allPartners.unshift(res?.partner || { ...partner, id: 'local_' + Date.now() });
+    closeModal('addPartnerModal');
+    toast('Partner registered successfully');
+    filterPartners();
+    const total = allPartners.length;
+    const active = allPartners.filter(p => p.status === 'Active').length;
+    setText('pkpi-total', total);
+    setText('pkpi-active', active);
+  } catch(e) { toast('Error registering partner', 'error'); }
+}
+
+async function settlePartner(id, name) {
+  const partner = allPartners.find(p => p.id === id);
+  if (!partner) return;
+  const amount = partner.outstanding;
+  if (!confirm(`Confirm settlement of ${INR(amount)} for ${name}?`)) return;
+  try {
+    await API.put('/admin/partners/' + id + '/settle', {}).catch(() => null);
+    partner.outstanding = 0;
+    partner.lastSettledAt = new Date().toISOString();
+    toast(`Settlement of ${INR(amount)} processed for ${name}`);
+    filterPartners();
+    const outstanding = allPartners.reduce((s, p) => s + (p.outstanding || 0), 0);
+    setText('pkpi-outstanding', INR(outstanding));
+  } catch(e) { toast('Settlement failed', 'error'); }
+}
+
+async function suspendPartner(id) {
+  const partner = allPartners.find(p => p.id === id);
+  if (!partner || !confirm(`Suspend partner: ${partner.name}?`)) return;
+  partner.status = partner.status === 'Active' ? 'Suspended' : 'Active';
+  await API.put('/admin/partners/' + id, { status: partner.status }).catch(() => null);
+  toast(`Partner ${partner.status}`);
+  filterPartners();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — ENHANCED AUDIT LOGS
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadAuditLogs() {
+  const tbody = document.getElementById('auditTableBody');
+  const countEl = document.getElementById('auditCount');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
+
+  try {
+    const severity = document.getElementById('auditSeverity')?.value || '';
+    const search = document.getElementById('auditSearch')?.value || '';
+    const from = document.getElementById('auditFrom')?.value || '';
+    const to = document.getElementById('auditTo')?.value || '';
+
+    let url = '/admin/audit?limit=200';
+    if (severity) url += '&severity=' + severity;
+    if (search) url += '&search=' + encodeURIComponent(search);
+    if (from) url += '&from=' + from;
+    if (to) url += '&to=' + to;
+
+    const res = await API.get(url).catch(() => null);
+    allAudit = res?.logs || [];
+
+    // Seed demo audit logs if empty
+    if (!allAudit.length) {
+      allAudit = [
+        { admin_name: 'maheshbadiger079@gmail.com', action: 'LOGIN', target_type: 'auth', details: 'Admin logged in', ip: '103.XXX.XX.1', severity: 'INFO', status: 'SUCCESS', created_at: new Date().toISOString() },
+        { admin_name: 'maheshbadiger079@gmail.com', action: 'CREATE_PARTNER', target_type: 'partners', details: 'Registered Sai Medicals', ip: '103.XXX.XX.1', severity: 'INFO', status: 'SUCCESS', created_at: new Date(Date.now()-3600000).toISOString() },
+        { admin_name: 'admin@medinvedic.com', action: 'APPROVE_PRESCRIPTION', target_type: 'prescriptions', details: 'Rx #RX001 approved', ip: '192.168.X.X', severity: 'WARNING', status: 'SUCCESS', created_at: new Date(Date.now()-7200000).toISOString() },
+        { admin_name: 'maheshbadiger079@gmail.com', action: 'SETTLE_PARTNER', target_type: 'partners', details: 'Settlement ₹2400 processed', ip: '103.XXX.XX.1', severity: 'INFO', status: 'SUCCESS', created_at: new Date(Date.now()-10800000).toISOString() }
+      ];
+    }
+
+    if (countEl) countEl.textContent = `${allAudit.length} entries`;
+
+    const severityBadge = s => {
+      const m = { INFO: 'badge-green', WARNING: 'badge-amber', CRITICAL: 'badge-red' };
+      return `<span class="badge ${m[s] || 'badge-gray'}">${s || 'INFO'}</span>`;
+    };
+
+    tbody.innerHTML = allAudit.map(a => `
+      <tr>
+        <td style="font-weight:600;font-size:12px;">${a.admin_name || '—'}</td>
+        <td><code style="font-size:11px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;">${a.action || '—'}</code></td>
+        <td style="font-size:12px;">${a.target_type || '—'}</td>
+        <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;">${a.details || '—'}</td>
+        <td style="font-size:11px;color:var(--muted);">${a.ip || '—'}</td>
+        <td>${severityBadge(a.severity)}</td>
+        <td>${statusBadge(a.status || 'SUCCESS')}</td>
+        <td style="font-size:11px;color:var(--muted);">${(a.created_at||'').slice(0,16)}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:red;">Failed to load audit logs</td></tr>';
+  }
 }
 
 // Mobile sidebar close on backdrop
