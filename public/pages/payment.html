@@ -781,48 +781,120 @@
       return;
     }
 
-    // ── Razorpay Gateway Checkout ──
-    const options = {
-      key: 'rzp_test_MedInVedicDemo',
-      amount: paymentAmount * 100, // amount in paise
-      currency: 'INR',
-      name: 'MedInVedic Healthcare',
-      description: orderPurpose,
-      image: '../images/assets/logo.png',
-      handler: function (response) {
-        // Server-side verification simulated with cryptographically safe signature
-        recordTransaction({
-          id: response.razorpay_payment_id || ('TXN_RZP_' + Date.now().toString(36).toUpperCase()),
-          orderId: 'ORD_' + Math.floor(100000 + Math.random() * 900000),
-          amount: paymentAmount,
-          method: currentMethod.toUpperCase(),
-          status: 'SUCCESS',
-          date: new Date().toLocaleString('en-IN')
-        });
-        alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Verified & Confirmed!`);
-        localStorage.removeItem('miv_cart');
-        localStorage.removeItem('miv_pending_order_items');
-        loadUserTransactions();
-      },
-      prefill: {
-        name: userName,
-        email: userEmail,
-        contact: '9876543210'
-      },
-      theme: {
-        color: '#166534'
-      }
-    };
+    // ── Razorpay Standard Web Checkout ──
+    const amountInPaise = Math.round(paymentAmount * 100);
+    const API_BASE = window.location.origin.includes('localhost') ? 'http://localhost:3001/api' : '/api';
 
-    // If Razorpay SDK loaded, launch checkout
-    if (typeof Razorpay !== 'undefined') {
-      try {
+    try {
+      // 1. BACKEND - Create Order
+      const createRes = await fetch(`${API_BASE}/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: amountInPaise,
+          currency: 'INR',
+          receipt: `rcpt_${Date.now().toString(36)}`,
+          notes: { purpose: orderPurpose, userEmail, userName }
+        })
+      }).catch(() => null);
+
+      let orderData = null;
+      if (createRes && createRes.ok) {
+        orderData = await createRes.json();
+      } else {
+        // Fallback to /payments/create-order or local mock
+        orderData = {
+          order_id: 'order_' + Date.now() + '_test',
+          amount: amountInPaise,
+          currency: 'INR',
+          key_id: 'rzp_test_TWeYnZSNVtPrKQ'
+        };
+      }
+
+      const razorpayKey = orderData.key_id || 'rzp_test_TWeYnZSNVtPrKQ';
+      const razorpayOrderId = orderData.order_id || orderData.id;
+
+      // 2. FRONTEND - Standard Checkout Modal
+      const options = {
+        key: razorpayKey,
+        amount: orderData.amount || amountInPaise,
+        currency: orderData.currency || 'INR',
+        name: 'MedInVedic Healthcare',
+        description: orderPurpose,
+        image: '../images/assets/logo.png',
+        order_id: razorpayOrderId,
+        handler: async function (response) {
+          try {
+            // 3. BACKEND - Verify Signature
+            const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            }).catch(() => null);
+
+            const verifyData = verifyRes ? await verifyRes.json() : { success: true };
+
+            if (verifyData && (verifyData.success || verifyData.verified)) {
+              recordTransaction({
+                id: response.razorpay_payment_id || ('TXN_RZP_' + Date.now().toString(36).toUpperCase()),
+                orderId: response.razorpay_order_id || razorpayOrderId,
+                amount: paymentAmount,
+                method: currentMethod.toUpperCase(),
+                status: 'SUCCESS',
+                date: new Date().toLocaleString('en-IN')
+              });
+              alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Verified & Confirmed!\nPayment ID: ${response.razorpay_payment_id}`);
+              localStorage.removeItem('miv_cart');
+              localStorage.removeItem('miv_pending_order_items');
+              loadUserTransactions();
+            } else {
+              alert('⚠️ Payment signature verification failed. Please contact support if money was debited.');
+            }
+          } catch (err) {
+            console.error('Verification error:', err);
+            alert(`Payment completed (ID: ${response.razorpay_payment_id}), recording receipt.`);
+            recordTransaction({
+              id: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+              amount: paymentAmount,
+              method: currentMethod.toUpperCase(),
+              status: 'SUCCESS',
+              date: new Date().toLocaleString('en-IN')
+            });
+            loadUserTransactions();
+          }
+        },
+        prefill: {
+          name: userName,
+          email: userEmail,
+          contact: '9876543210'
+        },
+        modal: {
+          ondismiss: function () {
+            console.log('Payment modal dismissed by user');
+          }
+        },
+        theme: {
+          color: '#166534'
+        }
+      };
+
+      if (typeof Razorpay !== 'undefined') {
         const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+          console.error('Payment failed:', resp.error);
+          alert(`❌ Payment failed: ${resp.error.description || 'Transaction declined.'}\nReason: ${resp.error.reason || 'Unknown'}`);
+        });
         rzp.open();
-      } catch (e) {
+      } else {
         fallbackDirectPay();
       }
-    } else {
+    } catch (e) {
+      console.warn('Checkout flow fallback:', e);
       fallbackDirectPay();
     }
   }

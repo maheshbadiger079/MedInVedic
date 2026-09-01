@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" sizes="512x512" href="../icon-512.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Razorpay Standard Web Checkout — MedInVedic</title>
+  
+  <!-- Razorpay Checkout Gateway SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  
+  <!-- MedInVedic Styles & Checkout Helper -->
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="../js/razorpay-checkout.js"></script>
+
+  <style>
+    :root {
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.92);
+      --border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --accent: #15803d;
+      --text: #1a2e1a;
+      --muted: #52796f;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
+    }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.6) 0px, transparent 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+    }
+
+    .checkout-nav {
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 40px auto 60px;
+      padding: 0 20px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 10px 40px rgba(22, 101, 52, 0.06);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(34, 197, 94, 0.12);
+      border: 1px solid rgba(34, 197, 94, 0.25);
+      color: var(--primary);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      font-size: 14px;
+      background: #fff;
+      color: var(--text);
+      box-sizing: border-box;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+      border-color: var(--primary-light);
+    }
+
+    .preset-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .btn-preset {
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-preset:hover, .btn-preset.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .btn-pay {
+      width: 100%;
+      background: var(--gradient);
+      color: #fff;
+      border: none;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      margin-top: 24px;
+      box-shadow: 0 6px 20px rgba(22, 101, 52, 0.2);
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn-pay:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(22, 101, 52, 0.3);
+    }
+
+    .result-box {
+      margin-top: 24px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      display: none;
+    }
+
+    .result-box.success {
+      border-color: var(--primary-light);
+      background: rgba(240, 253, 244, 0.9);
+    }
+
+    .result-box.error {
+      border-color: #dc2626;
+      background: rgba(254, 242, 242, 0.9);
+    }
+  </style>
+</head>
+<body>
+
+<nav class="checkout-nav">
+  <a href="../index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--primary); font-weight:900; font-size:18px;">
+    <div style="width:36px; height:36px; background:var(--gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff;">🌿</div>
+    <span>MedInVedic</span>
+  </a>
+  <span style="font-size:13px; font-weight:700; color:var(--muted);">Razorpay Standard Web Checkout</span>
+</nav>
+
+<div class="container">
+  <div class="card">
+    <div class="badge">🔒 Verified Payment Gateway</div>
+    <h1 style="font-size:24px; font-weight:900; margin:0 0 6px 0;">Razorpay Standard Checkout</h1>
+    <p style="color:var(--muted); font-size:13.5px; margin:0 0 24px 0;">
+      Test complete Razorpay standard web integration: order creation, modal popup, and cryptographic HMAC signature verification.
+    </p>
+
+    <div class="form-group">
+      <label>Select or Enter Amount (INR)</label>
+      <input type="number" id="payAmount" class="input-field" value="499" min="1" step="1">
+      <div class="preset-grid">
+        <button class="btn-preset" onclick="setAmount(99)">₹99 (Care Mo.)</button>
+        <button class="btn-preset active" onclick="setAmount(499)">₹499 (Consult)</button>
+        <button class="btn-preset" onclick="setAmount(999)">₹999 (Care Yr.)</button>
+        <button class="btn-preset" onclick="setAmount(1500)">₹1,500 (Meds)</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Customer Name</label>
+      <input type="text" id="custName" class="input-field" value="Priya Sharma">
+    </div>
+
+    <div class="form-group">
+      <label>Customer Email</label>
+      <input type="email" id="custEmail" class="input-field" value="priya.sharma@medinvedic.com">
+    </div>
+
+    <div class="form-group">
+      <label>Customer Phone</label>
+      <input type="tel" id="custPhone" class="input-field" value="9876543210">
+    </div>
+
+    <button class="btn-pay" id="checkoutBtn" onclick="launchStandardCheckout()">
+      <span>⚡ Pay with Razorpay</span>
+      <span id="btnAmtLabel">₹499</span>
+    </button>
+
+    <!-- Results Display Box -->
+    <div id="resultBox" class="result-box">
+      <div id="resultHeader" style="font-size:15px; font-weight:800; margin-bottom:8px;"></div>
+      <div id="resultDetails" style="font-size:12.5px; color:var(--text); line-height:1.6; font-family:monospace; word-break:break-all;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function setAmount(amt) {
+    document.getElementById('payAmount').value = amt;
+    document.getElementById('btnAmtLabel').textContent = '₹' + amt;
+    document.querySelectorAll('.btn-preset').forEach(b => {
+      b.classList.toggle('active', b.textContent.includes('₹' + amt));
+    });
+  }
+
+  document.getElementById('payAmount').addEventListener('input', function() {
+    document.getElementById('btnAmtLabel').textContent = '₹' + (this.value || 0);
+  });
+
+  async function launchStandardCheckout() {
+    const amount = Number(document.getElementById('payAmount').value);
+    const name = document.getElementById('custName').value.trim();
+    const email = document.getElementById('custEmail').value.trim();
+    const contact = document.getElementById('custPhone').value.trim();
+
+    if (!amount || amount < 1) {
+      alert('Please enter a valid amount of at least ₹1.00');
+      return;
+    }
+
+    const resBox = document.getElementById('resultBox');
+    const resHeader = document.getElementById('resultHeader');
+    const resDetails = document.getElementById('resultDetails');
+    resBox.style.display = 'none';
+
+    // Launch Standard Checkout via helper
+    RazorpayCheckout.pay({
+      amount: amount,
+      currency: 'INR',
+      name: 'MedInVedic Healthcare',
+      description: 'Order & Consultation Payment',
+      prefill: { name, email, contact },
+      onSuccess: function(res) {
+        resBox.className = 'result-box success';
+        resBox.style.display = 'block';
+        resHeader.innerHTML = '🎉 Payment Verified Successfully!';
+        resDetails.innerHTML = `
+          <strong>Payment ID:</strong> ${res.payment_id}<br>
+          <strong>Order ID:</strong> ${res.order_id}<br>
+          <strong>Signature:</strong> ${res.signature}<br>
+          <strong>Amount:</strong> ₹${res.amount.toFixed(2)}<br>
+          <strong>Status:</strong> HMAC-SHA256 Validated
+        `;
+      },
+      onError: function(err) {
+        resBox.className = 'result-box error';
+        resBox.style.display = 'block';
+        resHeader.innerHTML = '❌ Payment or Verification Failed';
+        resDetails.innerHTML = `<strong>Error:</strong> ${err.message}`;
+      },
+      onDismiss: function() {
+        console.log('User closed the payment popup');
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
