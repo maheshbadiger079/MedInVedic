@@ -20,8 +20,8 @@ function createApp() {
   }
   const db = admin.firestore();
 
-  const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_MedInVedicKey123';
-  const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'MedInVedicSecretKey456';
+  const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || 'rzp_test_TWeYnZSNVtPrKQ';
+  const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'MM50c3joG1xAQepHCc3bQSHb';
   const RAZORPAY_WEBHOOK_SECRET = process.env.RAZORPAY_WEBHOOK_SECRET || 'MedInVedicWebhookSecret789';
   const JWT_SECRET = process.env.JWT_SECRET || 'medinvedic_jwt_production_secret_321';
 
