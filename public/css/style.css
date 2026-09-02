@@ -1,3 +1,17 @@
+
+/* ═══ UNIVERSAL SANS-SERIF FONT OVERRIDE (ELIMINATES MOBILE CURSIVE THEMES) ═══ */
+:root {
+  color-scheme: light !important;
+  --font: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  --font-display: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+*, *::before, *::after,
+html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+  font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-style: normal !important;
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
 
