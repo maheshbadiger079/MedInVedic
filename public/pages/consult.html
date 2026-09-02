@@ -30,23 +30,37 @@
   <script type="module" src="../js/auth-gate.js"></script>
   
   <style>
-    /* ── SIMPLE GRAY & BLACK MONOCHROME PALETTE ── */
+    /* ── SIMPLE WHITE COLOR & PEACE GREEN GLASSMORPHISM PALETTE ── */
     :root {
-      --bg-black: #09090b;
-      --bg-surface: #121215;
-      --bg-card: #18181b;
-      --border-gray: #27272a;
-      --border-light: #3f3f46;
-      --text-white: #ffffff;
-      --text-gray-100: #f4f4f5;
-      --text-gray-300: #d4d4d8;
-      --text-gray-400: #a1a1aa;
-      --text-gray-500: #71717a;
+      --bg-white: #f8faf8;
+      --bg-surface: rgba(255, 255, 255, 0.90);
+      --bg-card: rgba(255, 255, 255, 0.88);
+      --card-border: rgba(22, 101, 52, 0.12);
+      --border-gray: rgba(22, 101, 52, 0.12);
+      --border-light: rgba(34, 197, 94, 0.25);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --primary-subtle: #f0fdf4;
+      --accent: #15803d;
+      --text-main: #1a2e1a;
+      --text-muted: #52796f;
+      --text-white: #1a2e1a;
+      --text-gray-100: #1a2e1a;
+      --text-gray-300: #2d4a3e;
+      --text-gray-400: #52796f;
+      --text-gray-500: #719388;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
+      --gradient-subtle: linear-gradient(135deg, rgba(22, 101, 52, 0.08), rgba(34, 197, 94, 0.08));
+      --shadow-glass: 0 12px 36px rgba(22, 101, 52, 0.07);
     }
     
     body {
-      background: var(--bg-black);
-      color: var(--text-gray-100);
+      background: var(--bg-white);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.07) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.7) 0px, transparent 100%);
+      color: var(--text-main);
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       margin: 0;
       padding-bottom: 60px;
@@ -60,19 +74,24 @@
 
     /* ── NAVBAR ── */
     .navbar-gray {
-      background: #09090b;
-      border-bottom: 1px solid var(--border-gray);
-      padding: 14px 24px;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 14px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     /* ── HERO BANNER ── */
     .location-hero {
       text-align: center;
       padding: 48px 20px 32px;
-      background: radial-gradient(circle at center, rgba(39, 39, 42, 0.4) 0%, rgba(9, 9, 11, 0) 75%);
+      background: transparent;
     }
 
     .hero-title {
@@ -80,12 +99,12 @@
       font-weight: 900;
       letter-spacing: -0.5px;
       margin-bottom: 12px;
-      color: var(--text-white);
+      color: var(--text-main);
     }
 
     .hero-subtitle {
       font-size: 15px;
-      color: var(--text-gray-400);
+      color: var(--text-muted);
       max-width: 680px;
       margin: 0 auto 24px;
       line-height: 1.6;
@@ -99,44 +118,49 @@
     }
 
     .hero-pill-btn {
-      background: #18181b;
-      border: 1px solid var(--border-gray);
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
       border-radius: 100px;
       padding: 10px 22px;
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-gray-300);
+      color: var(--text-main);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
+      box-shadow: 0 2px 8px rgba(22, 101, 52, 0.04);
       transition: all 0.2s ease;
     }
     .hero-pill-btn:hover {
-      background: #27272a;
-      border-color: var(--border-light);
-      color: var(--text-white);
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+      color: var(--primary);
       transform: translateY(-1px);
     }
     .hero-pill-btn.primary {
-      background: #ffffff;
-      color: #09090b;
-      border-color: #ffffff;
+      background: var(--gradient);
+      color: #ffffff;
+      border: none;
       font-weight: 800;
+      box-shadow: 0 6px 18px rgba(22, 101, 52, 0.25);
     }
     .hero-pill-btn.primary:hover {
-      background: #e4e4e7;
-      color: #000000;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(22, 101, 52, 0.35);
     }
 
     /* ── RAG HEALTH ASSISTANT PANEL ── */
     .rag-discovery-panel {
       background: var(--bg-card);
-      border: 1px solid var(--border-gray);
-      border-radius: 20px;
-      padding: 26px 24px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 28px;
       margin: 20px 0 40px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      box-shadow: var(--shadow-glass);
+      position: relative;
     }
 
     .rag-badge-row {
@@ -149,9 +173,9 @@
     }
 
     .rag-status-chip {
-      background: #27272a;
-      border: 1px solid var(--border-light);
-      color: var(--text-gray-300);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
       font-size: 11px;
       font-weight: 800;
       padding: 6px 14px;
@@ -166,22 +190,24 @@
     .rag-search-box-wrapper {
       display: flex;
       gap: 10px;
-      background: #121215;
-      border: 1px solid var(--border-gray);
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
       border-radius: 100px;
       padding: 8px 10px 8px 18px;
       align-items: center;
-      transition: border-color 0.2s;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, 0.06);
+      transition: all 0.2s;
     }
     .rag-search-box-wrapper:focus-within {
-      border-color: var(--border-light);
+      border-color: var(--primary);
+      box-shadow: 0 6px 20px rgba(22, 101, 52, 0.12);
     }
 
     .rag-search-input {
       flex: 1;
       background: transparent;
       border: none;
-      color: var(--text-white);
+      color: var(--text-main);
       font-size: 14.5px;
       outline: none;
       font-family: inherit;
@@ -191,11 +217,11 @@
     }
 
     .rag-action-btn {
-      background: #27272a;
-      border: 1px solid var(--border-light);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
       border-radius: 50px;
       padding: 8px 16px;
-      color: var(--text-gray-300);
+      color: var(--primary);
       font-size: 12.5px;
       font-weight: 700;
       cursor: pointer;
@@ -205,18 +231,19 @@
       transition: all 0.2s;
     }
     .rag-action-btn:hover {
-      background: #3f3f46;
-      color: var(--text-white);
+      background: rgba(34, 197, 94, 0.2);
     }
     .rag-action-btn.submit {
-      background: #ffffff;
-      color: #09090b;
+      background: var(--gradient);
+      color: #ffffff;
       border: none;
       padding: 10px 22px;
       font-weight: 800;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
     }
     .rag-action-btn.submit:hover {
-      background: #e4e4e7;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(22, 101, 52, 0.35);
     }
 
     .quick-queries-row {
@@ -228,36 +255,37 @@
       scrollbar-width: none;
     }
     .quick-query-pill {
-      background: #121215;
-      border: 1px solid var(--border-gray);
+      background: #ffffff;
+      border: 1px solid var(--card-border);
       border-radius: 50px;
-      padding: 6px 14px;
-      font-size: 12px;
-      color: var(--text-gray-400);
+      padding: 7px 16px;
+      font-size: 12.5px;
+      color: var(--text-muted);
       cursor: pointer;
       white-space: nowrap;
       transition: all 0.2s;
     }
     .quick-query-pill:hover {
-      background: #27272a;
-      border-color: var(--border-light);
-      color: var(--text-white);
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+      color: var(--primary);
     }
 
     /* ── RAG LIVE RESULT CARD ── */
     .rag-result-container {
       margin-top: 24px;
-      border-top: 1px solid var(--border-gray);
+      border-top: 1px solid var(--card-border);
       padding-top: 20px;
       display: none;
     }
 
     .rag-result-card {
-      background: #121215;
-      border: 1px solid var(--border-gray);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
       padding: 24px;
       margin-bottom: 20px;
+      box-shadow: var(--shadow-glass);
     }
 
     .rag-meta-header {
@@ -265,27 +293,27 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 16px;
-      border-bottom: 1px solid var(--border-gray);
+      border-bottom: 1px solid var(--card-border);
       padding-bottom: 12px;
       flex-wrap: wrap;
       gap: 10px;
     }
 
     .evidence-tier-badge {
-      background: #27272a;
-      color: var(--text-gray-300);
+      background: var(--primary-subtle);
+      color: var(--primary);
       font-size: 11px;
       font-weight: 800;
       padding: 4px 12px;
       border-radius: 6px;
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--card-border);
       text-transform: uppercase;
     }
 
     .rag-section-title {
       font-size: 13.5px;
       font-weight: 800;
-      color: var(--text-white);
+      color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin: 16px 0 8px;
@@ -295,12 +323,12 @@
     }
 
     .rag-source-chip {
-      background: #18181b;
-      border: 1px solid var(--border-gray);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 8px 12px;
       font-size: 12px;
-      color: var(--text-gray-300);
+      color: var(--text-main);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -313,50 +341,52 @@
       margin-bottom: 20px;
     }
     .map-section-header h2 {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text-white);
+      font-size: 26px;
+      font-weight: 900;
+      color: var(--text-main);
       margin: 0 0 6px;
     }
     .map-section-header p {
-      color: var(--text-gray-400);
-      font-size: 13.5px;
+      color: var(--text-muted);
+      font-size: 14px;
       margin: 0;
     }
 
     #map {
-      height: 360px;
+      height: 380px;
       width: 100%;
-      border-radius: 16px;
-      border: 1px solid var(--border-gray);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      border-radius: 20px;
+      border: 1.5px solid var(--card-border);
+      box-shadow: var(--shadow-glass);
       z-index: 10;
-      filter: grayscale(85%) contrast(105%) brightness(85%);
+      filter: none;
     }
 
     /* ── SPECIALTY & SCOPE FILTER CHIPS ── */
     .spec-chip {
       padding: 9px 20px;
-      background: #18181b;
-      border: 1px solid var(--border-gray);
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
       border-radius: 100px;
-      color: var(--text-gray-400);
+      color: var(--text-muted);
       font-size: 12.5px;
       font-weight: 700;
       white-space: nowrap;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(22, 101, 52, 0.04);
       transition: all 0.2s;
     }
     .spec-chip:hover {
-      background: #27272a;
-      border-color: var(--border-light);
-      color: var(--text-white);
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+      color: var(--primary);
     }
     .spec-chip.active {
-      background: #ffffff;
-      color: #09090b;
-      border-color: #ffffff;
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
       font-weight: 800;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
     }
 
     /* ── DOCTOR CARDS GRID ── */
@@ -369,28 +399,31 @@
 
     .doctor-card {
       background: var(--bg-card);
-      border: 1px solid var(--border-gray);
-      border-radius: 18px;
-      padding: 22px 18px;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.2s ease;
       position: relative;
+      box-shadow: var(--shadow-glass);
     }
     .doctor-card:hover {
-      border-color: var(--border-light);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.3);
+      border-color: var(--primary-light);
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(22, 101, 52, 0.1);
     }
 
     .doc-verified-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      background: #27272a;
-      border: 1px solid var(--border-light);
-      color: var(--text-gray-300);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
       font-size: 10px;
       font-weight: 800;
       padding: 4px 10px;
@@ -409,37 +442,37 @@
       width: 52px;
       height: 52px;
       border-radius: 50%;
-      border: 1px solid var(--border-light);
-      background: #27272a;
+      border: 2px solid var(--primary-light);
+      background: var(--primary-subtle);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 22px;
+      font-size: 24px;
       flex-shrink: 0;
     }
     .doc-name {
       font-size: 16.5px;
       font-weight: 800;
-      color: var(--text-white);
+      color: var(--text-main);
       margin: 0 0 2px;
     }
     .doc-degree {
       font-size: 11.5px;
-      color: var(--text-gray-400);
+      color: var(--text-muted);
       margin: 0;
       line-height: 1.4;
     }
 
     .doc-specialty-pill {
-      background: #27272a;
-      color: var(--text-gray-300);
+      background: var(--primary-subtle);
+      color: var(--primary);
       font-size: 11px;
       font-weight: 700;
       padding: 4px 10px;
       border-radius: 6px;
       display: inline-block;
       margin-bottom: 12px;
-      border: 1px solid var(--border-gray);
+      border: 1px solid var(--card-border);
     }
 
     .doc-meta-list {
@@ -447,10 +480,10 @@
       flex-direction: column;
       gap: 6px;
       font-size: 12px;
-      color: var(--text-gray-300);
+      color: var(--text-muted);
       margin: 12px 0 16px;
       padding-top: 12px;
-      border-top: 1px solid var(--border-gray);
+      border-top: 1px solid var(--card-border);
     }
     .doc-meta-item {
       display: flex;
@@ -466,13 +499,13 @@
       padding-top: 8px;
     }
     .doc-fee {
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 900;
-      color: var(--text-white);
+      color: var(--primary);
     }
     .doc-fee span {
       font-size: 11.5px;
-      color: var(--text-gray-500);
+      color: var(--text-muted);
       text-decoration: line-through;
       margin-left: 4px;
     }
@@ -499,20 +532,23 @@
       gap: 6px;
     }
     .doc-btn.primary {
-      background: #ffffff;
-      color: #09090b;
+      background: var(--gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
     }
     .doc-btn.primary:hover {
-      background: #e4e4e7;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(22, 101, 52, 0.3);
     }
     .doc-btn.secondary {
-      background: #27272a;
-      color: var(--text-gray-300);
-      border: 1px solid var(--border-light);
+      background: #ffffff;
+      color: var(--text-main);
+      border: 1.5px solid var(--card-border);
     }
     .doc-btn.secondary:hover {
-      background: #3f3f46;
-      color: var(--text-white);
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+      color: var(--primary);
     }
 
     /* ── ADVANCED FILTER PANEL ── */
@@ -521,17 +557,19 @@
       grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 16px;
       background: var(--bg-card);
-      border: 1px solid var(--border-gray);
-      border-radius: 18px;
-      padding: 20px;
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 22px;
       margin: 20px 0 32px;
       align-items: flex-end;
+      box-shadow: var(--shadow-glass);
     }
     .filter-item label {
       display: block;
-      font-size: 10.5px;
+      font-size: 11px;
       font-weight: 800;
-      color: var(--text-gray-400);
+      color: var(--primary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
       margin-bottom: 6px;
@@ -539,10 +577,10 @@
     .filter-item select {
       width: 100%;
       padding: 10px 14px;
-      background: #121215;
-      border: 1px solid var(--border-gray);
-      border-radius: 8px;
-      color: var(--text-white);
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 10px;
+      color: var(--text-main);
       font-size: 13.5px;
       outline: none;
       cursor: pointer;
@@ -550,33 +588,33 @@
 
     /* ── MEDICAL DISCLAIMER FOOTER ── */
     .safety-disclaimer-card {
-      background: #121215;
-      border: 1px solid var(--border-gray);
-      border-radius: 16px;
-      padding: 20px;
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px;
       margin: 48px 0 20px;
       text-align: center;
     }
     .safety-disclaimer-card h4 {
       margin: 0 0 6px;
-      color: var(--text-white);
-      font-size: 13.5px;
+      color: var(--primary);
+      font-size: 14px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
     .safety-disclaimer-card p {
       margin: 0;
-      color: var(--text-gray-400);
-      font-size: 12.5px;
-      line-height: 1.5;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.6;
     }
 
     /* ── MODAL BOX OVERRIDES ── */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(26, 46, 26, 0.45);
       backdrop-filter: blur(8px);
       display: none;
       align-items: center;
@@ -588,24 +626,26 @@
       display: flex;
     }
     .modal-card {
-      background: #121215;
-      border: 1px solid var(--border-gray);
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(28px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
       width: 100%;
       max-width: 500px;
       padding: 30px 24px;
       position: relative;
       max-height: 90vh;
       overflow-y: auto;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+      box-shadow: 0 20px 60px rgba(22, 101, 52, 0.15);
+      color: var(--text-main);
     }
     .modal-close-btn {
       position: absolute;
       top: 18px;
       right: 18px;
-      background: #27272a;
-      border: 1px solid var(--border-gray);
-      color: var(--text-gray-300);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
       font-size: 15px;
       width: 32px;
       height: 32px;
@@ -616,8 +656,7 @@
       justify-content: center;
     }
     .modal-close-btn:hover {
-      background: #3f3f46;
-      color: var(--text-white);
+      background: rgba(34, 197, 94, 0.2);
     }
   </style>
 </head>
@@ -626,17 +665,17 @@
 <!-- NAVBAR -->
 <nav class="navbar-gray">
   <a class="nav-logo" href="../index.html" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
-    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:34px;width:34px;object-fit:contain;border-radius:50%;">
-    <span class="nav-logo-text" style="font-size: 19px; font-weight: 900; color: white;">MedInVedic</span>
+    <div style="width: 38px; height: 38px; background: var(--gradient); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: #fff; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);">🌿</div>
+    <span class="nav-logo-text" style="font-size: 19px; font-weight: 900; color: var(--primary);">MedInVedic</span>
   </a>
   
   <div style="display: flex; align-items: center; gap: 14px;">
-    <div class="rag-status-chip" style="font-size: 10.5px;">
-      <span style="display:inline-block; width:7px; height:7px; background:#a1a1aa; border-radius:50%;"></span>
+    <div class="rag-status-chip" style="font-size: 11px;">
+      <span style="display:inline-block; width:7px; height:7px; background:var(--primary-light); border-radius:50%;"></span>
       RAG 2.5 Active · Grounded
     </div>
     
-    <button onclick="toggleSidebar()" style="background: #18181b; border: 1px solid var(--border-gray); color: white; padding: 7px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700;">
+    <button onclick="toggleSidebar()" style="background: #ffffff; border: 1.5px solid var(--card-border); color: var(--primary); padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 13px; font-weight: 700; box-shadow: 0 2px 6px rgba(22, 101, 52, 0.05);">
       ☰ Menu
     </button>
   </div>
@@ -767,7 +806,7 @@
 
     <!-- Discovery Scope Matrix -->
     <div style="display: flex; justify-content: center; margin-top: 16px;">
-      <div style="background: #18181b; padding: 4px; border-radius: 100px; border: 1px solid var(--border-gray); display: inline-flex;">
+      <div style="background: rgba(255, 255, 255, 0.92); padding: 4px; border-radius: 100px; border: 1px solid var(--border-gray); display: inline-flex;">
         <button class="spec-chip active" id="modeNearby" onclick="setScope('nearby', this)" style="padding: 6px 16px; font-size: 11px;">Nearby</button>
         <button class="spec-chip" id="modeIndia" onclick="setScope('india', this)" style="padding: 6px 16px; font-size: 11px;">India</button>
         <button class="spec-chip" id="modeGlobal" onclick="setScope('global', this)" style="padding: 6px 16px; font-size: 11px;">Global 🌍</button>
@@ -809,7 +848,7 @@
       </select>
     </div>
     <div class="filter-item">
-      <button onclick="openDoctorOnboardingModal()" style="width: 100%; padding: 11px; background: #27272a; border: 1px solid var(--border-light); border-radius: 8px; color: white; font-weight: 800; font-size: 12.5px; cursor: pointer;">
+      <button onclick="openDoctorOnboardingModal()" style="width: 100%; padding: 11px; background: var(--primary-subtle); border: 1px solid var(--border-light); border-radius: 8px; color: var(--text-main); font-weight: 800; font-size: 12.5px; cursor: pointer;">
         Join as Doctor ⚕️
       </button>
     </div>
@@ -849,21 +888,21 @@
     <div style="display: flex; flex-direction: column; gap: 14px;">
       <div>
         <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Patient Full Name *</label>
-        <input id="bk_patient_name" type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
+        <input id="bk_patient_name" type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
         <div>
           <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Age *</label>
-          <input id="bk_patient_age" type="number" placeholder="e.g. 28" min="1" max="120" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
+          <input id="bk_patient_age" type="number" placeholder="e.g. 28" min="1" max="120" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
         </div>
         <div>
           <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Mobile Number *</label>
-          <input id="bk_patient_phone" type="tel" placeholder="10-digit number" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
+          <input id="bk_patient_phone" type="tel" placeholder="10-digit number" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
         </div>
       </div>
       <div>
         <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Consultation Mode</label>
-        <select id="bk_consult_mode" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
+        <select id="bk_consult_mode" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
           <option value="Video Consultation">Online HD Video Consultation</option>
           <option value="In-Clinic Visit">In-Clinic Physical Visit</option>
           <option value="WhatsApp Medical Chat">WhatsApp Medical Chat</option>
@@ -871,7 +910,7 @@
       </div>
       <div>
         <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Primary Health Concern</label>
-        <textarea id="bk_concern" rows="2" placeholder="Describe symptoms or ongoing medications..." style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13.5px; margin-top: 4px; box-sizing: border-box; resize: none;"></textarea>
+        <textarea id="bk_concern" rows="2" placeholder="Describe symptoms or ongoing medications..." style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box; resize: none;"></textarea>
       </div>
 
       <button onclick="confirmBooking()" style="width: 100%; padding: 13px; background: #ffffff; border: none; border-radius: 8px; color: #09090b; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px;">
@@ -896,7 +935,7 @@
     <div style="display: flex; flex-direction: column; gap: 14px;">
       <div>
         <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Paste Diagnostic Lab Report Text</label>
-        <textarea id="labReportInput" rows="5" placeholder="e.g.&#10;Hemoglobin: 10.5 g/dL&#10;Fasting Blood Sugar: 142 mg/dL&#10;HbA1c: 7.1 %&#10;Serum Creatinine: 1.1 mg/dL" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
+        <textarea id="labReportInput" rows="5" placeholder="e.g.&#10;Hemoglobin: 10.5 g/dL&#10;Fasting Blood Sugar: 142 mg/dL&#10;HbA1c: 7.1 %&#10;Serum Creatinine: 1.1 mg/dL" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
       </div>
 
       <div style="display: flex; gap: 10px;">
@@ -908,7 +947,7 @@
         </button>
       </div>
 
-      <div id="labReportOutput" style="display: none; margin-top: 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 12px; padding: 16px;"></div>
+      <div id="labReportOutput" style="display: none; margin-top: 14px; background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 12px; padding: 16px;"></div>
     </div>
   </div>
 </div>
@@ -932,18 +971,18 @@
       </div>
     </div>
 
-    <div style="background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 12.5px;">
+    <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 12.5px;">
       <div style="font-weight: 700; color: var(--text-white); margin-bottom: 2px;">Doctor: Dr. Dhananjay Kelkar (MS General Surgery)</div>
       <div style="color: var(--text-gray-400); font-size: 11px;">Council Reg: MMC/1994/08/2918 · Clinic: Deenanath Mangeshkar Hospital</div>
     </div>
 
     <div style="font-size: 12.5px; line-height: 1.5; color: var(--text-gray-300);">
       <div style="font-weight: 800; color: var(--text-white); margin-bottom: 8px; text-transform: uppercase; font-size: 10.5px;">Prescribed Medications & Guidance:</div>
-      <div style="background: #18181b; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--text-white);">
+      <div style="background: rgba(255, 255, 255, 0.92); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--text-white);">
         <div style="font-weight: 700; color: var(--text-white);">1. Tab. Pantoprazole 40 mg</div>
         <div style="font-size: 11.5px; color: var(--text-gray-400);">1 Tablet once daily (OD) — 30 minutes before breakfast for 14 days.</div>
       </div>
-      <div style="background: #18181b; padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--border-light);">
+      <div style="background: rgba(255, 255, 255, 0.92); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--border-light);">
         <div style="font-weight: 700; color: var(--text-white);">2. Avipattikar Churna (Ayurvedic Rasayana)</div>
         <div style="font-size: 11.5px; color: var(--text-gray-400);">3 grams with lukewarm water after evening meals for digestive balance.</div>
       </div>
@@ -968,10 +1007,10 @@
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 12px;">
-      <input id="onb_name" type="text" placeholder="Full Doctor Name (e.g. Dr. Ramesh Patil)" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13px; box-sizing: border-box;">
-      <input id="onb_degree" type="text" placeholder="Medical Degrees (e.g. MBBS, MD, BAMS)" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13px; box-sizing: border-box;">
-      <input id="onb_council" type="text" placeholder="Registration Number & State Medical Council" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13px; box-sizing: border-box;">
-      <input id="onb_phone" type="tel" placeholder="Mobile / WhatsApp Number" style="width: 100%; padding: 11px 14px; background: #18181b; border: 1px solid var(--border-gray); border-radius: 8px; color: white; font-size: 13px; box-sizing: border-box;">
+      <input id="onb_name" type="text" placeholder="Full Doctor Name (e.g. Dr. Ramesh Patil)" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; box-sizing: border-box;">
+      <input id="onb_degree" type="text" placeholder="Medical Degrees (e.g. MBBS, MD, BAMS)" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; box-sizing: border-box;">
+      <input id="onb_council" type="text" placeholder="Registration Number & State Medical Council" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; box-sizing: border-box;">
+      <input id="onb_phone" type="tel" placeholder="Mobile / WhatsApp Number" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; box-sizing: border-box;">
       
       <button onclick="submitDoctorOnboarding()" style="width: 100%; padding: 12px; background: #ffffff; border: none; border-radius: 8px; color: #09090b; font-size: 13.5px; font-weight: 800; cursor: pointer; margin-top: 8px;">
         Submit Credentials for Verification 🛡️
@@ -1067,7 +1106,7 @@
 
     if (res.type === 'EMERGENCY_RISK') {
       box.innerHTML = `
-        <div class="rag-result-card" style="border-color: #7f1d1d; background: #18181b;">
+        <div class="rag-result-card" style="border-color: #7f1d1d; background: rgba(255, 255, 255, 0.92);">
           <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
             <span style="font-size: 20px;">🚨</span>
             <span style="font-size: 14px; font-weight: 900; color: #fca5a5; text-transform: uppercase;">CRITICAL EMERGENCY RISK DETECTED</span>
@@ -1080,7 +1119,7 @@
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
             ${res.emergencyContacts.map(c => `
-              <a href="tel:${c.phone}" style="background: #27272a; border: 1px solid var(--border-light); color: white; padding: 9px 16px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
+              <a href="tel:${c.phone}" style="background: var(--primary-subtle); border: 1px solid var(--border-light); color: var(--text-main); padding: 9px 16px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 12px; display: inline-flex; align-items: center; gap: 6px;">
                 📞 Call ${c.name} (${c.phone})
               </a>
             `).join('')}
@@ -1106,7 +1145,7 @@
           <div class="rag-section-title">👨‍⚕️ Suggested Verified Specialists</div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 8px;">
             ${res.suggestedDoctors.map(d => `
-              <div style="background: #18181b; border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; cursor: pointer;" onclick="openBookingModal('${d.id}')">
+              <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; cursor: pointer;" onclick="openBookingModal('${d.id}')">
                 <div style="font-weight: 700; color: #ffffff; font-size: 13px;">${d.name}</div>
                 <div style="font-size: 11.5px; color: var(--text-gray-400);">${d.specialty} · ${d.experienceYears} yrs exp</div>
                 <div style="font-size: 11px; color: var(--text-gray-300); margin-top: 4px; font-weight: 700;">Book Consultation (₹${d.fee}) ❯</div>
@@ -1124,7 +1163,7 @@
         <div class="rag-meta-header">
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <span class="evidence-tier-badge">${res.authorityTier}</span>
-            <span style="background: #27272a; color: var(--text-gray-300); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-gray);">
+            <span style="background: var(--primary-subtle); color: var(--text-gray-300); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-gray);">
               ✓ 100% Grounded
             </span>
           </div>
@@ -1149,7 +1188,7 @@
 
         ${res.ayurvedicParallel ? `
           <div class="rag-section-title" style="color: var(--text-gray-300);">🌿 Ayurvedic Perspective (Separated Wisdom)</div>
-          <div style="background: #18181b; border: 1px solid var(--border-gray); border-left: 3px solid var(--border-light); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 12.5px; color: var(--text-gray-300);">
+          <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-left: 3px solid var(--border-light); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 12.5px; color: var(--text-gray-300);">
             <p style="margin: 0 0 6px;"><strong>Classical Concept:</strong> ${res.ayurvedicParallel.concept}</p>
             <p style="margin: 0 0 6px;"><strong>Herbal Supplements:</strong> ${res.ayurvedicParallel.herbs.join(', ')}</p>
             <p style="margin: 0;"><strong>Lifestyle Advice:</strong> ${res.ayurvedicParallel.advice}</p>
@@ -1164,7 +1203,7 @@
         <div class="rag-section-title">👨‍⚕️ Matched Verified Specialists</div>
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; margin-bottom: 16px;">
           ${res.matchedDoctors.map(d => `
-            <div style="background: #18181b; border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;" onclick="openBookingModal('${d.id}')">
+            <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;" onclick="openBookingModal('${d.id}')">
               <div>
                 <div style="font-weight: 800; color: #ffffff; font-size: 13px;">${d.name}</div>
                 <div style="font-size: 11.5px; color: var(--text-gray-400);">${d.degree} · ${d.specialty}</div>
@@ -1281,10 +1320,10 @@
       </div>
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
         ${res.findings.map(f => `
-          <div style="background: #121215; border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px;">
+          <div style="background: rgba(240, 253, 244, 0.6); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
               <strong style="color: #ffffff; font-size: 13px;">${f.testName}</strong>
-              <span style="font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: #27272a; color: var(--text-gray-300); border: 1px solid var(--border-light);">
+              <span style="font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: var(--primary-subtle); color: var(--text-gray-300); border: 1px solid var(--border-light);">
                 ${f.status} (${f.value} ${f.unit})
               </span>
             </div>
