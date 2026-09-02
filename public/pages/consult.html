@@ -213,7 +213,7 @@
       font-family: inherit;
     }
     .rag-search-input::placeholder {
-      color: var(--text-gray-500);
+      color: #52796f;
     }
 
     .rag-action-btn {
@@ -397,20 +397,7 @@
       margin: 28px 0;
     }
 
-    .doctor-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 24px 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.2s ease;
-      position: relative;
-      box-shadow: var(--shadow-glass);
-    }
+    .doctor-card { background: rgba(255, 255, 255, 0.94); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1.5px solid rgba(22, 101, 52, 0.12); border-radius: 20px; padding: 22px 20px 24px; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s ease; position: relative; box-shadow: 0 10px 30px rgba(22, 101, 52, 0.06); min-height: 440px; box-sizing: border-box; }
     .doctor-card:hover {
       border-color: var(--primary-light);
       transform: translateY(-3px);
@@ -475,16 +462,7 @@
       border: 1px solid var(--card-border);
     }
 
-    .doc-meta-list {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      font-size: 12px;
-      color: var(--text-muted);
-      margin: 12px 0 16px;
-      padding-top: 12px;
-      border-top: 1px solid var(--card-border);
-    }
+    .doc-meta-list { display: flex; flex-direction: column; gap: 7px; font-size: 12.5px; color: #2d4a3e; margin: 12px 0 16px; padding-top: 12px; border-top: 1px solid rgba(22, 101, 52, 0.1); }
     .doc-meta-item {
       display: flex;
       align-items: center;
@@ -540,11 +518,7 @@
       transform: translateY(-1px);
       box-shadow: 0 8px 18px rgba(22, 101, 52, 0.3);
     }
-    .doc-btn.secondary {
-      background: #ffffff;
-      color: var(--text-main);
-      border: 1.5px solid var(--card-border);
-    }
+    .doc-btn.secondary { background: #ffffff; color: #166534; border: 1.5px solid #166534; font-weight: 800; } .doc-btn.secondary:hover { background: #f0fdf4; border-color: #22c55e; color: #166534; }
     .doc-btn.secondary:hover {
       background: var(--primary-subtle);
       border-color: var(--primary-light);
@@ -729,16 +703,16 @@
     <div class="rag-badge-row">
       <div style="display: flex; align-items: center; gap: 8px;">
         <span style="font-size: 18px;">🤖</span>
-        <span style="font-weight: 800; font-size: 15px; color: var(--text-white);">RAG Health Assistant & Doctor Discovery</span>
+        <span style="font-weight: 800; font-size: 15px; color: #1a2e1a;">RAG Health Assistant & Doctor Discovery</span>
       </div>
-      <div style="font-size: 12px; color: var(--text-gray-400);">
+      <div style="font-size: 12px; color: #4b6358;">
         Grounded in WHO, ICMR, CDSCO & MoHFW Clinical Guidelines
       </div>
     </div>
 
     <!-- Search input row -->
     <div class="rag-search-box-wrapper">
-      <span style="color: var(--text-gray-400); font-size: 16px;">🔍</span>
+      <span style="color: #4b6358; font-size: 16px;">🔍</span>
       <input type="text" id="ragQueryInput" class="rag-search-input" 
              placeholder="Ask a health question or describe symptoms (e.g. 'I have persistent knee pain, need a Kannada doctor')..." 
              onkeydown="if(event.key==='Enter') executeRAGQuery()">
@@ -783,7 +757,7 @@
   <div style="margin-top: 40px;">
     <div style="max-width: 650px; margin: 0 auto 24px; position: relative;">
       <div class="rag-search-box-wrapper">
-        <span style="color: var(--text-gray-400); font-size: 16px;">🔍</span>
+        <span style="color: #4b6358; font-size: 16px;">🔍</span>
         <input type="text" id="locSearchInput" class="rag-search-input" placeholder="Search Location, Specialty, or Doctor..." onkeyup="filterByKeyword(this.value)">
         <button onclick="useMyLocation()" class="rag-action-btn" title="Pinpoint GPS Location">📍 GPS</button>
       </div>
@@ -791,7 +765,7 @@
 
     <!-- Specialty Chips -->
     <div style="text-align: center; margin-bottom: 12px;">
-      <span style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-500); text-transform: uppercase; letter-spacing: 1.5px;">Curated Medical Specializations</span>
+      <span style="font-size: 10.5px; font-weight: 800; color: #52796f; text-transform: uppercase; letter-spacing: 1.5px;">Curated Medical Specializations</span>
     </div>
     <div style="display: flex; gap: 8px; overflow-x: auto; padding: 6px 0; justify-content: center; scrollbar-width: none;" id="specialtyChips">
       <button class="spec-chip active" onclick="filterDoctorsBySpecialty('all', this)">All Specialists</button>
@@ -881,27 +855,27 @@
     <button class="modal-close-btn" onclick="closeModal('bookingModal')">✕</button>
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="font-size: 28px; margin-bottom: 6px;">📋</div>
-      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: var(--text-white);">Book Doctor Consultation</h3>
-      <p id="modalDocTitle" style="font-size: 12.5px; color: var(--text-gray-400); font-weight: 700; margin: 0;"></p>
+      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: #1a2e1a;">Book Doctor Consultation</h3>
+      <p id="modalDocTitle" style="font-size: 12.5px; color: #4b6358; font-weight: 700; margin: 0;"></p>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 14px;">
       <div>
-        <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Patient Full Name *</label>
+        <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Patient Full Name *</label>
         <input id="bk_patient_name" type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
         <div>
-          <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Age *</label>
+          <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Age *</label>
           <input id="bk_patient_age" type="number" placeholder="e.g. 28" min="1" max="120" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
         </div>
         <div>
-          <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Mobile Number *</label>
+          <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Mobile Number *</label>
           <input id="bk_patient_phone" type="tel" placeholder="10-digit number" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
         </div>
       </div>
       <div>
-        <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Consultation Mode</label>
+        <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Consultation Mode</label>
         <select id="bk_consult_mode" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box;">
           <option value="Video Consultation">Online HD Video Consultation</option>
           <option value="In-Clinic Visit">In-Clinic Physical Visit</option>
@@ -909,7 +883,7 @@
         </select>
       </div>
       <div>
-        <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Primary Health Concern</label>
+        <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Primary Health Concern</label>
         <textarea id="bk_concern" rows="2" placeholder="Describe symptoms or ongoing medications..." style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13.5px; margin-top: 4px; box-sizing: border-box; resize: none;"></textarea>
       </div>
 
@@ -928,13 +902,13 @@
     <button class="modal-close-btn" onclick="closeModal('labReportModal')">✕</button>
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="font-size: 28px; margin-bottom: 6px;">🧪</div>
-      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: var(--text-white);">Medical Document & Lab Report RAG Decoder</h3>
-      <p style="font-size: 12.5px; color: var(--text-gray-400); margin: 0;">De-jargonize test parameters against Tier 1 standard reference intervals.</p>
+      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: #1a2e1a;">Medical Document & Lab Report RAG Decoder</h3>
+      <p style="font-size: 12.5px; color: #4b6358; margin: 0;">De-jargonize test parameters against Tier 1 standard reference intervals.</p>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 14px;">
       <div>
-        <label style="font-size: 10.5px; font-weight: 800; color: var(--text-gray-400); text-transform: uppercase;">Paste Diagnostic Lab Report Text</label>
+        <label style="font-size: 10.5px; font-weight: 800; color: #4b6358; text-transform: uppercase;">Paste Diagnostic Lab Report Text</label>
         <textarea id="labReportInput" rows="5" placeholder="e.g.&#10;Hemoglobin: 10.5 g/dL&#10;Fasting Blood Sugar: 142 mg/dL&#10;HbA1c: 7.1 %&#10;Serum Creatinine: 1.1 mg/dL" style="width: 100%; padding: 11px 14px; background: #ffffff; border: 1.5px solid var(--card-border); border-radius: 10px; color: var(--text-main); font-size: 13px; font-family: monospace; box-sizing: border-box; resize: vertical;"></textarea>
       </div>
 
@@ -961,10 +935,10 @@
     <div style="border-bottom: 1px solid var(--border-gray); padding-bottom: 14px; margin-bottom: 14px;">
       <div style="display: flex; justify-content: space-between; align-items: flex-start;">
         <div>
-          <h3 style="font-size: 17px; font-weight: 900; margin: 0; color: var(--text-white);">MedInVedic Digital Rx</h3>
-          <p style="font-size: 11px; color: var(--text-gray-400); font-weight: 700; margin: 2px 0 0;">✓ Verified Electronic Prescription</p>
+          <h3 style="font-size: 17px; font-weight: 900; margin: 0; color: #1a2e1a;">MedInVedic Digital Rx</h3>
+          <p style="font-size: 11px; color: #4b6358; font-weight: 700; margin: 2px 0 0;">✓ Verified Electronic Prescription</p>
         </div>
-        <div style="text-align: right; font-size: 11px; color: var(--text-gray-500);">
+        <div style="text-align: right; font-size: 11px; color: #52796f;">
           <div>Rx ID: #MV-2026-9812</div>
           <div>Date: 27 Aug 2026</div>
         </div>
@@ -972,19 +946,19 @@
     </div>
 
     <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 8px; padding: 12px; margin-bottom: 14px; font-size: 12.5px;">
-      <div style="font-weight: 700; color: var(--text-white); margin-bottom: 2px;">Doctor: Dr. Dhananjay Kelkar (MS General Surgery)</div>
-      <div style="color: var(--text-gray-400); font-size: 11px;">Council Reg: MMC/1994/08/2918 · Clinic: Deenanath Mangeshkar Hospital</div>
+      <div style="font-weight: 700; color: #1a2e1a; margin-bottom: 2px;">Doctor: Dr. Dhananjay Kelkar (MS General Surgery)</div>
+      <div style="color: #4b6358; font-size: 11px;">Council Reg: MMC/1994/08/2918 · Clinic: Deenanath Mangeshkar Hospital</div>
     </div>
 
-    <div style="font-size: 12.5px; line-height: 1.5; color: var(--text-gray-300);">
-      <div style="font-weight: 800; color: var(--text-white); margin-bottom: 8px; text-transform: uppercase; font-size: 10.5px;">Prescribed Medications & Guidance:</div>
+    <div style="font-size: 12.5px; line-height: 1.5; color: #2d4a3e;">
+      <div style="font-weight: 800; color: #1a2e1a; margin-bottom: 8px; text-transform: uppercase; font-size: 10.5px;">Prescribed Medications & Guidance:</div>
       <div style="background: rgba(255, 255, 255, 0.92); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--text-white);">
-        <div style="font-weight: 700; color: var(--text-white);">1. Tab. Pantoprazole 40 mg</div>
-        <div style="font-size: 11.5px; color: var(--text-gray-400);">1 Tablet once daily (OD) — 30 minutes before breakfast for 14 days.</div>
+        <div style="font-weight: 700; color: #1a2e1a;">1. Tab. Pantoprazole 40 mg</div>
+        <div style="font-size: 11.5px; color: #4b6358;">1 Tablet once daily (OD) — 30 minutes before breakfast for 14 days.</div>
       </div>
       <div style="background: rgba(255, 255, 255, 0.92); padding: 10px 12px; border-radius: 8px; margin-bottom: 8px; border-left: 3px solid var(--border-light);">
-        <div style="font-weight: 700; color: var(--text-white);">2. Avipattikar Churna (Ayurvedic Rasayana)</div>
-        <div style="font-size: 11.5px; color: var(--text-gray-400);">3 grams with lukewarm water after evening meals for digestive balance.</div>
+        <div style="font-weight: 700; color: #1a2e1a;">2. Avipattikar Churna (Ayurvedic Rasayana)</div>
+        <div style="font-size: 11.5px; color: #4b6358;">3 grams with lukewarm water after evening meals for digestive balance.</div>
       </div>
     </div>
 
@@ -1002,8 +976,8 @@
     <button class="modal-close-btn" onclick="closeModal('onboardingModal')">✕</button>
     <div style="text-align: center; margin-bottom: 20px;">
       <div style="font-size: 28px; margin-bottom: 6px;">⚕️</div>
-      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: var(--text-white);">Join Verified Doctor Network</h3>
-      <p style="font-size: 12.5px; color: var(--text-gray-400); margin: 0;">Connect with patients globally through our RAG-powered healthcare network.</p>
+      <h3 style="font-size: 19px; font-weight: 800; margin: 0 0 4px; color: #1a2e1a;">Join Verified Doctor Network</h3>
+      <p style="font-size: 12.5px; color: #4b6358; margin: 0;">Connect with patients globally through our RAG-powered healthcare network.</p>
     </div>
 
     <div style="display: flex; flex-direction: column; gap: 12px;">
@@ -1079,7 +1053,7 @@
     if (!box) return;
     box.style.display = 'block';
     box.innerHTML = `
-      <div style="text-align: center; padding: 24px; color: var(--text-gray-400);">
+      <div style="text-align: center; padding: 24px; color: #4b6358;">
         <div style="font-size: 24px; margin-bottom: 8px;">⏳</div>
         <div style="font-size: 13.5px;">Retrieving trusted clinical guidelines and verifying evidence grounding...</div>
       </div>
@@ -1111,10 +1085,10 @@
             <span style="font-size: 20px;">🚨</span>
             <span style="font-size: 14px; font-weight: 900; color: #fca5a5; text-transform: uppercase;">CRITICAL EMERGENCY RISK DETECTED</span>
           </div>
-          <div style="font-size: 14.5px; font-weight: 700; color: #ffffff; line-height: 1.5; margin-bottom: 14px;">
+          <div style="font-size: 14.5px; font-weight: 700; color: #1a2e1a; line-height: 1.5; margin-bottom: 14px;">
             ${res.shortAnswer}
           </div>
-          <div style="font-size: 12.5px; color: var(--text-gray-300); margin-bottom: 16px;">
+          <div style="font-size: 12.5px; color: #2d4a3e; margin-bottom: 16px;">
             <strong>Detected Reason:</strong> ${res.reason}
           </div>
           <div style="display: flex; gap: 10px; flex-wrap: wrap;">
@@ -1136,19 +1110,19 @@
             <span class="evidence-tier-badge">
               ⚠️ Insufficient Evidence Policy
             </span>
-            <span style="font-size: 11px; color: var(--text-gray-400);">Anti-Hallucination Safe Mode</span>
+            <span style="font-size: 11px; color: #4b6358;">Anti-Hallucination Safe Mode</span>
           </div>
-          <div style="font-size: 14.5px; color: var(--text-white); line-height: 1.6; margin-bottom: 12px;">
+          <div style="font-size: 14.5px; color: #1a2e1a; line-height: 1.6; margin-bottom: 12px;">
             ${res.shortAnswer}
           </div>
-          <p style="font-size: 12.5px; color: var(--text-gray-400); margin-bottom: 16px;">${res.recommendation}</p>
+          <p style="font-size: 12.5px; color: #4b6358; margin-bottom: 16px;">${res.recommendation}</p>
           <div class="rag-section-title">👨‍⚕️ Suggested Verified Specialists</div>
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 8px;">
             ${res.suggestedDoctors.map(d => `
               <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; cursor: pointer;" onclick="openBookingModal('${d.id}')">
-                <div style="font-weight: 700; color: #ffffff; font-size: 13px;">${d.name}</div>
-                <div style="font-size: 11.5px; color: var(--text-gray-400);">${d.specialty} · ${d.experienceYears} yrs exp</div>
-                <div style="font-size: 11px; color: var(--text-gray-300); margin-top: 4px; font-weight: 700;">Book Consultation (₹${d.fee}) ❯</div>
+                <div style="font-weight: 700; color: #1a2e1a; font-size: 13px;">${d.name}</div>
+                <div style="font-size: 11.5px; color: #4b6358;">${d.specialty} · ${d.experienceYears} yrs exp</div>
+                <div style="font-size: 11px; color: #2d4a3e; margin-top: 4px; font-weight: 700;">Book Consultation (₹${d.fee}) ❯</div>
               </div>
             `).join('')}
           </div>
@@ -1163,32 +1137,32 @@
         <div class="rag-meta-header">
           <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
             <span class="evidence-tier-badge">${res.authorityTier}</span>
-            <span style="background: var(--primary-subtle); color: var(--text-gray-300); font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-gray);">
+            <span style="background: var(--primary-subtle); color: #2d4a3e; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border-gray);">
               ✓ 100% Grounded
             </span>
           </div>
-          <div style="font-size: 11px; color: var(--text-gray-500);">
+          <div style="font-size: 11px; color: #52796f;">
             Reviewed: ${res.lastReviewed}
           </div>
         </div>
 
-        <div style="font-size: 15px; color: #ffffff; line-height: 1.6; margin-bottom: 14px; font-weight: 600;">
+        <div style="font-size: 15px; color: #1a2e1a; line-height: 1.6; margin-bottom: 14px; font-weight: 600;">
           ${res.shortAnswer}
         </div>
 
         <div class="rag-section-title">📚 What the Evidence Says</div>
-        <div style="font-size: 13px; color: var(--text-gray-300); line-height: 1.6; margin-bottom: 14px;">
+        <div style="font-size: 13px; color: #2d4a3e; line-height: 1.6; margin-bottom: 14px;">
           ${res.whatEvidenceSays}
         </div>
 
         <div class="rag-section-title">💡 Evidence-Based Self Care</div>
-        <ul style="margin: 0 0 14px; padding-left: 20px; color: var(--text-gray-300); font-size: 12.5px; line-height: 1.6;">
+        <ul style="margin: 0 0 14px; padding-left: 20px; color: #2d4a3e; font-size: 12.5px; line-height: 1.6;">
           ${res.whatYouCanDo.map(item => `<li>${item}</li>`).join('')}
         </ul>
 
         ${res.ayurvedicParallel ? `
-          <div class="rag-section-title" style="color: var(--text-gray-300);">🌿 Ayurvedic Perspective (Separated Wisdom)</div>
-          <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-left: 3px solid var(--border-light); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 12.5px; color: var(--text-gray-300);">
+          <div class="rag-section-title" style="color: #2d4a3e;">🌿 Ayurvedic Perspective (Separated Wisdom)</div>
+          <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-left: 3px solid var(--border-light); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 12.5px; color: #2d4a3e;">
             <p style="margin: 0 0 6px;"><strong>Classical Concept:</strong> ${res.ayurvedicParallel.concept}</p>
             <p style="margin: 0 0 6px;"><strong>Herbal Supplements:</strong> ${res.ayurvedicParallel.herbs.join(', ')}</p>
             <p style="margin: 0;"><strong>Lifestyle Advice:</strong> ${res.ayurvedicParallel.advice}</p>
@@ -1196,7 +1170,7 @@
         ` : ''}
 
         <div class="rag-section-title" style="color: #d4d4d8;">⚠️ When to Seek Medical Evaluation</div>
-        <div style="font-size: 12.5px; color: var(--text-gray-400); line-height: 1.5; margin-bottom: 16px;">
+        <div style="font-size: 12.5px; color: #4b6358; line-height: 1.5; margin-bottom: 16px;">
           ${res.whenToSeekCare}
         </div>
 
@@ -1205,24 +1179,24 @@
           ${res.matchedDoctors.map(d => `
             <div style="background: rgba(255, 255, 255, 0.92); border: 1px solid var(--border-gray); border-radius: 10px; padding: 12px; display: flex; flex-direction: column; justify-content: space-between;" onclick="openBookingModal('${d.id}')">
               <div>
-                <div style="font-weight: 800; color: #ffffff; font-size: 13px;">${d.name}</div>
-                <div style="font-size: 11.5px; color: var(--text-gray-400);">${d.degree} · ${d.specialty}</div>
-                <div style="font-size: 11px; color: var(--text-gray-500); margin-top: 4px;">📍 ${d.clinic}, ${d.city}</div>
+                <div style="font-weight: 800; color: #1a2e1a; font-size: 13px;">${d.name}</div>
+                <div style="font-size: 11.5px; color: #4b6358;">${d.degree} · ${d.specialty}</div>
+                <div style="font-size: 11px; color: #52796f; margin-top: 4px;">📍 ${d.clinic}, ${d.city}</div>
               </div>
               <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--border-gray);">
-                <span style="font-weight: 800; color: var(--text-white); font-size: 13px;">₹${d.fee}</span>
-                <span style="font-size: 11px; color: var(--text-gray-300); font-weight: 700;">Book Now ❯</span>
+                <span style="font-weight: 800; color: #1a2e1a; font-size: 13px;">₹${d.fee}</span>
+                <span style="font-size: 11px; color: #2d4a3e; font-weight: 700;">Book Now ❯</span>
               </div>
             </div>
           `).join('')}
         </div>
 
-        <div class="rag-section-title" style="font-size: 11.5px; color: var(--text-gray-500);">📖 Verified Source Citations</div>
+        <div class="rag-section-title" style="font-size: 11.5px; color: #52796f;">📖 Verified Source Citations</div>
         <div>
           ${res.sources.map((s, idx) => `
             <div class="rag-source-chip">
               <span>[${idx + 1}] <strong>${s.title}</strong> (${s.org}, ${s.year})</span>
-              <a href="${s.url}" target="_blank" rel="noopener" style="color: var(--text-white); text-decoration: none; font-weight: 700; font-size: 11px;">Verify Source ↗</a>
+              <a href="${s.url}" target="_blank" rel="noopener" style="color: #1a2e1a; text-decoration: none; font-weight: 700; font-size: 11px;">Verify Source ↗</a>
             </div>
           `).join('')}
         </div>
@@ -1310,32 +1284,32 @@
     out.style.display = 'block';
 
     if (!res.found) {
-      out.innerHTML = `<div style="color: var(--text-gray-400); font-size: 13px;">${res.message}</div>`;
+      out.innerHTML = `<div style="color: #4b6358; font-size: 13px;">${res.message}</div>`;
       return;
     }
 
     out.innerHTML = `
-      <div style="font-weight: 800; color: var(--text-white); font-size: 13.5px; margin-bottom: 10px;">
+      <div style="font-weight: 800; color: #1a2e1a; font-size: 13.5px; margin-bottom: 10px;">
         🧪 De-jargonized Findings (${res.findingsCount} Parameters Analyzed)
       </div>
       <div style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px;">
         ${res.findings.map(f => `
           <div style="background: rgba(240, 253, 244, 0.6); border: 1px solid var(--border-gray); border-radius: 8px; padding: 10px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <strong style="color: #ffffff; font-size: 13px;">${f.testName}</strong>
-              <span style="font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: var(--primary-subtle); color: var(--text-gray-300); border: 1px solid var(--border-light);">
+              <strong style="color: #1a2e1a; font-size: 13px;">${f.testName}</strong>
+              <span style="font-size: 10.5px; font-weight: 800; padding: 2px 8px; border-radius: 4px; background: var(--primary-subtle); color: #2d4a3e; border: 1px solid var(--border-light);">
                 ${f.status} (${f.value} ${f.unit})
               </span>
             </div>
-            <div style="font-size: 11px; color: var(--text-gray-500); margin: 4px 0 2px;">Standard Reference Range: ${f.referenceRange}</div>
-            <div style="font-size: 12px; color: var(--text-gray-400);">${f.generalMeaning}</div>
+            <div style="font-size: 11px; color: #52796f; margin: 4px 0 2px;">Standard Reference Range: ${f.referenceRange}</div>
+            <div style="font-size: 12px; color: #4b6358;">${f.generalMeaning}</div>
           </div>
         `).join('')}
       </div>
-      <div style="font-weight: 800; color: var(--text-white); font-size: 12px; margin-bottom: 6px;">
+      <div style="font-weight: 800; color: #1a2e1a; font-size: 12px; margin-bottom: 6px;">
         ❓ Suggested Questions to Ask Your Doctor:
       </div>
-      <ul style="margin: 0; padding-left: 18px; color: var(--text-gray-400); font-size: 12px; line-height: 1.5;">
+      <ul style="margin: 0; padding-left: 18px; color: #4b6358; font-size: 12px; line-height: 1.5;">
         ${res.questionsToAskDoctor.map(q => `<li>${q}</li>`).join('')}
       </ul>
     `;
@@ -1348,9 +1322,9 @@
 
     if (doctors.length === 0) {
       grid.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: var(--text-gray-400);">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 48px 20px; color: #4b6358;">
           <div style="font-size: 32px; margin-bottom: 10px;">👨‍⚕️</div>
-          <h3 style="color: #ffffff; font-size: 17px; margin: 0 0 6px;">No doctors matched your criteria</h3>
+          <h3 style="color: #1a2e1a; font-size: 17px; margin: 0 0 6px;">No doctors matched your criteria</h3>
           <p style="font-size: 13px; margin: 0;">Try broadening your filters or searching another specialty.</p>
         </div>
       `;
@@ -1392,7 +1366,7 @@
               <span>📍</span>
               <span>${doc.clinic}, ${doc.city}</span>
             </div>
-            <div class="doc-meta-item" style="color: var(--text-gray-300); font-weight: 700;">
+            <div class="doc-meta-item" style="color: #2d4a3e; font-weight: 700;">
               <span>🕒</span>
               <span>${doc.availability}</span>
             </div>
@@ -1402,10 +1376,10 @@
         <div>
           <div class="doc-price-row">
             <div>
-              <div style="font-size: 10px; color: var(--text-gray-500); text-transform: uppercase;">Consultation Fee</div>
+              <div style="font-size: 10px; color: #52796f; text-transform: uppercase;">Consultation Fee</div>
               <div class="doc-fee">₹${doc.fee} <span>₹${doc.mrpFee}</span></div>
             </div>
-            <div style="text-align: right; font-size: 11px; color: var(--text-gray-400); font-weight: 700;">
+            <div style="text-align: right; font-size: 11px; color: #4b6358; font-weight: 700;">
               ${doc.type === 'both' ? 'Video & In-Clinic' : doc.type === 'online' ? 'Online Video' : 'In-Clinic'}
             </div>
           </div>
