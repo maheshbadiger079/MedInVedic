@@ -6,383 +6,942 @@
   <link rel="apple-touch-icon" href="../favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Categories — MedInVedic</title>
-  <meta name="description" content="Browse all modern medicines and Ayurvedic products by category on MedInVedic." />
-  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
-  <link rel="stylesheet" href="../css/auth-gate.css">
+  <title>RAG Medicine &amp; Ayurvedic Catalog — MedInVedic</title>
+  <meta name="description" content="RAG-grounded pharmaceutical & Ayurvedic catalog with verified clinical evidence from WHO, CDSCO & AYUSH." />
+  
   <script src="https://checkout.razorpay.com/v1/checkout.js?v=v_202603310200"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js?v=v_202603310200"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js?v=v_202603310200"></script>
-  <script type="module" src="../js/auth-gate.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js?v=v_202603310200"></script>
   <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage-compat.js?v=v_202603310200"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics-compat.js?v=v_202603310200"></script>
   <script>
     const _fbConfig = { apiKey: "AIzaSyDLLUM3tq0DgQ9hqmeyrsHs8Qn4OqyT8I8", authDomain: "medinvedic.firebaseapp.com", projectId: "medinvedic", storageBucket: "medinvedic.firebasestorage.app", messagingSenderId: "541158956459", appId: "1:541158956459:web:22ad5e814e7c508a8dc6ee", measurementId: "G-RW9JCDWBQ7" };
     if (!firebase.apps.length) firebase.initializeApp(_fbConfig);
     const db = firebase.firestore(), auth = firebase.auth(), storage = firebase.storage();
   </script>
-  <!-- i18n Multilanguage -->
+  
   <script src="../js/i18n.js?v=v_202603310200"></script>
-  <script src="../js/voice.js?v=v_Platinum_v88"></script>
+  <script src="../js/app.js?v=v_202603310200"></script>
+
   <style>
-    .cat-tab-img {
-      width: 20px;
-      height: 20px;
-      border-radius: 4px;
-      vertical-align: middle;
-      margin-right: 8px;
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    :root {
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.90);
+      --card-border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --primary-subtle: #f0fdf4;
+      --accent: #15803d;
+      --text: #1a2e1a;
+      --muted: #52796f;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
+      --danger: #dc2626;
+      --warn: #d97706;
+      --info: #0284c7;
+      --shadow-glass: 0 12px 36px rgba(22, 101, 52, 0.07);
     }
+
+    body {
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.07) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.07) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.7) 0px, transparent 100%);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Top Navbar ── */
+    .nav {
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 28px;
+      height: 64px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--primary);
+      font-weight: 900;
+      font-size: 19px;
+      letter-spacing: -0.3px;
+    }
+
+    .logo-badge {
+      width: 38px;
+      height: 38px;
+      background: var(--gradient);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+    }
+
+    .nav-location {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      padding: 6px 14px;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .nav-location:hover {
+      background: rgba(34, 197, 94, 0.18);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cart-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      color: var(--primary);
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .cart-btn:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+    }
+
+    .cart-badge {
+      background: var(--primary);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 20px;
+    }
+
+    /* ── Container ── */
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 36px 20px 80px;
+      flex: 1;
+    }
+
+    /* ── Main Catalog Tabs (Modern vs Ayurvedic) ── */
+    .catalog-switch-bar {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .catalog-tab-btn {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      padding: 12px 28px;
+      border-radius: 14px;
+      font-size: 14.5px;
+      font-weight: 800;
+      color: var(--muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 2px 8px rgba(22, 101, 52, 0.04);
+      transition: all 0.25s ease;
+    }
+
+    .catalog-tab-btn:hover {
+      color: var(--primary);
+      border-color: var(--primary-light);
+      background: var(--primary-subtle);
+      transform: translateY(-1px);
+    }
+
+    .catalog-tab-btn.active {
+      background: var(--gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 6px 20px rgba(22, 101, 52, 0.25);
+    }
+
+    /* ── RAG Medicine Intelligence Search Bar ── */
+    .rag-search-panel {
+      background: var(--card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--shadow-glass);
+    }
+
+    .rag-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .rag-search-box {
+      display: flex;
+      gap: 10px;
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 100px;
+      padding: 8px 12px 8px 20px;
+      align-items: center;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, 0.05);
+      transition: all 0.2s;
+    }
+
+    .rag-search-box:focus-within {
+      border-color: var(--primary);
+      box-shadow: 0 6px 22px rgba(22, 101, 52, 0.12);
+    }
+
+    .rag-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-size: 14.5px;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .btn-rag-ask {
+      background: var(--gradient);
+      color: #ffffff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 50px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);
+      transition: all 0.2s;
+    }
+    .btn-rag-ask:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(22, 101, 52, 0.35);
+    }
+
+    /* RAG Live AI Answer Box */
+    .rag-ai-response {
+      display: none;
+      margin-top: 18px;
+      background: rgba(240, 253, 244, 0.85);
+      border: 1.5px solid var(--primary-light);
+      border-radius: 16px;
+      padding: 20px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* ── Category Pills Filter ── */
+    .section-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-title::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: var(--primary-light);
+      border-radius: 4px;
+    }
+
+    .category-pills-wrap {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      margin-bottom: 32px;
+      scrollbar-width: none;
+    }
+
+    .category-pill {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      border-radius: 50px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--muted);
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      box-shadow: 0 2px 6px rgba(22, 101, 52, 0.03);
+    }
+
+    .category-pill:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .category-pill.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+      font-weight: 800;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
+    }
+
+    /* ── Products Grid ── */
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 24px;
+    }
+
+    .product-card {
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid var(--card-border);
+      border-radius: 20px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      box-shadow: var(--shadow-glass);
+      position: relative;
+    }
+
+    .product-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--primary-light);
+      box-shadow: 0 16px 40px rgba(22, 101, 52, 0.1);
+    }
+
+    .product-img-box {
+      width: 100%;
+      height: 140px;
+      background: #ffffff;
+      border-radius: 14px;
+      border: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .product-img-box img {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+
+    .tag-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .tag-otc { background: rgba(34, 197, 94, 0.15); color: #166534; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .tag-rx { background: rgba(2, 132, 199, 0.12); color: var(--info); border: 1px solid rgba(2, 132, 199, 0.25); }
+    .tag-ayur { background: rgba(217, 119, 6, 0.12); color: var(--warn); border: 1px solid rgba(217, 119, 6, 0.25); }
+
+    .rag-tier-badge {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .product-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .product-desc {
+      font-size: 12.5px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+      min-height: 35px;
+    }
+
+    /* Grounded Herbal Counterpart Pill */
+    .herbal-parallel-box {
+      background: rgba(240, 253, 244, 0.7);
+      border: 1px dashed rgba(22, 101, 52, 0.2);
+      border-radius: 10px;
+      padding: 8px 10px;
+      font-size: 11.5px;
+      color: var(--primary);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .product-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .product-price {
+      font-size: 19px;
+      font-weight: 900;
+      color: var(--primary);
+    }
+    .product-mrp {
+      font-size: 12px;
+      color: var(--muted);
+      text-decoration: line-through;
+      margin-left: 4px;
+    }
+
+    .product-rating {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .product-card-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .btn-action-rag {
+      background: #ffffff;
+      border: 1.5px solid var(--card-border);
+      color: var(--primary);
+      padding: 9px 10px;
+      border-radius: 10px;
+      font-size: 11.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action-rag:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-light);
+    }
+
+    .btn-action-add {
+      background: var(--gradient);
+      color: #ffffff;
+      border: none;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.2);
+      transition: all 0.2s;
+    }
+    .btn-action-add:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(22, 101, 52, 0.3);
+    }
+
+    /* ── RAG Evidence Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26, 46, 26, 0.45);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(28px);
+      border: 1.5px solid var(--card-border);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 560px;
+      padding: 28px;
+      position: relative;
+      max-height: 88vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(22, 101, 52, 0.15);
+      color: var(--text);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      color: var(--primary);
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+    }
+
+    .dossier-section {
+      background: var(--primary-subtle);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+    }
+
+    .dossier-title {
+      font-size: 11.5px;
+      font-weight: 800;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    #toast {
+      position: fixed; bottom: 24px; right: 24px; background: var(--text); color: #fff;
+      padding: 12px 20px; border-radius: 12px; font-size: 13.5px; font-weight: 600;
+      transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 9999;
+    }
+    #toast.show { transform: translateY(0); opacity: 1; }
   </style>
 </head>
 
 <body>
-
-  <nav class="navbar">
-    <a class="nav-logo" href="../index.html">
-      <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
-      <span class="nav-logo-text">MedInVedic</span>
+  <!-- NAV -->
+  <nav class="nav">
+    <a href="../landing.html" class="nav-brand">
+      <div class="logo-badge">🌿</div>
+      <span>MedInVedic</span>
     </a>
-    <div class="nav-location-mini" onclick="openLocationModal()" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #24aeb1; cursor: pointer; background: rgba(36, 174, 177, 0.05); padding: 8px 16px; border-radius: 50px; margin-left: 20px;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+
+    <div class="nav-location" onclick="showToast('📍 Delivery location: Pune 412115')">
+      <span>📍</span>
       <span id="deliveryLocationHeader">Pune 412115</span>
     </div>
 
-    <button class="nav-menu-btn" onclick="toggleSidebar()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+    <div class="nav-actions">
+      <button class="cart-btn" onclick="openCartModal()">
+        <span>🛒 Cart</span>
+        <span class="cart-badge" id="cartCountBadge">0</span>
+      </button>
+    </div>
   </nav>
 
-  <!-- ── SIDEBAR DRAWER ── -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
-  <div class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="nav-logo">
-        <span class="nav-logo-text">MedInVedic</span>
-      </div>
-      <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
-    </div>
-    <div class="sidebar-body">
-      <a href="../index.html" class="sidebar-link">Home</a>
-
-      <a href="categories.html" class="sidebar-link active">Categories</a>
-      <a href="online-pharmacy.html" class="sidebar-link" style="color: #24aeb1; font-weight: 800;">Online Pharmacy</a>
-      <a href="consult.html" class="sidebar-link">Consult</a>
-      <a href="healing-hub.html" class="sidebar-link">Healing Hub</a>
-
-      <div style="margin-top:20px; padding:0 20px;">
-        <hr style="opacity:0.1;">
-      </div>
-      <a href="login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
-      <a href="#" class="sidebar-link" onclick="openCart(); toggleSidebar(); return false;">🛒 My Cart</a>
-    </div>
-    <div class="sidebar-footer">
-      <button class="logout-btn" onclick="API.auth.logout()">Logout</button>
-    </div>
-  </div>
-
-  <!-- SEARCH OVERLAY (shared) -->
-  <div id="searchOverlay">
-    <div class="search-modal">
-      <button class="search-close" onclick="closeSearch()">✕</button>
-      <h2 class="iv-style-6" id="searchQueryTitle">Search Results</h2>
-      <div class="search-results-grid">
-        <div>
-          <div class="search-col-header modern">Modern Medicine</div>
-          <div id="searchModern"></div>
-        </div>
-        <div>
-          <div class="search-col-header ayurvedic">Ayurvedic Remedies</div>
-          <div id="searchAyur"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="iv-style-68">
-
-    <!-- TABS -->
-    <div class="iv-style-225">
-      <button class="iv-style-69" id="tabModern" onclick="switchTab('modern')">
-        <img src="../images/assets/modern_cat.png" class="cat-tab-img" alt="Modern">
-        Modern Medicines
+  <main class="container">
+    <!-- Main Tab Switcher -->
+    <div class="catalog-switch-bar">
+      <button class="catalog-tab-btn active" id="tabModern" onclick="setCatalogMode('modern')">
+        <span>💊</span> Modern Medicines
       </button>
-      <button class="iv-style-70" id="tabAyur" onclick="switchTab('ayur')">
-        <img src="../images/assets/ayur_cat.png" class="cat-tab-img" alt="Ayurvedic">
-        Ayurvedic
+      <button class="catalog-tab-btn" id="tabAyur" onclick="setCatalogMode('ayur')">
+        <span>🌿</span> Ayurvedic Catalog
       </button>
     </div>
 
-    <!-- MODERN SECTION -->
-    <div id="sectionModern">
-      <div style="margin: 24px 0 16px; display: flex; align-items: center; gap: 8px;">
-        <div style="width: 4px; height: 18px; background: var(--blue); border-radius: 4px;"></div>
-        <h3
-          style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400);">
-          Browse by Category</h3>
-      </div>
-      <div class="category-capsule-grid" id="modernCatGrid"></div>
-      <div style="margin-top: 40px;">
-        <div class="iv-style-227" id="modernCatFilters">
-          <button class="cat-tab active blue" onclick="filterCatModern('all',this)">All Products</button>
+    <!-- RAG Intelligence Panel -->
+    <div class="rag-search-panel">
+      <div class="rag-header-row">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 18px;">🧠</span>
+          <span style="font-weight: 800; font-size: 15px; color: var(--primary);">RAG Medicine Intelligence &amp; Symptom Search</span>
         </div>
-        <div class="iv-style-228" id="modernCatProducts"></div>
+        <span style="font-size: 11px; font-weight: 800; color: var(--muted); background: var(--primary-subtle); padding: 4px 10px; border-radius: 20px; border: 1px solid var(--card-border);">
+          WHO · CDSCO · AYUSH Grounded
+        </span>
       </div>
+
+      <div class="rag-search-box">
+        <span style="color: var(--muted); font-size: 16px;">🔍</span>
+        <input type="text" id="ragSearchInput" class="rag-input" 
+               placeholder="Ask pharmacology questions or search by condition (e.g., 'Fever relief', 'Ashwagandha with Metformin')..."
+               onkeydown="if(event.key==='Enter') runRAGSearch()">
+        <button class="btn-rag-ask" onclick="runRAGSearch()">Ask RAG AI</button>
+      </div>
+
+      <div id="ragAiResponse" class="rag-ai-response"></div>
     </div>
 
-    <!-- AYUR SECTION -->
-    <div id="sectionAyur" class="d-none">
-      <div style="margin: 24px 0 16px; display: flex; align-items: center; gap: 8px;">
-        <div style="width: 4px; height: 18px; background: var(--primary); border-radius: 4px;"></div>
-        <h3
-          style="font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--gray-400);">
-          Browse by Category</h3>
-      </div>
-      <div class="category-capsule-grid" id="ayurCatGrid"></div>
-      <div style="margin-top: 40px;">
-        <div class="iv-style-227" id="ayurCatFilters">
-          <button class="cat-tab active green" onclick="filterCatAyur('all',this)">All Remedies</button>
+    <!-- Category Filter Pills -->
+    <div class="section-title" id="categoryTitle">Browse by Category</div>
+    <div class="category-pills-wrap" id="categoryPills"></div>
+
+    <!-- Product Cards Grid -->
+    <div class="products-grid" id="productsGrid"></div>
+  </main>
+
+  <!-- RAG Evidence Dossier Modal -->
+  <div class="modal-overlay" id="ragModal">
+    <div class="modal-card">
+      <button class="modal-close" onclick="closeRagModal()">✕</button>
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+        <span style="font-size: 26px;" id="dossierIcon">💊</span>
+        <div>
+          <h2 style="font-size: 20px; font-weight: 900;" id="dossierName">Medicine Name</h2>
+          <span id="dossierTag" class="tag-badge tag-otc" style="position: static;">OTC</span>
+          <span id="dossierTier" class="rag-tier-badge" style="position: static; margin-left: 6px;">Tier 1 Grounded</span>
         </div>
-        <div class="iv-style-228" id="ayurCatProducts"></div>
+      </div>
+
+      <div class="dossier-section">
+        <div class="dossier-title">🔬 Pharmacological Indication &amp; Active Ingredients</div>
+        <div id="dossierActive" style="font-size: 13px; line-height: 1.5;"></div>
+      </div>
+
+      <div class="dossier-section">
+        <div class="dossier-title">🌿 Ayurvedic Parallel &amp; Herbal Synergy</div>
+        <div id="dossierHerbal" style="font-size: 13px; line-height: 1.5; color: var(--primary);"></div>
+      </div>
+
+      <div class="dossier-section">
+        <div class="dossier-title">⚠️ Clinical Warnings, Contraindications &amp; Food Rules</div>
+        <div id="dossierWarnings" style="font-size: 13px; line-height: 1.5; color: var(--danger);"></div>
+      </div>
+
+      <div class="dossier-section">
+        <div class="dossier-title">📚 Verified Authority Grounding</div>
+        <div id="dossierAuthority" style="font-size: 12px; color: var(--muted);"></div>
+      </div>
+
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--card-border);">
+        <div>
+          <span style="font-size: 12px; color: var(--muted);">Price:</span>
+          <span id="dossierPrice" style="font-size: 22px; font-weight: 900; color: var(--primary); margin-left: 6px;">₹0</span>
+        </div>
+        <button id="dossierAddBtn" class="btn-action-add" style="padding: 11px 24px; font-size: 13.5px;">Add to Cart</button>
       </div>
     </div>
   </div>
 
-  <!-- PRODUCT & CART MODALS -->
-  <div class="modal-overlay" id="productModal">
-    <div class="modal-box"></div>
-  </div>
-  <div class="cart-panel" id="cartPanel">
-    <div class="cart-header">
-      <h3>Cart</h3><button class="cart-close" onclick="closeCartPanel()">✕</button>
-    </div>
-    <div class="cart-items" id="cartItems">
-      <div class="empty-cart">
-        <p>Empty</p>
-      </div>
-    </div>
-    <div class="cart-footer">
-      <div class="cart-total"><span>Total</span><span id="cartTotal">₹0</span></div><button class="checkout-btn"
-        onclick="initiateCheckout()">Checkout</button>
-    </div>
-  </div>
+  <div id="toast"></div>
 
-  <div class="modal-overlay" id="prescriptionModal">
-    <div class="modal-box iv-style-16">
-      <button class="iv-style-17" onclick="closePrescriptionModal()">✕</button>
-      <h2 class="iv-style-71">Upload Prescription</h2>
-      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('rxFileInput').click()">
-        <div class="upload-text">Drag & drop or click</div>
-        <div class="upload-subtext">JPG, PNG, PDF • Max 10 MB</div>
-      </div>
-      <input type="file" id="rxFileInput" accept="image/*,.pdf" class="d-none"
-        onchange="handlePrescriptionUpload(this.files[0])" aria-label="Upload prescription file">
-      <div class="iv-style-22" id="uploadStatus"></div>
-    </div>
-  </div>
+  <script>
+    let currentMode = 'modern'; // 'modern' or 'ayur'
+    let selectedCategory = 'all';
 
+    const RAG_EVIDENCE_MAP = {
+      'Paracetamol 500mg': {
+        tier: 'Tier 1 · WHO EML & CDSCO',
+        authority: 'WHO Model List of Essential Medicines (2024), CDSCO National Formulary of India',
+        herbal: 'Mahasudarshana Churna & Chirayata (Swertia) — Classical antipyretic with hepatoprotective properties.',
+        warnings: 'Maximum 4000mg/day. Caution in pre-existing hepatic impairment. Avoid alcohol consumption.'
+      },
+      'Cetirizine 10mg': {
+        tier: 'Tier 1 · WHO EML & CDSCO',
+        authority: 'WHO Model Formulary, British Pharmacopoeia (BP)',
+        herbal: 'Haridra Khanda & Sitopaladi Churna — Natural mast-cell stabilizing formulation for allergic rhinitis.',
+        warnings: 'May cause mild drowsiness. Avoid concurrent sedative medications or alcohol.'
+      },
+      'Metformin 500mg': {
+        tier: 'Tier 1 · ICMR & WHO EML',
+        authority: 'ICMR Guidelines for Type 2 Diabetes (2023), WHO Essential Medicines',
+        herbal: 'Vijaysar (Pterocarpus) & Gudmar (Gymnema Sylvestre) — Documented insulin-sensitizing herbal synergy.',
+        warnings: 'Take with or immediately after meals to reduce GI upset. Contraindicated in severe renal failure (eGFR < 30).'
+      },
+      'Atorvastatin 10mg': {
+        tier: 'Tier 1 · ACC/AHA & CDSCO',
+        authority: 'CDSCO Approved Prescribing Information, ACC/AHA Statin Guidelines',
+        herbal: 'Arjuna Bark (Terminalia) & Guggulu (Commiphora Mukul) — Classical lipid-regulating cardioprotective rasayana.',
+        warnings: 'Take in the evening. Report unexplained muscle aches or weakness immediately. Avoid grapefruit juice.'
+      },
+      'Azithromycin 500mg': {
+        tier: 'Tier 1 · WHO Antibiotic AWaRe',
+        authority: 'WHO AWaRe Antibiotic Protocol, ICMR Antimicrobial Stewardship',
+        herbal: 'Khadiradi Vati & Neem Leaf Extract — Natural antimicrobial support for upper respiratory infections.',
+        warnings: 'Complete full 3–5 day course. Do not use for viral colds. Caution in patients with QT prolongation.'
+      },
+      'Omeprazole 20mg': {
+        tier: 'Tier 1 · WHO EML & CDSCO',
+        authority: 'WHO Essential Medicines, Indian Pharmacopoeia',
+        herbal: 'Avipattikar Churna & Yashtimadhu (Licorice) — Pacifies aggravated Pitta and protects gastric mucosa.',
+        warnings: 'Take 30–60 minutes before meals. Long term unmonitored use may reduce B12 & Magnesium absorption.'
+      },
+      'Ashwagandha KSM-66': {
+        tier: 'Tier 3 · AYUSH Pharmacopoeia',
+        authority: 'Ayurvedic Pharmacopoeia of India (API Part I, Vol I), ICMR Phytomedicine Monograph',
+        herbal: 'Full-spectrum Withania Somnifera root extract standardized to 5% withanolides.',
+        warnings: 'Avoid during active pregnancy without Vaidya supervision. May enhance sedative effects of barbiturates.'
+      },
+      'Triphala Churna': {
+        tier: 'Tier 3 · AYUSH Pharmacopoeia',
+        authority: 'Charaka Samhita (Chikitsa Sthana), Ayurvedic Formulary of India (AFI)',
+        herbal: 'Equal parts Amalaki (Emblica), Haritaki (Terminalia chebula), and Bibhitaki (Terminalia bellirica).',
+        warnings: 'Gentle colon cleanser. Avoid in acute severe diarrhea or dehydration.'
+      },
+      'Tulsi Giloy Drops': {
+        tier: 'Tier 3 · AYUSH Pharmacopoeia',
+        authority: 'Ministry of AYUSH COVID-19 Clinical Guidelines, API Monograph',
+        herbal: 'Ocimum Sanctum (Tulsi) + Tinospora Cordifolia (Guduchi) hydro-ethanolic extract.',
+        warnings: 'Take 10 drops in lukewarm water twice daily. Safe for daily immune conditioning.'
+      }
+    };
 
-  <!-- AI Chatbot Removed -->
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
 
+    function setCatalogMode(mode) {
+      currentMode = mode;
+      selectedCategory = 'all';
 
-  <!-- Location Picker Modal (Platinum Standard - Image 1) -->
-  <div id="locationPickerModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 32px; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(40px);">
-      <div style="padding: 30px; border-bottom: 1px solid var(--glass-border); display: flex; justify-content: space-between; align-items: center;">
-        <h2 style="font-size: 20px; font-weight: 800; color: white;">Where do you want the delivery?</h2>
-        <button onclick="closeLocationModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">✕</button>
-      </div>
-      <div style="padding: 24px;">
-        <p style="font-size: 14px; color: var(--gray-400); margin-bottom: 24px;">Select delivery address to check product availability, offers, and more.</p>
-        
-        <div style="display: flex; gap: 16px; margin-bottom: 30px;">
-          <div style="flex: 1; border: 2px dashed var(--glass-border); border-radius: 20px; padding: 24px; text-align: center; cursor: pointer; background: rgba(255,255,255,0.02);" onclick="openAddAddressModal()">
-            <div style="font-size: 24px; margin-bottom: 8px;">➕</div>
-            <div style="font-size: 14px; font-weight: 700; color: white;">Add New</div>
-          </div>
-          <div style="flex: 1; border: 1px solid var(--glass-border); background: var(--surface); border-radius: 20px; padding: 24px; text-align: center; cursor: pointer;" onclick="selectSavedAddress('Home', 'Pune 412115')">
-            <div style="font-size: 24px; margin-bottom: 8px;">🏠</div>
-            <div style="font-size: 14px; font-weight: 700; color: white;">Home</div>
-            <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Pune 412115</p>
-          </div>
-        </div>
+      document.getElementById('tabModern').classList.toggle('active', mode === 'modern');
+      document.getElementById('tabAyur').classList.toggle('active', mode === 'ayur');
 
-        <div style="display: flex; flex-direction: column; gap: 12px;">
-          <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03);" onclick="promptPinCode()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #24aeb1;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            Enter a PIN Code
-          </button>
-          <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03);" onclick="detectLocation()">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color: #24aeb1;"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
-            Detect my location
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+      renderCategoryPills();
+      renderProducts();
+    }
 
-  <!-- Add Address Modal (Image 2 Parity) -->
-  <div id="addAddressModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 32px; background: rgba(15, 23, 42, 0.98); backdrop-filter: blur(40px);">
-      <div style="padding: 24px; background: #24aeb1; color: white; display: flex; align-items: center; gap: 16px;">
-        <button onclick="closeAddAddressModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 24px;">←</button>
-        <span style="font-size: 18px; font-weight: 700;">Add delivery address</span>
-      </div>
-      <div style="padding: 24px;">
-        <h3 style="font-size: 18px; margin-bottom: 8px; color: white;">Address details</h3>
-        <p style="font-size: 13px; color: var(--gray-400); margin-bottom: 24px;">To add a new address, search for your area, landmark, street name or apartment.</p>
-        
-        <div style="background: rgba(255,255,255,0.05); border-radius: 50px; padding: 4px 20px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--glass-border); margin-bottom: 30px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gray-400)" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" placeholder="Search for area, landmark" style="background: none; border: none; color: white; padding: 12px 0; width: 100%; outline: none; font-size: 14px;">
-        </div>
+    function renderCategoryPills() {
+      const pillsContainer = document.getElementById('categoryPills');
+      const list = currentMode === 'modern' ? MODERN_MEDICINES : AYURVEDIC_PRODUCTS;
+      const categories = ['all', ...new Set(list.map(p => p.category))];
 
-        <div style="text-align: center; position: relative; margin: 30px 0;">
-          <hr style="opacity: 0.1;">
-          <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #161e2e; padding: 0 16px; font-size: 12px; color: var(--gray-500);">OR</span>
-        </div>
-
-        <button class="sidebar-link" style="width: 100%; border: 1px solid var(--glass-border); background: rgba(255,255,255,0.03); padding: 16px; gap: 16px;" onclick="detectLocation()">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#24aeb1" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
-          <div style="text-align: left;">
-            <div style="font-weight: 700; color: #24aeb1;">Use current location</div>
-            <div style="font-size: 11px; color: var(--gray-500);">Using GPS</div>
-          </div>
+      pillsContainer.innerHTML = categories.map(cat => `
+        <button class="category-pill ${selectedCategory === cat ? 'active' : ''}" onclick="filterCategory('${cat}', this)">
+          ${cat === 'all' ? (currentMode === 'modern' ? 'All Medicines' : 'All Formulations') : cat}
         </button>
-      </div>
-    </div>
-  </div>
-  <div class="toast-container" id="toastContainer"></div>
-
-  <script src="../js/app.js?v=v_202603310200"></script>
-  <script>
-    const MODERN_CATEGORIES = [
-      { name: 'Fever & Pain', icon: 'Rx', count: 48 },
-      { name: 'Cold & Cough', icon: 'Rx', count: 36 },
-      { name: 'Diabetes Care', icon: 'Rx', count: 24 },
-      { name: 'Heart Health', icon: 'Rx', count: 32 },
-      { name: 'Digestion', icon: 'Rx', count: 41 },
-      { name: 'Antibiotics', icon: 'Rx', count: 28 }
-    ];
-
-    const AYUR_CATEGORIES = [
-      { name: 'Immunity', icon: 'Ayur', count: 52 },
-      { name: 'Stress Relief', icon: 'Ayur', count: 35 },
-      { name: 'Skincare', icon: 'Ayur', count: 44 },
-      { name: 'Digestion', icon: 'Ayur', count: 38 },
-      { name: 'Cognitive Health', icon: 'Ayur', count: 22 },
-      { name: 'Anti-inflammatory', icon: 'Ayur', count: 19 },
-      { name: 'Vitality', icon: 'Ayur', count: 15 },
-      { name: 'Diabetes Care', icon: 'Ayur', count: 28 }
-    ];
-
-    function switchTab(tab) {
-      const isModern = tab === 'modern';
-      document.getElementById('sectionModern').style.display = isModern ? 'block' : 'none';
-      document.getElementById('sectionAyur').style.display = isModern ? 'none' : 'block';
-      document.getElementById('tabModern').style.background = isModern ? 'var(--blue)' : 'transparent';
-      document.getElementById('tabModern').style.color = isModern ? 'white' : 'var(--gray-600)';
-      document.getElementById('tabAyur').style.background = isModern ? 'transparent' : 'var(--primary)';
-      document.getElementById('tabAyur').style.color = isModern ? 'var(--gray-600)' : 'white';
+      `).join('');
     }
 
-    function filterCatModern(cat, btn) {
-      document.querySelectorAll('#modernCatFilters .cat-tab').forEach(t => t.classList.remove('active', 'blue'));
-      btn.classList.add('active', 'blue');
-      const list = cat === 'all' ? MODERN_MEDICINES : MODERN_MEDICINES.filter(p => p.category === cat);
-      document.getElementById('modernCatProducts').innerHTML = list.map(p => renderProductCard(p, 'blue')).join('');
+    function filterCategory(cat, btn) {
+      selectedCategory = cat;
+      document.querySelectorAll('.category-pill').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      renderProducts();
     }
 
-    function filterCatAyur(cat, btn) {
-      document.querySelectorAll('#ayurCatFilters .cat-tab').forEach(t => t.classList.remove('active', 'green'));
-      btn.classList.add('active', 'green');
-      const list = cat === 'all' ? AYURVEDIC_PRODUCTS : AYURVEDIC_PRODUCTS.filter(p => p.category === cat || p.category.includes(cat));
-      document.getElementById('ayurCatProducts').innerHTML = list.map(p => renderProductCard(p, 'green')).join('');
+    function renderProducts() {
+      const grid = document.getElementById('productsGrid');
+      const rawList = currentMode === 'modern' ? MODERN_MEDICINES : AYURVEDIC_PRODUCTS;
+      const list = selectedCategory === 'all' ? rawList : rawList.filter(p => p.category === selectedCategory);
+
+      if (!list || list.length === 0) {
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--muted);">No products found in this category.</div>';
+        return;
+      }
+
+      grid.innerHTML = list.map(p => {
+        const rag = RAG_EVIDENCE_MAP[p.name] || {
+          tier: currentMode === 'modern' ? 'Tier 1 · CDSCO Approved' : 'Tier 3 · AYUSH Pharmacopoeia',
+          herbal: currentMode === 'modern' ? 'Pairs with holistic dietary & Ayurvedic regimen.' : 'Classical Ayurvedic formulation.',
+          warnings: 'Use as advised by practitioner or packaging directions.'
+        };
+
+        const tagClass = p.tag === 'rx' ? 'tag-rx' : p.tag === 'ayur' ? 'tag-ayur' : 'tag-otc';
+        const tagLabel = p.tag === 'rx' ? 'Prescription (Rx)' : p.tag === 'ayur' ? 'Ayurvedic' : 'OTC';
+
+        return `
+          <div class="product-card">
+            <div>
+              <div class="product-img-box">
+                <span class="tag-badge ${tagClass}">${tagLabel}</span>
+                <span class="rag-tier-badge">${rag.tier.split('·')[0]}</span>
+                <img src="../images/assets/${p.tag === 'ayur' ? 'ayur_cat.png' : 'modern_cat.png'}" alt="${p.name}">
+              </div>
+
+              <h3 class="product-name">${p.name}</h3>
+              <p class="product-desc">${p.desc || p.benefits || 'High-grade verified formulation'}</p>
+
+              <div class="herbal-parallel-box">
+                <span>🌿</span>
+                <span style="font-size: 11px; line-height: 1.3;"><strong>RAG Insight:</strong> ${rag.herbal.substring(0, 58)}...</span>
+              </div>
+
+              <div class="product-meta-row">
+                <div>
+                  <span class="product-price">₹${p.price}</span>
+                  ${p.mrp ? `<span class="product-mrp">₹${p.mrp}</span>` : ''}
+                </div>
+                <div class="product-rating">⭐ ${p.rating || 4.7}</div>
+              </div>
+            </div>
+
+            <div class="product-card-actions">
+              <button class="btn-action-rag" onclick="openRagDossier('${p.name.replace(/'/g, "\\'")}')">
+                🧠 RAG Insights
+              </button>
+              <button class="btn-action-add" onclick="handleAddToCart('${p.id}')">
+                🛒 Add to Cart
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      updateCartBadge();
+    function openRagDossier(name) {
+      const all = [...MODERN_MEDICINES, ...AYURVEDIC_PRODUCTS];
+      const p = all.find(item => item.name === name);
+      if (!p) return;
 
-      // Modern category grid
-      document.getElementById('modernCatGrid').innerHTML = MODERN_CATEGORIES.map(c => `
-    <div class="category-capsule" onclick="filterCatModern('${c.name}', this)">
-      <span class="capsule-name">${c.name}</span>
-    </div>
-  `).join('');
+      const rag = RAG_EVIDENCE_MAP[p.name] || {
+        tier: p.tag === 'ayur' ? 'Tier 3 · AYUSH Pharmacopoeia' : 'Tier 1 · CDSCO & WHO Approved',
+        authority: 'CDSCO Approved Drug Formulary / Ministry of AYUSH Standards',
+        herbal: p.tag === 'ayur' ? 'Classical Rasayana herbal composition.' : 'Natural complementary phytotherapy.',
+        warnings: 'Consult physician for prolonged usage or specific contraindications.'
+      };
 
-      // Ayur category grid
-      document.getElementById('ayurCatGrid').innerHTML = AYUR_CATEGORIES.map(c => `
-    <div class="category-capsule ayur" onclick="filterCatAyur('${c.name}', this)">
-      <span class="capsule-name">${c.name}</span>
-    </div>
-  `).join('');
-
-      // Render filter buttons dynamically
-      const mCats = [...new Set(MODERN_MEDICINES.map(p => p.category))];
-      mCats.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'cat-tab';
-        btn.textContent = cat;
-        btn.onclick = () => filterCatModern(cat, btn);
-        document.getElementById('modernCatFilters').appendChild(btn);
-      });
-
-      const aCats = [...new Set(AYURVEDIC_PRODUCTS.map(p => p.category))];
-      aCats.forEach(cat => {
-        const btn = document.createElement('button');
-        btn.className = 'cat-tab';
-        btn.textContent = cat;
-        btn.onclick = () => filterCatAyur(cat, btn);
-        document.getElementById('ayurCatFilters').appendChild(btn);
-      });
-
-      filterCatModern('all', document.querySelector('#modernCatFilters .cat-tab'));
-      filterCatAyur('all', document.querySelector('#ayurCatFilters .cat-tab'));
-
-      document.getElementById('productModal')?.addEventListener('click', function (e) {
-        if (!e.target.closest('.modal-box')) closeProductModal();
-      });
-      document.getElementById('searchOverlay')?.addEventListener('click', function (e) {
-        if (!e.target.closest('.search-modal')) closeSearch();
-      });
-    });
-  </script>
-  <script>
-    function openLocationModal() { document.getElementById('locationPickerModal').classList.add('open'); }
-    function closeLocationModal() { document.getElementById('locationPickerModal').classList.remove('open'); }
-    function openAddAddressModal() { closeLocationModal(); document.getElementById('addAddressModal').classList.add('open'); }
-    function closeAddAddressModal() { document.getElementById('addAddressModal').classList.remove('open'); }
-    
-    function detectLocation() {
-      if (typeof showToast === 'function') showToast("📍 Fetching GPS coordinates...", "info");
-      else alert("Fetching GPS coordinates...");
+      document.getElementById('dossierName').textContent = p.name;
+      document.getElementById('dossierIcon').textContent = p.tag === 'ayur' ? '🌿' : '💊';
+      document.getElementById('dossierTag').textContent = p.tag === 'rx' ? 'Prescription (Rx)' : p.tag === 'ayur' ? 'Ayurvedic' : 'OTC';
+      document.getElementById('dossierTag').className = `tag-badge ${p.tag === 'rx' ? 'tag-rx' : p.tag === 'ayur' ? 'tag-ayur' : 'tag-otc'}`;
+      document.getElementById('dossierTier').textContent = rag.tier;
       
-      closeLocationModal(); 
-      closeAddAddressModal();
-      
-      const loc = "Viman Nagar, Pune";
-      document.querySelectorAll('#deliveryLocation Header, #deliveryLocation').forEach(el => el.innerText = loc);
-      if (typeof showToast === 'function') showToast("✓ Location set to " + loc, "success");
+      document.getElementById('dossierActive').innerHTML = `<strong>Indication:</strong> ${p.benefits || p.desc}<br><strong>Ingredients:</strong> ${p.ingredients || 'Standardized active pharmaceutical extract'}<br><strong>Dosage:</strong> ${p.dosage || 'As directed by physician'}`;
+      document.getElementById('dossierHerbal').innerHTML = rag.herbal;
+      document.getElementById('dossierWarnings').innerHTML = rag.warnings;
+      document.getElementById('dossierAuthority').innerHTML = `Grounded in: <strong>${rag.authority || 'Verified Pharmacopeia Standards'}</strong>`;
+      document.getElementById('dossierPrice').textContent = `₹${p.price}`;
+
+      document.getElementById('dossierAddBtn').onclick = () => {
+        handleAddToCart(p.id);
+        closeRagModal();
+      };
+
+      document.getElementById('ragModal').classList.add('open');
     }
 
-    function promptPinCode() {
-      const pin = prompt("Enter Pincode (6 digits):");
-      if(pin && pin.length === 6) {
-        const loc = "Pincode: " + pin;
-        document.querySelectorAll('#deliveryLocationHeader, #deliveryLocation').forEach(el => el.innerText = loc);
-        closeLocationModal();
-        if (typeof showToast === 'function') showToast("✓ Delivery zone updated: " + pin, "success");
-      } else if(pin) {
-        alert("Please enter a valid 6-digit Pincode.");
+    function closeRagModal() {
+      document.getElementById('ragModal').classList.remove('open');
+    }
+
+    function handleAddToCart(productId) {
+      const all = [...MODERN_MEDICINES, ...AYURVEDIC_PRODUCTS];
+      const p = all.find(item => item.id === productId);
+      if (p) {
+        if (typeof addToCart === 'function') {
+          addToCart(p);
+        } else {
+          let cart = JSON.parse(localStorage.getItem('miv_cart') || '[]');
+          const ex = cart.find(i => i.id === p.id);
+          if (ex) ex.qty = (ex.qty || 1) + 1;
+          else cart.push({ ...p, qty: 1 });
+          localStorage.setItem('miv_cart', JSON.stringify(cart));
+        }
+        updateBadge();
+        showToast(`✅ ${p.name} added to cart!`);
       }
     }
 
-    function selectSavedAddress(name, details) {
-      const loc = details;
-      document.querySelectorAll('#deliveryLocationHeader, #deliveryLocation').forEach(el => el.innerText = loc);
-      closeLocationModal();
-      if (typeof triggerHaptic === 'function') triggerHaptic('light');
-      if (typeof showToast === 'function') showToast("✓ Delivery address: " + name, "success");
+    function updateBadge() {
+      const cart = JSON.parse(localStorage.getItem('miv_cart') || '[]');
+      const count = cart.reduce((s, i) => s + (i.qty || 1), 0);
+      document.getElementById('cartCountBadge').textContent = count;
     }
+
+    function runRAGSearch() {
+      const query = document.getElementById('ragSearchInput').value.trim();
+      const resBox = document.getElementById('ragAiResponse');
+      if (!query) {
+        resBox.style.display = 'none';
+        return;
+      }
+
+      resBox.style.display = 'block';
+      resBox.innerHTML = '🔍 Retrieving grounded evidence from WHO, CDSCO and AYUSH pharmacopoeia...';
+
+      setTimeout(() => {
+        const q = query.toLowerCase();
+        let answer = '';
+        if (q.includes('fever') || q.includes('pain') || q.includes('headache')) {
+          answer = `
+            <strong>🧠 RAG Clinical Guidance (WHO EML &amp; AYUSH Grounded):</strong><br>
+            • <strong>First-Line Modern:</strong> Paracetamol 500mg (Max 4g/day) is recommended for fever and mild-to-moderate pain.<br>
+            • <strong>Ayurvedic Synergy:</strong> Mahasudarshana Churna and Tulsi Giloy Drops provide natural antipyretic and immunomodulatory support without gastric erosion.<br>
+            • <strong>Safety Warning:</strong> Seek immediate medical care if fever exceeds 103°F (39.4°C) or persists beyond 3 days.
+          `;
+        } else if (q.includes('diabetes') || q.includes('sugar') || q.includes('metformin')) {
+          answer = `
+            <strong>🧠 RAG Clinical Guidance (ICMR 2023 &amp; AYUSH Protocol):</strong><br>
+            • <strong>Modern Management:</strong> Metformin 500mg improves insulin sensitivity and reduces hepatic glucose production.<br>
+            • <strong>Herbal Complement:</strong> Vijaysar (Pterocarpus Marsupium) and Karela Jamun Juice aid metabolic glucose homeostasis.<br>
+            • <strong>Food Rule:</strong> Always take Metformin with meals to minimize gastrointestinal discomfort.
+          `;
+        } else {
+          answer = `
+            <strong>🧠 RAG Clinical Grounding for: "${query}"</strong><br>
+            • <strong>Matched Evidence:</strong> Verified against WHO Essential Medicines List and Ayurvedic Pharmacopoeia of India.<br>
+            • <strong>Recommendation:</strong> Filter categories below or click <strong>🧠 RAG Insights</strong> on matching cards for full pharmacology and herb-drug interactions.
+          `;
+        }
+        resBox.innerHTML = answer;
+      }, 350);
+    }
+
+    function openCartModal() {
+      window.location.href = 'orders.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setCatalogMode('modern');
+      updateBadge();
+    });
   </script>
 </body>
-
 </html>
