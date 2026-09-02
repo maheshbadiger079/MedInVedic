@@ -1,43 +1,26 @@
-const CACHE_NAME = 'medinvedic-v19';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/pages/categories.html',
-  '/pages/consult.html',
-  '/pages/healing-hub.html',
-  '/css/style.css',
-  '/js/app.js',
-  '/js/api.js',
-  '/js/i18n.js',
-  '/pages/login.html',
-  '/pages/register.html'
-];
+// MedInVedic Service Worker - Fresh Network-First v1788375218621
+const CACHE_NAME = 'medinvedic-v1788375218622';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
-  );
 });
 
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            return caches.delete(key);
-          }
-        })
-      );
+      return Promise.all(keys.map((key) => caches.delete(key)));
     }).then(() => self.clients.claim())
   );
 });
 
 self.addEventListener('fetch', (event) => {
+  // Always fetch fresh network content first
+  if (event.request.method !== 'GET') return;
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        return networkResponse;
+      })
+      .catch(() => caches.match(event.request))
   );
 });
