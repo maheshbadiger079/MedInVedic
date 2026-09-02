@@ -510,6 +510,22 @@
     .activity-text { font-size: 13px; color: var(--text); }
     .activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
   </style>
+
+<style>
+  @media (max-width: 768px) {
+    .admin-nav { padding: 0 12px !important; height: 56px !important; }
+    .admin-badge, .nav-right a.btn, .nav-user .user-info { display: none !important; }
+    .nav-user { padding: 4px !important; border-radius: 50% !important; }
+    .btn-logout { padding: 5px 10px !important; font-size: 11.5px !important; }
+    .admin-main { padding: 16px 12px !important; }
+    .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+    .stat-card { padding: 14px !important; border-radius: 14px !important; }
+    .stat-card .stat-value { font-size: 20px !important; }
+    .stat-card .stat-label { font-size: 10px !important; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr !important; }
+  }
+</style>
+
 </head>
 <body>
 

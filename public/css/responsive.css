@@ -1,3 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MEDINVEDIC BULLETPROOF SANS-SERIF & MOBILE NORMALIZER
+═══════════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: light !important;
+  --font-main: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font: var(--font-main);
+  --font-display: var(--font-main);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+html, body {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+  background-color: #f8faf8;
+  color: #1a2e1a;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix for all buttons, inputs, links, headings */
+button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIVERSAL MOBILE RESPONSIVE TWEAKS (≤ 768px)
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Admin Nav Polish */
+  .admin-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .admin-nav .admin-badge,
+  .admin-nav .nav-right a.btn,
+  .admin-nav .nav-user .user-info {
+    display: none !important;
+  }
+  .admin-nav .nav-user {
+    padding: 4px !important;
+    border-radius: 50% !important;
+  }
+  .admin-nav .btn-logout {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+  .admin-main {
+    padding: 16px 12px !important;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .stat-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+  .stat-card .stat-value {
+    font-size: 20px !important;
+  }
+  .stat-card .stat-label {
+    font-size: 10px !important;
+  }
+
+  /* Categories Nav & Search */
+  .nav-location span { display: none !important; }
+  .cart-btn span:not(#cartCount) { display: none !important; }
+  .rag-search-box {
+    border-radius: 16px !important;
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+  .btn-rag-ask {
+    border-radius: 12px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* VedicMind Topbar & Tab Strip */
+  .vm-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+  }
+  .vm-nav-pills .pill-streak,
+  .vm-nav-pills .pill-level,
+  .vm-nav-pills .nav-btn-health {
+    display: none !important;
+  }
+  .stat-pill {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+  .vm-tab-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 20px !important;
+  }
+  .vm-tab-btn {
+    padding: 8px 4px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Payment Layout */
+  .payment-layout {
+    margin: 16px auto 60px !important;
+    padding: 0 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .wallet-hero {
+    padding: 18px 16px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .wallet-balance {
+    font-size: 28px !important;
+  }
+  .btn-add-money {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .methods-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .method-tile {
+    padding: 12px 10px !important;
+  }
+  .method-name {
+    font-size: 12px !important;
+  }
+  .method-sub {
+    display: none !important;
+  }
+}
+
 
 
 /* ═══════════════════════════════════════════════════════════════

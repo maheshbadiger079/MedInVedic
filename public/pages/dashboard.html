@@ -1009,6 +1009,19 @@
       .profile-info-block { flex-direction: column; align-items: flex-start; }
     }
   </style>
+
+<style>
+  @media (max-width: 640px) {
+    .dashboard-header { padding: 10px 12px !important; }
+    .user-name-text { display: none !important; }
+    .mobile-bottom-nav { padding: 6px 4px max(6px, env(safe-area-inset-bottom)) !important; }
+    .bottom-nav-item { font-size: 10px !important; font-weight: 700 !important; }
+    .profile-hero-card { padding: 16px 14px !important; }
+    .greeting-title { font-size: 18px !important; }
+    .quick-stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  }
+</style>
+
 </head>
 
 <body>

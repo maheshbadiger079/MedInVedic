@@ -582,6 +582,20 @@
     }
     #toast.show { transform: translateY(0); opacity: 1; }
   </style>
+
+<style>
+  @media (max-width: 640px) {
+    .nav { padding: 10px 12px !important; }
+    .nav-location span { display: none !important; }
+    .cart-btn span:not(#cartCount) { display: none !important; }
+    .rag-search-panel { padding: 16px 12px !important; border-radius: 16px !important; }
+    .view-selector { grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-bottom: 16px !important; }
+    .view-btn { padding: 12px 10px !important; font-size: 13px !important; }
+    .cat-chips-wrap { gap: 6px !important; padding-bottom: 4px !important; }
+    .cat-chip { padding: 6px 12px !important; font-size: 11.5px !important; }
+  }
+</style>
+
 </head>
 
 <body>
@@ -631,9 +645,9 @@
       <div class="rag-search-box">
         <span style="color: var(--muted); font-size: 16px;">🔍</span>
         <input type="text" id="ragSearchInput" class="rag-input" 
-               placeholder="Ask pharmacology questions or search by condition (e.g., 'Fever relief', 'Ashwagandha with Metformin')..."
+               placeholder="Search medicines, herbs, fever, pain..."
                onkeydown="if(event.key==='Enter') runRAGSearch()">
-        <button class="btn-rag-ask" onclick="runRAGSearch()">Ask RAG AI</button>
+        <button class="btn-rag-ask" onclick="runRAGSearch()">Ask AI</button>
       </div>
 
       <div id="ragAiResponse" class="rag-ai-response"></div>
