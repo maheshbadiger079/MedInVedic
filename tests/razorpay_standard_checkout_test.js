@@ -24,8 +24,8 @@ function runTest(name, fn) {
   }
 }
 
-const KEY_ID = 'rzp_test_TWfQ3jmPx1jYvE';
-const KEY_SECRET = '4abCQQ5ouc19p7JPdNNt4j5i';
+const KEY_ID = 'rzp_test_TXEa2fRwyrWGop';
+const KEY_SECRET = '1m17Se5I7p74xTAjwpZ86TQ7';
 
 // 1. Order Creation & Validation
 console.log('Testing 1. Order Creation & Validation Rules...');
@@ -124,8 +124,8 @@ console.log('\nTesting 3. Environment & Security Config...');
 
 runTest('Validates .env contains valid test credentials', () => {
   const envContent = fs.readFileSync('.env', 'utf8');
-  assert.ok(envContent.includes('RAZORPAY_KEY_ID=rzp_test_TWfQ3jmPx1jYvE'));
-  assert.ok(envContent.includes('RAZORPAY_KEY_SECRET=4abCQQ5ouc19p7JPdNNt4j5i'));
+  assert.ok(envContent.includes('RAZORPAY_KEY_ID=rzp_test_TXEa2fRwyrWGop'));
+  assert.ok(envContent.includes('RAZORPAY_KEY_SECRET=1m17Se5I7p74xTAjwpZ86TQ7'));
 });
 
 runTest('Validates .gitignore prevents .env leakage', () => {

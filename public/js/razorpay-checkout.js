@@ -48,7 +48,7 @@
       }
 
       let order_id = null;
-      let key = 'rzp_test_TWfQ3jmPx1jYvE';
+      let key = 'rzp_test_TXEa2fRwyrWGop';
 
       try {
         // STEP 1: BACKEND - Create Order
