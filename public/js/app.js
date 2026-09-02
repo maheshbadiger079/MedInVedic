@@ -465,6 +465,11 @@ function closePaymentModal() {
 }
 
 function ensureSharedComponents() {
+  // Guard: Do not inject legacy components on standalone or glassmorphic pages with custom navigation
+  if (document.querySelector('.nav') || document.querySelector('.navbar') || document.querySelector('.admin-nav') || document.getElementById('tabModern')) {
+    return;
+  }
+
   // 1. Toast Container
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
@@ -475,8 +480,8 @@ function ensureSharedComponents() {
     const prefix = window.location.pathname.includes('pages/') ? '' : 'pages/';
     const homePrefix = window.location.pathname.includes('pages/') ? '../' : '';
     const sidebarHTML = `
-      <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.toggleSidebar()"></div>
-      <div class="sidebar" id="sidebar">
+      <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;" onclick="window.toggleSidebar()"></div>
+      <div class="sidebar" id="sidebar" style="display:none;">
         <div class="sidebar-header">
           <div class="nav-logo">
             <div class="nav-logo-icon">⚕️</div>
@@ -505,7 +510,7 @@ function ensureSharedComponents() {
   // 3. Cart Panel
   if (!document.getElementById('cartPanel')) {
     const cartHTML = `
-      <div class="cart-panel" id="cartPanel">
+      <div class="cart-panel" id="cartPanel" style="display:none;">
         <div class="cart-header"><h3>Cart</h3><button class="cart-close" onclick="closeCartPanel()">✕</button></div>
         <div class="cart-items" id="cartItems"><div class="empty-cart"><p>Empty</p></div></div>
         <div class="cart-footer">
@@ -519,13 +524,13 @@ function ensureSharedComponents() {
 
   // 4. Product Modal
   if (!document.getElementById('productModal')) {
-    document.body.insertAdjacentHTML('beforeend', '<div class="modal-overlay" id="productModal"><div class="modal-box"></div></div>');
+    document.body.insertAdjacentHTML('beforeend', '<div class="modal-overlay" id="productModal" style="display:none;"><div class="modal-box"></div></div>');
   }
 
   // 5. Prescription Modal
   if (!document.getElementById('prescriptionModal')) {
     const rxHTML = `
-      <div class="modal-overlay" id="prescriptionModal">
+      <div class="modal-overlay" id="prescriptionModal" style="display:none;">
         <div class="modal-box iv-style-16" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; width: 100%; max-width: 500px; position: relative;">
           <button class="iv-style-17" onclick="closePrescriptionModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; cursor: pointer; font-size: 20px;">✕</button>
           <h2 class="iv-style-71" style="font-size: 24px; color: white; margin-bottom: 24px;">Upload Prescription</h2>
@@ -557,7 +562,7 @@ function ensureSharedComponents() {
   // 6. Search Overlay
   if (!document.getElementById('searchOverlay')) {
     const searchHTML = `
-      <div id="searchOverlay">
+      <div id="searchOverlay" style="display:none;">
         <div class="search-modal">
           <button class="search-close" onclick="closeSearch()">✕</button>
           <h2 class="iv-style-6" id="searchQueryTitle">Search Results</h2>
