@@ -1059,6 +1059,16 @@
     <!-- â”€â”€ LEFT SIDEBAR NAVIGATION â”€â”€ -->
     <aside class="dashboard-sidebar">
       <div>
+        <div class="nav-section-title">AI &amp; Learning</div>
+        <ul class="sidebar-nav-list">
+          <li><a href="vedicmind.html" class="nav-item-btn" style="text-decoration:none; color:var(--primary); font-weight:800;"><span class="nav-icon">🧠</span> VedicMind AI <span class="nav-badge" style="background:var(--primary-light); color:#fff;">NEW</span></a></li>
+          <li><a href="ai-assistant.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">🤖</span> RAG Health AI</a></li>
+          <li><a href="prescription-decoder.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">📄</span> Lipi Vaidya (Rx Decoder)</a></li>
+          <li><a href="categories.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">📦</span> RAG Medicine Catalog</a></li>
+          <li><a href="prakriti-analysis.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">✨</span> Prakriti Dosha Test</a></li>
+          <li><a href="payment.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">💳</span> Wallet &amp; Razorpay</a></li>
+        </ul>
+
         <div class="nav-section-title">Overview</div>
         <ul class="sidebar-nav-list">
           <li><button class="nav-item-btn active" onclick="switchTab('dashboard', this)"><span class="nav-icon">📊</span> Dashboard</button></li>
@@ -1667,22 +1677,22 @@
       <span>📊</span>
       Dashboard
     </button>
-    <button class="bottom-nav-item" onclick="switchTab('ai', this); setActiveBottom(this)">
+    <a href="vedicmind.html" class="bottom-nav-item" style="text-decoration:none; color:var(--primary); font-weight:800;">
       <span>🧠</span>
-      AI Health
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('medicines', this); setActiveBottom(this)">
-      <span>💊</span>
-      Medicines
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('appointments', this); setActiveBottom(this)">
+      VedicMind
+    </a>
+    <a href="categories.html" class="bottom-nav-item" style="text-decoration:none;">
+      <span>📦</span>
+      Catalog
+    </a>
+    <a href="consult.html" class="bottom-nav-item" style="text-decoration:none;">
       <span>🩺</span>
-      Consults
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('profile', this); setActiveBottom(this)">
-      <span>👤</span>
-      Profile
-    </button>
+      Consult
+    </a>
+    <a href="emergency.html" class="bottom-nav-item" style="text-decoration:none; color:var(--accent-red); font-weight:800;">
+      <span>🚨</span>
+      SOS
+    </a>
   </nav>
 
   <!-- â”€â”€ 5. JAVASCRIPT CONTROLLER â”€â”€ -->
