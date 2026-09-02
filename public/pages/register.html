@@ -353,7 +353,9 @@
 
         showToast('✅ Account created successfully!');
         setTimeout(() => {
-          window.location.replace('dashboard.html');
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect') || urlParams.get('next');
+          window.location.replace(redirectUrl || '../index.html');
         }, 800);
       } catch (err) {
         console.error('Registration error:', err);

@@ -344,10 +344,14 @@
 
         showToast('✅ Signed in successfully!');
         setTimeout(() => {
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect') || urlParams.get('next');
           if (isAdmin || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
-            window.location.replace('admin.html');
+            window.location.replace(redirectUrl || 'admin.html');
+          } else if (redirectUrl) {
+            window.location.replace(redirectUrl);
           } else {
-            window.location.replace('dashboard.html');
+            window.location.replace('../index.html');
           }
         }, 600);
       } catch (err) {
@@ -378,7 +382,15 @@
         localStorage.setItem('mv_user_role', userObj.role);
         showToast('✅ Welcome, ' + userObj.displayName);
         setTimeout(() => {
-          window.location.replace(isAdmin ? 'admin.html' : 'dashboard.html');
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect') || urlParams.get('next');
+          if (isAdmin) {
+            window.location.replace(redirectUrl || 'admin.html');
+          } else if (redirectUrl) {
+            window.location.replace(redirectUrl);
+          } else {
+            window.location.replace('../index.html');
+          }
         }, 600);
       } catch (e) {
         console.error('Google Auth Error:', e);
