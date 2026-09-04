@@ -176,6 +176,14 @@
   if (typeof module !== "undefined" && module.exports) { module.exports = AuthGuard; }
   global.AuthGuard = AuthGuard;
 
+  // Run immediate synchronous route check
+  if (typeof window !== "undefined") {
+    try {
+      checkRouteAccess();
+    } catch(e) {}
+  }
+
+
   if (typeof document !== "undefined") {
     document.addEventListener("DOMContentLoaded", function() {
       AuthGuard.checkRouteAccess();

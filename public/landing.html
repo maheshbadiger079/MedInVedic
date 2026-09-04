@@ -786,5 +786,38 @@
     }, 600);
   }
 </script>
+
+<script>
+  // Check if user is already authenticated
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const user = localStorage.getItem('mv_auth_user');
+      if (user) {
+        const parsed = JSON.parse(user);
+        const name = parsed.displayName || parsed.name || 'User';
+        const navActions = document.querySelector('.nav-actions');
+        if (navActions) {
+          navActions.innerHTML = `
+            <a href="index.html" class="btn-cta" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
+              🌿 Open App (${name}) →
+            </a>
+          `;
+        }
+        const heroBtns = document.querySelector('.hero-btns');
+        if (heroBtns) {
+          heroBtns.innerHTML = `
+            <a href="index.html" class="btn-cta" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
+              🌿 Enter MedInVedic Platform →
+            </a>
+            <a href="pages/dashboard.html" class="btn-ghost" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
+              👤 My Dashboard
+            </a>
+          `;
+        }
+      }
+    } catch(e) {}
+  });
+</script>
+
 </body>
 </html>

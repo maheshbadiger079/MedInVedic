@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+  <!-- IMMEDIATE AUTH GATE: Unauthenticated visitors see Landing Page first -->
+  <script>
+    (function() {
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        var isExplicitPreview = urlParams.get('preview') === 'true' || urlParams.get('mode') === 'guest';
+        if (isExplicitPreview) return;
+
+        var authUser = localStorage.getItem('mv_auth_user');
+        var token = localStorage.getItem('mv_token');
+        var isApp = localStorage.getItem('mv_is_app') === 'true';
+        
+        // If not authenticated, redirect to landing.html immediately
+        if (!authUser && !token && !isApp) {
+          window.location.replace('landing.html');
+        }
+      } catch (e) {
+        console.warn('Auth redirect check:', e);
+      }
+    })();
+  </script>
+
   <meta name="color-scheme" content="light">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
