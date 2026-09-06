@@ -1,16 +1,9 @@
-﻿[
+[
   {
-    "title": "Ashwagandha (Withania somnifera) Classical Monograph",
-    "category": "Ayurveda",
-    "source": "Ayurvedic Pharmacopoeia of India (API) & AYUSH",
-    "tier": "Tier 3",
-    "content": "Ashwagandha (Withania somnifera / Indian Ginseng) is a revered Balya and Rasayana herb in Ayurveda. Traditional uses: Pacifies Vata and Kapha doshas, promotes Dhatu nourishment, reduces Manasika Shrama (mental stress) and supports sound sleep. Standard extract dose: 300mg to 600mg standardized withanolides. Precautions: Avoid during pregnancy; use caution with immunosuppressants."
-  },
-  {
-    "title": "Triphala Churna Classical Monograph",
-    "category": "Ayurveda",
-    "source": "Charaka Samhita Chikitsa Sthana",
-    "tier": "Tier 3",
-    "content": "Triphala is an equal-part formulation of Haritaki (Terminalia chebula), Bibhitaki (Terminalia bellirica), and Amalaki (Phyllanthus emblica). Traditional indications: Deepana-Pachana (digestive stimulation), Anulomana (mild bowel regulation), and Rasayana detox. Dosage: 3-5g with warm water at bedtime."
+    "title": "Ashwagandha (Withania somnifera) — Classical Ayurvedic Monograph",
+    "category": "Ayurveda & Rasayana",
+    "source": "Ayurvedic Pharmacopoeia of India (API) & Ministry of AYUSH",
+    "tier": "Tier 3 (AYUSH Classical & Modern Clinical)",
+    "content": "Herb / Medicine: Ashwagandha (Withania somnifera / Indian Ginseng).\nClassical Ayurvedic Properties: Rasa: Tikta, Kashaya, Madhura. Veerya: Ushna (Hot). Vipaka: Madhura. Balances Vata and Kapha doshas. Classified as Balya (strength promoter), Rasayana (rejuvenator), and Medhya (nootropic).\nPharmacology & Clinical Evidence: Withanolides modulate the HPA axis, reducing serum cortisol levels by up to 28-30% in clinical trials. Enhances GABA-ergic neurotransmission to reduce anxiety and improve sleep architecture.\nDosage & Administration: Root extract powder: 3-6 grams daily with warm milk and ghee. Standardized root extract (KSM-66 / Sensoril): 300-600mg daily.\nContraindications & Precautions: Avoid during pregnancy (uterine stimulant properties). Caution in hyperthyroidism and autoimmune conditions."
   }
 ]

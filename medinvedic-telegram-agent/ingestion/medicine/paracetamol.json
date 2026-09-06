@@ -1,16 +1,9 @@
-﻿[
+[
   {
-    "title": "Paracetamol (Acetaminophen) Clinical Monograph",
-    "category": "Modern Medicine",
-    "source": "CDSCO / WHO Essential Medicines",
-    "tier": "Tier 1",
-    "content": "Paracetamol (Acetaminophen 500mg-650mg) is a first-line antipyretic and analgesic indicated for mild-to-moderate fever and body pain. Adult dosage: 500mg to 1000mg every 4-6 hours (max 4000mg per 24 hours). Contraindications: Severe hepatic impairment, alcohol dependency. Side effects: Rare at therapeutic dosage; hepatotoxicity in acute overdose."
-  },
-  {
-    "title": "Cetirizine Hydrochloride Clinical Guide",
-    "category": "Modern Medicine",
-    "source": "CDSCO Allopathic Pharmacology",
-    "tier": "Tier 1",
-    "content": "Cetirizine 10mg is a second-generation H1-receptor antihistamine used for symptomatic relief of allergic rhinitis, perennial allergic rhinitis, and chronic urticaria. Dosage: 10mg once daily at bedtime. Precautions: May cause mild sedation in sensitive individuals; avoid alcohol."
+    "title": "Paracetamol (Acetaminophen / Dolo / Crocin) — CDSCO & WHO Monograph",
+    "category": "Modern Pharmacology",
+    "source": "WHO Model List of Essential Medicines & CDSCO Formulary",
+    "tier": "Tier 1 (WHO / CDSCO)",
+    "content": "Medicine: Paracetamol (Acetaminophen) — 500mg, 650mg tablets / oral suspension.\nTherapeutic Class: Analgesic and Antipyretic (Non-opioid, non-NSAID).\nMechanism of Action: Central inhibition of prostaglandin synthesis (COX-2 variant) within the CNS and peripheral block of pain impulse generation; acts on hypothalamic heat-regulating center.\nIndications: Mild to moderate pain (headache, toothache, muscle ache, dysmenorrhea) and fever reduction.\nDosage Guidelines: Adults: 500mg to 650mg every 4 to 6 hours as needed. Maximum daily dose: 4000mg (4g) per 24 hours. Children: 10-15 mg/kg per dose every 4-6 hours (Max 60 mg/kg/day).\nContraindications & Toxicities: Severe hepatic impairment, chronic alcoholism. Overdose causes acute liver necrosis via toxic metabolite NAPQI (treated with N-acetylcysteine antidote).\nBrand Names: Dolo 650, Crocin, Calpol, Tylenol, Panadol."
   }
 ]
