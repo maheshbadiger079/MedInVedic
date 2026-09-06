@@ -1,0 +1,16 @@
+﻿[
+  {
+    "title": "Paracetamol (Acetaminophen) Clinical Monograph",
+    "category": "Modern Medicine",
+    "source": "CDSCO / WHO Essential Medicines",
+    "tier": "Tier 1",
+    "content": "Paracetamol (Acetaminophen 500mg-650mg) is a first-line antipyretic and analgesic indicated for mild-to-moderate fever and body pain. Adult dosage: 500mg to 1000mg every 4-6 hours (max 4000mg per 24 hours). Contraindications: Severe hepatic impairment, alcohol dependency. Side effects: Rare at therapeutic dosage; hepatotoxicity in acute overdose."
+  },
+  {
+    "title": "Cetirizine Hydrochloride Clinical Guide",
+    "category": "Modern Medicine",
+    "source": "CDSCO Allopathic Pharmacology",
+    "tier": "Tier 1",
+    "content": "Cetirizine 10mg is a second-generation H1-receptor antihistamine used for symptomatic relief of allergic rhinitis, perennial allergic rhinitis, and chronic urticaria. Dosage: 10mg once daily at bedtime. Precautions: May cause mild sedation in sensitive individuals; avoid alcohol."
+  }
+]
