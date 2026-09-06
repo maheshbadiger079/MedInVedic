@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 import logging
 from typing import Optional
@@ -32,9 +33,21 @@ class LLMProvider:
         return self._mock_grounded_response(prompt)
 
     def _mock_grounded_response(self, prompt: str) -> str:
-        if "Ashwagandha" in prompt:
+        low = prompt.lower()
+        if "cold" in low or "cetirizine" in low or "sneez" in low or "allergy" in low or "rhinitis" in low:
             return (
-                "🌿 **Ashwagandha (Withania somnifera)**\n\n"
+                "🤧 *Cold & Allergy Care Guidance (Dual System)*\n\n"
+                "💊 *Allopathic Pharmacology (CDSCO / WHO):*\n"
+                "• **Cetirizine 10mg** — Second-generation antihistamine for runny nose, sneezing, and allergic rhinitis. Dose: 1 tablet daily at bedtime.\n"
+                "• **Paracetamol 500mg** — If fever or body ache is present.\n\n"
+                "🌿 *Ayurvedic & Supportive Remedies (AYUSH):*\n"
+                "• **Tulsi Ginger & Honey Infusion** — 2-3 times daily for soothing throat and respiratory tract.\n"
+                "• **Steam Inhalation with Eucalyptus** — 5-10 minutes to relieve nasal congestion.\n\n"
+                "⚠️ *Precautions:* Seek medical attention if high fever (>102°F) or breathing difficulty develops."
+            )
+        elif "ashwagandha" in low:
+            return (
+                "🌿 *Ashwagandha (Withania somnifera)*\n\n"
                 "• **Classification:** Classical Ayurvedic Rasayana & Adaptogen (AYUSH Tier 3)\n"
                 "• **Key Actions:** Cortisol modulation, stress relief, and vitality enhancement.\n"
                 "• **Safety & Precautions:** Safe in traditional doses (300-600mg extract). Avoid in pregnancy.\n\n"
@@ -42,9 +55,9 @@ class LLMProvider:
                 "• Ayurvedic Pharmacopoeia of India (API)\n"
                 "• Charaka Samhita Chikitsa Sthana"
             )
-        elif "Paracetamol" in prompt or "fever" in prompt.lower():
+        elif "paracetamol" in low or "fever" in low:
             return (
-                "💊 **Paracetamol (Acetaminophen 500mg)**\n\n"
+                "💊 *Paracetamol (Acetaminophen 500mg)*\n\n"
                 "• **Classification:** Analgesic and Antipyretic (CDSCO / WHO Tier 1)\n"
                 "• **Indications:** Mild-to-moderate pyrexia (fever) and pain relief.\n"
                 "• **Safety & Precautions:** Maximum 4000mg/24h. Contraindicated in severe liver impairment.\n\n"
@@ -52,8 +65,17 @@ class LLMProvider:
                 "• CDSCO Allopathic Guidelines\n"
                 "• WHO Essential Medicines List (2023)"
             )
+        elif "triphala" in low or "digest" in low or "constipat" in low:
+            return (
+                "🌿 *Triphala Churna (Haritaki + Bibhitaki + Amalaki)*\n\n"
+                "• **Classification:** Classical Ayurvedic Bowel Regulator & Deepana (AYUSH Tier 3)\n"
+                "• **Indications:** Sluggish digestion, mild constipation, and gut detox.\n"
+                "• **Dosage:** 3-5g with warm water before bedtime.\n\n"
+                "📚 **Verified Sources:**\n"
+                "• Charaka Samhita Chikitsa Sthana"
+            )
         return (
-            "ℹ️ **MedInVedic Clinical Evidence Summary**\n\n"
+            "ℹ️ *MedInVedic Clinical Evidence Summary*\n\n"
             "The retrieved clinical knowledge base indicates supportive care and standard clinical monitoring.\n\n"
             "⚠️ *Always consult a registered medical practitioner before starting medication.*"
         )

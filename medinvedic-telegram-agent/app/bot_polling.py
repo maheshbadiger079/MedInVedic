@@ -1,5 +1,13 @@
-import asyncio
+# -*- coding: utf-8 -*-
+import os
+import sys
 import logging
+
+# Ensure UTF-8 stdout on Windows
+if sys.platform == "win32":
+    import codecs
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 from app.config import settings
@@ -48,8 +56,8 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, msg_handler))
     
     print("\n" + "="*60)
-    print("ðŸŒ¿ MedInVedic Telegram Bot is LIVE and Listening for Messages!")
-    print("ðŸ“± Open Telegram on your phone and start chatting with your bot.")
+    print("🌿 MedInVedic Telegram Bot is LIVE and Listening for Messages!")
+    print("📱 Open Telegram on your phone and start chatting with your bot.")
     print("="*60 + "\n")
     
     app.run_polling()

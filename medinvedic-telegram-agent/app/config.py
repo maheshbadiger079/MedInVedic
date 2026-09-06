@@ -1,6 +1,15 @@
 import os
+from pathlib import Path
 from typing import List, Optional
+from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
+
+# Explicitly load .env from agent root
+env_file = Path(__file__).resolve().parent.parent / ".env"
+if env_file.exists():
+    load_dotenv(dotenv_path=env_file, override=True)
+else:
+    load_dotenv(override=True)
 
 class Settings(BaseSettings):
     APP_NAME: str = "MedInVedic Telegram AI Agent"
@@ -10,7 +19,7 @@ class Settings(BaseSettings):
     LOG_LEVEL: str = "INFO"
 
     # Telegram
-    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "mock_telegram_token")
+    TELEGRAM_BOT_TOKEN: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
     TELEGRAM_WEBHOOK_URL: Optional[str] = os.getenv("TELEGRAM_WEBHOOK_URL", None)
     TELEGRAM_WEBHOOK_SECRET: Optional[str] = os.getenv("TELEGRAM_WEBHOOK_SECRET", None)
 
