@@ -66,20 +66,30 @@ class MedInVedicAIAgent:
         context_envelope = rag_res.get("context_envelope", "")
         citations = rag_res.get("citations", [])
 
-        # 5. LLM Synthesis with Grounded Context
+        # 5. LLM Synthesis with Grounded Context and Original Query
         prompt = RAG_SYNTHESIS_PROMPT_TEMPLATE.format(
             query=text,
             language=user_lang,
             context_envelope=context_envelope or "No direct clinical document found."
         )
 
-        llm_response = await self.llm.generate_response(prompt, system_instruction=MEDINVEDIC_SYSTEM_PROMPT)
+        llm_response = await self.llm.generate_response(
+            prompt,
+            system_instruction=MEDINVEDIC_SYSTEM_PROMPT,
+            user_query=text
+        )
+
+        # Set clean relevant sources
+        if any(w in low for w in ["founder", "creator", "who made", "owner", "about medinvedic", "what is medinvedic"]):
+            sources = ["MedInVedic Official Portal (medinvedic.web.app)"]
+        else:
+            sources = citations[:2] if citations else ["CDSCO Allopathic Guidelines", "Ayurvedic Pharmacopoeia of India (AYUSH)"]
 
         return {
             "response": llm_response,
             "safety_level": safety_level.value,
             "confidence": rag_res.get("confidence", 0.95),
-            "sources": citations if citations else ["CDSCO Allopathic Formulary", "Ayurvedic Pharmacopoeia of India (AYUSH)"],
+            "sources": sources,
             "language": user_lang
         }
 

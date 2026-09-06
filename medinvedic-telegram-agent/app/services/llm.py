@@ -7,9 +7,19 @@ from app.config import settings
 
 logger = logging.getLogger("medinvedic.llm")
 
+# Dedicated FAQs & Platform Info
+PLATFORM_INFO = {
+    "founder": "Mahesh Badiger",
+    "name": "MedInVedic",
+    "tagline": "Where Modern Medicine Meets Ancient Ayurveda",
+    "website": "https://medinvedic.web.app",
+    "mission": "Uniting modern CDSCO/WHO evidence-based medicine with authentic AYUSH Ayurvedic healthcare."
+}
+
+# Clinical Knowledge Database
 CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
     "fever": {
-        "keywords": ["fever", "pyrexia", "bukhar", "temperature", "chills", "paracetamol", "dolo", "crocin", "calpol"],
+        "keywords": [r"\bfever\b", r"\bpyrexia\b", r"\bbukhar\b", r"\btemperature\b", r"\bchills\b", r"\bparacetamol\b", r"\bdolo\b", r"\bcrocin\b", r"\bcalpol\b"],
         "title": "🌡️ *Fever Management (Pyrexia / Jwara)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -33,7 +43,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Temperature > 103°F (39.4°C), stiff neck, breathing difficulty, or fever lasting > 3 days requires immediate medical care."
     },
     "cold_allergy": {
-        "keywords": ["cold", "sardi", "jukaam", "runny nose", "sneezing", "congestion", "allergy", "rhinitis", "cetirizine", "allegra", "sinus"],
+        "keywords": [r"\bcold\b", r"\bsardi\b", r"\bjukaam\b", r"\brummy nose\b", r"\brunning nose\b", r"\bsneez", r"\bcongestion\b", r"\ballergy\b", r"\brhinitis\b", r"\bcetirizine\b", r"\ballegra\b", r"\bsinus\b"],
         "title": "🤧 *Common Cold & Allergic Rhinitis (Pratishyaya)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -56,7 +66,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Wheezing, shortness of breath, severe sinus pain with purulent discharge, or symptoms > 10 days."
     },
     "cough": {
-        "keywords": ["cough", "khasi", "tussis", "dry cough", "wet cough", "phlegm", "koflet", "honitus", "benadryl", "ambroxol", "dextromethorphan"],
+        "keywords": [r"\bcough\b", r"\bkhasi\b", r"\btussis\b", r"\bdry cough\b", r"\bwet cough\b", r"\bphlegm\b", r"\bkoflet\b", r"\bhonitus\b", r"\bbenadryl\b", r"\bambroxol\b", r"\bdextromethorphan\b"],
         "title": "🫁 *Cough Relief Guidance (Dry & Productive / Kasa)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -78,7 +88,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Blood in sputum, persistent cough > 2 weeks, high fever, or significant weight loss."
     },
     "headache": {
-        "keywords": ["headache", "sar dard", "head ache", "migraine", "cephalalgia", "tension headache", "cluster headache"],
+        "keywords": [r"\bheadache\b", r"\bsar dard\b", r"\bsir dard\b", r"\bhead ache\b", r"\bmigraine\b", r"\bcephalalgia\b", r"\btension headache\b"],
         "title": "💆 *Headache & Migraine Relief (Shirashoola)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -100,7 +110,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Sudden explosive 'thunderclap' headache, headache with blurred vision, numbness, or neck stiffness (Emergency 112)."
     },
     "stomach_acidity": {
-        "keywords": ["stomach pain", "acidity", "gas", "pet dard", "gastritis", "gerd", "heartburn", "indigestion", "bloating", "pantoprazole", "omeprazole", "digene", "gelusil", "eno"],
+        "keywords": [r"\bstomach pain\b", r"\bacidity\b", r"\bgas\b", r"\bpet dard\b", r"\bgastritis\b", r"\bgerd\b", r"\bheartburn\b", r"\bindigestion\b", r"\bbloating\b", r"\bpantoprazole\b", r"\bomeprazole\b", r"\bdigene\b", r"\bgelusil\b", r"\beno\b"],
         "title": "🥣 *Acidity, Gas & Stomach Discomfort (Amlapitta & Agnimandya)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -123,7 +133,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Severe sharp pain in lower right abdomen (possible appendicitis), black tarry stools, or persistent vomiting."
     },
     "diabetes": {
-        "keywords": ["diabetes", "sugar", "blood sugar", "glucose", "metformin", "hba1c", "madhumeha", "diabetic"],
+        "keywords": [r"\bdiabetes\b", r"\bsugar\b", r"\bblood sugar\b", r"\bglucose\b", r"\bmetformin\b", r"\bhba1c\b", r"\bmadhumeha\b", r"\bdiabetic\b"],
         "title": "🩸 *Type 2 Diabetes & Blood Sugar Care (Madhumeha)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -145,7 +155,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Blood sugar < 70 mg/dL (hypoglycemia with sweating/shaking - take sugar immediately), or sugar > 350 mg/dL with confusion."
     },
     "hypertension": {
-        "keywords": ["blood pressure", "high bp", "hypertension", "bp", "amlodipine", "telmisartan", "raktachapa"],
+        "keywords": [r"\bblood pressure\b", r"\bhigh bp\b", r"\bhypertension\b", r"\bbp\b", r"\bamlodipine\b", r"\btelmisartan\b", r"\braktachapa\b"],
         "title": "💓 *Hypertension & Blood Pressure Care (Raktachapa)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -167,7 +177,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* BP > 180/120 mmHg accompanied by chest pain, shortness of breath, or sudden severe headache is a medical emergency (Dial 112)."
     },
     "diarrhea": {
-        "keywords": ["diarrhea", "loose motion", "dast", "motions", "loose stools", "ors", "electral", "loperamide", "atisara", "food poisoning"],
+        "keywords": [r"\bdiarrhea\b", r"\bloose motion\b", r"\bdast\b", r"\bmotions\b", r"\bloose stools\b", r"\bors\b", r"\belectral\b", r"\bloperamide\b", r"\batisara\b", r"\bfood poisoning\b"],
         "title": "💧 *Diarrhea & Loose Motions Care (Atisara)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -189,7 +199,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Stools containing blood or mucus, high fever, sunken eyes, no urine for > 8 hours (Severe dehydration)."
     },
     "sore_throat": {
-        "keywords": ["sore throat", "gala dard", "tonsils", "tonsillitis", "pharyngitis", "throat pain", "strep", "gargle", "lozenge"],
+        "keywords": [r"\bsore throat\b", r"\bgala dard\b", r"\btonsils\b", r"\btonsillitis\b", r"\bpharyngitis\b", r"\bthroat pain\b", r"\bstrep\b", r"\bgargle\b", r"\blozenge\b"],
         "title": "🧣 *Sore Throat & Tonsillitis Care (Kantha Roga)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -212,7 +222,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Difficulty breathing, inability to swallow saliva, or asymmetric tonsil swelling."
     },
     "back_joint_pain": {
-        "keywords": ["back pain", "joint pain", "knee pain", "kamar dard", "gathiya", "arthritis", "lumbago", "sandhivata", "sciatica", "neck pain"],
+        "keywords": [r"\bback pain\b", r"\bjoint pain\b", r"\bknee pain\b", r"\bkamar dard\b", r"\bgathiya\b", r"\barthritis\b", r"\blumbago\b", r"\bsandhivata\b", r"\bsciatica\b", r"\bneck pain\b"],
         "title": "🦴 *Back & Joint Pain Care (Sandhivata & Katishoola)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -235,7 +245,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Back pain with numbness/weakness radiating down both legs, or loss of bladder/bowel control (Emergency 112)."
     },
     "skin_allergy": {
-        "keywords": ["skin allergy", "itching", "rash", "khujli", "urticaria", "hives", "eczema", "calamine", "dermatitis"],
+        "keywords": [r"\bskin allergy\b", r"\bitching\b", r"\brash\b", r"\bkhujli\b", r"\burticaria\b", r"\bhives\b", r"\beczema\b", r"\bcalamine\b", r"\bdermatitis\b"],
         "title": "🧴 *Skin Allergy, Itching & Rash Care (Kushta & Udarda)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -258,7 +268,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Swelling of lips, face, or tongue, difficulty breathing (Anaphylaxis - Dial 112 immediately)."
     },
     "stress_insomnia": {
-        "keywords": ["insomnia", "sleep", "neend", "stress", "tanaav", "anxiety", "ashwagandha", "depression", "restless"],
+        "keywords": [r"\binsomnia\b", r"\bsleep\b", r"\bneend\b", r"\bstress\b", r"\btanaav\b", r"\banxiety\b", r"\bdepression\b", r"\brestless\b"],
         "title": "🌙 *Sleep, Stress & Anxiety Support (Anidra & Manas Roga)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -280,7 +290,7 @@ CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
         "red_flags": "⚠️ *Red Flags:* Severe persistent panic attacks, depressive thoughts, or self-harm ideation (Call National Helpline 14416 / 112)."
     },
     "constipation": {
-        "keywords": ["constipation", "kabz", "pet saaf", "hard stool", "triphala", "isabgol", "lactulose", "cremaffin"],
+        "keywords": [r"\bconstipation\b", r"\bkabz\b", r"\bpet saaf\b", r"\bhard stool\b", r"\btriphala\b", r"\bisabgol\b", r"\blactulose\b", r"\bcremaffin\b"],
         "title": "🌾 *Constipation & Gut Regularity (Vibhandha)*",
         "allopathic": (
             "💊 **Allopathic Pharmacology (CDSCO / WHO Tier 1):**\n"
@@ -318,7 +328,7 @@ class LLMProvider:
             except Exception as e:
                 logger.warning(f"Failed to initialize Gemini client: {e}")
 
-    async def generate_response(self, prompt: str, system_instruction: Optional[str] = None) -> str:
+    async def generate_response(self, prompt: str, system_instruction: Optional[str] = None, user_query: Optional[str] = None) -> str:
         if self._client:
             try:
                 full_prompt = f"{system_instruction}\n\n{prompt}" if system_instruction else prompt
@@ -328,14 +338,39 @@ class LLMProvider:
             except Exception as e:
                 logger.error(f"Gemini API generation error: {e}")
 
-        return self.clinical_reasoning_fallback(prompt)
+        # Use user_query directly for clinical reasoning fallback
+        effective_query = user_query if user_query else prompt
+        return self.clinical_reasoning_fallback(effective_query)
 
     def clinical_reasoning_fallback(self, query: str) -> str:
         low = query.lower()
-        
-        # 1. Match against extensive clinical database
+
+        # 1. Check Platform / Founder / About / Organization queries
+        if any(re.search(p, low) for p in [r"\bfounder\b", r"\bwho created\b", r"\bwho made\b", r"\bcreator\b", r"\bwho is behind\b", r"\bowner\b"]):
+            return (
+                "🌿 **About MedInVedic Leadership & Founder**\n\n"
+                "• **Founder & Creator:** Mahesh Badiger\n"
+                "• **Platform:** MedInVedic (\"Where Modern Medicine Meets Ancient Ayurveda\")\n"
+                "• **Official Website:** [https://medinvedic.web.app](https://medinvedic.web.app)\n"
+                "• **Mission:** Uniting modern CDSCO/WHO evidence-based medicine with authentic AYUSH Ayurvedic healthcare, providing AI clinical guidance, certified doctor consultations, and authentic medicine delivery."
+            )
+        elif any(re.search(p, low) for p in [r"\bwhat is medinvedic\b", r"\babout medinvedic\b", r"\btell me about medinvedic\b"]):
+            return (
+                "🌿 **About MedInVedic Healthcare Platform**\n\n"
+                "MedInVedic is India's premier integrated healthcare platform:\n"
+                "• **Tagline:** \"Where Modern Medicine Meets Ancient Ayurveda\"\n"
+                "• **Founder:** Mahesh Badiger\n"
+                "• **Official Portal:** [https://medinvedic.web.app](https://medinvedic.web.app)\n\n"
+                "**Core Capabilities:**\n"
+                "1. 💊 **Modern Allopathic Pharmacy:** CDSCO & WHO validated drug database & dosage.\n"
+                "2. 🌿 **Ayurvedic Marketplace:** Authentic AYUSH classical herbs & formulations.\n"
+                "3. 👨‍⚕️ **Verified Doctor Network:** Online & in-person consultations.\n"
+                "4. 🤖 **AI Clinical Assistant:** 24/7 dual-system health intelligence."
+            )
+
+        # 2. Match against extensive clinical database with regex word boundaries
         for key, item in CLINICAL_KNOWLEDGE.items():
-            if any(k in low for k in item["keywords"]):
+            if any(re.search(pattern, low) for pattern in item["keywords"]):
                 return (
                     f"{item['title']}\n\n"
                     f"{item['allopathic']}\n\n"
@@ -343,9 +378,9 @@ class LLMProvider:
                     f"{item['home_care']}\n\n"
                     f"{item['red_flags']}"
                 )
-        
-        # 2. Specific single herb / medicine lookups
-        if "ashwagandha" in low:
+
+        # 3. Specific single herb / medicine lookups
+        if re.search(r"\bashwagandha\b", low):
             return (
                 "🌿 *Ashwagandha (Withania somnifera / Indian Ginseng)*\n\n"
                 "• **Ayurvedic Classification:** Premier *Rasayana* (Rejuvenator), *Balya* (Strength Enhancer) & *Vata-Kapha Hara* (AYUSH Tier 3).\n"
@@ -353,35 +388,35 @@ class LLMProvider:
                 "• **Dosage:** Standardized root extract (KSM-66 / Sensoril) 300–600mg daily or root powder 3–5g with warm milk.\n"
                 "• **Contraindications:** Avoid in pregnancy and hyperthyroidism."
             )
-        elif "triphala" in low:
+        elif re.search(r"\btriphala\b", low):
             return (
                 "🌿 *Triphala Churna (Amalaki + Bibhitaki + Haritaki)*\n\n"
                 "• **Ayurvedic Classification:** Tridoshic Balancer (*Sama Dosha*), *Anulomana* (Gentle bowel regulator) (AYUSH Tier 3).\n"
                 "• **Clinical Actions:** Mild colon cleanser, gut detoxifier, rich in Vitamin C & bioflavonoids for eye and metabolic health.\n"
                 "• **Dosage:** 3–5g with warm water before sleep."
             )
-        elif "giloy" in low or "guduchi" in low:
+        elif re.search(r"\bgiloy\b|\bguduchi\b", low):
             return (
                 "🌿 *Giloy / Guduchi (Tinospora cordifolia)*\n\n"
                 "• **Ayurvedic Classification:** *Amrita* (Immunity elixir), *Jwarahara* (Antipyretic) & *Deepana* (AYUSH Tier 3).\n"
                 "• **Clinical Actions:** Immunomodulator, platelet stabilizer in viral fevers, hepatic protector.\n"
                 "• **Dosage:** 500mg Ghanavati tablet twice daily after meals."
             )
-        elif "tulsi" in low or "holy basil" in low:
+        elif re.search(r"\btulsi\b|\bholy basil\b", low):
             return (
                 "🌿 *Tulsi / Holy Basil (Ocimum sanctum)*\n\n"
                 "• **Ayurvedic Classification:** *Kapha-Vata Shamaka*, *Krimighna* (Antimicrobial) & *Shvasahara* (Respiratory tonic).\n"
                 "• **Clinical Actions:** Relieves chest congestion, soothes cough reflex, reduces systemic oxidative stress.\n"
                 "• **Usage:** Fresh juice 5–10ml with honey or herbal tea infusion 2–3 times daily."
             )
-        elif "neem" in low:
+        elif re.search(r"\bneem\b", low):
             return (
                 "🌿 *Neem (Azadirachta indica)*\n\n"
                 "• **Ayurvedic Classification:** *Tikta-Kashaya*, *Kushtaghna* (Skin healer) & *Raktashodhaka* (Blood purifier).\n"
                 "• **Clinical Actions:** Potent antibacterial, antifungal, and anti-inflammatory properties for skin disorders.\n"
                 "• **Usage:** External leaf wash or 500mg Ghanavati under medical guidance."
             )
-        elif "paracetamol" in low or "dolo" in low or "crocin" in low:
+        elif re.search(r"\bparacetamol\b|\bdolo\b|\bcrocin\b", low):
             return (
                 "💊 *Paracetamol (Acetaminophen 500mg / 650mg)*\n\n"
                 "• **Classification:** Non-opioid Analgesic & Antipyretic (CDSCO / WHO Tier 1).\n"
@@ -389,21 +424,21 @@ class LLMProvider:
                 "• **Dosage:** 500–650mg every 4–6 hours as needed (Maximum 4000mg/24h).\n"
                 "• **Safety:** Do not combine with alcohol or other paracetamol-containing products."
             )
-        elif "cetirizine" in low or "allegra" in low:
+        elif re.search(r"\bcetirizine\b|\ballegra\b", low):
             return (
                 "💊 *Cetirizine Hydrochloride (10mg)*\n\n"
                 "• **Classification:** 2nd Generation Selective H1-Antihistamine (CDSCO / WHO Tier 1).\n"
                 "• **Indications:** Allergic rhinitis, sneezing, runny nose, watery eyes, and urticaria/itching.\n"
                 "• **Dosage:** 1 tablet (10mg) once daily at bedtime (may cause mild drowsiness)."
             )
-        elif "metformin" in low:
+        elif re.search(r"\bmetformin\b", low):
             return (
                 "💊 *Metformin Hydrochloride (500mg / 850mg / 1000mg)*\n\n"
                 "• **Classification:** Oral Biguanide Hypoglycemic Agent (WHO / CDSCO Tier 1).\n"
                 "• **Mechanism:** Reduces hepatic glucose production and enhances insulin sensitivity in peripheral tissues.\n"
                 "• **Dosage:** Take with or right after meals to minimize gastrointestinal discomfort."
             )
-        elif "pantoprazole" in low or "omeprazole" in low:
+        elif re.search(r"\bpantoprazole\b|\bomeprazole\b", low):
             return (
                 "💊 *Pantoprazole (40mg) / Omeprazole (20mg)*\n\n"
                 "• **Classification:** Proton Pump Inhibitor (PPI) (CDSCO / WHO Tier 1).\n"
@@ -411,17 +446,14 @@ class LLMProvider:
                 "• **Administration:** Take 1 tablet once daily in the morning 30 minutes before breakfast."
             )
 
-        # 3. Default Grounded Clinical Guidance
+        # 4. Default Grounded Clinical Guidance
         return (
-            "🌿 **MedInVedic Dual-System Clinical Guidance**\n\n"
-            "For your health query, we recommend a balanced integrative approach:\n\n"
-            "💊 **Modern Pharmacology (CDSCO / WHO):**\n"
-            "• Consult standard clinical protocols for precise symptomatic diagnosis and first-line therapy.\n\n"
-            "🌿 **Ayurvedic Care (AYUSH):**\n"
-            "• Maintain balanced *Dinacharya* (daily routine), consume warm light foods, and use dosha-balancing supportive herbs.\n\n"
-            "🏠 **Supportive Care:**\n"
-            "• Stay adequately hydrated, get 7–8 hours of restorative sleep, and avoid cold/processed food.\n\n"
-            "💡 *Tip: You can ask specific symptoms like 'Fever', 'Cold', 'Headache', 'Stomach Pain', 'Diabetes', or medicine names like 'Paracetamol', 'Ashwagandha', 'Cetirizine'!*"
+            "🌿 **MedInVedic Dual-System Guidance**\n\n"
+            "I am your MedInVedic Clinical AI Assistant. You can ask me:\n\n"
+            "• **Symptoms & Treatments:** 'Cold', 'Fever', 'Cough', 'Acidity', 'Headache', 'Diabetes', 'High BP', 'Loose Motion', etc.\n"
+            "• **Medicines & Herbs:** 'Paracetamol', 'Ashwagandha', 'Cetirizine', 'Triphala', 'Giloy', 'Tulsi', 'Pantoprazole'\n"
+            "• **Platform Services:** 'Who is the founder', 'Book doctor', 'Buy products', or '/help'\n\n"
+            "⚠️ *For personalized medical diagnoses or emergencies, please consult a certified doctor or dial 112.*"
         )
 
 llm_service = LLMProvider()
