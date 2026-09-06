@@ -26,7 +26,24 @@ async def cmd_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     args = parts[1] if len(parts) > 1 else ""
     
     reply = await handle_telegram_command(cmd, args, user_id)
-    if reply:
+    if isinstance(reply, dict):
+        photo_path = reply.get("photo")
+        caption = reply.get("photo_caption", "")
+        text_content = reply.get("text", "")
+
+        if photo_path and os.path.exists(photo_path):
+            try:
+                with open(photo_path, "rb") as photo_file:
+                    await update.message.reply_photo(photo=photo_file, caption=caption, parse_mode="Markdown")
+            except Exception as e:
+                logger.error(f"Error sending photo: {e}")
+
+        if text_content:
+            try:
+                await update.message.reply_text(text_content, parse_mode="Markdown")
+            except Exception:
+                await update.message.reply_text(text_content)
+    elif isinstance(reply, str) and reply:
         try:
             await update.message.reply_text(reply, parse_mode="Markdown")
         except Exception:
@@ -39,7 +56,24 @@ async def msg_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
     
     reply = await handle_telegram_message(text, user_id)
-    if reply:
+    if isinstance(reply, dict):
+        photo_path = reply.get("photo")
+        caption = reply.get("photo_caption", "")
+        text_content = reply.get("text", "")
+
+        if photo_path and os.path.exists(photo_path):
+            try:
+                with open(photo_path, "rb") as photo_file:
+                    await update.message.reply_photo(photo=photo_file, caption=caption, parse_mode="Markdown")
+            except Exception as e:
+                logger.error(f"Error sending photo: {e}")
+
+        if text_content:
+            try:
+                await update.message.reply_text(text_content, parse_mode="Markdown")
+            except Exception:
+                await update.message.reply_text(text_content)
+    elif isinstance(reply, str) and reply:
         try:
             await update.message.reply_text(reply, parse_mode="Markdown")
         except Exception:
@@ -51,7 +85,7 @@ def main():
     
     app = ApplicationBuilder().token(token).build()
     
-    commands = ["start", "help", "medicine", "ayurveda", "remedy", "product", "doctor", "language", "memory", "forget", "about"]
+    commands = ["start", "help", "founder", "history", "story", "medicine", "ayurveda", "remedy", "product", "doctor", "language", "memory", "forget", "about"]
     app.add_handler(CommandHandler(commands, cmd_handler))
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, msg_handler))
     

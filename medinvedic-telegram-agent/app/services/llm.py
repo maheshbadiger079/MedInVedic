@@ -7,16 +7,45 @@ from app.config import settings
 
 logger = logging.getLogger("medinvedic.llm")
 
-# Dedicated FAQs & Platform Info
-PLATFORM_INFO = {
-    "founder": "Mahesh Badiger",
-    "name": "MedInVedic",
-    "tagline": "Where Modern Medicine Meets Ancient Ayurveda",
-    "website": "https://medinvedic.web.app",
-    "mission": "Uniting modern CDSCO/WHO evidence-based medicine with authentic AYUSH Ayurvedic healthcare."
-}
+FOUNDER_STORY = (
+    "📖 *The Story Behind MedInVedic*\n"
+    "_\"Where Modern Medicine Meets Ancient Ayurveda\"_\n\n"
+    "MedInVedic started with a simple question:\n"
+    "*Why should people have to choose between modern medicine and Ayurveda when both can play a role in healthcare?*\n\n"
+    "As an **Information Science and Engineering** graduate, I saw how technology was transforming almost every industry—but healthcare still felt fragmented for everyday users.\n\n"
+    "People often search online for medicine information, Ayurvedic solutions, home remedies, nearby healthcare products, prescription support, and doctor consultations across completely different platforms.\n\n"
+    "I wanted to bring these experiences together. That idea became **MedInVedic**.\n\n"
+    "🚀 **From an Idea to a Platform**\n"
+    "I started building MedInVedic as a technology-driven healthcare platform that connects modern medicine, Ayurveda, healthcare information, AI assistance, and digital healthcare services in one ecosystem.\n\n"
+    "Instead of simply building another healthcare website, the vision was to create an intelligent platform that could understand what users are looking for and guide them toward appropriate information and services.\n\n"
+    "MedInVedic is built around technologies such as **Artificial Intelligence, Large Language Models (LLMs), Retrieval-Augmented Generation (RAG), Cloud Computing, Vector Databases, APIs, and Multilingual Interaction**.\n\n"
+    "🤖 **The AI Vision**\n"
+    "One of the most important parts of MedInVedic is its AI Health Assistant.\n"
+    "• *The goal is not to replace doctors.*\n"
+    "• *The goal is to make reliable healthcare information more accessible, understandable, and easier to navigate.*\n\n"
+    "With a RAG-based architecture, MedInVedic retrieves information from trusted healthcare knowledge sources before generating responses, helping reduce unsupported answers.\n\n"
+    "**The Platform's Vision Includes:**\n"
+    "• 💊 Medicine Information (CDSCO / WHO)\n"
+    "• 🌿 Ayurveda Information (AYUSH)\n"
+    "• 🏠 Home-Remedy Guidance\n"
+    "• 🤖 AI Health Assistance\n"
+    "• 📄 Prescription Workflows\n"
+    "• 🛒 Healthcare Product Discovery\n"
+    "• 👨‍⚕️ Doctor Consultation Requests\n"
+    "• 🌍 Multilingual Conversations\n"
+    "• 🔎 RAG-Powered Healthcare Knowledge\n\n"
+    "🇮🇳 **Building for India**\n"
+    "India has enormous diversity in languages, healthcare practices, and access to medical information. That creates an opportunity for technology to make healthcare information easier to understand and access across every community.\n\n"
+    "💡 **The Bigger Vision**\n"
+    "MedInVedic is not just a website. It is the beginning of a larger vision:\n"
+    "*One unified platform where technology helps people discover, understand, and navigate healthcare seamlessly.*\n\n"
+    "I'm building MedInVedic step by step, learning, experimenting, failing, improving, and turning an idea into something real.\n\n"
+    "*This is only the beginning.*\n\n"
+    "— **Mahesh Badiger**\n"
+    "*Founder & Developer, MedInVedic*\n"
+    "🔗 [https://medinvedic.web.app](https://medinvedic.web.app)"
+)
 
-# Clinical Knowledge Database
 CLINICAL_KNOWLEDGE: Dict[str, Dict[str, Any]] = {
     "fever": {
         "keywords": [r"\bfever\b", r"\bpyrexia\b", r"\bbukhar\b", r"\btemperature\b", r"\bchills\b", r"\bparacetamol\b", r"\bdolo\b", r"\bcrocin\b", r"\bcalpol\b"],
@@ -345,15 +374,10 @@ class LLMProvider:
     def clinical_reasoning_fallback(self, query: str) -> str:
         low = query.lower()
 
-        # 1. Check Platform / Founder / About / Organization queries
-        if any(re.search(p, low) for p in [r"\bfounder\b", r"\bwho created\b", r"\bwho made\b", r"\bcreator\b", r"\bwho is behind\b", r"\bowner\b"]):
-            return (
-                "🌿 **About MedInVedic Leadership & Founder**\n\n"
-                "• **Founder & Creator:** Mahesh Badiger\n"
-                "• **Platform:** MedInVedic (\"Where Modern Medicine Meets Ancient Ayurveda\")\n"
-                "• **Official Website:** [https://medinvedic.web.app](https://medinvedic.web.app)\n"
-                "• **Mission:** Uniting modern CDSCO/WHO evidence-based medicine with authentic AYUSH Ayurvedic healthcare, providing AI clinical guidance, certified doctor consultations, and authentic medicine delivery."
-            )
+        # 1. Check Platform / Founder / About / History queries
+        if any(re.search(p, low) for p in [r"\bfounder\b", r"\bhistory\b", r"\bstory\b", r"\bmahesh\b", r"\bbadiger\b", r"\bwho created\b", r"\bwho made\b", r"\bcreator\b", r"\bwho is behind\b", r"\bowner\b"]):
+            return FOUNDER_STORY
+
         elif any(re.search(p, low) for p in [r"\bwhat is medinvedic\b", r"\babout medinvedic\b", r"\btell me about medinvedic\b"]):
             return (
                 "🌿 **About MedInVedic Healthcare Platform**\n\n"
@@ -452,7 +476,7 @@ class LLMProvider:
             "I am your MedInVedic Clinical AI Assistant. You can ask me:\n\n"
             "• **Symptoms & Treatments:** 'Cold', 'Fever', 'Cough', 'Acidity', 'Headache', 'Diabetes', 'High BP', 'Loose Motion', etc.\n"
             "• **Medicines & Herbs:** 'Paracetamol', 'Ashwagandha', 'Cetirizine', 'Triphala', 'Giloy', 'Tulsi', 'Pantoprazole'\n"
-            "• **Platform Services:** 'Who is the founder', 'Book doctor', 'Buy products', or '/help'\n\n"
+            "• **Founder & Platform:** 'Who is the founder', '/founder', 'About MedInVedic', '/help'\n\n"
             "⚠️ *For personalized medical diagnoses or emergencies, please consult a certified doctor or dial 112.*"
         )
 
