@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-512.png">
@@ -545,11 +550,26 @@
       }
     }
   </style>
+
+<style id="medinvedic-font-normalizer">
+  *, *::before, *::after,
+  html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+    font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-style: normal !important;
+  }
+</style>
+
 </head>
-<body>
+<!-- TOP TELEGRAM ANNOUNCEMENT BAR -->
+<div style="background: linear-gradient(90deg, #0088cc, #0284c7); color: #ffffff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; position: sticky; top: 0; z-index: 600;">
+  <span>🤖 Try our official AI Assistant on Telegram:</span>
+  <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: underline; background: rgba(255,255,255,0.22); padding: 2px 10px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
+    Telegram Bot: https://t.me/MedInVedic_AI_bot ↗
+  </a>
+</div>
 
 <!-- NAVBAR -->
-<nav class="landing-nav">
+<nav class="landing-nav" style="top: 36px;">
   <div class="nav-brand">
     <img src="images/assets/logo.png" alt="MedInVedic">
     <span class="nav-brand-text">MedInVedic</span>
@@ -559,6 +579,10 @@
     <a href="#features" class="nav-link">Features</a>
     <a href="#demo-video" class="nav-link">Platform Overview</a>
     <a href="#ai-teaser" class="nav-link">AI Assistant</a>
+    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="nav-link" style="color: #0088cc; display: inline-flex; align-items: center; gap: 6px;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+      Telegram Bot
+    </a>
   </div>
   <div class="nav-actions">
     <button class="btn-ghost" onclick="openLoginModal()">Sign In</button>
@@ -577,6 +601,10 @@
     <button class="btn-cta" style="padding: 14px 28px; font-size: 15px;" onclick="scrollToVideo()">
       ✨ Explore Dual Platform ↓
     </button>
+    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="padding: 14px 24px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(0, 136, 204, 0.4); color: #0088cc; background: rgba(0, 136, 204, 0.05); text-decoration: none;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+      <span>Chat on Telegram</span>
+    </a>
     <button class="btn-ghost" style="padding: 14px 28px; font-size: 15px;" onclick="openRegisterModal()">
       Get Started Free →
     </button>
@@ -602,6 +630,36 @@
       <a href="https://notebooklm.google.com/notebook/42b9e7e0-825d-4c35-9182-b97b71c2a2b0/artifact/aaf4c60b-2fe3-4267-8ce2-155514b7202e" target="_blank" class="notebooklm-btn">
         Explore NotebookLM Workspace ↗
       </a>
+    </div>
+  </div>
+
+  <!-- DEDICATED TELEGRAM BOT CALLOUT BANNER -->
+  <div style="max-width: 1000px; margin: 0 auto 56px; padding: 0 4px;">
+    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%); border-radius: 24px; padding: 32px 36px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18); border: 1.5px solid rgba(255, 255, 255, 0.12); position: relative; overflow: hidden; text-align: left;">
+      <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 136, 204, 0.3); border-radius: 50%; filter: blur(60px); pointer-events: none;"></div>
+      
+      <div style="flex: 1; min-width: 280px; position: relative; z-index: 2;">
+        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 136, 204, 0.25); border: 1px solid rgba(0, 136, 204, 0.5); padding: 4px 12px; border-radius: 50px; font-size: 11.5px; font-weight: 800; color: #38bdf8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
+          🤖 24/7 Live Telegram AI Bot
+        </div>
+        <h3 style="font-size: 26px; font-weight: 900; margin-bottom: 8px; line-height: 1.25; color: #ffffff;">
+          Chat with MedInVedic AI on Telegram
+        </h3>
+        <p style="font-size: 14.5px; color: #cbd5e1; line-height: 1.5; margin-bottom: 14px; max-width: 580px;">
+          Instant clinical triage, CDSCO allopathic medicine lookups, authentic Ayurvedic remedies, and founder history directly on Telegram.
+        </p>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #94a3b8; font-weight: 600; flex-wrap: wrap;">
+          <span>Telegram Bot:</span>
+          <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; font-weight: 800; text-decoration: underline;">https://t.me/MedInVedic_AI_bot</a>
+        </div>
+      </div>
+
+      <div style="position: relative; z-index: 2;">
+        <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; background: #0088cc; color: #ffffff; padding: 14px 28px; border-radius: 14px; font-size: 15px; font-weight: 800; text-decoration: none; box-shadow: 0 8px 24px rgba(0, 136, 204, 0.4); transition: all 0.2s ease;">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+          <span>Open Telegram Bot ↗</span>
+        </a>
+      </div>
     </div>
   </div>
 </section>
@@ -671,6 +729,24 @@
       <p>Voice-first consultation supporting 50+ languages with code-switching support (Hinglish, Kanglish) and speech synthesis.</p>
       <span class="feat-pill">50+ Languages</span>
     </div>
+    <div class="feat-card" onclick="window.location.href='pages/vedicmind.html'" style="cursor:pointer; border-color:#22c55e; background:linear-gradient(135deg, rgba(240,253,244,0.8), #fff);">
+      <div class="feat-icon">🧠</div>
+      <h3>VedicMind AI Learning</h3>
+      <p>16 Vedic Sutras, mental math speed drills, AI proof verification, mistake diagnostic analyzer, and student XP progression.</p>
+      <span class="feat-pill" style="background:#dcfce7; color:#166534; font-weight:800;">Featured AI Tutor</span>
+    </div>
+    <div class="feat-card" onclick="window.location.href='pages/prescription-decoder.html'" style="cursor:pointer;">
+      <div class="feat-icon">📄</div>
+      <h3>Lipi Vaidya (Rx Decoder)</h3>
+      <p>Instant plain-language medical translation for doctor prescriptions, dosage guidance, side effects, and Ayurvedic parallels.</p>
+      <span class="feat-pill">RAG Grounded</span>
+    </div>
+    <div class="feat-card" onclick="window.open('https://t.me/MedInVedic_AI_bot', '_blank')" style="cursor:pointer; border-color:#0088cc; background:linear-gradient(135deg, rgba(0,136,204,0.06), #fff);">
+      <div class="feat-icon">✈️</div>
+      <h3>Telegram AI Assistant</h3>
+      <p>Instant 24/7 mobile clinical triage, medicine lookup, Ayurvedic home remedies, and founder history via <code>@MedInVedic_AI_bot</code>.</p>
+      <span class="feat-pill" style="background:#e0f2fe; color:#0369a1; font-weight:800;">24/7 Live Bot ↗</span>
+    </div>
     <div class="feat-card">
       <div class="feat-icon">🚨</div>
       <h3>SOS Emergency Engine</h3>
@@ -702,6 +778,16 @@
 
 <!-- FOOTER -->
 <footer class="landing-footer">
+  <div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
+    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #0088cc; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+      Telegram Clinical Assistant (@MedInVedic_AI_bot)
+    </a>
+    <span style="color: #cbd5e1;">•</span>
+    <a href="pages/login.html" style="color: #475569; text-decoration: none; font-weight: 600;">Sign In</a>
+    <span style="color: #cbd5e1;">•</span>
+    <a href="pages/register.html" style="color: #475569; text-decoration: none; font-weight: 600;">Register</a>
+  </div>
   <div>© 2026 MedInVedic Healthcare Platform. All rights reserved.</div>
   <div style="margin-top: 8px; font-size: 12px; color: #52525b;">
     Educational Information Platform · Not a substitute for direct professional medical advice.
@@ -760,5 +846,52 @@
     }, 600);
   }
 </script>
+
+<script>
+  // Check if user is already authenticated
+  document.addEventListener('DOMContentLoaded', () => {
+    try {
+      const user = localStorage.getItem('mv_auth_user');
+      if (user) {
+        const parsed = JSON.parse(user);
+        const name = parsed.displayName || parsed.name || 'User';
+        const navActions = document.querySelector('.nav-actions');
+        if (navActions) {
+          navActions.innerHTML = `
+            <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="display:inline-flex; align-items:center; gap:6px; color:#0088cc; border-color:rgba(0,136,204,0.4); text-decoration:none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+              <span>Telegram Bot</span>
+            </a>
+            <a href="index.html" class="btn-cta" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
+              🌿 Open App (${name}) →
+            </a>
+          `;
+        }
+        const heroBtns = document.querySelector('.hero-btns');
+        if (heroBtns) {
+          heroBtns.innerHTML = `
+            <a href="index.html" class="btn-cta" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
+              🌿 Enter MedInVedic Platform →
+            </a>
+            <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="padding: 14px 24px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(0, 136, 204, 0.4); color: #0088cc; background: rgba(0, 136, 204, 0.05); text-decoration: none;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+              <span>Chat on Telegram</span>
+            </a>
+            <a href="pages/dashboard.html" class="btn-ghost" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
+              👤 My Dashboard
+            </a>
+          `;
+        }
+      }
+    } catch(e) {}
+  });
+</script>
+
+<!-- FLOATING TELEGRAM ACTION BUTTON -->
+<a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" id="floatingTelegramBtn" aria-label="Chat on Telegram" style="position: fixed; bottom: 24px; right: 24px; z-index: 999; background: #0088cc; color: #ffffff; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0, 136, 204, 0.45); text-decoration: none; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; transition: all 0.2s ease;">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
+  <span>Telegram Bot</span>
+</a>
+
 </body>
 </html>
