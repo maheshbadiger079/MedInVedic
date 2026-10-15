@@ -25,7 +25,7 @@ for(const entry of entries){const done=entry.doneOn===date();if(done)completed++
 if(!entries.length)list.append(make('p','No medicines added. Use the form to create your checklist.','empty'));
 $('count').textContent=completed+' of '+entries.length+' checked';
 };
-$('addForm').addEventListener('submit',e=>{e.preventDefault();if(entries.length>=100){alert('Maximum of 100 schedules per session.');return}const name=$('medicine').value.trim(),time=$('time').value;if(!name||!/^([01]\\d|2[0-3]):[0-5]\\d$/.test(time))return;entries.push({id:crypto.randomUUID(),name:name.slice(0,100),time,dose:$('dose').value.trim().slice(0,100),notes:$('instructions').value.trim().slice(0,200),doneOn:''});save();e.target.reset();render();$('medicine').focus()});
+$('addForm').addEventListener('submit',e=>{e.preventDefault();if(entries.length>=100){alert('Maximum of 100 schedules per session.');return}const name=$('medicine').value.trim(),time=$('time').value;if(!name||!/^([01][0-9]|2[0-3]):[0-5][0-9]$/.test(time))return;entries.push({id:crypto.randomUUID(),name:name.slice(0,100),time,dose:$('dose').value.trim().slice(0,100),notes:$('instructions').value.trim().slice(0,200),doneOn:''});save();e.target.reset();render();$('medicine').focus()});
 $('reset').addEventListener('click',()=>{entries.forEach(x=>x.doneOn='');save();render()});$('clear').addEventListener('click',()=>{if(entries.length&&confirm('Remove all medication schedules from this browser session?')){entries=[];save();render()}});
 const error=make('p','');error.id='storageError';error.setAttribute('role','status');$('addForm').after(error);render();
 })();
