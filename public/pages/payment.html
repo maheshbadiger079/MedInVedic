@@ -1048,11 +1048,12 @@
   }
 
   function copyUpiUri() {
-    if (currentUpiSession && currentUpiSession.sessionData?.upiUri) {
-      navigator.clipboard.writeText(currentUpiSession.sessionData.upiUri).then(() => {
+    const uri = currentUpiSession?.sessionData?.upiUri || currentUpiSession?.upiUri;
+    if (uri) {
+      navigator.clipboard.writeText(uri).then(() => {
         alert('📋 UPI link copied to clipboard! Paste in your UPI payment app.');
       }).catch(() => {
-        prompt('Copy UPI Link:', currentUpiSession.sessionData.upiUri);
+        prompt('Copy UPI Link:', uri);
       });
     } else {
       alert('No active UPI link available to copy.');
