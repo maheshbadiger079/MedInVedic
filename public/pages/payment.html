@@ -1186,13 +1186,25 @@
       const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
 
       if (window.UnifiedCheckout && typeof UnifiedCheckout.submitCustomerUtr === 'function') {
-        await UnifiedCheckout.submitCustomerUtr(paymentId, utr, {
+        const utrRes = await UnifiedCheckout.submitCustomerUtr(paymentId, utr, {
           amount: paymentAmount,
           orderId: orderId,
           userName: user?.name || 'Valued Patient',
           userEmail: user?.email || '',
           senderVpa: user?.email || 'patient@upi'
         });
+
+        if (utrRes.verified || utrRes.status === 'VERIFIED_PAID') {
+          handleYouPiStatusUpdate({
+            status: 'VERIFIED_PAID',
+            paymentId: paymentId
+          });
+          if (feedback) {
+            feedback.style.display = 'block';
+            feedback.innerHTML = `🎉 <strong>UTR Reference #${utr} Automatically Verified!</strong><br>Your order <strong>${orderId}</strong> has settled via NPCI banking rail. Invoice generated below.`;
+          }
+          return;
+        }
       }
 
       const badge = document.getElementById('youpiStatusBadge');
@@ -1240,12 +1252,17 @@
     if (icon) icon.textContent = isHidden ? '▲' : '▼';
   }
 
-  function sendWhatsAppOtpFlow() {
+  async function sendWhatsAppOtpFlow() {
     const phone = document.getElementById('waPhoneInput')?.value.trim();
     const status = document.getElementById('waOtpStatus');
     const verifyRow = document.getElementById('waOtpVerifyRow');
+    if (status) {
+      status.style.display = 'block';
+      status.style.color = '#0284c7';
+      status.textContent = '⏳ Dispatching OTP via WhatsApp...';
+    }
     try {
-      const res = UnifiedCheckout.sendWhatsAppOtp(phone);
+      const res = await UnifiedCheckout.sendWhatsAppOtp(phone);
       if (status) {
         status.style.display = 'block';
         status.style.color = '#15803d';
@@ -1261,12 +1278,17 @@
     }
   }
 
-  function verifyWhatsAppOtpFlow() {
+  async function verifyWhatsAppOtpFlow() {
     const phone = document.getElementById('waPhoneInput')?.value.trim();
     const otp = document.getElementById('waOtpInput')?.value.trim();
     const status = document.getElementById('waOtpStatus');
+    if (status) {
+      status.style.display = 'block';
+      status.style.color = '#0284c7';
+      status.textContent = '⏳ Verifying 6-digit OTP...';
+    }
     try {
-      const res = UnifiedCheckout.verifyWhatsAppOtp(phone, otp);
+      const res = await UnifiedCheckout.verifyWhatsAppOtp(phone, otp);
       if (status) {
         status.style.display = 'block';
         status.style.color = '#15803d';

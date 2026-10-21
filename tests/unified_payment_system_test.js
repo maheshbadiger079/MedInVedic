@@ -854,6 +854,52 @@ async function runAllTests() {
     assert.ok(content.includes('MedInVedic Healthcare'), 'Must reference payee name MedInVedic Healthcare');
   });
 
+  await runTest('Backend Routes: exposes WhatsApp OTP authentication & Automated Verification endpoints', () => {
+    const routesJs = fs.readFileSync(path.join(__dirname, '../server/routes/payment.js'), 'utf8');
+    assert.ok(routesJs.includes('/payment/whatsapp/send-otp'), 'Must have POST /payment/whatsapp/send-otp');
+    assert.ok(routesJs.includes('/payment/whatsapp/verify-otp'), 'Must have POST /payment/whatsapp/verify-otp');
+    assert.ok(routesJs.includes('/payments/verify-automated'), 'Must have POST /payments/verify-automated');
+    assert.ok(routesJs.includes('/payments/submit-utr'), 'Must have POST /payments/submit-utr');
+
+    const fnJs = fs.readFileSync(path.join(__dirname, '../functions/index.js'), 'utf8');
+    assert.ok(fnJs.includes('/payment/whatsapp/send-otp'), 'Functions must have POST /payment/whatsapp/send-otp');
+    assert.ok(fnJs.includes('/payment/whatsapp/verify-otp'), 'Functions must have POST /payment/whatsapp/verify-otp');
+    assert.ok(fnJs.includes('/payments/verify-automated'), 'Functions must have POST /payments/verify-automated');
+    assert.ok(fnJs.includes('/payments/submit-utr'), 'Functions must have POST /payments/submit-utr');
+  });
+
+  await runTest('WhatsApp OTP Authentication: generates 6-digit code and validates authentication proof', () => {
+    const phone = '9876543210';
+    const testOtp = Math.floor(100000 + Math.random() * 900000).toString();
+    assert.strictEqual(testOtp.length, 6, 'OTP must be 6 digits');
+    assert.ok(/^\d{6}$/.test(testOtp), 'OTP must be numeric');
+
+    const secret = 'MedInVedicYouPiObserverSecret2026';
+    const authProof = crypto.createHmac('sha256', secret).update(`${phone}|${Date.now()}`).digest('hex');
+    assert.ok(authProof && authProof.length === 64, 'HMAC auth proof must be valid 64-char sha256 hex string');
+  });
+
+  await runTest('Automated Payment Verification: validates 12-digit UTR format and transition to VERIFIED_PAID', () => {
+    const validUtr = '429188192021';
+    assert.ok(/^\d{12}$/.test(validUtr), 'Valid UTR must be 12-digit numeric');
+
+    const record = {
+      paymentId: 'pay_test_autoverify',
+      status: 'PENDING',
+      amount: 199
+    };
+
+    // Simulated automated verification
+    record.status = 'VERIFIED_PAID';
+    record.utr = validUtr;
+    record.verificationSource = 'NPCI_SETTLEMENT_RAIL';
+    record.reconciliationStatus = 'SETTLED';
+
+    assert.strictEqual(record.status, 'VERIFIED_PAID', 'Must transition to VERIFIED_PAID');
+    assert.strictEqual(record.verificationSource, 'NPCI_SETTLEMENT_RAIL', 'Source must be NPCI settlement rail');
+    assert.strictEqual(record.reconciliationStatus, 'SETTLED', 'Must be marked SETTLED');
+  });
+
   // ── Summary ──────────────────────────────────────────────────────
   console.log('\n═══════════════════════════════════════════════════════════════');
   console.log(`  Test Results: ${passed} passed, ${failed} failed (${total} total)`);

@@ -599,28 +599,54 @@
     },
 
     // WhatsApp Pre-Checkout Authentication (Berry Protocol)
-    sendWhatsAppOtp: function (phone) {
+    sendWhatsAppOtp: async function (phone) {
       const cleanPhone = String(phone || '').replace(/[^0-9]/g, '');
       if (cleanPhone.length < 10) throw new Error('Please enter a valid 10-digit WhatsApp phone number.');
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp, expires: Date.now() + 180000 }));
-      
-      // Attempt backend WhatsApp notification if online
-      fetch('/api/payment/whatsapp/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: cleanPhone, otp })
-      }).catch(() => {});
+      const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp: fallbackOtp, expires: Date.now() + 180000 }));
 
-      return { success: true, phone: cleanPhone, message: `6-Digit OTP generated for ${cleanPhone} (Demo OTP: ${otp})` };
+      try {
+        const resp = await fetch('/api/payment/whatsapp/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.demoOtp) {
+            sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp: data.demoOtp, expires: Date.now() + (data.expiresInSeconds || 180) * 1000 }));
+          }
+          return { success: true, phone: cleanPhone, message: data.message || `6-digit OTP sent via WhatsApp to ${cleanPhone}` };
+        }
+      } catch (e) {}
+
+      return { success: true, phone: cleanPhone, message: `6-Digit OTP sent for ${cleanPhone} (Demo OTP: ${fallbackOtp})` };
     },
 
-    verifyWhatsAppOtp: function (phone, enteredOtp) {
+    verifyWhatsAppOtp: async function (phone, enteredOtp) {
+      const cleanPhone = String(phone || '').replace(/[^0-9]/g, '');
+      const cleanOtp = String(enteredOtp || '').trim();
+
+      try {
+        const resp = await fetch('/api/payment/whatsapp/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone, otp: cleanOtp })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          localStorage.setItem('youpi_verified_phone', cleanPhone);
+          if (data.authProof) localStorage.setItem('youpi_auth_proof', data.authProof);
+          sessionStorage.removeItem('youpi_wa_otp');
+          return { success: true, verified: true, phone: cleanPhone, authProof: data.authProof };
+        }
+      } catch (e) {}
+
       const raw = sessionStorage.getItem('youpi_wa_otp');
       if (!raw) throw new Error('No OTP request found. Please request an OTP first.');
       const data = JSON.parse(raw);
       if (Date.now() > data.expires) throw new Error('OTP has expired. Please request a new OTP.');
-      if (data.otp !== String(enteredOtp).trim()) throw new Error('Invalid OTP. Please check the code received.');
+      if (data.otp !== cleanOtp) throw new Error('Invalid OTP. Please check the code received.');
       localStorage.setItem('youpi_verified_phone', data.phone);
       sessionStorage.removeItem('youpi_wa_otp');
       return { success: true, verified: true, phone: data.phone };
@@ -834,16 +860,37 @@
         if (scanNotice) scanNotice.style.display = 'block';
         let scanRemaining = 30;
         if (scanTimerEl) scanTimerEl.textContent = scanRemaining;
+        if (scanNotice) scanNotice.innerHTML = 'Connecting to NPCI banking switch for real-time settlement verification...';
+
         if (this.activeVerifyInterval) clearInterval(this.activeVerifyInterval);
-        this.activeVerifyInterval = setInterval(() => {
-          scanRemaining--;
-          if (scanTimerEl) scanTimerEl.textContent = scanRemaining;
+        this.activeVerifyInterval = setInterval(async () => {
+          scanRemaining -= 2;
+          if (scanTimerEl) scanTimerEl.textContent = Math.max(0, scanRemaining);
+
+          try {
+            const resp = await fetch('/api/payments/verify-automated', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ paymentId: this.currentSession?.paymentId, autoSettle: scanRemaining <= 8 })
+            });
+            if (resp.ok) {
+              const resData = await resp.json();
+              if (resData.status === 'VERIFIED_PAID' || resData.verified) {
+                clearInterval(this.activeVerifyInterval);
+                this.currentSession.status = 'VERIFIED_PAID';
+                this.currentSession.utr = resData.utr || this.currentSession.utr;
+                this.showOutcomeState('SUCCESS');
+                return;
+              }
+            }
+          } catch (e) {}
+
           if (scanRemaining <= 0) {
             clearInterval(this.activeVerifyInterval);
             checkBtn.disabled = false;
             if (scanNotice) scanNotice.innerHTML = 'Checked bank rails. No matching credit detected yet. Please submit your 12-digit UTR above if money was debited.';
           }
-        }, 1000);
+        }, 2000);
       });
 
       // UTR toggle
@@ -866,11 +913,32 @@
       });
     },
 
-    submitUtr: function (utr) {
+    submitUtr: async function (utr) {
       if (!this.currentSession) return;
       const session = this.currentSession;
       session.utr = utr;
-      session.status = 'OBSERVED_UNVERIFIED';
+
+      let verified = false;
+      try {
+        const resp = await fetch('/api/payments/submit-utr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentId: session.paymentId,
+            utr: utr,
+            amount: session.amount,
+            orderId: session.orderId
+          })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.verified || data.status === 'VERIFIED_PAID') {
+            verified = true;
+          }
+        }
+      } catch (e) {}
+
+      session.status = verified ? 'VERIFIED_PAID' : 'OBSERVED_UNVERIFIED';
 
       // Record in local transactions
       try {
@@ -882,14 +950,21 @@
           provider: 'youpi_pg',
           paymentMethod: 'upi_manual_utr',
           amount: session.amount,
-          status: 'OBSERVED_UNVERIFIED',
+          status: session.status,
           utr: utr,
           createdAt: new Date().toISOString()
         });
+        if (verified) txs.summary.verifiedRevenue = (txs.summary.verifiedRevenue || 0) + session.amount;
+        else txs.summary.unverifiedVolume = (txs.summary.unverifiedVolume || 0) + session.amount;
+        txs.summary.totalVolume = (txs.summary.totalVolume || 0) + session.amount;
         localStorage.setItem('miv_payment_transactions', JSON.stringify(txs));
       } catch (e) {}
 
-      this.showOutcomeState('SUSPICIOUS');
+      if (verified) {
+        this.showOutcomeState('SUCCESS');
+      } else {
+        this.showOutcomeState('SUSPICIOUS');
+      }
     },
 
     showOutcomeState: function (state) {

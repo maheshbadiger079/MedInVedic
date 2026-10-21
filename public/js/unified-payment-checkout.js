@@ -860,6 +860,26 @@
         localStorage.setItem('miv_payment_transactions', JSON.stringify(stored));
       } catch (e) {}
 
+      let serverVerified = false;
+      try {
+        const resp = await fetch('/api/payments/submit-utr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            paymentId: pId,
+            utr: cleanUtr,
+            amount: amount,
+            orderId: extraDetails?.orderId || ('ORD_' + Date.now().toString(36).toUpperCase())
+          })
+        });
+        if (resp.ok) {
+          const resData = await resp.json();
+          if (resData.verified || resData.status === 'VERIFIED_PAID') {
+            serverVerified = true;
+          }
+        }
+      } catch (e) {}
+
       try {
         await fetch('/api/payment/telemetry/observer', {
           method: 'POST',
@@ -876,10 +896,11 @@
 
       return {
         success: true,
+        verified: serverVerified,
         paymentId: pId,
         utr: cleanUtr,
-        status: 'OBSERVED_UNVERIFIED',
-        message: 'UTR registered for bank reconciliation'
+        status: serverVerified ? 'VERIFIED_PAID' : 'OBSERVED_UNVERIFIED',
+        message: serverVerified ? `Bank UTR #${cleanUtr} confirmed! Payment automatically verified.` : 'UTR registered for bank reconciliation'
       };
     },
 
@@ -927,28 +948,72 @@
 
     // ── YOUPI-PG V2 FEATURE PARITY SUITE ─────────────────────────
     // 1. WhatsApp Pre-Checkout Authentication (Berry Protocol)
-    sendWhatsAppOtp: function (phone) {
+    sendWhatsAppOtp: async function (phone) {
       const cleanPhone = String(phone || '').replace(/[^0-9]/g, '');
       if (cleanPhone.length < 10) throw new Error('Please enter a valid 10-digit WhatsApp number.');
-      const otp = Math.floor(100000 + Math.random() * 900000).toString();
-      sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp, expires: Date.now() + 180000 }));
-      fetch('/api/payment/whatsapp/send-otp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone: cleanPhone, otp })
-      }).catch(() => {});
-      return { success: true, phone: cleanPhone, message: `6-digit OTP sent to ${cleanPhone}` };
+      const fallbackOtp = Math.floor(100000 + Math.random() * 900000).toString();
+      sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp: fallbackOtp, expires: Date.now() + 180000 }));
+
+      try {
+        const resp = await fetch('/api/payment/whatsapp/send-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          if (data.demoOtp) {
+            sessionStorage.setItem('youpi_wa_otp', JSON.stringify({ phone: cleanPhone, otp: data.demoOtp, expires: Date.now() + (data.expiresInSeconds || 180) * 1000 }));
+          }
+          return { success: true, phone: cleanPhone, message: data.message || `6-digit OTP sent via WhatsApp to ${cleanPhone}` };
+        }
+      } catch (e) {}
+
+      return { success: true, phone: cleanPhone, message: `6-digit OTP sent to ${cleanPhone} (OTP: ${fallbackOtp})` };
     },
 
-    verifyWhatsAppOtp: function (phone, enteredOtp) {
+    verifyWhatsAppOtp: async function (phone, enteredOtp) {
+      const cleanPhone = String(phone || '').replace(/[^0-9]/g, '');
+      const cleanOtp = String(enteredOtp || '').trim();
+
+      try {
+        const resp = await fetch('/api/payment/whatsapp/verify-otp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleanPhone, otp: cleanOtp })
+        });
+        if (resp.ok) {
+          const data = await resp.json();
+          localStorage.setItem('youpi_verified_phone', cleanPhone);
+          if (data.authProof) localStorage.setItem('youpi_auth_proof', data.authProof);
+          sessionStorage.removeItem('youpi_wa_otp');
+          return { success: true, verified: true, phone: cleanPhone, authProof: data.authProof };
+        }
+      } catch (e) {}
+
       const raw = sessionStorage.getItem('youpi_wa_otp');
       if (!raw) throw new Error('No active OTP session. Please request OTP first.');
       const data = JSON.parse(raw);
       if (Date.now() > data.expires) throw new Error('OTP expired. Please request a fresh OTP.');
-      if (data.otp !== String(enteredOtp).trim()) throw new Error('Invalid OTP. Please try again.');
+      if (data.otp !== cleanOtp) throw new Error('Invalid OTP. Please try again.');
       localStorage.setItem('youpi_verified_phone', data.phone);
       sessionStorage.removeItem('youpi_wa_otp');
       return { success: true, verified: true, phone: data.phone };
+    },
+
+    // Automated Payment Verification & Settlement Poller
+    verifyAutomatedPayment: async function (paymentId, utr) {
+      try {
+        const resp = await fetch('/api/payments/verify-automated', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ paymentId, utr, autoSettle: true })
+        });
+        if (resp.ok) {
+          return await resp.json();
+        }
+      } catch (e) {}
+      return { success: true, verified: false, status: 'PENDING' };
     },
 
     // 2. Deterministic Single-Slot FIFO Queue Engine
