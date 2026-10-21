@@ -1,3 +1,345 @@
+
+/* ═══ UNIVERSAL SANS-SERIF FONT OVERRIDE (ELIMINATES MOBILE CURSIVE THEMES) ═══ */
+:root {
+  color-scheme: light !important;
+  --font: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  --font-display: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+*, *::before, *::after,
+html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+  font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-style: normal !important;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MEDINVEDIC BULLETPROOF SANS-SERIF & MOBILE NORMALIZER
+═══════════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: light !important;
+  --font-main: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font: var(--font-main);
+  --font-display: var(--font-main);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+html, body {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+  background-color: #f8faf8;
+  color: #1a2e1a;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix for all buttons, inputs, links, headings */
+button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIVERSAL MOBILE RESPONSIVE TWEAKS (≤ 768px)
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Admin Nav Polish */
+  .admin-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .admin-nav .admin-badge,
+  .admin-nav .nav-right a.btn,
+  .admin-nav .nav-user .user-info {
+    display: none !important;
+  }
+  .admin-nav .nav-user {
+    padding: 4px !important;
+    border-radius: 50% !important;
+  }
+  .admin-nav .btn-logout {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+  .admin-main {
+    padding: 16px 12px !important;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .stat-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+  .stat-card .stat-value {
+    font-size: 20px !important;
+  }
+  .stat-card .stat-label {
+    font-size: 10px !important;
+  }
+
+  /* Categories Nav & Search */
+  .nav-location span { display: none !important; }
+  .cart-btn span:not(#cartCount) { display: none !important; }
+  .rag-search-box {
+    border-radius: 16px !important;
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+  .btn-rag-ask {
+    border-radius: 12px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* VedicMind Topbar & Tab Strip */
+  .vm-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+  }
+  .vm-nav-pills .pill-streak,
+  .vm-nav-pills .pill-level,
+  .vm-nav-pills .nav-btn-health {
+    display: none !important;
+  }
+  .stat-pill {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+  .vm-tab-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 20px !important;
+  }
+  .vm-tab-btn {
+    padding: 8px 4px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Payment Layout */
+  .payment-layout {
+    margin: 16px auto 60px !important;
+    padding: 0 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .wallet-hero {
+    padding: 18px 16px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .wallet-balance {
+    font-size: 28px !important;
+  }
+  .btn-add-money {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .methods-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .method-tile {
+    padding: 12px 10px !important;
+  }
+  .method-name {
+    font-size: 12px !important;
+  }
+  .method-sub {
+    display: none !important;
+  }
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   GLOBAL FONT AND MOBILE OVERFLOW SANITIZER
+═══════════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: light !important;
+}
+
+html, body, button, input, select, textarea, span, p, h1, h2, h3, h4, h5, h6, a, div, li, td, th {
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+  font-style: normal !important;
+}
+
+/* Prevent horizontal overflow on mobile viewports */
+html, body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+}
+
+
+/* ── MOBILE POLISH FOR CONSULTATION PAGE ── */
+@media (max-width: 640px) {
+  .location-hero {
+    padding: 20px 14px 16px !important;
+  }
+  .hero-title {
+    font-size: 22px !important;
+    line-height: 1.25 !important;
+  }
+  .hero-subtitle {
+    font-size: 13px !important;
+    margin-bottom: 16px !important;
+  }
+  .hero-pills {
+    flex-direction: column !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+  .hero-pill-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 10px 14px !important;
+    font-size: 13px !important;
+    box-sizing: border-box !important;
+  }
+
+  /* RAG Search Box Mobile Responsive */
+  .rag-discovery-panel {
+    padding: 16px 14px !important;
+    margin: 16px 0 28px !important;
+    border-radius: 18px !important;
+  }
+  .rag-badge-row {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 4px !important;
+  }
+  .rag-search-box-wrapper {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    border-radius: 16px !important;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+    box-sizing: border-box !important;
+  }
+  .rag-search-input {
+    width: 100% !important;
+    font-size: 13.5px !important;
+    padding: 4px 0 !important;
+  }
+  .rag-actions-container {
+    display: flex !important;
+    gap: 6px !important;
+    width: 100% !important;
+    align-items: center !important;
+  }
+  .rag-action-btn {
+    padding: 7px 10px !important;
+    font-size: 11.5px !important;
+    border-radius: 10px !important;
+    flex: 1 !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+  }
+  .rag-action-btn.submit {
+    flex: 2 !important;
+    padding: 8px 12px !important;
+  }
+  .quick-queries-row {
+    gap: 6px !important;
+    margin-top: 10px !important;
+  }
+  .quick-query-pill {
+    padding: 5px 12px !important;
+    font-size: 11.5px !important;
+  }
+}
+
+/* ── MOBILE POLISH FOR PAYMENT PAGE ── */
+@media (max-width: 640px) {
+  .nav {
+    padding: 10px 14px !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+  .rag-badge {
+    display: none !important;
+  }
+  .stepper-wrap {
+    margin: 14px auto 0 !important;
+    padding: 0 10px !important;
+  }
+  .step-item span {
+    font-size: 11px !important;
+  }
+  .payment-layout {
+    margin: 16px auto 60px !important;
+    padding: 0 12px !important;
+    gap: 16px !important;
+  }
+  .glass-card {
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+  }
+  .wallet-hero {
+    padding: 18px 16px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 14px !important;
+    border-radius: 16px !important;
+  }
+  .wallet-balance {
+    font-size: 28px !important;
+  }
+  .btn-add-money {
+    width: 100% !important;
+    text-align: center !important;
+    padding: 10px 14px !important;
+  }
+  .methods-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .method-tile {
+    padding: 12px 10px !important;
+    border-radius: 14px !important;
+  }
+  .method-name {
+    font-size: 12.5px !important;
+  }
+  .method-sub {
+    font-size: 9.5px !important;
+    display: none !important;
+  }
+  .btn-pay-secure {
+    padding: 14px 18px !important;
+    font-size: 14.5px !important;
+  }
+  .rag-security-row {
+    gap: 6px !important;
+  }
+  .rag-sec-chip {
+    font-size: 10px !important;
+    padding: 4px 8px !important;
+  }
+}
+
 /*
  ═══════════════════════════════════════════════════════════════
    MedInVedic — Comprehensive Responsive Design System v3
@@ -692,4 +1034,57 @@ img, video, canvas, svg { max-width: 100%; }
 
 @media (min-width: 1280px) {
   .main-layout { grid-template-columns: 280px 1fr 280px !important; }
+}
+
+
+/* ── MOBILE FEATURES STRIP (Horizontal Quick Actions) ── */
+.mobile-features-strip {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-features-strip {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 12px 20px 18px;
+    margin: 0 0 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-features-strip::-webkit-scrollbar { display: none; }
+  .mfs-card {
+    flex: 0 0 145px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(22, 101, 52, 0.15);
+    border-radius: 16px;
+    padding: 12px 14px;
+    text-decoration: none;
+    color: #1a2e1a;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    box-shadow: 0 4px 14px rgba(22, 101, 52, 0.06);
+    transition: transform 0.18s, box-shadow 0.18s;
+  }
+  .mfs-card:active { transform: scale(0.96); }
+  .mfs-card.highlight-vedic {
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-color: #22c55e;
+    box-shadow: 0 4px 16px rgba(34, 197, 94, 0.15);
+  }
+  .mfs-icon { font-size: 22px; }
+  .mfs-text strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 800;
+    color: #166534;
+    line-height: 1.2;
+  }
+  .mfs-text span {
+    font-size: 10px;
+    color: #52796f;
+    font-weight: 700;
+  }
 }

@@ -1,10 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  
+<!-- PAYMENT DETAILS & RECONCILIATION MODAL -->
+<div class="modal-overlay" id="paymentDetailsModal">
+  <div class="modal" style="max-width:680px;">
+    <div class="modal-header">
+      <span class="modal-title" id="pmModalTitle">💳 Payment Details & Reconciliation</span>
+      <button class="modal-close" onclick="closeModal('paymentDetailsModal')">✕</button>
+    </div>
+    <div id="pmModalBody" style="font-size:13px;line-height:1.6;">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+</div>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
   <link rel="icon" type="image/png" sizes="512x512" href="../icon-512.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Admin Control Center — MedInVedic</title>
+  <meta name="description" content="MedInVedic Admin Control Center for platform operations, doctor verifications, consultations, orders, and system analytics.">
 
   <!-- Synchronous Admin Security Gate (Guarantees zero unauthorized view) -->
   <script>
@@ -12,7 +39,7 @@
       try {
         var raw = localStorage.getItem('mv_auth_user');
         var user = raw ? JSON.parse(raw) : null;
-        var adminWhitelist = ['admin@medinvedic.com', 'maheshbadiger079@gmail.com'];
+        var adminWhitelist = ['maheshbadiger079@gmail.com'];
         var isAuthorized = user && user.email && (adminWhitelist.indexOf(user.email.toLowerCase().trim()) !== -1);
         if (!isAuthorized) {
           window.location.replace('login.html?redirect=admin&reason=admin_required');
@@ -35,17 +62,17 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f8f7f4;
-      --card: rgba(255,255,255,0.85);
-      --border: rgba(0,0,0,0.08);
-      --primary: #2d6a4f;
-      --primary-light: #52b788;
-      --accent: #e07a5f;
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.88);
+      --border: rgba(22, 101, 52, 0.12);
+      --primary: #166534;
+      --primary-light: #22c55e;
+      --accent: #15803d;
       --danger: #dc2626;
       --warn: #d97706;
       --info: #0284c7;
-      --text: #1a1a1a;
-      --muted: #666;
+      --text: #1a2e1a;
+      --muted: #52796f;
       --sidebar-w: 240px;
     }
 
@@ -509,7 +536,48 @@
     .activity-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary-light); margin-top: 6px; flex-shrink: 0; }
     .activity-text { font-size: 13px; color: var(--text); }
     .activity-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+    /* Live Activity Pulse & Realtime Animations */
+    .live-pulse {
+      width: 10px; height: 10px; border-radius: 50%; background: #22c55e; display: inline-block;
+      box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); animation: livePulse 2s infinite;
+    }
+    @keyframes livePulse {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(34, 197, 94, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+    }
+    .event-flash { animation: flashHighlight 1.6s ease-out; }
+    @keyframes flashHighlight { 0% { background: rgba(34, 197, 94, 0.25); } 100% { background: transparent; } }
+    .status-badge-online { background: rgba(22, 163, 74, 0.12); color: #16a34a; font-weight: 700; border: 1px solid rgba(22, 163, 74, 0.25); border-radius: 6px; padding: 2px 8px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+    .status-badge-idle { background: rgba(217, 119, 6, 0.12); color: #d97706; font-weight: 700; border: 1px solid rgba(217, 119, 6, 0.25); border-radius: 6px; padding: 2px 8px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
+    .status-badge-offline { background: rgba(107, 114, 128, 0.12); color: #6b7280; font-weight: 600; border: 1px solid rgba(107, 114, 128, 0.2); border-radius: 6px; padding: 2px 8px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px; }
   </style>
+
+<style>
+  @media (max-width: 768px) {
+    .admin-nav { padding: 0 12px !important; height: 56px !important; }
+    .admin-badge, .nav-right a.btn, .nav-user .user-info { display: none !important; }
+    .nav-user { padding: 4px !important; border-radius: 50% !important; }
+    .btn-logout { padding: 5px 10px !important; font-size: 11.5px !important; }
+    .admin-main { padding: 16px 12px !important; }
+    .stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+    .stat-card { padding: 14px !important; border-radius: 14px !important; }
+    .stat-card .stat-value { font-size: 20px !important; }
+    .stat-card .stat-label { font-size: 10px !important; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr !important; }
+  }
+</style>
+
+
+<style id="medinvedic-font-normalizer">
+  *, *::before, *::after,
+  html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+    font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-style: normal !important;
+  }
+</style>
+
 </head>
 <body>
 
@@ -554,6 +622,9 @@
     <div class="sidebar-item active" onclick="showPanel('dashboard', this)">
       <span class="icon">📊</span> Dashboard
     </div>
+    <div class="sidebar-item" onclick="showPanel('live-activity', this)" id="sidebar-live-activity">
+      <span class="icon">🟢</span> Live Users <span class="badge-count" id="liveUsersBadge" style="background:#16a34a;">0</span>
+    </div>
 
     <div class="sidebar-section">Healthcare</div>
     <div class="sidebar-item" onclick="showPanel('users', this)">
@@ -567,6 +638,9 @@
     </div>
     <div class="sidebar-item" onclick="showPanel('ayurveda', this)">
       <span class="icon">🌿</span> Ayurveda
+    </div>
+    <div class="sidebar-item" onclick="showPanel('multi-species', this)">
+      <span class="icon">🐾</span> Multi-Species Care
     </div>
 
     <div class="sidebar-section">Commerce</div>
@@ -589,6 +663,23 @@
     </div>
     <div class="sidebar-item" onclick="showPanel('ai-analytics', this)">
       <span class="icon">📈</span> AI Query Analytics
+    </div>
+    <div class="sidebar-item" onclick="showPanel('ga4', this)" id="sidebar-ga4">
+      <span class="icon">📊</span> Google Analytics 4
+    </div>
+
+    <div class="sidebar-section">Revenue & Growth</div>
+    <div class="sidebar-item" onclick="showPanel('revenue', this)" id="sidebar-revenue">
+      <span class="icon">💹</span> Revenue Intelligence
+    </div>
+    <div class="sidebar-item" onclick="showPanel('payments', this)" id="sidebar-payments">
+      <span class="icon">💳</span> Payments & Gateway <span class="badge-count" id="unverifiedPaymentsBadge" style="background:var(--warn); display:none;">0</span>
+    </div>
+    <div class="sidebar-item" onclick="showPanel('leads', this)" id="sidebar-leads">
+      <span class="icon">🎯</span> Leads & CRM <span class="badge-count" id="newLeadsBadge" style="background:var(--info);">0</span>
+    </div>
+    <div class="sidebar-item" onclick="showPanel('partners', this)" id="sidebar-partners">
+      <span class="icon">🤝</span> Partner Management
     </div>
 
     <div class="sidebar-section">Security</div>
@@ -665,6 +756,119 @@
             <div class="activity-item"><div class="activity-dot"></div><div><div class="activity-text">4 Prompt templates loaded (System, Safety, Ayurveda, Fallback)</div><div class="activity-time">2 min ago</div></div></div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- REAL-TIME USER & APPLICATION ACTIVITY MONITORING -->
+    <section class="panel" id="panel-live-activity">
+      <div class="page-header">
+        <div>
+          <div class="page-title" style="display:flex;align-items:center;gap:10px;">
+            <span>Real-Time User & Activity Monitoring</span>
+            <span class="live-pulse" title="Live Realtime Monitoring Active"></span>
+          </div>
+          <div class="page-subtitle">Instant visibility into live visitors, user logins, presence states, and platform sessions</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span id="liveStreamStatusBadge" class="badge" style="background:rgba(22,163,74,0.15);color:#16a34a;font-weight:700;">🟢 SSE Connected</span>
+          <span id="liveClock" style="font-size:12px;color:var(--muted);font-weight:600;">--:--:--</span>
+          <button class="btn btn-outline btn-sm" onclick="loadLiveActivity(true)">⟳ Refresh</button>
+        </div>
+      </div>
+
+      <!-- Live Metric Summary Cards -->
+      <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+        <div class="stat-card" style="border-left: 4px solid #16a34a;">
+          <div class="stat-icon" style="color:#16a34a;">🟢</div>
+          <div class="stat-label">Online Users</div>
+          <div class="stat-value" id="liveOnlineCount" style="color:#16a34a;">0</div>
+          <div class="stat-change">Currently active in app</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #d97706;">
+          <div class="stat-icon" style="color:#d97706;">🟡</div>
+          <div class="stat-label">Idle Users</div>
+          <div class="stat-value" id="liveIdleCount" style="color:#d97706;">0</div>
+          <div class="stat-change">> 2 min inactive</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid #6b7280;">
+          <div class="stat-icon" style="color:#6b7280;">⚫</div>
+          <div class="stat-label">Offline Sessions</div>
+          <div class="stat-value" id="liveOfflineCount" style="color:#6b7280;">0</div>
+          <div class="stat-change">Closed or logged out</div>
+        </div>
+        <div class="stat-card" style="border-left: 4px solid var(--info);">
+          <div class="stat-icon" style="color:var(--info);">👥</div>
+          <div class="stat-label">Total Live Users</div>
+          <div class="stat-value" id="liveTotalCount" style="color:var(--info);">0</div>
+          <div class="stat-change">Active platform sessions</div>
+        </div>
+      </div>
+
+      <!-- Two-Column Layout: Left: Live Sessions | Right: Real-Time Activity Feed -->
+      <div class="grid-2" style="display:grid;grid-template-columns: 1.35fr 1fr; gap:20px; align-items:start;">
+        
+        <!-- Column 1: Live Sessions Table -->
+        <div class="card" style="margin:0;">
+          <div class="card-header" style="flex-wrap:wrap;gap:10px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="card-title">Live Sessions</span>
+              <span class="badge badge-green" id="sessionsCountBadge">0 Sessions</span>
+            </div>
+            <!-- Session filter buttons -->
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-primary session-filter-btn" data-filter="ALL" onclick="filterLiveSessions('ALL', this)">All</button>
+              <button class="btn btn-sm btn-outline session-filter-btn" data-filter="ONLINE" onclick="filterLiveSessions('ONLINE', this)">Online</button>
+              <button class="btn btn-sm btn-outline session-filter-btn" data-filter="IDLE" onclick="filterLiveSessions('IDLE', this)">Idle</button>
+              <button class="btn btn-sm btn-outline session-filter-btn" data-filter="OFFLINE" onclick="filterLiveSessions('OFFLINE', this)">Offline</button>
+            </div>
+          </div>
+          
+          <div style="padding:12px 18px;border-bottom:1px solid var(--border);">
+            <input type="text" id="sessionSearchInput" placeholder="🔍 Search by user, role, device, or session ID..." 
+                   class="form-control" style="font-size:13px;padding:8px 12px;" oninput="applySessionSearch()" />
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>User / Visitor</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Device / OS</th>
+                  <th>Tabs</th>
+                  <th>Last Active</th>
+                </tr>
+              </thead>
+              <tbody id="liveSessionsTableBody">
+                <tr><td colspan="6" style="text-align:center;padding:30px;color:var(--muted);">Loading live sessions...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Column 2: Recent Activity Feed -->
+        <div class="card" style="margin:0;">
+          <div class="card-header" style="flex-wrap:wrap;gap:8px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="card-title">Real-Time Activity Feed</span>
+              <span class="badge badge-blue" id="feedCountBadge">0 Events</span>
+            </div>
+            <select id="eventFilterSelect" class="form-control" style="font-size:12px;padding:4px 8px;width:auto;" onchange="filterActivityFeed()">
+              <option value="">All Event Types</option>
+              <option value="APP_OPEN">App Open</option>
+              <option value="LOGIN_SUCCESS">Login Success</option>
+              <option value="LOGOUT">Logout</option>
+              <option value="IDLE">Idle</option>
+              <option value="ACTIVE">Active</option>
+            </select>
+          </div>
+
+          <div style="padding:14px 18px;max-height:600px;overflow-y:auto;" id="liveActivityFeedList">
+            <div style="text-align:center;padding:40px;color:var(--muted);">Connecting to live activity feed...</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
@@ -759,6 +963,49 @@
         </div>
       </div>
     </section>
+ 
+    <!-- 5B. MULTI-SPECIES HEALTHCARE & AYURVEDA -->
+    <section class="panel" id="panel-multi-species">
+      <div class="page-header">
+        <div>
+          <div class="page-title">🐾 Multi-Species Healthcare &amp; Ayurveda</div>
+          <div class="page-subtitle">Species-separated clinical formulations, veterinary care, and avian medicine</div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <select id="adminSpeciesFilter" onchange="filterAdminMultiSpecies(this.value)" style="padding:6px 12px; border-radius:8px; border:1px solid var(--border); font-size:13px; font-weight:700;">
+            <option value="all">All Healthcare Types (Human, Animal, Bird)</option>
+            <option value="human">👨‍⚕️ Human Health</option>
+            <option value="animal">🐕 Animal Health (Veterinary)</option>
+            <option value="bird">🐦 Bird Health (Avian)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header" style="display:flex; justify-content:space-between; align-items:center;">
+          <span class="card-title">Multi-Species Clinical Formulary &amp; Evidence Matrix</span>
+          <span class="badge" style="background:#e0f2fe; color:#0284c7; font-weight:800;" id="multiSpeciesCountBadge">3 Categories Active</span>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Species / Type</th>
+                <th>Medicine / Formulation</th>
+                <th>Category</th>
+                <th>Compatibility</th>
+                <th>Evidence Level</th>
+                <th>Approval Status</th>
+                <th>Safety Warnings</th>
+              </tr>
+            </thead>
+            <tbody id="multiSpeciesTableBody">
+              <tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Loading Multi-Species Formulary...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
     <!-- 6. ORDER MANAGEMENT -->
     <section class="panel" id="panel-orders">
@@ -822,21 +1069,21 @@
           <div class="card-body">
             <div style="margin-bottom:14px;">
               <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
-                <span>WHO / NHS (Tier 1)</span><span style="font-weight:700;color:var(--info);">60%</span>
+                <span>WHO / NHS (Tier 1)</span><span id="ragTier1Pct" style="font-weight:700;color:var(--info);">0%</span>
               </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:60%;background:linear-gradient(90deg,#0284c7,#38bdf8);"></div></div>
+              <div class="progress-bar"><div class="progress-fill" id="ragTier1Bar" style="width:0%;background:linear-gradient(90deg,#0284c7,#38bdf8);"></div></div>
             </div>
             <div style="margin-bottom:14px;">
               <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
-                <span>AYUSH / Ayurvedic (Tier 3)</span><span style="font-weight:700;color:var(--warn);">40%</span>
+                <span>AYUSH / Ayurvedic (Tier 3)</span><span id="ragTier3Pct" style="font-weight:700;color:var(--warn);">0%</span>
               </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:40%;background:linear-gradient(90deg,#d97706,#fbbf24);"></div></div>
+              <div class="progress-bar"><div class="progress-fill" id="ragTier3Bar" style="width:0%;background:linear-gradient(90deg,#d97706,#fbbf24);"></div></div>
             </div>
             <div style="margin-bottom:14px;">
               <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
-                <span>Verified Status</span><span style="font-weight:700;color:var(--primary);">100%</span>
+                <span>Verified Status</span><span id="ragVerifiedPct" style="font-weight:700;color:var(--primary);">0%</span>
               </div>
-              <div class="progress-bar"><div class="progress-fill" style="width:100%;"></div></div>
+              <div class="progress-bar"><div class="progress-fill" id="ragVerifiedBar" style="width:0%;"></div></div>
             </div>
             <div style="font-size:12px;color:var(--muted);padding-top:10px;border-top:1px solid var(--border);">
               Anti-hallucination policy: <strong style="color:var(--primary);">NO SOURCE → NO CLAIM</strong>
@@ -973,9 +1220,9 @@
       </div>
 
       <div class="grid-3 mb-6" style="gap:16px;">
-        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">Avg Latency</div><div class="stat-value" style="font-size:20px;">186ms</div><div class="stat-change">Grounded queries</div></div>
-        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">Groundedness Score</div><div class="stat-value" style="font-size:20px;">97%</div><div class="stat-change">Citation coverage</div></div>
-        <div class="stat-card"><div class="stat-icon">🚨</div><div class="stat-label">Emergency Triggers</div><div class="stat-value" style="font-size:20px;">1</div><div class="stat-change">Safety intercepted</div></div>
+        <div class="stat-card"><div class="stat-icon">⚡</div><div class="stat-label">Avg Latency</div><div class="stat-value" id="aiAvgLatency" style="font-size:20px;">—</div><div class="stat-change">Grounded queries</div></div>
+        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">Groundedness Score</div><div class="stat-value" id="aiGroundednessScore" style="font-size:20px;">—</div><div class="stat-change">Citation coverage</div></div>
+        <div class="stat-card"><div class="stat-icon">🚨</div><div class="stat-label">Emergency Triggers</div><div class="stat-value" id="aiEmergencyCount" style="font-size:20px;">—</div><div class="stat-change">Safety intercepted</div></div>
       </div>
 
       <div class="card">
@@ -984,6 +1231,88 @@
           <table class="data-table">
             <thead><tr><th>Query</th><th>Category</th><th>Model</th><th>Latency</th><th>Quality</th><th>Status</th><th>Time</th></tr></thead>
             <tbody id="aiQueriesTableBody"><tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Loading AI queries...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- GOOGLE ANALYTICS 4 (GA4) LIVE CENTER -->
+    <section class="panel" id="panel-ga4">
+      <div class="page-header">
+        <div>
+          <div class="page-title">📊 Google Analytics 4 (GA4) Live Center</div>
+          <div class="page-subtitle">Real-time visitor tracking, healthcare event streams, and live GA4 configuration</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <a href="https://analytics.google.com/" target="_blank" class="btn btn-primary btn-sm">
+            🔗 Open Google Analytics Console
+          </a>
+          <button class="btn btn-outline btn-sm" onclick="refreshGa4Stats()">⟳ Refresh Stream</button>
+        </div>
+      </div>
+
+      <div class="grid-3 mb-6" style="gap:16px;">
+        <div class="stat-card">
+          <div class="stat-icon">🏷️</div>
+          <div class="stat-label">Measurement ID</div>
+          <div class="stat-value" style="font-size:18px;color:var(--primary);" id="ga4MeasurementId">G-RW9JCDWBQ7</div>
+          <div class="stat-change" style="color:#16a34a;">● Active in &lt;head&gt; across 50+ pages</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">👥</div>
+          <div class="stat-label">Active Sessions</div>
+          <div class="stat-value" style="font-size:20px;" id="ga4SessionCount">1</div>
+          <div class="stat-change">Current visitor sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">📈</div>
+          <div class="stat-label">Healthcare & Commerce Events</div>
+          <div class="stat-value" style="font-size:20px;" id="ga4EventCount">0</div>
+          <div class="stat-change">Real-time tracked events</div>
+        </div>
+      </div>
+
+      <div class="card mb-6">
+        <div class="card-header">
+          <span class="card-title">🔍 Where Google Analytics is Embedded in MedInVedic</span>
+        </div>
+        <div style="padding: 18px 22px; font-size: 13.5px; line-height: 1.6; color: var(--text);">
+          <p style="margin-bottom: 10px;">Google Analytics runs via the official Google Tag Manager script in the <code>&lt;head&gt;</code> of all MedInVedic pages:</p>
+          <pre style="background:#f1f5f9;padding:12px;border-radius:8px;font-size:12px;overflow-x:auto;color:#0f172a;border:1px solid rgba(0,0,0,0.06);margin-bottom:12px;">&lt;!-- Google tag (gtag.js) GA4 --&gt;
+&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-RW9JCDWBQ7', { anonymize_ip: true });
+&lt;/script&gt;</pre>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <div style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+              📁 <strong>Telemetry Engine:</strong> <code>public/js/analytics.js</code>
+            </div>
+            <div style="background: rgba(59,130,246,0.08); border: 1px solid rgba(59,130,246,0.2); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+              📁 <strong>Firebase Config:</strong> <code>public/js/firebase-config.js</code>
+            </div>
+            <div style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2); padding: 8px 14px; border-radius: 8px; font-size: 12px;">
+              🌐 <strong>Google Console:</strong> <a href="https://analytics.google.com/" target="_blank" style="color:#d97706;font-weight:700;">analytics.google.com</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">📡 Live Tracked Events</span>
+          <button class="btn btn-outline btn-sm" onclick="testGa4Event()">⚡ Send Test Event</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr><th>Event Name</th><th>Category</th><th>Session ID</th><th>Metadata / Payload</th><th>Time</th></tr>
+            </thead>
+            <tbody id="ga4LiveTableBody">
+              <tr><td colspan="5" style="text-align:center;padding:30px;color:#999;">Loading live GA4 stream...</td></tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -1015,18 +1344,402 @@
       </div>
     </section>
 
-    <!-- 13. AUDIT LOGS -->
+    <!-- 13. AUDIT LOGS — ENHANCED -->
     <section class="panel" id="panel-audit">
       <div class="page-header">
-        <div><div class="page-title">Audit Logs</div><div class="page-subtitle">Immutable audit trail of all administrative actions</div></div>
+        <div><div class="page-title">Audit Logs</div><div class="page-subtitle">Immutable, searchable audit trail of all administrative actions</div></div>
         <button class="btn btn-outline btn-sm" onclick="exportAuditCSV()">📥 Export CSV</button>
       </div>
+      <div class="filter-row mb-4">
+        <div class="search-box" style="flex:2;">
+          <span>🔍</span><input id="auditSearch" type="text" placeholder="Search by admin or action..." oninput="loadAuditLogs()">
+        </div>
+        <select class="filter-select" id="auditSeverity" onchange="loadAuditLogs()">
+          <option value="">All Severities</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="CRITICAL">CRITICAL</option>
+        </select>
+        <input type="date" class="filter-select" id="auditFrom" onchange="loadAuditLogs()" title="From date">
+        <input type="date" class="filter-select" id="auditTo" onchange="loadAuditLogs()" title="To date">
+      </div>
       <div class="card">
-        <div class="card-header"><span class="card-title">Audit Trail</span></div>
+        <div class="card-header"><span class="card-title">Audit Trail</span><span id="auditCount" style="font-size:12px;color:var(--muted);"></span></div>
         <div class="table-wrap">
           <table class="data-table">
-            <thead><tr><th>Admin</th><th>Action</th><th>Target</th><th>Details</th><th>IP</th><th>Status</th><th>Time</th></tr></thead>
-            <tbody id="auditTableBody"><tr><td colspan="7" style="text-align:center;padding:40px;color:#999;">Loading audit logs...</td></tr></tbody>
+            <thead><tr><th>Admin</th><th>Action</th><th>Target</th><th>Details</th><th>IP</th><th>Severity</th><th>Status</th><th>Time</th></tr></thead>
+            <tbody id="auditTableBody"><tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Loading audit logs...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 14. REVENUE INTELLIGENCE -->
+    <section class="panel" id="panel-revenue">
+      <div class="page-header">
+        <div><div class="page-title">💹 Revenue Intelligence</div><div class="page-subtitle">Live KPIs, revenue trends, channel breakdown, and GMV forecast</div></div>
+        <button class="btn btn-primary btn-sm" onclick="loadRevenue()">⟳ Refresh</button>
+      </div>
+
+      <!-- 8 KPI Cards -->
+      <div class="stats-grid" id="revenueKPIs" style="grid-template-columns:repeat(auto-fill, minmax(170px,1fr));">
+        <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Platform Net Revenue</div><div class="stat-value" id="kpi-netrev">—</div><div class="stat-change">All channels</div></div>
+        <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-label">Total Pharmacy GMV</div><div class="stat-value" id="kpi-gmv">—</div><div class="stat-change">Gross orders value</div></div>
+        <div class="stat-card"><div class="stat-icon">📅</div><div class="stat-label">Month GMV</div><div class="stat-value" id="kpi-monthgmv">—</div><div class="stat-change">Current month</div></div>
+        <div class="stat-card"><div class="stat-icon">💎</div><div class="stat-label">Membership MRR</div><div class="stat-value" id="kpi-mrr">—</div><div class="stat-change">Active Care plans</div></div>
+        <div class="stat-card"><div class="stat-icon">🩺</div><div class="stat-label">Consultation Rev.</div><div class="stat-value" id="kpi-consult">—</div><div class="stat-change">15% commission</div></div>
+        <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-label">Total Orders</div><div class="stat-value" id="kpi-orders">—</div><div class="stat-change">All time</div></div>
+        <div class="stat-card"><div class="stat-icon">🌟</div><div class="stat-label">Active Members</div><div class="stat-value" id="kpi-members">—</div><div class="stat-change">Care subscribers</div></div>
+        <div class="stat-card"><div class="stat-icon">🎯</div><div class="stat-label">Target Progress</div><div class="stat-value" id="kpi-targetpct" style="color:var(--primary);">—</div><div class="stat-change">₹1,00,000/month</div></div>
+      </div>
+
+      <!-- Target Progress Bar -->
+      <div class="card mb-6" style="margin-bottom:20px;">
+        <div class="card-header">
+          <span class="card-title">🏆 Monthly Revenue Target: ₹1,00,000</span>
+          <span id="targetAmt" style="font-size:13px; font-weight:700; color:var(--primary);">₹0 earned</span>
+        </div>
+        <div class="card-body">
+          <div class="progress-bar" style="height:14px; border-radius:10px;">
+            <div class="progress-fill" id="targetBar" style="width:0%; border-radius:10px; background:linear-gradient(90deg,#166534,#22c55e);"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--muted); margin-top:8px;">
+            <span>₹0</span><span id="targetPctLabel">0% complete</span><span>₹1,00,000</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2 mb-6" style="margin-bottom:20px; gap:20px;">
+        <!-- 7-Day Revenue Bar Chart -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">📊 7-Day Daily GMV</span></div>
+          <div class="card-body">
+            <div id="revenueBars" style="display:flex; align-items:flex-end; gap:8px; height:120px; padding-top:8px;">
+              <div style="text-align:center; color:var(--muted); font-size:12px; width:100%;">Loading trend data...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Channel Breakdown -->
+        <div class="card">
+          <div class="card-header"><span class="card-title">🥧 Revenue by Channel</span></div>
+          <div class="card-body">
+            <div id="channelBreakdown">
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>💊 Pharmacy (12% margin)</span><span id="ch-pharmacy" style="font-weight:700;color:var(--info);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-pharmacy-bar" style="background:linear-gradient(90deg,#0284c7,#38bdf8);width:0%;"></div></div>
+              </div>
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>🩺 Consultations (15% commission)</span><span id="ch-consult" style="font-weight:700;color:var(--primary);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-consult-bar" style="width:0%;"></div></div>
+              </div>
+              <div style="margin-bottom:14px;">
+                <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;"><span>💎 Care Memberships (MRR)</span><span id="ch-mem" style="font-weight:700;color:var(--warn);">—</span></div>
+                <div class="progress-bar"><div class="progress-fill" id="ch-mem-bar" style="background:linear-gradient(90deg,#d97706,#fbbf24);width:0%;"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 30/60/90 Day Forecast -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="card-header"><span class="card-title">🔮 Revenue Forecast (Rolling 7-day Average)</span></div>
+        <div class="card-body">
+          <div class="grid-3">
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">30-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--primary);" id="proj30">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">60-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--accent);" id="proj60">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+            <div style="text-align:center; background:rgba(22,101,52,0.05); border:1px solid var(--border); border-radius:14px; padding:20px;">
+              <div style="font-size:11px; font-weight:700; color:var(--muted); text-transform:uppercase; margin-bottom:6px;">90-Day Projection</div>
+              <div style="font-size:24px; font-weight:900; color:var(--info);" id="proj90">—</div>
+              <div style="font-size:11px; color:var(--muted); margin-top:4px;">Estimated GMV</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAYMENTS & GATEWAY MANAGEMENT PANEL -->
+<section class="panel" id="panel-payments">
+  <div class="page-header">
+    <div>
+      <div class="page-title">💳 Payments & Gateway Management</div>
+      <div class="page-subtitle">Authoritative settlement engine, YouPI-PG telemetry, Razorpay settlement, COD, and refund audits</div>
+    </div>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-outline btn-sm" onclick="exportPaymentsCSV()">📥 Export CSV</button>
+      <button class="btn btn-primary btn-sm" onclick="loadAdminPayments()">⟳ Refresh</button>
+    </div>
+  </div>
+
+  <!-- Realtime Settlement Segregation Notice -->
+  <div style="background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.3);border-radius:12px;padding:12px 18px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">
+    <span style="font-size:22px;">🛡️</span>
+    <div style="font-size:12.5px;color:var(--text);line-height:1.5;">
+      <strong>Authoritative Accounting Invariant:</strong> Observed YouPI UPI signals (SMS/Gmail observers) are strictly tracked as 
+      <strong style="color:var(--warn);">Unverified Telemetry</strong>. They are never booked as confirmed revenue, never trigger automatic wallet credits, 
+      and never release prescription medicines without verified bank settlement or admin reconciliation.
+    </div>
+  </div>
+
+  <!-- KPI Cards -->
+  <div class="stats-grid" style="grid-template-columns:repeat(auto-fill, minmax(170px,1fr));margin-bottom:24px;">
+    <div class="stat-card">
+      <div class="stat-icon">💰</div>
+      <div class="stat-label">Total Payment Volume</div>
+      <div class="stat-value" id="pkpi-total-volume">₹0</div>
+      <div class="stat-change">All transactions</div>
+    </div>
+    <div class="stat-card" style="border-left:4px solid var(--primary);">
+      <div class="stat-icon" style="color:var(--primary);">✅</div>
+      <div class="stat-label">Verified Revenue</div>
+      <div class="stat-value" id="pkpi-verified-revenue" style="color:var(--primary);">₹0</div>
+      <div class="stat-change">Authoritatively settled</div>
+    </div>
+    <div class="stat-card" style="border-left:4px solid var(--warn);">
+      <div class="stat-icon" style="color:var(--warn);">🟡</div>
+      <div class="stat-label">Observed Unverified</div>
+      <div class="stat-value" id="pkpi-unverified-volume" style="color:var(--warn);">₹0</div>
+      <div class="stat-change">Telemetry only (Not revenue)</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⏱️</div>
+      <div class="stat-label">Active / Pending</div>
+      <div class="stat-value" id="pkpi-pending-count">0</div>
+      <div class="stat-change">Live payment sessions</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-label">Unverified Signals</div>
+      <div class="stat-value" id="pkpi-unverified-count" style="color:var(--warn);">0</div>
+      <div class="stat-change">Awaiting settlement</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🔴</div>
+      <div class="stat-label">Failed / Expired</div>
+      <div class="stat-value" id="pkpi-failed-count" style="color:var(--danger);">0</div>
+      <div class="stat-change">Timed out or cancelled</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🟣</div>
+      <div class="stat-label">Total Refunds</div>
+      <div class="stat-value" id="pkpi-refund-count" style="color:#8b5cf6;">0</div>
+      <div class="stat-change">Reversed transactions</div>
+    </div>
+  </div>
+
+  <!-- Gateway Distribution & Security -->
+  <div class="grid-2 mb-6" style="margin-bottom:24px;gap:20px;">
+    <!-- Provider Breakdown -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">🥧 Payment Gateway Distribution</span></div>
+      <div class="card-body">
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+            <span>💳 Razorpay Checkout</span>
+            <span id="ch-razorpay" style="font-weight:700;color:var(--primary);">0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="ch-razorpay-bar" style="background:linear-gradient(90deg,#166534,#22c55e);width:0%;"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+            <span>⚡ YouPI-PG Direct UPI</span>
+            <span id="ch-youpi" style="font-weight:700;color:var(--warn);">0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="ch-youpi-bar" style="background:linear-gradient(90deg,#d97706,#fbbf24);width:0%;"></div></div>
+        </div>
+        <div style="margin-bottom:14px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;">
+            <span>📦 Cash on Delivery (COD)</span>
+            <span id="ch-cod" style="font-weight:700;color:var(--info);">0</span>
+          </div>
+          <div class="progress-bar"><div class="progress-fill" id="ch-cod-bar" style="background:linear-gradient(90deg,#0284c7,#38bdf8);width:0%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security & Architecture Guards -->
+    <div class="card">
+      <div class="card-header"><span class="card-title">🔒 Payment Security Guardrails</span></div>
+      <div class="card-body" style="font-size:13px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>HMAC-SHA256 Signature Verification</span>
+          <span class="badge badge-green">Enforced</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>Anti-Replay Drift Window (&lt;120s)</span>
+          <span class="badge badge-green">Active</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>Observer Telemetry Containment</span>
+          <span class="badge badge-amber">Strict Unverified</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);">
+          <span>Authoritative Server Pricing Engine</span>
+          <span class="badge badge-green">Authoritative</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+          <span>Double-Spend & Duplicate Webhook Shield</span>
+          <span class="badge badge-green">Idempotent</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Table -->
+  <div class="card">
+    <div class="card-header" style="flex-wrap:wrap;gap:12px;">
+      <span class="card-title">📋 Payment Transactions & Settlement Ledger</span>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <input type="text" id="paymentSearchInput" placeholder="🔍 Search payment, order, customer, UTR..." 
+               class="form-control" style="font-size:12.5px;padding:6px 12px;width:240px;" oninput="applyPaymentFilters()" />
+        <select id="paymentProviderFilter" class="form-control" style="font-size:12.5px;padding:6px 10px;width:auto;" onchange="applyPaymentFilters()">
+          <option value="">All Providers</option>
+          <option value="razorpay">Razorpay</option>
+          <option value="youpi_pg">YouPI-PG</option>
+          <option value="cod">Cash on Delivery</option>
+        </select>
+        <select id="paymentStatusFilter" class="form-control" style="font-size:12.5px;padding:6px 10px;width:auto;" onchange="applyPaymentFilters()">
+          <option value="">All Statuses</option>
+          <option value="VERIFIED_PAID">Verified Paid</option>
+          <option value="OBSERVED_UNVERIFIED">Observed Unverified</option>
+          <option value="PENDING">Pending</option>
+          <option value="EXPIRED">Expired</option>
+          <option value="FAILED">Failed</option>
+          <option value="REFUNDED">Refunded</option>
+        </select>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Payment / Order</th>
+            <th>Customer</th>
+            <th>Provider & Method</th>
+            <th>Amount</th>
+            <th>Status</th>
+            <th>Verification Source</th>
+            <th>Time</th>
+            <th style="text-align:right;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="paymentsTableBody">
+          <tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">Loading payment transactions...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+    <!-- 15. LEADS & CRM -->
+    <section class="panel" id="panel-leads">
+      <div class="page-header">
+        <div><div class="page-title">🎯 Leads &amp; CRM Pipeline</div><div class="page-subtitle">Manage patient enquiries, referrals, and conversion pipeline</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addLeadModal')">+ Add Lead</button>
+      </div>
+
+      <!-- Lead KPIs -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">📋</div><div class="stat-label">Total Leads</div><div class="stat-value" id="lkpi-total">—</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Converted</div><div class="stat-value" id="lkpi-converted" style="color:var(--primary);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🔄</div><div class="stat-label">In Progress</div><div class="stat-value" id="lkpi-inprogress" style="color:var(--info);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-label">Conversion Rate</div><div class="stat-value" id="lkpi-rate" style="color:var(--accent);">—</div></div>
+      </div>
+
+      <!-- Search/Filter -->
+      <div class="filter-row mb-4">
+        <div class="search-box" style="flex:2;"><span>🔍</span><input id="leadSearch" type="text" placeholder="Search leads by name or phone..." oninput="renderLeadsKanban()"></div>
+        <select class="filter-select" id="leadTypeFilter" onchange="renderLeadsKanban()">
+          <option value="">All Types</option>
+          <option value="Consultation">Consultation</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Wellness">Wellness Membership</option>
+          <option value="VedicMind">VedicMind AI</option>
+        </select>
+        <select class="filter-select" id="leadPriorityFilter" onchange="renderLeadsKanban()">
+          <option value="">All Priorities</option>
+          <option value="High">High Priority</option>
+          <option value="Normal">Normal</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+
+      <!-- Kanban Board -->
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px;">
+        <!-- New -->
+        <div>
+          <div style="background:rgba(2,132,199,0.08); border:1px solid rgba(2,132,199,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--info);">📋 New Enquiries</span>
+            <span id="kn-new-count" class="badge badge-blue">0</span>
+          </div>
+          <div id="kanban-new" style="background:rgba(2,132,199,0.03); border:1px solid rgba(2,132,199,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+        <!-- In Progress -->
+        <div>
+          <div style="background:rgba(217,119,6,0.08); border:1px solid rgba(217,119,6,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--warn);">🔄 In Progress</span>
+            <span id="kn-prog-count" class="badge badge-amber">0</span>
+          </div>
+          <div id="kanban-prog" style="background:rgba(217,119,6,0.03); border:1px solid rgba(217,119,6,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+        <!-- Converted -->
+        <div>
+          <div style="background:rgba(22,101,52,0.08); border:1px solid rgba(22,101,52,0.2); border-radius:14px 14px 0 0; padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:800; font-size:13px; color:var(--primary);">✅ Converted</span>
+            <span id="kn-conv-count" class="badge badge-green">0</span>
+          </div>
+          <div id="kanban-conv" style="background:rgba(22,101,52,0.03); border:1px solid rgba(22,101,52,0.12); border-top:none; border-radius:0 0 14px 14px; min-height:300px; padding:12px; display:flex; flex-direction:column; gap:10px;">
+            <div style="text-align:center; color:var(--muted); font-size:12px; padding:20px;">Loading...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 16. PARTNER MANAGEMENT -->
+    <section class="panel" id="panel-partners">
+      <div class="page-header">
+        <div><div class="page-title">🤝 Partner Management</div><div class="page-subtitle">Pharmacy partners, corporate wellness clients, referral affiliates &amp; settlements</div></div>
+        <button class="btn btn-primary btn-sm" onclick="openModal('addPartnerModal')">+ Add Partner</button>
+      </div>
+
+      <!-- Partner KPIs -->
+      <div class="stats-grid" style="grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:24px;">
+        <div class="stat-card"><div class="stat-icon">🤝</div><div class="stat-label">Total Partners</div><div class="stat-value" id="pkpi-total">—</div></div>
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Active</div><div class="stat-value" id="pkpi-active" style="color:var(--primary);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">💸</div><div class="stat-label">Total Outstanding</div><div class="stat-value" id="pkpi-outstanding" style="color:var(--warn);">—</div></div>
+        <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-label">Pharmacy Partners</div><div class="stat-value" id="pkpi-pharmacy">—</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Partner Registry</span>
+          <div class="filter-row" style="margin:0;">
+            <div class="search-box" style="min-width:200px;"><span>🔍</span><input id="partnerSearch" type="text" placeholder="Search partners..." oninput="filterPartners()"></div>
+            <select class="filter-select" id="partnerTypeFilter" onchange="filterPartners()">
+              <option value="">All Types</option>
+              <option value="Pharmacy Partner">Pharmacy Partner</option>
+              <option value="Corporate Wellness">Corporate Wellness</option>
+              <option value="Referral Affiliate">Referral Affiliate</option>
+            </select>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead><tr><th>Partner</th><th>Type</th><th>City</th><th>Commission</th><th>Settlement</th><th>Outstanding (₹)</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="partnersTableBody"><tr><td colspan="8" style="text-align:center;padding:40px;color:#999;">Loading partners...</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -1178,15 +1891,99 @@
   </div>
 </div>
 
+<!-- ADD LEAD MODAL -->
+<div class="modal-overlay" id="addLeadModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">🎯 Add New Lead</span><button class="modal-close" onclick="closeModal('addLeadModal')">✕</button></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Full Name *</label><input class="form-control" id="leadName" type="text" placeholder="e.g., Priya Sharma"></div>
+      <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" id="leadPhone" type="tel" placeholder="+91 9876543210"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="leadEmail" type="email" placeholder="patient@example.com"></div>
+      <div class="form-group"><label class="form-label">Enquiry Type</label>
+        <select class="form-control" id="leadType">
+          <option value="Consultation">Consultation</option>
+          <option value="Pharmacy">Pharmacy</option>
+          <option value="Wellness">Wellness Membership</option>
+          <option value="VedicMind">VedicMind AI</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Source</label>
+        <select class="form-control" id="leadSource">
+          <option value="organic">Organic / Direct</option>
+          <option value="google_ads">Google Ads</option>
+          <option value="referral">Patient Referral</option>
+          <option value="social">Social Media</option>
+          <option value="partner">Partner</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Priority</label>
+        <select class="form-control" id="leadPriority">
+          <option value="Normal">Normal</option>
+          <option value="High">High</option>
+          <option value="Low">Low</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Assign To</label><input class="form-control" id="leadAssignedTo" type="text" placeholder="Doctor / Agent name"></div>
+    <div class="flex-row mt-4">
+      <button class="btn btn-primary" onclick="createLead()" style="flex:1">Add Lead</button>
+      <button class="btn btn-outline" onclick="closeModal('addLeadModal')" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD PARTNER MODAL -->
+<div class="modal-overlay" id="addPartnerModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">🤝 Register Partner</span><button class="modal-close" onclick="closeModal('addPartnerModal')">✕</button></div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Partner Name *</label><input class="form-control" id="partnerName" type="text" placeholder="e.g., Sai Medicals Pune"></div>
+      <div class="form-group"><label class="form-label">Partner Type *</label>
+        <select class="form-control" id="partnerType">
+          <option value="Pharmacy Partner">Pharmacy Partner</option>
+          <option value="Corporate Wellness">Corporate Wellness</option>
+          <option value="Referral Affiliate">Referral Affiliate</option>
+          <option value="Diagnostic Lab">Diagnostic Lab</option>
+        </select>
+      </div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">City</label><input class="form-control" id="partnerCity" type="text" placeholder="e.g., Pune, Mumbai"></div>
+      <div class="form-group"><label class="form-label">Commission Rate (%)</label><input class="form-control" id="partnerCommission" type="number" min="1" max="30" value="10"></div>
+    </div>
+    <div class="grid-2">
+      <div class="form-group"><label class="form-label">Settlement Cycle</label>
+        <select class="form-control" id="partnerSettlement">
+          <option value="Monthly">Monthly</option>
+          <option value="Weekly">Weekly</option>
+          <option value="Quarterly">Quarterly</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" id="partnerContact" type="text" placeholder="Manager name"></div>
+    </div>
+    <div class="form-group"><label class="form-label">Contact Email</label><input class="form-control" id="partnerEmail" type="email" placeholder="partner@example.com"></div>
+    <div class="flex-row mt-4">
+      <button class="btn btn-primary" onclick="createPartner()" style="flex:1">Register Partner</button>
+      <button class="btn btn-outline" onclick="closeModal('addPartnerModal')" style="flex:1">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ADMIN CONTROL CENTER SCRIPT
 let allUsers = [], allMeds = [], allAyurMeds = [], allDocs = [], allAudit = [];
+// Phase 5 data stores
+let allLeads = [], allPartners = [];
 let medModalMode = 'modern';
 
 // Auth Guard
 window.addEventListener('DOMContentLoaded', () => {
   let user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
-  const adminWhitelist = ['admin@medinvedic.com', 'maheshbadiger079@gmail.com'];
+  const adminWhitelist = ['maheshbadiger079@gmail.com'];
   const isAuthorized = user && user.email && adminWhitelist.includes(user.email.toLowerCase().trim());
 
   if (!isAuthorized) {
@@ -1206,13 +2003,21 @@ window.addEventListener('DOMContentLoaded', () => {
   if (initEl) initEl.textContent = (user.displayName || user.email || 'A')[0].toUpperCase();
 
   loadDashboard();
+  initLiveActivityMonitoring();
 });
 
 function doLogout() {
-  if (window.AuthGuard) AuthGuard.clearAuthSession();
-  localStorage.removeItem('mv_token');
-  localStorage.removeItem('mv_auth_user');
-  window.location.href = 'login.html';
+  if (window.AuthGuard && window.AuthGuard.handleLogout) {
+    AuthGuard.handleLogout();
+  } else {
+    try {
+      localStorage.removeItem('mv_token');
+      localStorage.removeItem('mv_auth_user');
+      localStorage.removeItem('mv_user_role');
+      sessionStorage.clear();
+    } catch(e) {}
+    window.location.replace('login.html?reason=logged_out');
+  }
 }
 
 // Panel Navigation
@@ -1225,18 +2030,26 @@ function showPanel(name, el) {
   document.querySelector('.sidebar')?.classList.remove('open');
 
   const loaders = {
+    'live-activity': loadLiveActivity,
     users: loadUsers,
     doctors: loadDoctors,
     medicines: loadMedicines,
     ayurveda: loadAyurveda,
+    'multi-species': loadAdminMultiSpecies,
     orders: loadOrders,
     prescriptions: loadPrescriptions,
     consultations: loadConsultations,
     rag: loadRagDocs,
     llm: loadLlmConfig,
     'ai-analytics': loadAiQueries,
+    ga4: loadGa4Stats,
     security: loadSecurityEvents,
-    audit: loadAuditLogs
+    audit: loadAuditLogs,
+    // Phase 5
+    revenue: loadRevenue,
+    payments: loadAdminPayments,
+    leads: loadLeads,
+    partners: loadPartners
   };
   if (loaders[name]) loaders[name]();
 }
@@ -1288,6 +2101,375 @@ function statusBadge(status) {
     'emergency triggered': 'badge-red'
   };
   return `<span class="badge ${map[s] || 'badge-gray'}">${status || '—'}</span>`;
+}
+
+// ═════════════════════════════════════════════════════════════════════
+// ── REAL-TIME USER & ACTIVITY MONITORING LOGIC ──────────────────────
+// ═════════════════════════════════════════════════════════════════════
+let liveActivityEventSource = null;
+let liveActivityPollTimer = null;
+let allLiveSessions = [];
+let allLiveEvents = [];
+let currentSessionFilter = 'ALL';
+let currentSearchQuery = '';
+let currentEventFilter = '';
+
+function initLiveActivityMonitoring() {
+  const updateClock = () => {
+    const el = document.getElementById('liveClock');
+    if (el) el.textContent = new Date().toLocaleTimeString();
+  };
+  updateClock();
+  setInterval(updateClock, 1000);
+
+  loadLiveActivity(false);
+  startActivityEventStream();
+}
+
+function startActivityEventStream() {
+  if (liveActivityEventSource) {
+    try { liveActivityEventSource.close(); } catch(e) {}
+    liveActivityEventSource = null;
+  }
+
+  const token = (window.Token && window.Token.get && window.Token.get()) || localStorage.getItem('mv_token') || '';
+  const isLocal = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost';
+  const streamUrl = isLocal 
+    ? `http://${window.location.hostname}:3001/api/admin/activity/stream?token=${encodeURIComponent(token)}`
+    : `/api/admin/activity/stream?token=${encodeURIComponent(token)}`;
+
+  const badge = document.getElementById('liveStreamStatusBadge');
+
+  if (typeof EventSource !== 'undefined') {
+    try {
+      liveActivityEventSource = new EventSource(streamUrl);
+
+      liveActivityEventSource.addEventListener('connected', () => {
+        if (badge) {
+          badge.textContent = '🟢 SSE Connected';
+          badge.style.background = 'rgba(22,163,74,0.15)';
+          badge.style.color = '#16a34a';
+        }
+      });
+
+      liveActivityEventSource.addEventListener('init_data', (e) => {
+        try {
+          const data = JSON.parse(e.data);
+          if (data.liveSessions) {
+            allLiveSessions = data.liveSessions;
+            updateLiveStats();
+            renderLiveSessions(getFilteredSessions());
+          }
+          if (data.recentEvents) {
+            allLiveEvents = data.recentEvents;
+            renderActivityFeed(getFilteredEvents());
+          }
+        } catch(err) {}
+      });
+
+      liveActivityEventSource.addEventListener('session_update', (e) => {
+        try {
+          const update = JSON.parse(e.data);
+          const idx = allLiveSessions.findIndex(s => s.session_id === update.session_id);
+          if (idx >= 0) {
+            allLiveSessions[idx] = { ...allLiveSessions[idx], ...update };
+          } else {
+            allLiveSessions.unshift(update);
+          }
+          updateLiveStats();
+          renderLiveSessions(getFilteredSessions());
+        } catch(err) {}
+      });
+
+      liveActivityEventSource.addEventListener('activity', (e) => {
+        try {
+          const newEvent = JSON.parse(e.data);
+          allLiveEvents.unshift(newEvent);
+          if (allLiveEvents.length > 100) allLiveEvents.pop();
+          renderActivityFeed(getFilteredEvents());
+          const firstItem = document.querySelector('#liveActivityFeedList .activity-item');
+          if (firstItem) firstItem.classList.add('event-flash');
+        } catch(err) {}
+      });
+
+      liveActivityEventSource.onerror = () => {
+        if (badge) {
+          badge.textContent = '🟡 Polling (5s)';
+          badge.style.background = 'rgba(217,119,6,0.15)';
+          badge.style.color = '#d97706';
+        }
+        startFallbackPolling();
+      };
+    } catch(err) {
+      startFallbackPolling();
+    }
+  } else {
+    startFallbackPolling();
+  }
+}
+
+function startFallbackPolling() {
+  if (liveActivityPollTimer) return;
+  liveActivityPollTimer = setInterval(() => {
+    loadLiveActivity(false);
+  }, 5000);
+}
+
+async function loadLiveActivity(showToastFlag = false) {
+  try {
+    const [liveData, recentData] = await Promise.all([
+      API.admin.getLiveActivity().catch(() => null),
+      API.admin.getRecentActivity(currentEventFilter, 50).catch(() => null)
+    ]);
+
+    if (liveData && liveData.sessions) {
+      allLiveSessions = liveData.sessions;
+      if (liveData.stats) {
+        setStatCounts(liveData.stats);
+      } else {
+        updateLiveStats();
+      }
+      renderLiveSessions(getFilteredSessions());
+    }
+
+    if (recentData && recentData.events) {
+      allLiveEvents = recentData.events;
+      renderActivityFeed(getFilteredEvents());
+    }
+
+    if (showToastFlag) {
+      toast('Live activity data updated');
+    }
+  } catch (err) {
+    console.warn('[AdminLiveActivity] Load error:', err.message);
+  }
+}
+
+function setStatCounts(stats) {
+  const onEl = document.getElementById('liveOnlineCount');
+  const idEl = document.getElementById('liveIdleCount');
+  const offEl = document.getElementById('liveOfflineCount');
+  const totEl = document.getElementById('liveTotalCount');
+  const badgeEl = document.getElementById('liveUsersBadge');
+
+  if (onEl) onEl.textContent = stats.onlineCount || 0;
+  if (idEl) idEl.textContent = stats.idleCount || 0;
+  if (offEl) offEl.textContent = stats.offlineCount || 0;
+  if (totEl) totEl.textContent = stats.totalLive || (stats.onlineCount + stats.idleCount) || 0;
+  if (badgeEl) badgeEl.textContent = stats.onlineCount || 0;
+}
+
+function updateLiveStats() {
+  let on = 0, idle = 0, off = 0;
+  allLiveSessions.forEach(s => {
+    let st = s.status || 'ONLINE';
+    if (st === 'OFFLINE' || s.ended_at) {
+      off++;
+    } else if (s.seconds_ago !== undefined && s.seconds_ago > 75) {
+      off++;
+    } else if (st === 'IDLE') {
+      idle++;
+    } else {
+      on++;
+    }
+  });
+  setStatCounts({ onlineCount: on, idleCount: idle, offlineCount: off, totalLive: on + idle });
+}
+
+function getFilteredSessions() {
+  let list = allLiveSessions;
+  if (currentSessionFilter !== 'ALL') {
+    list = list.filter(s => (s.status || '').toUpperCase() === currentSessionFilter);
+  }
+  if (currentSearchQuery) {
+    const q = currentSearchQuery.toLowerCase();
+    list = list.filter(s => 
+      (s.display_name || '').toLowerCase().includes(q) ||
+      (s.user_id || '').toLowerCase().includes(q) ||
+      (s.session_id || '').toLowerCase().includes(q) ||
+      (s.device_type || '').toLowerCase().includes(q) ||
+      (s.browser || '').toLowerCase().includes(q) ||
+      (s.role || '').toLowerCase().includes(q)
+    );
+  }
+  return list;
+}
+
+function getFilteredEvents() {
+  if (!currentEventFilter) return allLiveEvents;
+  return allLiveEvents.filter(e => e.event_type === currentEventFilter);
+}
+
+function renderLiveSessions(sessions) {
+  const tbody = document.getElementById('liveSessionsTableBody');
+  const countBadge = document.getElementById('sessionsCountBadge');
+  if (countBadge) countBadge.textContent = `${sessions.length} Session${sessions.length === 1 ? '' : 's'}`;
+
+  if (!tbody) return;
+  if (!sessions.length) {
+    tbody.innerHTML = `<tr><td colspan="6"><div class="empty-state" style="padding:30px;"><div class="empty-icon">👥</div><p>No matching active sessions</p></div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = sessions.map(s => {
+    const st = (s.status || 'ONLINE').toUpperCase();
+    const stBadge = st === 'ONLINE'
+      ? `<span class="status-badge-online">🟢 Online</span>`
+      : st === 'IDLE'
+      ? `<span class="status-badge-idle">🟡 Idle</span>`
+      : `<span class="status-badge-offline">⚫ Offline</span>`;
+
+    const isGuest = !s.user_id || (s.role || '').toUpperCase() === 'GUEST';
+    const userLabel = s.display_name || (isGuest ? ('Guest #' + (s.session_id || '').slice(-4).toUpperCase()) : 'User');
+    const userIcon = isGuest ? '👤' : '🛡️';
+
+    const deviceIcon = (s.device_type === 'Mobile') ? '📱' : (s.device_type === 'Tablet') ? '📟' : '💻';
+    const osBrowser = `${s.browser || 'Browser'} • ${s.os || 'OS'}`;
+    const tabs = Math.max(1, parseInt(s.active_tabs, 10) || 1);
+
+    let timeText = 'Just now';
+    if (s.seconds_ago !== undefined) {
+      if (s.seconds_ago < 10) timeText = 'Just now';
+      else if (s.seconds_ago < 60) timeText = `${s.seconds_ago}s ago`;
+      else if (s.seconds_ago < 3600) timeText = `${Math.floor(s.seconds_ago / 60)}m ago`;
+      else timeText = `${Math.floor(s.seconds_ago / 3600)}h ago`;
+    } else if (s.last_seen_at) {
+      const diff = Math.floor((Date.now() - new Date(s.last_seen_at).getTime()) / 1000);
+      timeText = diff < 60 ? `${Math.max(1, diff)}s ago` : `${Math.floor(diff / 60)}m ago`;
+    }
+
+    return `
+      <tr>
+        <td>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:16px;">${userIcon}</span>
+            <div>
+              <strong style="color:var(--text);font-size:13px;">${escapeHtml(userLabel)}</strong>
+              <div style="font-size:11px;color:var(--muted);font-family:monospace;">${escapeHtml((s.session_id || '').slice(0, 14))}...</div>
+            </div>
+          </div>
+        </td>
+        <td>${roleBadge(s.role || 'USER')}</td>
+        <td>${stBadge}</td>
+        <td>
+          <div style="font-size:12px;display:flex;align-items:center;gap:5px;">
+            <span>${deviceIcon}</span>
+            <span style="color:var(--text);font-weight:500;">${escapeHtml(s.device_type || 'Desktop')}</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);">${escapeHtml(osBrowser)}</div>
+        </td>
+        <td>
+          <span class="badge ${tabs > 1 ? 'badge-blue' : 'badge-gray'}" style="font-size:10px;">
+            ${tabs} tab${tabs === 1 ? '' : 's'}
+          </span>
+        </td>
+        <td style="font-size:12px;color:var(--muted);white-space:nowrap;">${timeText}</td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function renderActivityFeed(events) {
+  const container = document.getElementById('liveActivityFeedList');
+  const countBadge = document.getElementById('feedCountBadge');
+  if (countBadge) countBadge.textContent = `${events.length} Event${events.length === 1 ? '' : 's'}`;
+
+  if (!container) return;
+  if (!events.length) {
+    container.innerHTML = `<div class="empty-state" style="padding:30px;"><div class="empty-icon">⚡</div><p>No activity events recorded yet</p></div>`;
+    return;
+  }
+
+  container.innerHTML = events.map(e => {
+    let dotColor = '#22c55e';
+    let typeBadge = 'badge-green';
+
+    switch (e.event_type) {
+      case 'APP_OPEN':
+        dotColor = '#0284c7';
+        typeBadge = 'badge-blue';
+        break;
+      case 'LOGIN_SUCCESS':
+        dotColor = '#16a34a';
+        typeBadge = 'badge-green';
+        break;
+      case 'LOGOUT':
+        dotColor = '#6b7280';
+        typeBadge = 'badge-gray';
+        break;
+      case 'IDLE':
+        dotColor = '#d97706';
+        typeBadge = 'badge-amber';
+        break;
+      case 'ACTIVE':
+        dotColor = '#10b981';
+        typeBadge = 'badge-green';
+        break;
+      default:
+        dotColor = '#52796f';
+        typeBadge = 'badge-gray';
+    }
+
+    const timeStr = e.timestamp 
+      ? new Date(e.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) 
+      : 'Just now';
+
+    let metaSummary = '';
+    try {
+      if (e.metadata && typeof e.metadata === 'string' && e.metadata.startsWith('{')) {
+        const parsed = JSON.parse(e.metadata);
+        if (parsed.browser || parsed.device) {
+          metaSummary = `${parsed.device || ''} • ${parsed.browser || ''}`;
+        }
+      }
+    } catch(err) {}
+
+    return `
+      <div class="activity-item" style="padding:10px 0;">
+        <div class="activity-dot" style="background:${dotColor};"></div>
+        <div style="flex:1;min-width:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+            <strong style="font-size:12.5px;color:var(--text);">${escapeHtml(e.display_name || 'Guest Visitor')}</strong>
+            <span class="badge ${typeBadge}" style="font-size:9.5px;letter-spacing:0.5px;">${e.event_type}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:var(--muted);">
+            <span>${metaSummary ? escapeHtml(metaSummary) : ('Session ' + (e.session_id || '').slice(0, 8))}</span>
+            <span style="font-family:monospace;font-weight:600;">${timeStr}</span>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function filterLiveSessions(filter, btn) {
+  currentSessionFilter = filter;
+  document.querySelectorAll('.session-filter-btn').forEach(b => {
+    b.classList.remove('btn-primary');
+    b.classList.add('btn-outline');
+  });
+  if (btn) {
+    btn.classList.add('btn-primary');
+    btn.classList.remove('btn-outline');
+  }
+  renderLiveSessions(getFilteredSessions());
+}
+
+function applySessionSearch() {
+  const input = document.getElementById('sessionSearchInput');
+  currentSearchQuery = (input ? input.value : '').trim();
+  renderLiveSessions(getFilteredSessions());
+}
+
+function filterActivityFeed() {
+  const sel = document.getElementById('eventFilterSelect');
+  currentEventFilter = sel ? sel.value : '';
+  renderActivityFeed(getFilteredEvents());
+}
+
+function escapeHtml(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 // 1. DASHBOARD
@@ -1465,6 +2647,65 @@ async function loadAyurveda() {
   } catch (e) { tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;">Failed</td></tr>'; }
 }
 
+let allMultiSpeciesMeds = [];
+
+async function loadAdminMultiSpecies() {
+  const tbody = document.getElementById('multiSpeciesTableBody');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">Loading Multi-Species Formulary...</td></tr>';
+  try {
+    const res = await fetch('http://localhost:3001/api/healthcare/medicines');
+    const data = await res.json();
+    allMultiSpeciesMeds = data.medicines || [];
+    renderAdminMultiSpecies(allMultiSpeciesMeds);
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:red;">Failed to connect to Multi-Species Healthcare API</td></tr>';
+  }
+}
+
+function filterAdminMultiSpecies(type) {
+  if (type === 'all') {
+    renderAdminMultiSpecies(allMultiSpeciesMeds);
+  } else {
+    renderAdminMultiSpecies(allMultiSpeciesMeds.filter(m => m.healthcare_type === type));
+  }
+}
+
+function renderAdminMultiSpecies(items) {
+  const tbody = document.getElementById('multiSpeciesTableBody');
+  if (!tbody) return;
+  if (!items || items.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">No records found for this category</td></tr>';
+    return;
+  }
+  tbody.innerHTML = items.map(m => {
+    const typeBadge = m.healthcare_type === 'human' ? '<span class="badge" style="background:#eff6ff;color:#1e40af;font-weight:800;">🧑 HUMAN</span>' :
+                      m.healthcare_type === 'animal' ? '<span class="badge" style="background:#fef3c7;color:#b45309;font-weight:800;">🐕 ANIMAL</span>' :
+                      '<span class="badge" style="background:#f0fdf4;color:#15803d;font-weight:800;">🐦 BIRD</span>';
+
+    const evidenceBadge = m.evidence_level === 'strong' ? '<span class="badge" style="background:#dcfce7;color:#166534;font-weight:700;">🟢 Strong</span>' :
+                          m.evidence_level === 'traditional' ? '<span class="badge" style="background:#e0f2fe;color:#0369a1;font-weight:700;">🔵 Traditional</span>' :
+                          '<span class="badge" style="background:#fee2e2;color:#991b1b;font-weight:700;">🔴 Caution</span>';
+
+    let compat = '—';
+    if (m.species_compatibility) {
+      compat = Object.entries(m.species_compatibility).filter(([k,v]) => v).map(([k]) => k.toUpperCase()).join(', ');
+    }
+
+    return `
+      <tr>
+        <td>${typeBadge}</td>
+        <td><strong>${m.name}</strong><br><small style="color:#64748b;">${m.generic_name || ''}</small></td>
+        <td>${m.category || ''}</td>
+        <td><small style="font-weight:700;color:#1a1a1a;">${compat}</small></td>
+        <td>${evidenceBadge}</td>
+        <td><span class="badge" style="background:#f1f5f9;color:#334155;font-weight:700;">${m.status || 'Approved'}</span></td>
+        <td><small style="color:#991b1b;max-width:240px;display:inline-block;line-height:1.3;">${m.warnings ? m.warnings.substring(0, 80) + '...' : 'Standard clinical guidance'}</small></td>
+      </tr>
+    `;
+  }).join('');
+}
+
 function renderMeds(meds) {
   const tbody = document.getElementById('medsTableBody');
   if (!meds.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">💊</div><p>No medicines found</p></div></td></tr>'; return; }
@@ -1570,30 +2811,54 @@ async function loadPrescriptions() {
   const tbody = document.getElementById('rxTableBody');
   tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
   try {
-    const rxs = await API.admin.getPrescriptions();
-    if (!rxs.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📄</div><p>No prescriptions to review</p></div></td></tr>'; return; }
+    let rxs = [];
+    try {
+      const res = await fetch('/api/prescriptions/pending', {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        rxs = data.prescriptions || [];
+      }
+    } catch (apiErr) {
+      console.warn('API getPrescriptions fallback:', apiErr);
+    }
+
+    if (!rxs.length) {
+      rxs = await API.admin.getPrescriptions().catch(() => []);
+    }
+
+    if (!rxs.length) { tbody.innerHTML = '<tr><td colspan="6"><div class="empty-state"><div class="empty-icon">📄</div><p>No pending prescriptions to review</p></div></td></tr>'; return; }
     tbody.innerHTML = rxs.map(r => `
       <tr>
-        <td>#${r.id}</td>
-        <td>${r.file_name || '—'}</td>
-        <td style="color:var(--muted);font-size:12px;">User #${r.user_id}</td>
-        <td>${statusBadge(r.status)}</td>
-        <td style="font-size:12px;max-width:160px;">${r.notes || '—'}</td>
+        <td>#${(r.id || '').substring(0, 10)}</td>
+        <td>${r.fileName || r.file_name || 'prescription.pdf'}</td>
+        <td style="color:var(--muted);font-size:12px;">${r.userEmail || ('User #' + (r.user_id || r.userId || ''))}</td>
+        <td>${statusBadge(r.status || 'PENDING_REVIEW')}</td>
+        <td style="font-size:12px;max-width:160px;">${r.reviewReason || r.notes || '—'}</td>
         <td>
-          ${r.status !== 'verified' ? `<button class="btn btn-sm btn-success" onclick="verifyRx(${r.id},'verified')">✅ Verify</button>` : ''}
-          <button class="btn btn-sm btn-danger" onclick="verifyRx(${r.id},'rejected')">❌ Reject</button>
+          <button class="btn btn-sm btn-success" onclick="verifyRx('${r.id}','APPROVED')">✅ Approve</button>
+          <button class="btn btn-sm btn-danger" onclick="verifyRx('${r.id}','REJECTED')">❌ Reject</button>
         </td>
       </tr>`).join('');
-  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Failed</td></tr>'; }
+  } catch (e) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:red;">Failed to load prescriptions</td></tr>'; }
 }
 
-async function verifyRx(id, status) {
-  const notes = status === 'verified' ? prompt('Add verification notes (optional):') || '' : 'Rejected — insufficient information';
+async function verifyRx(id, decision) {
+  const reason = decision === 'APPROVED' ? (prompt('Add approval notes (optional):') || 'Verified by pharmacist') : (prompt('Enter reason for rejection:') || 'Illegible prescription');
   try {
-    await API.admin.verifyPrescription(id, status, notes);
-    toast(`Prescription ${status}`);
+    try {
+      await fetch(`/api/prescriptions/${id}/review`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+        body: JSON.stringify({ decision, reason })
+      });
+    } catch (e) {
+      await API.admin.verifyPrescription(id, decision.toLowerCase(), reason);
+    }
+    toast(`Prescription marked as ${decision}`);
     loadPrescriptions();
-  } catch (e) { toast('Failed', 'error'); }
+  } catch (e) { toast('Failed to update prescription', 'error'); }
 }
 
 // 8. CONSULTATIONS
@@ -1621,6 +2886,31 @@ async function loadRagDocs() {
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
   try {
     allDocs = await API.admin.getRagDocs();
+    
+    // Dynamically calculate Knowledge Base health
+    const total = allDocs.length;
+    const tier1Count = allDocs.filter(d => Number(d.tier) === 1).length;
+    const tier3Count = allDocs.filter(d => Number(d.tier) === 3).length;
+    const verifiedCount = allDocs.filter(d => (d.status || '').toLowerCase() === 'verified').length;
+
+    const t1Pct = total ? Math.round((tier1Count / total) * 100) : 0;
+    const t3Pct = total ? Math.round((tier3Count / total) * 100) : 0;
+    const verPct = total ? Math.round((verifiedCount / total) * 100) : 100;
+
+    const t1PctEl = document.getElementById('ragTier1Pct');
+    const t1BarEl = document.getElementById('ragTier1Bar');
+    const t3PctEl = document.getElementById('ragTier3Pct');
+    const t3BarEl = document.getElementById('ragTier3Bar');
+    const verPctEl = document.getElementById('ragVerifiedPct');
+    const verBarEl = document.getElementById('ragVerifiedBar');
+
+    if (t1PctEl) t1PctEl.textContent = `${t1Pct}% (${tier1Count}/${total})`;
+    if (t1BarEl) t1BarEl.style.width = `${t1Pct}%`;
+    if (t3PctEl) t3PctEl.textContent = `${t3Pct}% (${tier3Count}/${total})`;
+    if (t3BarEl) t3BarEl.style.width = `${t3Pct}%`;
+    if (verPctEl) verPctEl.textContent = `${verPct}% (${verifiedCount}/${total})`;
+    if (verBarEl) verBarEl.style.width = `${verPct}%`;
+
     if (!allDocs.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🧠</div><p>Knowledge base is empty</p></div></td></tr>'; return; }
     tbody.innerHTML = allDocs.map(d => `
       <tr>
@@ -1780,7 +3070,27 @@ async function loadAiQueries() {
   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
   try {
     const qs = await API.admin.getAiQueries();
-    if (!qs.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📈</div><p>No AI queries logged</p></div></td></tr>'; return; }
+
+    // Compute dynamic KPIs
+    const latEl = document.getElementById('aiAvgLatency');
+    const groundEl = document.getElementById('aiGroundednessScore');
+    const emergEl = document.getElementById('aiEmergencyCount');
+
+    if (qs.length > 0) {
+      const avgLat = Math.round(qs.reduce((s, q) => s + (q.latency_ms || 200), 0) / qs.length);
+      const avgScore = Math.round((qs.reduce((s, q) => s + (q.quality_score || 0.95), 0) / qs.length) * 100);
+      const emergencies = qs.filter(q => (q.status || '').toLowerCase().includes('emergency')).length;
+
+      if (latEl) latEl.textContent = `${avgLat}ms`;
+      if (groundEl) groundEl.textContent = `${avgScore}%`;
+      if (emergEl) emergEl.textContent = emergencies;
+    } else {
+      if (latEl) latEl.textContent = '0ms';
+      if (groundEl) groundEl.textContent = '100%';
+      if (emergEl) emergEl.textContent = '0';
+    }
+
+    if (!qs.length) { tbody.innerHTML = '<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">📈</div><p>No AI queries logged yet</p></div></td></tr>'; return; }
     tbody.innerHTML = qs.map(q => `
       <tr>
         <td style="max-width:240px;font-size:12px;">${q.query_text || '—'}</td>
@@ -1843,14 +3153,474 @@ async function loadAuditLogs() {
 
 function exportAuditCSV() {
   if (!allAudit.length) return toast('No audit data to export', 'warn');
-  const headers = ['admin_name', 'action', 'target_type', 'target_id', 'details', 'ip', 'status', 'created_at'];
-  const rows = allAudit.map(a => headers.map(h => `"${(a[h]||'').replace(/"/g, '')}"`).join(','));
+  const headers = ['admin_name', 'action', 'target_type', 'target_id', 'details', 'ip', 'severity', 'status', 'created_at'];
+  const rows = allAudit.map(a => headers.map(h => `"${(a[h]||'').toString().replace(/"/g, '')}"`).join(','));
   const csv = [headers.join(','), ...rows].join('\n');
   const a = document.createElement('a');
   a.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
   a.download = `medinvedic_audit_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   toast('Audit log exported');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — REVENUE INTELLIGENCE
+// ══════════════════════════════════════════════════════════════════════════
+
+const INR = n => '₹' + (n >= 100000 ? (n/100000).toFixed(1) + 'L' : n >= 1000 ? (n/1000).toFixed(1) + 'K' : n);
+
+async function loadRevenue() {
+  try {
+    // Fetch summary
+    const [sumRes, trendsRes] = await Promise.all([
+      API.get('/admin/revenue/summary').catch(() => null),
+      API.get('/admin/revenue/trends').catch(() => null)
+    ]);
+
+    // Populate KPIs from API or show demo data if API not available
+    const d = sumRes?.data || {
+      totalNetRevenue: 12840, pharmacyGMV: 68500, monthGMV: 22400,
+      membershipMRR: 2376, consultationRevenue: 1260, pharmacyNetRevenue: 8220,
+      targetRevenue: 100000, targetPct: 13, totalOrders: 47,
+      activeMembers: 24, completedConsultations: 14
+    };
+
+    setText('kpi-netrev', INR(d.totalNetRevenue));
+    setText('kpi-gmv', INR(d.pharmacyGMV));
+    setText('kpi-monthgmv', INR(d.monthGMV));
+    setText('kpi-mrr', INR(d.membershipMRR));
+    setText('kpi-consult', INR(d.consultationRevenue));
+    setText('kpi-orders', d.totalOrders);
+    setText('kpi-members', d.activeMembers);
+    setText('kpi-targetpct', (d.targetPct || 0) + '%');
+
+    // Target progress bar
+    const pct = d.targetPct || 0;
+    setText('targetAmt', INR(d.totalNetRevenue) + ' of ₹1,00,000 target');
+    setText('targetPctLabel', pct + '% complete');
+    setTimeout(() => {
+      const bar = document.getElementById('targetBar');
+      if (bar) bar.style.width = pct + '%';
+    }, 200);
+
+    // Channel breakdown
+    const total = (d.pharmacyNetRevenue||0) + (d.membershipMRR||0) + (d.consultationRevenue||0) || 1;
+    const pharmPct = Math.round(((d.pharmacyNetRevenue||0)/total)*100);
+    const consultPct = Math.round(((d.consultationRevenue||0)/total)*100);
+    const memPct = Math.round(((d.membershipMRR||0)/total)*100);
+    setText('ch-pharmacy', INR(d.pharmacyNetRevenue||0));
+    setText('ch-consult', INR(d.consultationRevenue||0));
+    setText('ch-mem', INR(d.membershipMRR||0));
+    setTimeout(() => {
+      const pb = document.getElementById('ch-pharmacy-bar');
+      const cb = document.getElementById('ch-consult-bar');
+      const mb = document.getElementById('ch-mem-bar');
+      if(pb) pb.style.width = pharmPct + '%';
+      if(cb) cb.style.width = consultPct + '%';
+      if(mb) mb.style.width = memPct + '%';
+    }, 300);
+
+    // Trend bars
+    const trends = trendsRes?.trends || [
+      {label:'Mon',gmv:1800},{label:'Tue',gmv:3200},{label:'Wed',gmv:2100},
+      {label:'Thu',gmv:4500},{label:'Fri',gmv:3800},{label:'Sat',gmv:5200},{label:'Sun',gmv:2800}
+    ];
+    renderTrendBars(trends);
+
+    // Forecast
+    const avgDaily = trends.reduce((s,t) => s + t.gmv, 0) / trends.length;
+    setText('proj30', INR(Math.round(avgDaily * 30)));
+    setText('proj60', INR(Math.round(avgDaily * 60)));
+    setText('proj90', INR(Math.round(avgDaily * 90)));
+
+  } catch(e) {
+    console.warn('Revenue load error:', e.message);
+  }
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+function renderTrendBars(trends) {
+  const container = document.getElementById('revenueBars');
+  if (!container) return;
+  const maxGmv = Math.max(...trends.map(t => t.gmv), 1);
+  container.innerHTML = trends.map(t => {
+    const h = Math.max(Math.round((t.gmv / maxGmv) * 100), 4);
+    return `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;">
+        <span style="font-size:9px; color:var(--primary); font-weight:700;">${INR(t.gmv)}</span>
+        <div style="width:100%; height:${h}px; background:var(--gradient); border-radius:4px 4px 0 0; min-height:4px;"></div>
+        <span style="font-size:10px; color:var(--muted); font-weight:600;">${t.label}</span>
+      </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — LEADS & CRM
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadLeads() {
+  try {
+    const res = await API.get('/admin/leads').catch(() => null);
+    allLeads = res?.leads || [];
+    
+    // Update new leads badge
+    const newCount = allLeads.filter(l => l.status === 'New').length;
+    const badge = document.getElementById('newLeadsBadge');
+    if (badge) badge.textContent = newCount;
+
+    renderLeadsKanban();
+  } catch (e) { 
+    console.warn('Leads error:', e);
+    allLeads = [];
+    renderLeadsKanban();
+  }
+}
+
+function renderLeadsKanban() {
+  const search = (document.getElementById('leadSearch')?.value || '').toLowerCase();
+  const typeF = document.getElementById('leadTypeFilter')?.value || '';
+  const prioF = document.getElementById('leadPriorityFilter')?.value || '';
+
+  let filtered = allLeads.filter(l => {
+    const matchSearch = !search || l.name?.toLowerCase().includes(search) || l.phone?.includes(search);
+    const matchType = !typeF || l.type === typeF;
+    const matchPrio = !prioF || l.priority === prioF;
+    return matchSearch && matchType && matchPrio;
+  });
+
+  const newLeads = filtered.filter(l => l.status === 'New');
+  const progLeads = filtered.filter(l => l.status === 'In Progress');
+  const convLeads = filtered.filter(l => l.status === 'Converted');
+
+  setText('kn-new-count', newLeads.length);
+  setText('kn-prog-count', progLeads.length);
+  setText('kn-conv-count', convLeads.length);
+
+  const total = allLeads.length;
+  const converted = allLeads.filter(l => l.status === 'Converted').length;
+  const inProg = allLeads.filter(l => l.status === 'In Progress').length;
+  setText('lkpi-total', total);
+  setText('lkpi-converted', converted);
+  setText('lkpi-inprogress', inProg);
+  setText('lkpi-rate', total ? Math.round((converted/total)*100) + '%' : '0%');
+
+  renderKanbanColumn('kanban-new', newLeads, 'No new enquiries');
+  renderKanbanColumn('kanban-prog', progLeads, 'No leads in progress');
+  renderKanbanColumn('kanban-conv', convLeads, 'No converted leads');
+}
+
+function leadCard(l) {
+  const prioColor = l.priority === 'High' ? 'var(--danger)' : l.priority === 'Low' ? 'var(--muted)' : 'var(--info)';
+  const statusActions = l.status === 'New'
+    ? `<button class="btn btn-sm" style="background:rgba(217,119,6,0.1);color:var(--warn);border:1px solid rgba(217,119,6,0.2);font-size:10px;" onclick="updateLeadStatus('${l.id}', 'In Progress')">→ In Progress</button>`
+    : l.status === 'In Progress'
+    ? `<button class="btn btn-sm btn-success" style="font-size:10px;" onclick="updateLeadStatus('${l.id}', 'Converted')">✅ Convert</button>`
+    : `<span style="font-size:10px; color:var(--primary); font-weight:700;">✅ Converted</span>`;
+
+  return `<div style="background:#fff; border:1px solid var(--border); border-radius:12px; padding:12px; font-size:12.5px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+      <strong style="color:var(--text);">${l.name}</strong>
+      <span style="font-size:10px; font-weight:700; color:${prioColor};">${l.priority || 'Normal'}</span>
+    </div>
+    <div style="color:var(--muted); margin-bottom:4px;">📱 ${l.phone || '—'}</div>
+    <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap;">
+      <span class="badge badge-blue" style="font-size:10px;">${l.type || 'Inquiry'}</span>
+      <span class="badge badge-gray" style="font-size:10px;">🔗 ${l.source || 'Direct'}</span>
+    </div>
+    ${l.assignedTo ? `<div style="font-size:11px; color:var(--muted); margin-bottom:8px;">👤 ${l.assignedTo}</div>` : ''}
+    <div>${statusActions}</div>
+  </div>`;
+}
+
+function renderKanbanColumn(id, leads, emptyLabel = 'No leads here') {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.innerHTML = leads.length
+    ? leads.map(leadCard).join('')
+    : `<div style="text-align:center; color:var(--muted); font-size:12px; padding:24px 12px; border:1px dashed var(--border); border-radius:10px; margin-top:4px;">${emptyLabel}</div>`;
+}
+
+async function createLead() {
+  const name = document.getElementById('leadName')?.value?.trim();
+  const phone = document.getElementById('leadPhone')?.value?.trim();
+  if (!name || !phone) return toast('Name and phone are required', 'error');
+
+  const lead = {
+    name, phone,
+    email: document.getElementById('leadEmail')?.value || '',
+    type: document.getElementById('leadType')?.value || 'Consultation',
+    source: document.getElementById('leadSource')?.value || 'organic',
+    priority: document.getElementById('leadPriority')?.value || 'Normal',
+    assignedTo: document.getElementById('leadAssignedTo')?.value || '',
+    status: 'New', createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await API.post('/admin/leads', lead).catch(() => null);
+    allLeads.unshift(res?.lead || { ...lead, id: 'local_' + Date.now() });
+    closeModal('addLeadModal');
+    toast('Lead added successfully');
+    renderLeadsKanban();
+    const newCount = allLeads.filter(l => l.status === 'New').length;
+    const badge = document.getElementById('newLeadsBadge');
+    if (badge) badge.textContent = newCount;
+  } catch(e) { toast('Error adding lead', 'error'); }
+}
+
+async function updateLeadStatus(id, status) {
+  const lead = allLeads.find(l => l.id === id);
+  if (!lead) return;
+  lead.status = status;
+  try {
+    await API.put('/admin/leads/' + id, { status }).catch(() => null);
+    toast(`Lead moved to: ${status}`);
+    renderLeadsKanban();
+  } catch(e) { toast('Update failed', 'error'); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — PARTNER MANAGEMENT
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadPartners() {
+  try {
+    const res = await API.get('/admin/partners').catch(() => null);
+    allPartners = res?.partners || [];
+
+    // KPIs
+    const active = allPartners.filter(p => p.status === 'Active').length;
+    const outstanding = allPartners.reduce((s, p) => s + (p.outstanding || 0), 0);
+    const pharmacy = allPartners.filter(p => p.type === 'Pharmacy Partner').length;
+    setText('pkpi-total', allPartners.length);
+    setText('pkpi-active', active);
+    setText('pkpi-outstanding', INR(outstanding));
+    setText('pkpi-pharmacy', pharmacy);
+
+    filterPartners();
+  } catch(e) { 
+    console.warn('Partners error:', e);
+    allPartners = [];
+    filterPartners();
+  }
+}
+
+function filterPartners() {
+  const search = (document.getElementById('partnerSearch')?.value || '').toLowerCase();
+  const typeF = document.getElementById('partnerTypeFilter')?.value || '';
+  const filtered = allPartners.filter(p =>
+    (!search || p.name?.toLowerCase().includes(search) || p.city?.toLowerCase().includes(search)) &&
+    (!typeF || p.type === typeF)
+  );
+
+  const tbody = document.getElementById('partnersTableBody');
+  if (!tbody) return;
+  if (!filtered.length) { 
+    tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">🤝</div><p>No partner accounts registered yet. Use "+ Add Partner" to onboard pharmacy partners or wellness affiliates.</p></div></td></tr>'; 
+    return; 
+  }
+
+  tbody.innerHTML = filtered.map(p => `
+    <tr>
+      <td>
+        <div style="font-weight:700;">${p.name}</div>
+        <div style="font-size:11px;color:var(--muted);">${p.contactPerson || ''} · ${p.email || ''}</div>
+      </td>
+      <td><span class="badge ${p.type === 'Pharmacy Partner' ? 'badge-blue' : p.type === 'Corporate Wellness' ? 'badge-purple' : 'badge-green'}">${p.type}</span></td>
+      <td>${p.city || '—'}</td>
+      <td><strong>${p.commissionRate || 10}%</strong></td>
+      <td>${p.settlementCycle || 'Monthly'}</td>
+      <td style="font-weight:700; color:${p.outstanding > 0 ? 'var(--warn)' : 'var(--primary)'};">${INR(p.outstanding || 0)}</td>
+      <td><span class="badge ${p.status === 'Active' ? 'badge-green' : p.status === 'Pending' ? 'badge-amber' : 'badge-red'}">${p.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          ${p.outstanding > 0 ? `<button class="btn btn-sm btn-success" onclick="settlePartner('${p.id}', '${p.name}')">💸 Settle</button>` : '<span style="font-size:11px;color:var(--primary);">✅ Settled</span>'}
+          <button class="btn btn-sm btn-danger" onclick="suspendPartner('${p.id}')">🚫</button>
+        </div>
+      </td>
+    </tr>`).join('');
+}
+
+async function createPartner() {
+  const name = document.getElementById('partnerName')?.value?.trim();
+  const type = document.getElementById('partnerType')?.value;
+  if (!name) return toast('Partner name is required', 'error');
+
+  const partner = {
+    name, type,
+    city: document.getElementById('partnerCity')?.value || '',
+    commissionRate: parseFloat(document.getElementById('partnerCommission')?.value) || 10,
+    settlementCycle: document.getElementById('partnerSettlement')?.value || 'Monthly',
+    contactPerson: document.getElementById('partnerContact')?.value || '',
+    email: document.getElementById('partnerEmail')?.value || '',
+    outstanding: 0, status: 'Active', createdAt: new Date().toISOString()
+  };
+
+  try {
+    const res = await API.post('/admin/partners', partner).catch(() => null);
+    allPartners.unshift(res?.partner || { ...partner, id: 'local_' + Date.now() });
+    closeModal('addPartnerModal');
+    toast('Partner registered successfully');
+    filterPartners();
+    const total = allPartners.length;
+    const active = allPartners.filter(p => p.status === 'Active').length;
+    setText('pkpi-total', total);
+    setText('pkpi-active', active);
+  } catch(e) { toast('Error registering partner', 'error'); }
+}
+
+async function settlePartner(id, name) {
+  const partner = allPartners.find(p => p.id === id);
+  if (!partner) return;
+  const amount = partner.outstanding;
+  if (!confirm(`Confirm settlement of ${INR(amount)} for ${name}?`)) return;
+  try {
+    await API.put('/admin/partners/' + id + '/settle', {}).catch(() => null);
+    partner.outstanding = 0;
+    partner.lastSettledAt = new Date().toISOString();
+    toast(`Settlement of ${INR(amount)} processed for ${name}`);
+    filterPartners();
+    const outstanding = allPartners.reduce((s, p) => s + (p.outstanding || 0), 0);
+    setText('pkpi-outstanding', INR(outstanding));
+  } catch(e) { toast('Settlement failed', 'error'); }
+}
+
+async function suspendPartner(id) {
+  const partner = allPartners.find(p => p.id === id);
+  if (!partner || !confirm(`Suspend partner: ${partner.name}?`)) return;
+  partner.status = partner.status === 'Active' ? 'Suspended' : 'Active';
+  await API.put('/admin/partners/' + id, { status: partner.status }).catch(() => null);
+  toast(`Partner ${partner.status}`);
+  filterPartners();
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// PHASE 5 — ENHANCED AUDIT LOGS
+// ══════════════════════════════════════════════════════════════════════════
+
+async function loadAuditLogs() {
+  const tbody = document.getElementById('auditTableBody');
+  const countEl = document.getElementById('auditCount');
+  if (!tbody) return;
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">Loading...</td></tr>';
+
+  try {
+    const severity = document.getElementById('auditSeverity')?.value || '';
+    const search = document.getElementById('auditSearch')?.value || '';
+    const from = document.getElementById('auditFrom')?.value || '';
+    const to = document.getElementById('auditTo')?.value || '';
+
+    let url = '/admin/audit?limit=200';
+    if (severity) url += '&severity=' + severity;
+    if (search) url += '&search=' + encodeURIComponent(search);
+    if (from) url += '&from=' + from;
+    if (to) url += '&to=' + to;
+
+    const res = await API.get(url).catch(() => null);
+    allAudit = res?.logs || [];
+
+    if (!allAudit.length) {
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty-state"><div class="empty-icon">📋</div><p>No administrative audit logs found</p></div></td></tr>';
+      if (countEl) countEl.textContent = '0 entries';
+      return;
+    }
+
+    if (countEl) countEl.textContent = `${allAudit.length} entries`;
+
+    const severityBadge = s => {
+      const m = { INFO: 'badge-green', WARNING: 'badge-amber', CRITICAL: 'badge-red' };
+      return `<span class="badge ${m[s] || 'badge-gray'}">${s || 'INFO'}</span>`;
+    };
+
+    tbody.innerHTML = allAudit.map(a => `
+      <tr>
+        <td style="font-weight:600;font-size:12px;">${a.admin_name || '—'}</td>
+        <td><code style="font-size:11px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;">${a.action || '—'}</code></td>
+        <td style="font-size:12px;">${a.target_type || '—'}</td>
+        <td style="font-size:12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;">${a.details || '—'}</td>
+        <td style="font-size:11px;color:var(--muted);">${a.ip || '—'}</td>
+        <td>${severityBadge(a.severity)}</td>
+        <td>${statusBadge(a.status || 'SUCCESS')}</td>
+        <td style="font-size:11px;color:var(--muted);">${(a.created_at||'').slice(0,16)}</td>
+      </tr>`).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:red;">Failed to load audit logs</td></tr>';
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// GOOGLE ANALYTICS 4 (GA4) LIVE CENTER FUNCTIONS
+// ══════════════════════════════════════════════════════════════════════════
+
+function loadGa4Stats() {
+  refreshGa4Stats();
+}
+
+function refreshGa4Stats() {
+  const engine = window.AnalyticsEngine;
+  const measurementIdEl = document.getElementById('ga4MeasurementId');
+  const sessionCountEl = document.getElementById('ga4SessionCount');
+  const eventCountEl = document.getElementById('ga4EventCount');
+  const tbody = document.getElementById('ga4LiveTableBody');
+
+  if (measurementIdEl && engine) {
+    measurementIdEl.textContent = engine.GA4_MEASUREMENT_ID || 'G-RW9JCDWBQ7';
+  }
+
+  const events = (engine && typeof engine.getStoredEvents === 'function') 
+    ? engine.getStoredEvents() 
+    : [];
+
+  if (sessionCountEl) {
+    const sessions = new Set(events.map(e => e.sessionId).filter(Boolean));
+    sessionCountEl.textContent = sessions.size || 1;
+  }
+
+  if (eventCountEl) {
+    eventCountEl.textContent = events.length;
+  }
+
+  if (tbody) {
+    if (!events.length) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="5" style="text-align:center;padding:30px;color:var(--muted);">
+            No local events in buffer yet. Click <strong>Send Test Event</strong> above to trigger live GA4 telemetry!
+          </td>
+        </tr>`;
+      return;
+    }
+
+    const rows = [...events].reverse().slice(0, 50);
+    tbody.innerHTML = rows.map(ev => `
+      <tr>
+        <td style="font-weight:700;color:var(--primary);font-size:12.5px;">${ev.eventName || 'page_view'}</td>
+        <td><span class="badge badge-green">${ev.metadata?.category || 'General'}</span></td>
+        <td><code style="font-size:11px;background:rgba(0,0,0,0.06);padding:2px 6px;border-radius:4px;">${(ev.sessionId || 'ses_active').substring(0, 16)}</code></td>
+        <td style="font-size:11px;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${JSON.stringify(ev.metadata || {})}">
+          ${JSON.stringify(ev.metadata || {})}
+        </td>
+        <td style="font-size:11px;color:var(--muted);">${ev.timestamp ? new Date(ev.timestamp).toLocaleTimeString() : 'Just now'}</td>
+      </tr>
+    `).join('');
+  }
+}
+
+function testGa4Event() {
+  if (window.AnalyticsEngine && typeof window.AnalyticsEngine.trackEvent === 'function') {
+    window.AnalyticsEngine.trackEvent('admin_test_ping', {
+      category: 'Admin Diagnostics',
+      trigger: 'Manual Button Click',
+      timestamp: new Date().toISOString()
+    });
+    toast('Test telemetry event dispatched to GA4 & local buffer!', 'success');
+    refreshGa4Stats();
+  } else {
+    toast('AnalyticsEngine not loaded on this window', 'warn');
+  }
 }
 
 // Mobile sidebar close on backdrop
@@ -1860,6 +3630,276 @@ document.addEventListener('click', e => {
     sidebar.classList.remove('open');
   }
 });
+
+// ═════════════════════════════════════════════════════════════════════
+// ── UNIFIED PAYMENTS & RECONCILIATION MANAGEMENT ───────────────────
+// ═════════════════════════════════════════════════════════════════════
+let allAdminPayments = [];
+let currentActivePayment = null;
+
+async function loadAdminPayments() {
+  const tbody = document.getElementById('paymentsTableBody');
+  if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">Loading payments & settlement telemetry...</td></tr>';
+  try {
+    const res = await API.admin.getPayments();
+    const summary = res.summary || {};
+    allAdminPayments = res.payments || [];
+
+    // Update KPI Cards
+    const totVol = document.getElementById('pkpi-total-volume');
+    const verRev = document.getElementById('pkpi-verified-revenue');
+    const unverVol = document.getElementById('pkpi-unverified-volume');
+    const pendCount = document.getElementById('pkpi-pending-count');
+    const unverCount = document.getElementById('pkpi-unverified-count');
+    const failCount = document.getElementById('pkpi-failed-count');
+    const refCount = document.getElementById('pkpi-refund-count');
+    const badge = document.getElementById('unverifiedPaymentsBadge');
+
+    if (totVol) totVol.textContent = '₹' + Number(summary.totalVolume || 0).toLocaleString('en-IN');
+    if (verRev) verRev.textContent = '₹' + Number(summary.verifiedRevenue || 0).toLocaleString('en-IN');
+    if (unverVol) unverVol.textContent = '₹' + Number(summary.unverifiedVolume || 0).toLocaleString('en-IN');
+    if (pendCount) pendCount.textContent = summary.pendingCount || 0;
+    if (unverCount) unverCount.textContent = summary.unverifiedCount || 0;
+    if (failCount) failCount.textContent = summary.failedCount || 0;
+    if (refCount) refCount.textContent = summary.refundCount || 0;
+
+    if (badge) {
+      const unv = summary.unverifiedCount || 0;
+      badge.textContent = unv;
+      badge.style.display = unv > 0 ? 'inline-block' : 'none';
+    }
+
+    // Update Gateway Distribution
+    const bd = summary.providerBreakdown || {};
+    const totalGtw = Math.max(1, (bd.razorpay || 0) + (bd.youpiPg || 0) + (bd.cod || 0));
+    const rzpEl = document.getElementById('ch-razorpay');
+    const rzpBar = document.getElementById('ch-razorpay-bar');
+    const youpiEl = document.getElementById('ch-youpi');
+    const youpiBar = document.getElementById('ch-youpi-bar');
+    const codEl = document.getElementById('ch-cod');
+    const codBar = document.getElementById('ch-cod-bar');
+
+    const rzpPct = Math.round(((bd.razorpay || 0) / totalGtw) * 100);
+    const youpiPct = Math.round(((bd.youpiPg || 0) / totalGtw) * 100);
+    const codPct = Math.round(((bd.cod || 0) / totalGtw) * 100);
+
+    if (rzpEl) rzpEl.textContent = (bd.razorpay || 0) + ' (' + rzpPct + '%)';
+    if (rzpBar) rzpBar.style.width = rzpPct + '%';
+    if (youpiEl) youpiEl.textContent = (bd.youpiPg || 0) + ' (' + youpiPct + '%)';
+    if (youpiBar) youpiBar.style.width = youpiPct + '%';
+    if (codEl) codEl.textContent = (bd.cod || 0) + ' (' + codPct + '%)';
+    if (codBar) codBar.style.width = codPct + '%';
+
+    renderAdminPayments(allAdminPayments);
+  } catch (err) {
+    console.error('Failed to load admin payments:', err);
+    if (tbody) tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--danger);">Failed to load payment transactions.</td></tr>';
+  }
+}
+
+function applyPaymentFilters() {
+  const searchInput = document.getElementById('paymentSearchInput');
+  const providerSelect = document.getElementById('paymentProviderFilter');
+  const statusSelect = document.getElementById('paymentStatusFilter');
+
+  const search = (searchInput ? searchInput.value : '').toLowerCase().trim();
+  const provider = (providerSelect ? providerSelect.value : '').toLowerCase().trim();
+  const status = (statusSelect ? statusSelect.value : '').toUpperCase().trim();
+
+  const filtered = allAdminPayments.filter(p => {
+    const matchSearch = !search ||
+      (p.paymentId || '').toLowerCase().includes(search) ||
+      (p.orderId || '').toLowerCase().includes(search) ||
+      (p.userId || '').toLowerCase().includes(search) ||
+      (p.userName || '').toLowerCase().includes(search) ||
+      (p.providerReference || '').toLowerCase().includes(search);
+    const matchProvider = !provider || (p.provider || '').toLowerCase() === provider;
+    const matchStatus = !status || (p.status || '').toUpperCase() === status;
+    return matchSearch && matchProvider && matchStatus;
+  });
+  renderAdminPayments(filtered);
+}
+
+function renderAdminPayments(list) {
+  const tbody = document.getElementById('paymentsTableBody');
+  if (!tbody) return;
+  if (!list.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--muted);">No matching payment records found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = list.map(p => {
+    let statusBadge = '<span class="badge badge-gray">' + escapeHtml(p.status || 'UNKNOWN') + '</span>';
+    if (p.status === 'VERIFIED_PAID') {
+      statusBadge = '<span class="badge badge-green">🟢 Verified Paid</span>';
+    } else if (p.status === 'OBSERVED_UNVERIFIED') {
+      statusBadge = '<span class="badge badge-amber">🟡 Observed (Unverified)</span>';
+    } else if (p.status === 'PENDING' || p.status === 'PENDING_COD_CONFIRMATION') {
+      statusBadge = '<span class="badge badge-blue">⏱️ Pending</span>';
+    } else if (p.status === 'EXPIRED') {
+      statusBadge = '<span class="badge badge-gray">⌛ Expired</span>';
+    } else if (p.status === 'REFUNDED') {
+      statusBadge = '<span class="badge badge-purple">🟣 Refunded</span>';
+    } else if (p.status === 'FAILED') {
+      statusBadge = '<span class="badge badge-red">🔴 Failed</span>';
+    }
+
+    const providerIcon = p.provider === 'razorpay' ? '💳' : p.provider === 'youpi_pg' ? '⚡' : '📦';
+    const providerName = p.provider === 'razorpay' ? 'Razorpay' : p.provider === 'youpi_pg' ? 'YouPI Direct' : 'Cash on Delivery';
+    const timeStr = p.createdAt ? new Date(p.createdAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : '—';
+
+    let actionButtons = '<button class="btn btn-sm btn-outline" onclick="openPaymentDetails(\'' + escapeHtml(p.paymentId) + '\')">Inspect</button>';
+    if (p.status === 'OBSERVED_UNVERIFIED') {
+      actionButtons = '<button class="btn btn-sm btn-primary" onclick="openPaymentDetails(\'' + escapeHtml(p.paymentId) + '\')">⚖️ Reconcile</button>';
+    } else if (p.status === 'VERIFIED_PAID') {
+      actionButtons = '<button class="btn btn-sm btn-outline" onclick="openPaymentDetails(\'' + escapeHtml(p.paymentId) + '\')">Details</button> ' +
+                      '<button class="btn btn-sm btn-danger" onclick="triggerRefundPrompt(\'' + escapeHtml(p.paymentId) + '\',' + Number(p.amount) + ')">Refund</button>';
+    }
+
+    return '<tr>' +
+      '<td>' +
+        '<div style="font-weight:700;color:var(--text);font-family:monospace;font-size:12px;">' + escapeHtml(p.paymentId) + '</div>' +
+        '<div style="font-size:11px;color:var(--muted);">Order: ' + escapeHtml(p.orderId || '—') + '</div>' +
+      '</td>' +
+      '<td>' +
+        '<div style="font-weight:600;color:var(--text);">' + escapeHtml(p.userName || p.userId || 'Guest') + '</div>' +
+        '<div style="font-size:11px;color:var(--muted);">' + escapeHtml(p.userId || '') + '</div>' +
+      '</td>' +
+      '<td>' +
+        '<div style="display:flex;align-items:center;gap:6px;">' +
+          '<span>' + providerIcon + '</span>' +
+          '<span style="font-weight:600;font-size:12.5px;">' + providerName + '</span>' +
+        '</div>' +
+        '<div style="font-size:11px;color:var(--muted);">' + escapeHtml(p.paymentMethod || '') + '</div>' +
+      '</td>' +
+      '<td style="font-weight:800;color:var(--text);font-size:14px;">₹' + Number(p.amount || 0).toLocaleString('en-IN') + '</td>' +
+      '<td>' + statusBadge + '</td>' +
+      '<td><code style="font-size:11px;background:rgba(0,0,0,0.05);padding:2px 6px;border-radius:4px;">' + escapeHtml(p.verificationSource || 'NONE') + '</code></td>' +
+      '<td style="font-size:11.5px;color:var(--muted);">' + timeStr + '</td>' +
+      '<td style="text-align:right;white-space:nowrap;">' + actionButtons + '</td>' +
+    '</tr>';
+  }).join('');
+}
+
+function openPaymentDetails(paymentId) {
+  const p = allAdminPayments.find(item => item.paymentId === paymentId);
+  if (!p) return;
+  currentActivePayment = p;
+  const modal = document.getElementById('paymentDetailsModal');
+  const body = document.getElementById('pmModalBody');
+  if (!modal || !body) return;
+
+  const isUnverified = p.status === 'OBSERVED_UNVERIFIED';
+
+  let telemetryHtml = '';
+  if (p.observedDetails) {
+    telemetryHtml = '<div style="margin-top:6px;background:#fff;padding:8px;border-radius:6px;border:1px solid var(--border);"><strong>Observed Telemetry:</strong> ' + escapeHtml(JSON.stringify(p.observedDetails)) + '</div>';
+  }
+
+  let reconcileBox = '';
+  if (isUnverified) {
+    reconcileBox = '<div style="background:rgba(217,119,6,0.1);border:1px solid rgba(217,119,6,0.3);padding:14px;border-radius:8px;margin-bottom:16px;">' +
+      '<strong style="color:var(--warn);display:block;margin-bottom:6px;">⚠️ Manual Settlement Reconciliation Action</strong>' +
+      '<p style="font-size:12px;color:var(--text);margin-bottom:10px;">Check your bank statement or UPI merchant console to verify physical credit of <strong>₹' + p.amount + '</strong> before confirming.</p>' +
+      '<div class="form-group" style="margin-bottom:12px;">' +
+        '<label class="form-label" style="font-size:11px;">Bank UTR / Settlement Ref</label>' +
+        '<input type="text" id="reconcileBankRef" class="form-control" placeholder="e.g. 429188192018 or Bank Ref #..." />' +
+      '</div>' +
+      '<div style="display:flex;gap:10px;">' +
+        '<button class="btn btn-primary" onclick="submitReconciliation(\'VERIFY_SETTLED\')" style="flex:1;">Confirm Verified Settlement</button>' +
+        '<button class="btn btn-danger" onclick="submitReconciliation(\'REJECT\')" style="flex:1;">Reject / Fraudulent</button>' +
+      '</div>' +
+    '</div>';
+  }
+
+  body.innerHTML = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">' +
+    '<div style="background:rgba(0,0,0,0.03);padding:12px;border-radius:8px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Payment ID</div>' +
+      '<div style="font-weight:700;font-family:monospace;font-size:13px;color:var(--text);margin-top:2px;">' + escapeHtml(p.paymentId) + '</div>' +
+    '</div>' +
+    '<div style="background:rgba(0,0,0,0.03);padding:12px;border-radius:8px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Associated Order</div>' +
+      '<div style="font-weight:700;font-family:monospace;font-size:13px;color:var(--text);margin-top:2px;">' + escapeHtml(p.orderId || '—') + '</div>' +
+    '</div>' +
+    '<div style="background:rgba(0,0,0,0.03);padding:12px;border-radius:8px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Customer / User ID</div>' +
+      '<div style="font-weight:600;font-size:13px;color:var(--text);margin-top:2px;">' + escapeHtml(p.userName || p.userId) + '</div>' +
+    '</div>' +
+    '<div style="background:rgba(0,0,0,0.03);padding:12px;border-radius:8px;">' +
+      '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Amount & Provider</div>' +
+      '<div style="font-weight:800;font-size:14px;color:var(--primary);margin-top:2px;">₹' + p.amount + ' • ' + p.provider + '</div>' +
+    '</div>' +
+  '</div>' +
+  '<div style="background:rgba(0,0,0,0.03);padding:12px;border-radius:8px;margin-bottom:16px;">' +
+    '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;">Verification Audit Trail</div>' +
+    '<div style="margin-top:4px;font-size:12.5px;">' +
+      '<div><strong>Verification Source:</strong> <code>' + escapeHtml(p.verificationSource || 'NONE') + '</code></div>' +
+      '<div><strong>Status:</strong> ' + escapeHtml(p.status) + '</div>' +
+      '<div><strong>Reconciliation Status:</strong> ' + escapeHtml(p.reconciliationStatus || 'NONE') + '</div>' +
+      telemetryHtml +
+    '</div>' +
+  '</div>' +
+  reconcileBox +
+  '<div style="display:flex;justify-content:flex-end;">' +
+    '<button class="btn btn-outline" onclick="closeModal(\'paymentDetailsModal\')">Close</button>' +
+  '</div>';
+
+  openModal('paymentDetailsModal');
+}
+
+async function submitReconciliation(decision) {
+  if (!currentActivePayment) return;
+  const refInput = document.getElementById('reconcileBankRef');
+  const notes = (refInput ? refInput.value : '').trim();
+  if (decision === 'VERIFY_SETTLED' && !notes) {
+    return toast('Please enter the Bank UTR / Settlement Reference to reconcile', 'warn');
+  }
+  try {
+    const res = await API.admin.reconcilePayment(currentActivePayment.paymentId, decision, notes);
+    if (res.success) {
+      toast(decision === 'VERIFY_SETTLED' ? 'Settlement verified & order confirmed!' : 'Payment rejected and cancelled.');
+      closeModal('paymentDetailsModal');
+      loadAdminPayments();
+    } else {
+      toast(res.error || 'Reconciliation failed', 'error');
+    }
+  } catch (err) {
+    toast(err.message || 'Error executing reconciliation', 'error');
+  }
+}
+
+async function triggerRefundPrompt(paymentId, amount) {
+  const reason = prompt('Issue refund for Payment ' + paymentId + ' (₹' + amount + ')?\nEnter refund reason:', 'Customer requested cancellation');
+  if (!reason) return;
+  try {
+    const res = await API.admin.refundPayment(paymentId, reason);
+    if (res.success) {
+      toast('Refund processed successfully! ID: ' + (res.refundId || ''));
+      loadAdminPayments();
+    } else {
+      toast(res.error || 'Failed to process refund', 'error');
+    }
+  } catch (err) {
+    toast(err.message || 'Refund request failed', 'error');
+  }
+}
+
+function exportPaymentsCSV() {
+  if (!allAdminPayments.length) return toast('No payments to export', 'warn');
+  const headers = ['paymentId', 'orderId', 'userId', 'userName', 'provider', 'paymentMethod', 'amount', 'currency', 'status', 'verificationSource', 'createdAt'];
+  const rows = allAdminPayments.map(p => [
+    p.paymentId, p.orderId, p.userId, (p.userName || '').replace(/,/g, ' '), p.provider, p.paymentMethod, p.amount, p.currency, p.status, p.verificationSource, p.createdAt
+  ].join(','));
+  const csv = [headers.join(','), ...rows].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'medinvedic_payments_' + Date.now() + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('Exported payments CSV successfully');
+}
+
 </script>
 </body>
 </html>

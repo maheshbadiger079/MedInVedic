@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
   <link rel="icon" type="image/png" sizes="512x512" href="../icon-512.png">
   <link rel="apple-touch-icon" href="../icon-512.png">
   <meta charset="UTF-8" />
@@ -1004,6 +1022,28 @@
       .profile-info-block { flex-direction: column; align-items: flex-start; }
     }
   </style>
+
+<style>
+  @media (max-width: 640px) {
+    .dashboard-header { padding: 10px 12px !important; }
+    .user-name-text { display: none !important; }
+    .mobile-bottom-nav { padding: 6px 4px max(6px, env(safe-area-inset-bottom)) !important; }
+    .bottom-nav-item { font-size: 10px !important; font-weight: 700 !important; }
+    .profile-hero-card { padding: 16px 14px !important; }
+    .greeting-title { font-size: 18px !important; }
+    .quick-stats-grid { grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+  }
+</style>
+
+
+<style id="medinvedic-font-normalizer">
+  *, *::before, *::after,
+  html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+    font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-style: normal !important;
+  }
+</style>
+
 </head>
 
 <body>
@@ -1059,6 +1099,16 @@
     <!-- â”€â”€ LEFT SIDEBAR NAVIGATION â”€â”€ -->
     <aside class="dashboard-sidebar">
       <div>
+        <div class="nav-section-title">AI &amp; Learning</div>
+        <ul class="sidebar-nav-list">
+          <li><a href="vedicmind.html" class="nav-item-btn" style="text-decoration:none; color:var(--primary); font-weight:800;"><span class="nav-icon">🧠</span> VedicMind AI <span class="nav-badge" style="background:var(--primary-light); color:#fff;">NEW</span></a></li>
+          <li><a href="ai-assistant.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">🤖</span> RAG Health AI</a></li>
+          <li><a href="prescription-decoder.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">📄</span> Lipi Vaidya (Rx Decoder)</a></li>
+          <li><a href="categories.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">📦</span> RAG Medicine Catalog</a></li>
+          <li><a href="prakriti-analysis.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">✨</span> Prakriti Dosha Test</a></li>
+          <li><a href="payment.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">💳</span> Wallet &amp; Razorpay</a></li>
+        </ul>
+
         <div class="nav-section-title">Overview</div>
         <ul class="sidebar-nav-list">
           <li><button class="nav-item-btn active" onclick="switchTab('dashboard', this)"><span class="nav-icon">📊</span> Dashboard</button></li>
@@ -1175,6 +1225,45 @@
             </div>
             <div class="card-stat-val">5 Files</div>
             <div class="card-subtext"><span>Prescriptions &amp; Lab PDFs</span><span>Upload →</span></div>
+          </div>
+        </div>
+
+        <!-- PHASE 2: WALLET & REFERRAL HIGHLIGHT ROW -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <!-- MedInVedic Wallet Card -->
+          <div style="background: linear-gradient(135deg, rgba(240, 253, 244, 0.95), rgba(220, 252, 231, 0.8)); border: 1.5px solid var(--primary-border); border-radius: var(--radius-lg); padding: 22px; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(22, 101, 52, 0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px;">💰 MedInVedic Wallet</span>
+                <div style="font-size: 28px; font-weight: 900; color: var(--text); margin-top: 4px;" id="walletBalDisplay">₹0.00</div>
+              </div>
+              <button onclick="openWalletTopupModal()" style="background: var(--primary); color: #fff; border: none; padding: 8px 16px; border-radius: 10px; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(22, 101, 52, 0.25);">
+                <span>+</span> Top-up Wallet
+              </button>
+            </div>
+            <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px dashed rgba(22, 101, 52, 0.2);">
+              <span>⚡ Instant auto-apply on medicine checkout &amp; telehealth</span>
+              <a href="payment.html" style="color: var(--primary); font-weight: 700; text-decoration: none;">Manage →</a>
+            </div>
+          </div>
+
+          <!-- Refer & Earn Card -->
+          <div style="background: linear-gradient(135deg, rgba(254, 243, 199, 0.95), rgba(253, 230, 138, 0.7)); border: 1.5px solid #fde68a; border-radius: var(--radius-lg); padding: 22px; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(217, 119, 6, 0.06);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+              <div>
+                <span style="font-size: 11px; font-weight: 800; color: #b45309; text-transform: uppercase; letter-spacing: 0.5px;">🎁 Refer &amp; Earn ₹50</span>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                  <span id="userReferralCodeDisplay" style="font-family: monospace; font-size: 18px; font-weight: 800; background: rgba(255,255,255,0.9); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(217,119,6,0.3); color: #92400e;">MIVPROMO</span>
+                  <button onclick="copyReferralCode()" style="background: #d97706; color: #fff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Copy</button>
+                </div>
+              </div>
+              <button onclick="shareReferralWhatsApp()" style="background: #25D366; color: #fff; border: none; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                <span>📲</span> Share
+              </button>
+            </div>
+            <div style="font-size: 12px; color: #92400e; padding-top: 10px; border-top: 1px dashed rgba(217, 119, 6, 0.25);">
+              <span>Both you and your friend get <strong>₹50 Cashback</strong> upon signup!</span>
+            </div>
           </div>
         </div>
 
@@ -1304,33 +1393,15 @@
             <button class="btn btn-outline btn-sm" onclick="clearActivityLogs()">Clear History</button>
           </div>
           <div class="activity-timeline" id="dashActivityTimeline">
-            <div class="timeline-node">
-              <div class="timeline-dot"></div>
-              <div>
-                <div class="timeline-text">Logged morning dose: Metformin 500mg taken with breakfast.</div>
-                <div class="timeline-time">Today, 8:15 AM</div>
-              </div>
-            </div>
-            <div class="timeline-node">
-              <div class="timeline-dot"></div>
-              <div>
-                <div class="timeline-text">Asked AI Health Assistant: "Ashwagandha KSM-66 cortisol mechanism" (Grounded Tier 3).</div>
-                <div class="timeline-time">Yesterday, 9:30 PM</div>
-              </div>
-            </div>
-            <div class="timeline-node">
-              <div class="timeline-dot"></div>
-              <div>
-                <div class="timeline-text">Confirmed Video Consultation booking with Dr. Shailesh Phalle.</div>
-                <div class="timeline-time">26 Mar 2026, 4:20 PM</div>
-              </div>
+            <div style="text-align:center; color:var(--text-muted); font-size:13px; padding:24px 12px;">
+              No recent activity recorded yet. Interactions with AI Assistant, symptom checks, and medicine queries will appear here.
             </div>
           </div>
         </div>
 
       </section>
 
-      <!-- â”€â”€ TAB: AI ASSISTANT FULL VIEW â”€â”€ -->
+      <!-- ── TAB: AI ASSISTANT FULL VIEW ── -->
       <section class="tab-panel" id="panel_ai">
         <div class="section-header">
           <div>
@@ -1347,7 +1418,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: MY HEALTH PROFILE â”€â”€ -->
+      <!-- ── TAB: MY HEALTH PROFILE ── -->
       <section class="tab-panel" id="panel_profile">
         <div class="section-header">
           <div>
@@ -1361,63 +1432,59 @@
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">FULL NAME</label>
-              <input type="text" id="profName" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" value="Mahesh M Badiger">
+              <input type="text" id="profName" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="Your Name">
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">EMAIL ADDRESS</label>
-              <input type="email" id="profEmail" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" value="maheshbadiger079@gmail.com" readonly>
+              <input type="email" id="profEmail" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="name@example.com" readonly>
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">BLOOD GROUP</label>
-              <input type="text" id="profBlood" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" value="O Positive (O+)">
+              <select id="profBlood" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fff; font-size:13px;">
+                <option value="Not Specified">Not Specified</option>
+                <option value="A Positive (A+)">A Positive (A+)</option>
+                <option value="A Negative (A-)">A Negative (A-)</option>
+                <option value="B Positive (B+)">B Positive (B+)</option>
+                <option value="B Negative (B-)">B Negative (B-)</option>
+                <option value="O Positive (O+)">O Positive (O+)</option>
+                <option value="O Negative (O-)">O Negative (O-)</option>
+                <option value="AB Positive (AB+)">AB Positive (AB+)</option>
+                <option value="AB Negative (AB-)">AB Negative (AB-)</option>
+              </select>
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">AYURVEDIC PRAKRITI</label>
               <select id="profPrakriti" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px; background:#fff; font-size:13px;">
-                <option selected>Vata-Pitta (Balanced Activity &amp; Digestion)</option>
-                <option>Pitta-Kapha (Robust Immunity &amp; Metabolic Fire)</option>
-                <option>Vata-Kapha (Calm, Needs Warming Spices)</option>
-                <option>Tridoshic (Samadosha)</option>
+                <option value="Not Assessed">Not Assessed yet</option>
+                <option value="Vata-Pitta">Vata-Pitta (Active &amp; High Digestion)</option>
+                <option value="Pitta-Kapha">Pitta-Kapha (Robust Immunity &amp; Metabolic Fire)</option>
+                <option value="Vata-Kapha">Vata-Kapha (Calm, Needs Warming Spices)</option>
+                <option value="Tridoshic">Tridoshic (Balanced Doshas)</option>
               </select>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: MEDICINES â”€â”€ -->
+      <!-- ── TAB: MEDICINES ── -->
       <section class="tab-panel" id="panel_medicines">
         <div class="section-header">
           <div>
             <h2 style="font-size:22px; font-weight:800;">💊 Medicines &amp; Reminders</h2>
             <p style="font-size:13px; color:var(--text-muted); margin-top:2px;">Track your daily prescribed medicines, dosages, and herbal supplements.</p>
           </div>
-          <button class="btn btn-primary btn-sm" onclick="alert('Add medicine modal opened')">+ Add Medicine</button>
+          <a href="online-pharmacy.html" class="btn btn-primary btn-sm">+ Browse Pharmacy</a>
         </div>
-        <div class="content-card" style="margin-top:16px;">
-          <div class="med-item">
-            <div class="med-info-left">
-              <div class="med-emoji-box">💊</div>
-              <div>
-                <div class="med-name">Metformin Hydrochloride 500mg</div>
-                <div class="med-sub">Prescribed for Glycemic Balance · Schedule: Twice daily with meals</div>
-              </div>
-            </div>
-            <span class="meta-tag tag-green">Active (Rx)</span>
-          </div>
-          <div class="med-item">
-            <div class="med-info-left">
-              <div class="med-emoji-box">🌿</div>
-              <div>
-                <div class="med-name">Ashwagandha KSM-66 Standardized Extract</div>
-                <div class="med-sub">Ayurvedic Rasayana · Schedule: 1 capsule at bedtime</div>
-              </div>
-            </div>
-            <span class="meta-tag tag-green">Active (AYUSH)</span>
+        <div class="content-card" style="margin-top:16px;" id="userMedsContainer">
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">💊</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Active Medicine Reminders</div>
+            <div style="font-size:12.5px; margin-top:4px;">Upload your prescription or add medications from the digital pharmacy to set daily dose schedules.</div>
           </div>
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: APPOINTMENTS â”€â”€ -->
+      <!-- ── TAB: APPOINTMENTS ── -->
       <section class="tab-panel" id="panel_appointments">
         <div class="section-header">
           <div>
@@ -1426,18 +1493,12 @@
           </div>
           <a href="consult.html" class="btn btn-primary btn-sm">Find a Doctor</a>
         </div>
-        <div class="content-card" style="margin-top:16px;">
-          <div class="appt-item">
-            <div class="appt-date-badge">
-              <span>MAR</span>
-              <strong>28</strong>
-            </div>
-            <div class="appt-details">
-              <div class="appt-doc-name">Dr. Shailesh Phalle</div>
-              <div class="appt-spec">MD - Ayurvedic &amp; Panchakarma · Ayusanjivani Clinic, Pune</div>
-              <div class="appt-time">â° 10:30 AM — Video Consultation</div>
-            </div>
-            <button class="btn btn-primary btn-sm" onclick="alert('Connecting to encrypted video stream...')">Join Call</button>
+        <div class="content-card" style="margin-top:16px;" id="userAppointmentsContainer">
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">🩺</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Upcoming Consultations</div>
+            <div style="font-size:12.5px; margin-top:4px;">Schedule an online video consultation or in-person clinic visit with certified allopathic and Ayurvedic doctors.</div>
+            <a href="consult.html" class="btn btn-primary btn-sm" style="margin-top:16px; display:inline-block;">Book a Specialist →</a>
           </div>
         </div>
       </section>
@@ -1628,22 +1689,22 @@
       <span>📊</span>
       Dashboard
     </button>
-    <button class="bottom-nav-item" onclick="switchTab('ai', this); setActiveBottom(this)">
+    <a href="vedicmind.html" class="bottom-nav-item" style="text-decoration:none; color:var(--primary); font-weight:800;">
       <span>🧠</span>
-      AI Health
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('medicines', this); setActiveBottom(this)">
-      <span>💊</span>
-      Medicines
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('appointments', this); setActiveBottom(this)">
+      VedicMind
+    </a>
+    <a href="categories.html" class="bottom-nav-item" style="text-decoration:none;">
+      <span>📦</span>
+      Catalog
+    </a>
+    <a href="consult.html" class="bottom-nav-item" style="text-decoration:none;">
       <span>🩺</span>
-      Consults
-    </button>
-    <button class="bottom-nav-item" onclick="switchTab('profile', this); setActiveBottom(this)">
-      <span>👤</span>
-      Profile
-    </button>
+      Consult
+    </a>
+    <a href="emergency.html" class="bottom-nav-item" style="text-decoration:none; color:var(--accent-red); font-weight:800;">
+      <span>🚨</span>
+      SOS
+    </a>
   </nav>
 
   <!-- â”€â”€ 5. JAVASCRIPT CONTROLLER â”€â”€ -->
@@ -1657,24 +1718,49 @@
       // 1. Auth Guard Integration
       currentAuthUser = window.AuthGuard ? AuthGuard.getAuthUser() : null;
       if (!currentAuthUser) {
-        currentAuthUser = {
-          displayName: 'Mahesh M Badiger',
-          email: 'maheshbadiger079@gmail.com',
-          role: 'SUPER_ADMIN'
-        };
+        try {
+          const stored = localStorage.getItem('mv_auth_user');
+          if (stored) currentAuthUser = JSON.parse(stored);
+        } catch (e) {}
       }
 
-      // Update Profile UI
-      const name = currentAuthUser.displayName || currentAuthUser.name || 'Mahesh';
-      document.getElementById('headerUserName').textContent = name.split(' ')[0];
-      document.getElementById('headerAvatar').textContent = name[0].toUpperCase();
-      document.getElementById('heroAvatar').textContent = name[0].toUpperCase();
-      document.getElementById('heroGreeting').textContent = `${getGreetingTime()}, ${name}`;
+      const name = (currentAuthUser && (currentAuthUser.displayName || currentAuthUser.name)) || 'User';
+      const email = (currentAuthUser && currentAuthUser.email) || '';
+      const role = (currentAuthUser && currentAuthUser.role) || 'Member';
+
+      // Update Profile UI Header & Hero
+      const headerUserEl = document.getElementById('headerUserName');
+      const headerAvatarEl = document.getElementById('headerAvatar');
+      const heroAvatarEl = document.getElementById('heroAvatar');
+      const heroGreetingEl = document.getElementById('heroGreeting');
+      
+      if (headerUserEl) headerUserEl.textContent = name.split(' ')[0];
+      if (headerAvatarEl) headerAvatarEl.textContent = (name[0] || 'U').toUpperCase();
+      if (heroAvatarEl) heroAvatarEl.textContent = (name[0] || 'U').toUpperCase();
+      if (heroGreetingEl) heroGreetingEl.textContent = `${getGreetingTime()}, ${name}`;
       
       const roleBadge = document.getElementById('roleBadgeDisplay');
       if (roleBadge) {
-        roleBadge.textContent = currentAuthUser.role === 'SUPER_ADMIN' ? 'Super Admin' : (currentAuthUser.role || 'Member');
+        roleBadge.textContent = role === 'SUPER_ADMIN' ? 'Super Admin' : role;
       }
+
+      // Populate Health Profile Fields
+      const profNameEl = document.getElementById('profName');
+      const profEmailEl = document.getElementById('profEmail');
+      const profBloodEl = document.getElementById('profBlood');
+      const profPrakritiEl = document.getElementById('profPrakriti');
+
+      if (profNameEl) profNameEl.value = name;
+      if (profEmailEl) profEmailEl.value = email;
+
+      try {
+        const savedProfile = JSON.parse(localStorage.getItem('mv_user_profile') || '{}');
+        if (savedProfile.blood && profBloodEl) profBloodEl.value = savedProfile.blood;
+        if (savedProfile.prakriti && profPrakritiEl) profPrakritiEl.value = savedProfile.prakriti;
+      } catch (e) {}
+
+      // Load User Activity Timeline
+      loadUserActivityTimeline();
 
       // Load Doctor Registry & Monographs
       loadDoctorsPreview();
@@ -1841,17 +1927,40 @@
     }
 
     function addActivityLog(text) {
+      try {
+        const logs = JSON.parse(localStorage.getItem('mv_user_activity_logs') || '[]');
+        logs.unshift({ text, time: new Date().toISOString() });
+        localStorage.setItem('mv_user_activity_logs', JSON.stringify(logs.slice(0, 30)));
+      } catch (e) {}
+      loadUserActivityTimeline();
+    }
+
+    function loadUserActivityTimeline() {
       const timeline = document.getElementById('dashActivityTimeline');
-      if (timeline) {
-        const node = document.createElement('div');
-        node.className = 'timeline-node';
-        node.innerHTML = `<div class="timeline-dot"></div><div><div class="timeline-text">${text}</div><div class="timeline-time">Just now</div></div>`;
-        timeline.prepend(node);
+      if (!timeline) return;
+      try {
+        const logs = JSON.parse(localStorage.getItem('mv_user_activity_logs') || '[]');
+        if (!logs.length) {
+          timeline.innerHTML = '<div style="text-align:center; color:var(--text-muted); font-size:13px; padding:24px 12px;">No recent activity recorded yet. Interactions with AI Assistant, symptom checks, and medicine queries will appear here.</div>';
+          return;
+        }
+        timeline.innerHTML = logs.map(l => `
+          <div class="timeline-node">
+            <div class="timeline-dot"></div>
+            <div>
+              <div class="timeline-text">${l.text}</div>
+              <div class="timeline-time">${new Date(l.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+            </div>
+          </div>
+        `).join('');
+      } catch (e) {
+        timeline.innerHTML = '<div style="color:var(--text-muted); font-size:13px;">No recent activity.</div>';
       }
     }
 
     function clearActivityLogs() {
-      document.getElementById('dashActivityTimeline').innerHTML = '<div style="color:var(--text-muted); font-size:13px;">No recent activity.</div>';
+      localStorage.removeItem('mv_user_activity_logs');
+      loadUserActivityTimeline();
     }
 
     async function loadDoctorsPreview() {
@@ -1863,7 +1972,7 @@
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px solid var(--border-subtle);">
               <div>
                 <strong style="font-size:14px;">${d.name}</strong>
-                <div style="font-size:12px; color:var(--text-muted);">${d.spec} • ${d.exp || '10+ years'} • â­ ${d.rating || 4.9}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${d.spec} • ${d.exp || '10+ years'} • ⭐ ${d.rating || 4.9}</div>
                 <div style="font-size:11.5px; color:var(--primary); font-weight:600;">₹${d.fee} Consultation Fee</div>
               </div>
               <a href="consult.html" class="btn btn-outline btn-sm">Book Consult</a>
@@ -1878,14 +1987,14 @@
         const docs = await API.admin.getRagDocs();
         const container = document.getElementById('ayurMonographsContainer');
         if (container && docs.length) {
-          container.innerHTML = docs.filter(d => d.tier === 3 || d.category.includes('Ayurved')).map(d => `
+          container.innerHTML = docs.filter(d => d.tier === 3 || (d.category && d.category.includes('Ayurved'))).map(d => `
             <div style="border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:10px;">
               <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                 <strong style="font-size:13.5px;">${d.title}</strong>
                 <span class="meta-tag tag-green">AYUSH Tier 3</span>
               </div>
               <div style="font-size:12px; color:var(--text-muted);">${d.source}</div>
-              <p style="font-size:12.5px; color:var(--text); margin-top:6px; line-height:1.5;">${d.content.slice(0, 160)}...</p>
+              <p style="font-size:12.5px; color:var(--text); margin-top:6px; line-height:1.5;">${(d.content || '').slice(0, 160)}...</p>
             </div>
           `).join('');
         }
@@ -1893,7 +2002,22 @@
     }
 
     function saveHealthProfile() {
-      alert('Health profile details successfully saved to your encrypted medical record.');
+      const name = document.getElementById('profName')?.value?.trim();
+      const blood = document.getElementById('profBlood')?.value;
+      const prakriti = document.getElementById('profPrakriti')?.value;
+      
+      const profileData = { name, blood, prakriti, updatedAt: new Date().toISOString() };
+      localStorage.setItem('mv_user_profile', JSON.stringify(profileData));
+
+      if (currentAuthUser && name) {
+        currentAuthUser.displayName = name;
+        localStorage.setItem('mv_auth_user', JSON.stringify(currentAuthUser));
+        document.getElementById('headerUserName').textContent = name.split(' ')[0];
+        document.getElementById('heroGreeting').textContent = `${getGreetingTime()}, ${name}`;
+      }
+
+      alert('✅ Health profile details successfully updated and saved.');
+      addActivityLog('Updated Health Profile details.');
     }
 
     function handleFileUpload(input) {
@@ -1905,10 +2029,11 @@
 
     function changeLanguage(lang) {
       const greeting = document.getElementById('heroGreeting');
-      if (lang === 'kn') greeting.textContent = '\u0CB6\u0CC1\u0CAD\u0CCB\u0CA6\u0CAF, \u0CAE\u0CB9\u0CC7\u0CB6\u0CCD';
-      else if (lang === 'hi') greeting.textContent = '\u0936\u0941\u092D \u092A\u094D\u0930\u092D\u093E\u0924, \u092E\u0939\u0947\u0936';
-      else if (lang === 'mr') greeting.textContent = '\u0936\u0941\u092D \u0938\u0915\u093E\u0933, \u092E\u0939\u0947\u0936';
-      else greeting.textContent = 'Good Morning, Mahesh';
+      const name = (currentAuthUser && (currentAuthUser.displayName || currentAuthUser.name)) || 'User';
+      if (lang === 'kn') greeting.textContent = `ಶುಭೋದಯ, ${name}`;
+      else if (lang === 'hi') greeting.textContent = `शुभ प्रभात, ${name}`;
+      else if (lang === 'mr') greeting.textContent = `शुभ सकाळ, ${name}`;
+      else greeting.textContent = `${getGreetingTime()}, ${name}`;
     }
 
     function handleGlobalSearch(e) {
@@ -1920,10 +2045,17 @@
     }
 
     function handleLogout() {
-      if (window.AuthGuard) AuthGuard.clearAuthSession();
-      localStorage.removeItem('mv_token');
-      localStorage.removeItem('mv_auth_user');
-      window.location.href = '../landing.html';
+      if (window.AuthGuard && window.AuthGuard.handleLogout) {
+        AuthGuard.handleLogout();
+      } else {
+        try {
+          localStorage.removeItem('mv_token');
+          localStorage.removeItem('mv_auth_user');
+          localStorage.removeItem('mv_user_role');
+          sessionStorage.clear();
+        } catch(e) {}
+        window.location.replace('login.html?reason=logged_out');
+      }
     }
 
     function saveCurrentAnswer() {
@@ -1938,17 +2070,123 @@
       alert('Notifications: 1. Video Consultation with Dr. Shailesh Phalle scheduled for tomorrow at 10:30 AM. 2. Prescription verified.');
     }
 
-    function toggleProfileDropdown() {
-      switchTab('profile', document.querySelectorAll('.nav-item-btn')[2]);
+    // ─── PHASE 2: WALLET & REFERRAL CONTROLLERS ───
+    async function loadWalletAndReferrals() {
+      try {
+        let balance = 0;
+        let refCode = 'MIV' + (Math.random().toString(36).substring(2, 6).toUpperCase());
+        
+        // Try Cloud Functions API
+        try {
+          const res = await fetch('/api/wallet', {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+          });
+          if (res.ok) {
+            const data = await res.json();
+            balance = data.balance || 0;
+          }
+        } catch (e) {
+          console.warn('Local wallet fallback:', e.message);
+        }
+
+        // Try referral generator
+        try {
+          const rRes = await fetch('/api/referrals/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` }
+          });
+          if (rRes.ok) {
+            const rData = await rRes.json();
+            if (rData.referralCode) refCode = rData.referralCode;
+          }
+        } catch (e) {}
+
+        const balEl = document.getElementById('walletBalDisplay');
+        if (balEl) balEl.textContent = '₹' + Number(balance).toFixed(2);
+        
+        const refEl = document.getElementById('userReferralCodeDisplay');
+        if (refEl) refEl.textContent = refCode;
+      } catch (err) {
+        console.error('Wallet load error:', err);
+      }
     }
 
-    function changeLanguage(lang) {
-      const greeting = document.getElementById('heroGreeting');
-      if (lang === 'kn') greeting.textContent = '\u0CB6\u0CC1\u0CAD\u0CCB\u0CA6\u0CAF, \u0CAE\u0CB9\u0CC7\u0CB6\u0CCD';
-      else if (lang === 'hi') greeting.textContent = '\u0936\u0941\u092D \u092A\u094D\u0930\u092D\u093E\u0924, \u092E\u0939\u0947\u0936';
-      else if (lang === 'mr') greeting.textContent = '\u0936\u0941\u092D \u0938\u0915\u093E\u0933, \u092E\u0939\u0947\u0936';
-      else greeting.textContent = 'Good Morning, Mahesh';
+    function openWalletTopupModal() {
+      const amountStr = prompt('Enter top-up amount in ₹ (e.g. 500):', '500');
+      const amount = Number(amountStr);
+      if (!amount || amount < 10) {
+        alert('Please enter a valid amount (minimum ₹10).');
+        return;
+      }
+
+      // Initialize Razorpay checkout for wallet topup
+      if (window.Razorpay) {
+        fetch('/api/payments/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+          body: JSON.stringify({ type: 'WALLET_TOPUP', customAmount: amount })
+        })
+        .then(r => r.json())
+        .then(orderData => {
+          if (!orderData.success && !orderData.orderId) {
+            alert('Failed to initiate wallet top-up.');
+            return;
+          }
+          const options = {
+            key: orderData.razorpayKeyId || 'rzp_test_TXEa2fRwyrWGop',
+            amount: orderData.amount * 100,
+            currency: 'INR',
+            name: 'MedInVedic',
+            description: 'Wallet Balance Top-up',
+            order_id: orderData.orderId,
+            handler: function(response) {
+              fetch('/api/wallet/topup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('mv_auth_token') || ''}` },
+                body: JSON.stringify({
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_signature: response.razorpay_signature,
+                  amount: amount
+                })
+              })
+              .then(r => r.json())
+              .then(topupRes => {
+                alert(`✅ Success! ₹${amount} has been added to your MedInVedic Wallet.`);
+                loadWalletAndReferrals();
+              });
+            },
+            theme: { color: '#166534' }
+          };
+          const rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch(err => {
+          alert('Top-up simulated: ₹' + amount + ' credited to your session.');
+          const balEl = document.getElementById('walletBalDisplay');
+          if (balEl) balEl.textContent = '₹' + amount.toFixed(2);
+        });
+      } else {
+        alert(`Wallet top-up of ₹${amount} simulated.`);
+        const balEl = document.getElementById('walletBalDisplay');
+        if (balEl) balEl.textContent = '₹' + amount.toFixed(2);
+      }
     }
+
+    function copyReferralCode() {
+      const code = document.getElementById('userReferralCodeDisplay').textContent;
+      navigator.clipboard.writeText(code).then(() => {
+        alert(`Referral code "${code}" copied to clipboard! Share it with friends for ₹50 cashback each.`);
+      });
+    }
+
+    function shareReferralWhatsApp() {
+      const code = document.getElementById('userReferralCodeDisplay').textContent;
+      const text = encodeURIComponent(`Join MedInVedic using my referral code *${code}* and get ₹50 instant wallet cashback on India's integrative healthcare platform! https://medinvedic.web.app/pages/register.html?ref=${code}`);
+      window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    }
+
+    document.addEventListener('DOMContentLoaded', loadWalletAndReferrals);
   </script>
 </body>
 </html>

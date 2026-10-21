@@ -61,6 +61,8 @@
       'section.articles.sub':'Evidence-based articles on Ayurveda, medicines & lifestyle',
       'section.homeremedies': 'Ancient Home Remedies',
       'section.homeremedies.sub': 'Natural healing from your kitchen',
+      'pillars.title':       'Our Three Healing Pillars',
+      'pillars.subtitle':    'Explore comprehensive care across pharmaceutical science, kitchen wisdom, and ancient Ayurvedic wellness',
 
       // HEALTH GOALS
       'goal.immunity':   'Immunity Boost',
@@ -266,6 +268,8 @@
       'section.articles.sub':'आयुर्वेद, दवाइयों और जीवनशैली पर साक्ष्य-आधारित लेख',
       'section.homeremedies': 'प्राचीन घरेलू उपचार',
       'section.homeremedies.sub': 'आपकी रसोई से प्राकृतिक चिकित्सा',
+      'pillars.title':       'हमारे तीन उपचार स्तंभ',
+      'pillars.subtitle':    'आधुनिक चिकित्सा, घरेलू उपचार और प्राचीन आयुर्वेदिक कल्याण की संपूर्ण देखभाल',
 
       // HEALTH GOALS
       'goal.immunity':   'रोग प्रतिरोधक क्षमता',
@@ -471,6 +475,8 @@
       'section.articles.sub':'ಆಯುರ್ವೇದ, ಔಷಧಗಳು ಮತ್ತು ಜೀವನಶೈಲಿಯ ಕುರಿತು ಲೇಖನಗಳು',
       'section.homeremedies': 'ಪ್ರಾಚೀನ ಮನೆಮದ್ದುಗಳು',
       'section.homeremedies.sub': 'ನಿಮ್ಮ ಅಡುಗೆಮನೆಯಿಂದ ನೈಸರ್ಗಿಕ ಚಿಕಿತ್ಸೆ',
+      'pillars.title':       'ನಮ್ಮ ಮೂರು ಚಿಕಿತ್ಸಾ ಸ್ತಂಭಗಳು',
+      'pillars.subtitle':    'ಆಧುನಿಕ ಔಷಧಗಳು, ಮನೆಮದ್ದುಗಳು ಮತ್ತು ಪ್ರಾಚೀನ ಆಯುರ್ವೇದ ಯೋಗಕ್ಷೇಮದ ಸಮಗ್ರ ಆರೈಕೆ',
 
       // HEALTH GOALS
       'goal.immunity':   'ರೋಗ ನಿರೋಧಕ ಶಕ್ತಿ',
@@ -705,8 +711,10 @@
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       const val = t(key);
-      if (val.includes('<')) el.innerHTML = val;
-      else el.textContent = val;
+      if (val && val !== key) {
+        if (val.includes('<')) el.innerHTML = val;
+        else el.textContent = val;
+      }
     });
 
     // Placeholder attributes

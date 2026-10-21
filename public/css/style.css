@@ -1,3 +1,173 @@
+
+/* ═══ UNIVERSAL SANS-SERIF FONT OVERRIDE (ELIMINATES MOBILE CURSIVE THEMES) ═══ */
+:root {
+  color-scheme: light !important;
+  --font: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  --font-display: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+*, *::before, *::after,
+html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+  font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-style: normal !important;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+
+/* ═══════════════════════════════════════════════════════════════
+   MEDINVEDIC BULLETPROOF SANS-SERIF & MOBILE NORMALIZER
+═══════════════════════════════════════════════════════════════ */
+:root {
+  color-scheme: light !important;
+  --font-main: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font: var(--font-main);
+  --font-display: var(--font-main);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box !important;
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+html, body {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+  background-color: #f8faf8;
+  color: #1a2e1a;
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Fix for all buttons, inputs, links, headings */
+button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div {
+  font-family: var(--font-main) !important;
+  font-style: normal !important;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UNIVERSAL MOBILE RESPONSIVE TWEAKS (≤ 768px)
+═══════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  /* Admin Nav Polish */
+  .admin-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+  .admin-nav .admin-badge,
+  .admin-nav .nav-right a.btn,
+  .admin-nav .nav-user .user-info {
+    display: none !important;
+  }
+  .admin-nav .nav-user {
+    padding: 4px !important;
+    border-radius: 50% !important;
+  }
+  .admin-nav .btn-logout {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+  }
+  .admin-main {
+    padding: 16px 12px !important;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+  .stat-card {
+    padding: 14px !important;
+    border-radius: 14px !important;
+  }
+  .stat-card .stat-value {
+    font-size: 20px !important;
+  }
+  .stat-card .stat-label {
+    font-size: 10px !important;
+  }
+
+  /* Categories Nav & Search */
+  .nav-location span { display: none !important; }
+  .cart-btn span:not(#cartCount) { display: none !important; }
+  .rag-search-box {
+    border-radius: 16px !important;
+    padding: 6px 10px !important;
+    gap: 6px !important;
+  }
+  .btn-rag-ask {
+    border-radius: 12px !important;
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  /* VedicMind Topbar & Tab Strip */
+  .vm-nav {
+    padding: 0 12px !important;
+    height: 56px !important;
+  }
+  .vm-nav-pills .pill-streak,
+  .vm-nav-pills .pill-level,
+  .vm-nav-pills .nav-btn-health {
+    display: none !important;
+  }
+  .stat-pill {
+    padding: 4px 8px !important;
+    font-size: 11px !important;
+  }
+  .vm-tab-strip {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 6px !important;
+    margin-bottom: 20px !important;
+  }
+  .vm-tab-btn {
+    padding: 8px 4px !important;
+    font-size: 11px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+
+  /* Payment Layout */
+  .payment-layout {
+    margin: 16px auto 60px !important;
+    padding: 0 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .wallet-hero {
+    padding: 18px 16px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+  .wallet-balance {
+    font-size: 28px !important;
+  }
+  .btn-add-money {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .methods-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+  }
+  .method-tile {
+    padding: 12px 10px !important;
+  }
+  .method-name {
+    font-size: 12px !important;
+  }
+  .method-sub {
+    display: none !important;
+  }
+}
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
 
 .nav-logo-img { height: 44px; width: 44px; border-radius: 6px; object-fit: contain; }
@@ -1322,21 +1492,19 @@ footer a:hover, .footer a:hover {
 }
 
 .modal-box {
-  background: var(--surface);
-  border: 1px solid var(--glass-border);
-  -webkit-backdrop-filter: var(--glass-blur);
-  backdrop-filter: var(--glass-blur);
-  border-radius: var(--radius-lg);
+  background: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
   position: relative;
   width: 94%;
   max-width: 950px;
   max-height: 90vh;
   overflow-y: auto;
   padding: 0; /* Removing padding to allow internal grids to fill */
-  box-shadow: var(--shadow-xl);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   transform: scale(0.9) translateY(20px);
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(255,255,255,0.1);
   overflow: hidden;
 }
 
@@ -1452,15 +1620,15 @@ footer a:hover, .footer a:hover {
   padding: 4px 10px;
   border-radius: 4px;
 }
-.pmod-info { padding: 28px; border-right: 1px solid rgba(255,255,255,0.1); }
-.pmod-name { font-family: var(--font-display); font-size: 26px; font-weight: 800; color: white; margin-bottom: 4px; }
-.pmod-category { font-size: 14px; color: var(--blue); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
-.pmod-price { font-size: 32px; font-weight: 800; color: white; margin-bottom: 24px; }
-.pmod-price span { font-size: 16px; font-weight: 400; color: var(--gray-500); text-decoration: line-through; margin-left: 10px; }
-.pmod-section { margin-bottom: 20px; }
-.pmod-section h4 { font-size: 12px; font-weight: 800; color: var(--gray-400); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.pmod-section p { font-size: 14px; color: var(--gray-300); line-height: 1.7; }
-.pmod-action { padding: 28px; display: flex; flex-direction: column; gap: 16px; background: rgba(0,0,0,0.1); }
+.pmod-info { padding: 28px; border-right: 1px solid #e2e8f0; background: #ffffff; color: #1e293b; }
+.pmod-name { font-family: var(--font-display); font-size: 24px; font-weight: 800; color: #0f172a !important; margin-bottom: 4px; }
+.pmod-category { font-size: 13px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+.pmod-price { font-size: 28px; font-weight: 800; color: #0f172a !important; margin-bottom: 20px; }
+.pmod-price span { font-size: 15px; font-weight: 400; color: #94a3b8; text-decoration: line-through; margin-left: 10px; }
+.pmod-section { margin-bottom: 16px; }
+.pmod-section h4 { font-size: 11.5px; font-weight: 800; color: #475569 !important; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.pmod-section p { font-size: 13.5px; color: #334155 !important; line-height: 1.6; }
+.pmod-action { padding: 28px; display: flex; flex-direction: column; gap: 14px; background: #f8fafc; }
 .btn-primary {
   padding: 14px;
   background: var(--gradient);

@@ -1,6 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
   <meta name="color-scheme" content="light">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -37,15 +50,13 @@
     }
     a { text-decoration: none; color: inherit; }
 
-    /* ── NAVBAR (Clean Glassmorphic) ── */
+    /* ── NAVBAR (Clean Solid) ── */
     .landing-nav {
       position: sticky;
       top: 0;
       z-index: 500;
-      background: rgba(255, 255, 255, 0.82);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
       padding: 0 32px;
       height: 70px;
       display: flex;
@@ -90,7 +101,7 @@
       gap: 12px;
     }
     .btn-ghost {
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
       border: 1.5px solid #cbd5e1;
       color: #0f172a;
       padding: 8px 18px;
@@ -98,12 +109,10 @@
       font-size: 13px;
       font-weight: 800;
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
       transition: all 0.2s;
     }
     .btn-ghost:hover {
-      background: #ffffff;
+      background: #f8fafc;
       border-color: #0f172a;
     }
     .btn-cta {
@@ -135,15 +144,13 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255, 255, 255, 0.85);
+      background: #ffffff;
       border: 1.5px solid #cbd5e1;
       color: #0f172a;
       font-size: 12.5px;
       font-weight: 800;
       padding: 6px 18px;
       border-radius: 50px;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
       margin-bottom: 28px;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
     }
@@ -175,21 +182,19 @@
       flex-wrap: wrap;
     }
 
-    /* ── DEMO VIDEO CONTAINER (Glassmorphic White / Slate) ── */
+    /* ── DEMO VIDEO CONTAINER ── */
     .demo-video-wrapper {
-      max-width: 1000px;
-      margin: 56px auto 72px;
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      border: 1.5px solid rgba(226, 232, 240, 0.9);
-      border-radius: 24px;
+      max-width: 860px;
+      margin: 36px auto 44px;
+      background: #ffffff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+      box-shadow: 0 12px 32px rgba(15, 23, 42, 0.05);
       position: relative;
     }
     .demo-header {
-      padding: 16px 24px;
+      padding: 10px 20px;
       background: #ffffff;
       border-bottom: 1px solid #e2e8f0;
       display: flex;
@@ -216,7 +221,7 @@
     .video-box {
       position: relative;
       width: 100%;
-      background: #000000;
+      background: #ffffff;
       aspect-ratio: 16 / 9;
     }
     .video-box iframe {
@@ -231,19 +236,19 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 16px 24px;
+      padding: 10px 20px;
       background: #ffffff;
       border-top: 1px solid #e2e8f0;
       flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
     .notebooklm-btn {
-      padding: 9px 20px;
+      padding: 7px 16px;
       background: #0f172a;
       border: 1.5px solid #0f172a;
       color: #ffffff;
       text-decoration: none;
-      font-size: 13px;
+      font-size: 12.5px;
       font-weight: 800;
       border-radius: 50px;
       box-shadow: 0 2px 8px rgba(15, 23, 42, 0.12);
@@ -285,9 +290,7 @@
       gap: 24px;
     }
     .step-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background: #ffffff;
       border: 1.5px solid #e2e8f0;
       border-radius: 20px;
       padding: 28px 24px;
@@ -325,9 +328,7 @@
       gap: 24px;
     }
     .feat-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      background: #ffffff;
       border: 1.5px solid #e2e8f0;
       border-radius: 20px;
       padding: 28px;
@@ -354,11 +355,9 @@
       border-radius: 6px;
     }
 
-    /* ── RAG TEASER (Frosted Glass Panel) ── */
+    /* ── RAG TEASER ── */
     .rag-teaser-box {
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: #ffffff;
       border: 1.5px solid #e2e8f0;
       border-radius: 24px;
       padding: 36px;
@@ -559,17 +558,27 @@
   }
 </style>
 
-</head>
-<!-- TOP TELEGRAM ANNOUNCEMENT BAR -->
-<div style="background: linear-gradient(90deg, #0088cc, #0284c7); color: #ffffff; padding: 8px 16px; font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center; position: sticky; top: 0; z-index: 600;">
-  <span>🤖 Try our official AI Assistant on Telegram:</span>
-  <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #ffffff; text-decoration: underline; background: rgba(255,255,255,0.22); padding: 2px 10px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 4px;">
-    Telegram Bot: https://t.me/MedInVedic_AI_bot ↗
-  </a>
+<body>
+
+<!-- ❖❖❖ TOP STRIP ABOVE HEADER (Login / Register) ❖❖❖ -->
+<div class="top-header-strip" style="background: #111827; color: #9ca3af; font-size: 13px; font-weight: 600; padding: 7px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1002;">
+  <div style="display: flex; align-items: center; gap: 14px;">
+    <span style="display: inline-flex; align-items: center; gap: 6px; color: #f3f4f6;">
+      <span style="font-size: 14px;">🌿</span> <strong>MedInVedic</strong> — Dual Healthcare Platform
+    </span>
+  </div>
+  <div style="display: flex; align-items: center; gap: 16px;">
+    <div>
+      <a href="pages/login.html" style="color: #cbd5e1; text-decoration: none; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='#cbd5e1'">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+        Login / Register
+      </a>
+    </div>
+  </div>
 </div>
 
 <!-- NAVBAR -->
-<nav class="landing-nav" style="top: 36px;">
+<nav class="landing-nav">
   <div class="nav-brand">
     <img src="images/assets/logo.png" alt="MedInVedic">
     <span class="nav-brand-text">MedInVedic</span>
@@ -579,10 +588,6 @@
     <a href="#features" class="nav-link">Features</a>
     <a href="#demo-video" class="nav-link">Platform Overview</a>
     <a href="#ai-teaser" class="nav-link">AI Assistant</a>
-    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="nav-link" style="color: #0088cc; display: inline-flex; align-items: center; gap: 6px;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-      Telegram Bot
-    </a>
   </div>
   <div class="nav-actions">
     <button class="btn-ghost" onclick="openLoginModal()">Sign In</button>
@@ -601,10 +606,6 @@
     <button class="btn-cta" style="padding: 14px 28px; font-size: 15px;" onclick="scrollToVideo()">
       ✨ Explore Dual Platform ↓
     </button>
-    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="padding: 14px 24px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(0, 136, 204, 0.4); color: #0088cc; background: rgba(0, 136, 204, 0.05); text-decoration: none;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-      <span>Chat on Telegram</span>
-    </a>
     <button class="btn-ghost" style="padding: 14px 28px; font-size: 15px;" onclick="openRegisterModal()">
       Get Started Free →
     </button>
@@ -614,52 +615,42 @@
   <div class="demo-video-wrapper" id="demo-video">
     <div class="demo-header">
       <div class="demo-header-title">
-        <span>🌿 India's 1st Dual Healthcare Platform & AI Case Study</span>
-        <span class="demo-badge">PLATFORM ARCHITECTURE</span>
+        <span>🌿 India's 1st Dual Healthcare Platform</span>
+        <span class="demo-badge">DUAL ENGINE CORE</span>
       </div>
-      <div style="font-size: 12px; color: #64748b;">Dual Healthcare Intelligence</div>
+      <div style="display: flex; gap: 8px;">
+        <button id="tabDualBtn" onclick="switchShowcaseTab('dual')" style="background: #0f172a; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">🌿 Dual Paradigm UI</button>
+        <button id="tabArchBtn" onclick="switchShowcaseTab('arch')" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">🏗️ Architecture</button>
+      </div>
     </div>
-    <div class="video-box" style="background: #ffffff; padding: 32px 20px; display: flex; align-items: center; justify-content: center; min-height: 480px; aspect-ratio: auto;">
-      <img src="images/assets/medinvedic_dual_platform.png" alt="MedInVedic Dual Healthcare Platform" style="max-width: 100%; max-height: 520px; object-fit: contain; border-radius: 16px;" />
+
+    <!-- Dual Paradigm Artwork UI View -->
+    <div id="showcaseDual" class="video-box" style="background: #ffffff; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+      <div style="position: relative; max-width: 740px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12); border: 1.5px solid #e2e8f0;">
+        <img src="images/medinvedic-hero.jpg" alt="MedInVedic Dual Healthcare Platform UI - Modern Medicine & Ayurveda" style="width: 100%; height: auto; max-height: 480px; object-fit: cover; display: block;" />
+        <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, transparent 0%, rgba(7, 25, 17, 0.9) 100%); padding: 22px 24px; color: #ffffff; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #34d399; letter-spacing: 0.5px; text-transform: uppercase;">Unified Clinical Intelligence</div>
+            <div style="font-size: 17px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Allopathic Pharmacology × Ayurvedic Phytotherapy</div>
+          </div>
+          <span style="background: rgba(34, 197, 94, 0.3); border: 1px solid rgba(52, 211, 153, 0.5); color: #a7f3d0; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(8px);">AI Synchronized</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Architecture Diagram View -->
+    <div id="showcaseArch" class="video-box" style="background: #ffffff; padding: 28px 20px; display: none; align-items: center; justify-content: center; min-height: 420px; aspect-ratio: auto;">
+      <img src="images/assets/medinvedic_dual_platform.png" alt="MedInVedic Dual Healthcare Platform Architecture" style="max-width: 100%; max-height: 460px; width: auto; height: auto; object-fit: contain; border-radius: 16px; display: block;" />
+    </div>
+
     <div class="demo-footer">
-      <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #475569; font-weight: 600;">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      <div style="display: flex; align-items: center; gap: 8px; font-size: 12.5px; color: #475569; font-weight: 600;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0f172a" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         <span>Access the Interactive NotebookLM Clinical Case File</span>
       </div>
       <a href="https://notebooklm.google.com/notebook/42b9e7e0-825d-4c35-9182-b97b71c2a2b0/artifact/aaf4c60b-2fe3-4267-8ce2-155514b7202e" target="_blank" class="notebooklm-btn">
         Explore NotebookLM Workspace ↗
       </a>
-    </div>
-  </div>
-
-  <!-- DEDICATED TELEGRAM BOT CALLOUT BANNER -->
-  <div style="max-width: 1000px; margin: 0 auto 56px; padding: 0 4px;">
-    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #0369a1 100%); border-radius: 24px; padding: 32px 36px; color: #ffffff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 24px; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.18); border: 1.5px solid rgba(255, 255, 255, 0.12); position: relative; overflow: hidden; text-align: left;">
-      <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(0, 136, 204, 0.3); border-radius: 50%; filter: blur(60px); pointer-events: none;"></div>
-      
-      <div style="flex: 1; min-width: 280px; position: relative; z-index: 2;">
-        <div style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 136, 204, 0.25); border: 1px solid rgba(0, 136, 204, 0.5); padding: 4px 12px; border-radius: 50px; font-size: 11.5px; font-weight: 800; color: #38bdf8; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">
-          🤖 24/7 Live Telegram AI Bot
-        </div>
-        <h3 style="font-size: 26px; font-weight: 900; margin-bottom: 8px; line-height: 1.25; color: #ffffff;">
-          Chat with MedInVedic AI on Telegram
-        </h3>
-        <p style="font-size: 14.5px; color: #cbd5e1; line-height: 1.5; margin-bottom: 14px; max-width: 580px;">
-          Instant clinical triage, CDSCO allopathic medicine lookups, authentic Ayurvedic remedies, and founder history directly on Telegram.
-        </p>
-        <div style="display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: #94a3b8; font-weight: 600; flex-wrap: wrap;">
-          <span>Telegram Bot:</span>
-          <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #38bdf8; font-weight: 800; text-decoration: underline;">https://t.me/MedInVedic_AI_bot</a>
-        </div>
-      </div>
-
-      <div style="position: relative; z-index: 2;">
-        <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 10px; background: #0088cc; color: #ffffff; padding: 14px 28px; border-radius: 14px; font-size: 15px; font-weight: 800; text-decoration: none; box-shadow: 0 8px 24px rgba(0, 136, 204, 0.4); transition: all 0.2s ease;">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-          <span>Open Telegram Bot ↗</span>
-        </a>
-      </div>
     </div>
   </div>
 </section>
@@ -729,11 +720,11 @@
       <p>Voice-first consultation supporting 50+ languages with code-switching support (Hinglish, Kanglish) and speech synthesis.</p>
       <span class="feat-pill">50+ Languages</span>
     </div>
-    <div class="feat-card" onclick="window.location.href='pages/vedicmind.html'" style="cursor:pointer; border-color:#22c55e; background:linear-gradient(135deg, rgba(240,253,244,0.8), #fff);">
+    <div class="feat-card" onclick="window.location.href='pages/vedicmind.html'" style="cursor:pointer; border-color:rgba(52,211,153,0.5); background:rgba(34,197,94,0.14);">
       <div class="feat-icon">🧠</div>
       <h3>VedicMind AI Learning</h3>
       <p>16 Vedic Sutras, mental math speed drills, AI proof verification, mistake diagnostic analyzer, and student XP progression.</p>
-      <span class="feat-pill" style="background:#dcfce7; color:#166534; font-weight:800;">Featured AI Tutor</span>
+      <span class="feat-pill" style="background:rgba(34,197,94,0.22); color:#a7f3d0; border-color:rgba(52,211,153,0.4); font-weight:800;">Featured AI Tutor</span>
     </div>
     <div class="feat-card" onclick="window.location.href='pages/prescription-decoder.html'" style="cursor:pointer;">
       <div class="feat-icon">📄</div>
@@ -741,11 +732,11 @@
       <p>Instant plain-language medical translation for doctor prescriptions, dosage guidance, side effects, and Ayurvedic parallels.</p>
       <span class="feat-pill">RAG Grounded</span>
     </div>
-    <div class="feat-card" onclick="window.open('https://t.me/MedInVedic_AI_bot', '_blank')" style="cursor:pointer; border-color:#0088cc; background:linear-gradient(135deg, rgba(0,136,204,0.06), #fff);">
-      <div class="feat-icon">✈️</div>
-      <h3>Telegram AI Assistant</h3>
-      <p>Instant 24/7 mobile clinical triage, medicine lookup, Ayurvedic home remedies, and founder history via <code>@MedInVedic_AI_bot</code>.</p>
-      <span class="feat-pill" style="background:#e0f2fe; color:#0369a1; font-weight:800;">24/7 Live Bot ↗</span>
+    <div class="feat-card" onclick="window.location.href='index.html'" style="cursor:pointer;">
+      <div class="feat-icon">🤖</div>
+      <h3>24/7 AI Clinical Assistant</h3>
+      <p>Instant evidence-backed clinical triage, medicine lookups, drug interaction checks, and personalized Ayurvedic home remedies.</p>
+      <span class="feat-pill">AI Powered</span>
     </div>
     <div class="feat-card">
       <div class="feat-icon">🚨</div>
@@ -779,11 +770,6 @@
 <!-- FOOTER -->
 <footer class="landing-footer">
   <div style="display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap;">
-    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #0088cc; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-      Telegram Clinical Assistant (@MedInVedic_AI_bot)
-    </a>
-    <span style="color: #cbd5e1;">•</span>
     <a href="pages/login.html" style="color: #475569; text-decoration: none; font-weight: 600;">Sign In</a>
     <span style="color: #cbd5e1;">•</span>
     <a href="pages/register.html" style="color: #475569; text-decoration: none; font-weight: 600;">Register</a>
@@ -808,6 +794,24 @@
       window.AnalyticsEngine.trackEvent(window.AnalyticsEngine.EVENTS.DEMO_VIEW);
     }
   });
+
+  function switchShowcaseTab(tab) {
+    const dualBox = document.getElementById('showcaseDual');
+    const archBox = document.getElementById('showcaseArch');
+    const dualBtn = document.getElementById('tabDualBtn');
+    const archBtn = document.getElementById('tabArchBtn');
+    if (tab === 'dual') {
+      if (dualBox) dualBox.style.display = 'flex';
+      if (archBox) archBox.style.display = 'none';
+      if (dualBtn) { dualBtn.style.background = '#0f172a'; dualBtn.style.color = '#ffffff'; }
+      if (archBtn) { archBtn.style.background = '#f1f5f9'; archBtn.style.color = '#475569'; }
+    } else {
+      if (dualBox) dualBox.style.display = 'none';
+      if (archBox) archBox.style.display = 'flex';
+      if (archBtn) { archBtn.style.background = '#0f172a'; archBtn.style.color = '#ffffff'; }
+      if (dualBtn) { dualBtn.style.background = '#f1f5f9'; dualBtn.style.color = '#475569'; }
+    }
+  }
 
   function scrollToVideo() {
     document.getElementById('demo-video').scrollIntoView({ behavior: 'smooth' });
@@ -858,10 +862,6 @@
         const navActions = document.querySelector('.nav-actions');
         if (navActions) {
           navActions.innerHTML = `
-            <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="display:inline-flex; align-items:center; gap:6px; color:#0088cc; border-color:rgba(0,136,204,0.4); text-decoration:none;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-              <span>Telegram Bot</span>
-            </a>
             <a href="index.html" class="btn-cta" style="display:inline-flex; align-items:center; gap:6px; text-decoration:none;">
               🌿 Open App (${name}) →
             </a>
@@ -873,10 +873,6 @@
             <a href="index.html" class="btn-cta" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
               🌿 Enter MedInVedic Platform →
             </a>
-            <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="btn-ghost" style="padding: 14px 24px; font-size: 15px; display: inline-flex; align-items: center; gap: 8px; border-color: rgba(0, 136, 204, 0.4); color: #0088cc; background: rgba(0, 136, 204, 0.05); text-decoration: none;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-              <span>Chat on Telegram</span>
-            </a>
             <a href="pages/dashboard.html" class="btn-ghost" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
               👤 My Dashboard
             </a>
@@ -886,12 +882,6 @@
     } catch(e) {}
   });
 </script>
-
-<!-- FLOATING TELEGRAM ACTION BUTTON -->
-<a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" id="floatingTelegramBtn" aria-label="Chat on Telegram" style="position: fixed; bottom: 24px; right: 24px; z-index: 999; background: #0088cc; color: #ffffff; border-radius: 50px; padding: 12px 20px; display: flex; align-items: center; gap: 10px; box-shadow: 0 10px 30px rgba(0, 136, 204, 0.45); text-decoration: none; font-weight: 800; font-size: 14px; border: 2px solid #ffffff; transition: all 0.2s ease;">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z"/></svg>
-  <span>Telegram Bot</span>
-</a>
 
 </body>
 </html>

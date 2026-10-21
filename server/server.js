@@ -41,6 +41,7 @@ initDB().then(() => {
   app.use('/api/prescriptions', require('./routes/prescriptions'));
   app.use('/api/admin',         require('./routes/admin'));
   app.use('/api',               require('./routes/wallet'));
+  app.use('/api',               require('./routes/payment'));
   app.use('/api',               require('./routes/users'));
   app.use('/api',               require('./routes/rag'));
   app.use('/api/vedicmind',     require('./routes/vedicmind'));

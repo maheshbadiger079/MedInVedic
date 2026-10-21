@@ -15,8 +15,21 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**",
-      "**/medinvedic.apk",
-      "**/app/medinvedic.apk"
+      "**/app/**",
+      "**/*.apk",
+      "**/*.zip"
+    ],
+    "redirects": [
+      {
+        "source": "/pages/index.html",
+        "destination": "/index.html",
+        "type": 302
+      },
+      {
+        "source": "/pages/landing.html",
+        "destination": "/landing.html",
+        "type": 302
+      }
     ],
     "rewrites": [
       {

@@ -263,17 +263,22 @@ const API = {
   // ── Auth ────────────────────────────────────────────────────────
   auth: {
     async register(name, email, password, phone) {
+      if (typeof EmailValidator !== 'undefined') {
+        const check = EmailValidator.validateEmail(email);
+        if (!check.valid) throw new Error(check.error || 'Invalid or disposable email address.');
+      }
       if (USE_MOCK) {
         const users = store.get('miv_users', []);
         if (users.some(u => u.email === email)) throw new Error('User already exists');
 
-        const isSuper = (email === 'admin@medinvedic.com' || email === 'maheshbadiger079@gmail.com');
+        const isSuper = (email || '').toLowerCase().trim() === 'maheshbadiger079@gmail.com';
         const user = {
           id: 'user_' + Math.random().toString(36).substr(2, 9),
           name,
           email,
           phone: phone || '',
           role: isSuper ? 'SUPER_ADMIN' : 'USER',
+          emailVerified: isSuper,
           created_at: new Date().toISOString().split('T')[0]
         };
         users.push(user);
@@ -289,14 +294,19 @@ const API = {
     },
 
     async login(email, password) {
+      if (typeof EmailValidator !== 'undefined') {
+        const check = EmailValidator.validateEmail(email);
+        if (!check.valid) throw new Error(check.error || 'Invalid or disposable email address.');
+      }
       if (USE_MOCK) {
-        const isSuper = (email === 'admin@medinvedic.com' || email === 'maheshbadiger079@gmail.com');
+        const isSuper = (email || '').toLowerCase().trim() === 'maheshbadiger079@gmail.com';
         if (isSuper) {
           const user = { 
-            id: email === 'maheshbadiger079@gmail.com' ? 'admin_mahesh' : 'admin_root', 
-            name: email === 'maheshbadiger079@gmail.com' ? 'Mahesh M Badiger' : 'Super Admin', 
+            id: 'admin_mahesh', 
+            name: 'Mahesh M Badiger', 
             email, 
-            role: 'SUPER_ADMIN' 
+            role: 'SUPER_ADMIN',
+            emailVerified: true
           };
           const payload = btoa(unescape(encodeURIComponent(JSON.stringify(user))));
           Token.set(`header.${payload}.signature`);
@@ -316,14 +326,19 @@ const API = {
     },
 
     async socialLogin(name, email, provider) {
+      if (typeof EmailValidator !== 'undefined') {
+        const check = EmailValidator.validateEmail(email);
+        if (!check.valid) throw new Error(check.error || 'Invalid or disposable email address.');
+      }
       if (USE_MOCK) {
-        const isSuper = (email === 'admin@medinvedic.com' || email === 'maheshbadiger079@gmail.com');
+        const isSuper = (email || '').toLowerCase().trim() === 'maheshbadiger079@gmail.com';
         const user = {
           id: 'user_' + Math.random().toString(36).substr(2, 9),
           name: name || (isSuper ? 'Mahesh M Badiger' : 'Google User'),
           email: email,
           provider: provider || 'google',
           role: isSuper ? 'SUPER_ADMIN' : 'USER',
+          emailVerified: true,
           created_at: new Date().toISOString().split('T')[0]
         };
         const users = store.get('miv_users', []);
@@ -343,7 +358,13 @@ const API = {
 
     logout() {
       Token.remove();
-      window.location.href = window.location.pathname.includes('pages/') ? '../index.html' : 'index.html';
+      if (typeof AuthGuard !== 'undefined' && AuthGuard.clearAuthSession) {
+        AuthGuard.clearAuthSession();
+      } else {
+        localStorage.removeItem('mv_auth_user');
+        localStorage.removeItem('mv_user_role');
+      }
+      window.location.replace(window.location.pathname.includes('pages/') ? 'login.html' : 'pages/login.html');
     },
 
     getUser() { return Token.user(); },
@@ -1007,6 +1028,210 @@ const API = {
           security_filter: { status: 'Operational', mode: 'Active Guardrails (NO SOURCE -> NO CLAIM)' }
         }
       };
+    },
+
+    async getLiveActivity() {
+      if (USE_MOCK) {
+        const rawSessions = store.get('miv_mock_activity_sessions', [
+          { session_id: 's_adm_live1', user_id: 'u_1', display_name: 'Mahesh', role: 'SUPER_ADMIN', status: 'ONLINE', device_type: 'Desktop', browser: 'Chrome', os: 'Windows', active_tabs: 1, started_at: new Date().toISOString(), last_seen_at: new Date().toISOString(), seconds_ago: 2 },
+          { session_id: 's_gst_live2', user_id: '', display_name: 'Guest #A72F', role: 'GUEST', status: 'ONLINE', device_type: 'Mobile', browser: 'Safari', os: 'iOS', active_tabs: 1, started_at: new Date(Date.now() - 300000).toISOString(), last_seen_at: new Date().toISOString(), seconds_ago: 8 }
+        ]);
+        return {
+          success: true,
+          stats: {
+            totalLive: rawSessions.filter(s => s.status === 'ONLINE' || s.status === 'IDLE').length,
+            onlineCount: rawSessions.filter(s => s.status === 'ONLINE').length,
+            idleCount: rawSessions.filter(s => s.status === 'IDLE').length,
+            offlineCount: rawSessions.filter(s => s.status === 'OFFLINE').length,
+            totalTracked: rawSessions.length
+          },
+          sessions: rawSessions
+        };
+      }
+      return get('/admin/activity/live');
+    },
+
+    async getRecentActivity(type = '', limit = 50) {
+      if (USE_MOCK) {
+        return {
+          success: true,
+          events: store.get('miv_mock_activity_events', [
+            { id: 101, session_id: 's_adm_live1', user_id: 'u_1', display_name: 'Mahesh', event_type: 'LOGIN_SUCCESS', metadata: '{"role":"SUPER_ADMIN"}', timestamp: new Date().toISOString() },
+            { id: 100, session_id: 's_gst_live2', user_id: '', display_name: 'Guest #A72F', event_type: 'APP_OPEN', metadata: '{"device":"Mobile"}', timestamp: new Date(Date.now() - 300000).toISOString() }
+          ])
+        };
+      }
+      const q = new URLSearchParams();
+      if (type) q.set('type', type);
+      if (limit) q.set('limit', limit);
+      return get('/admin/activity/recent?' + q.toString());
+    },
+
+    async getPayments() {
+      if (USE_MOCK) {
+        const stored = store.get('miv_payment_transactions', null);
+        if (stored) return stored;
+        const samplePayments = [
+          {
+            paymentId: 'pay_rzp_9841284',
+            orderId: 'ord_rx_49201',
+            userId: 'user_priya_28',
+            userName: 'Priya Sharma',
+            provider: 'razorpay',
+            paymentMethod: 'upi',
+            amount: 749,
+            currency: 'INR',
+            status: 'VERIFIED_PAID',
+            verificationSource: 'RAZORPAY_WEBHOOK',
+            verificationTimestamp: new Date(Date.now() - 3600000).toISOString(),
+            createdAt: new Date(Date.now() - 3700000).toISOString(),
+            reconciliationStatus: 'SETTLED',
+            notes: { item: 'Ashwagandha & Chyawanprash' }
+          },
+          {
+            paymentId: 'pay_youpi_619041',
+            orderId: 'ord_med_31024',
+            userId: 'user_rahul_11',
+            userName: 'Rahul Verma',
+            provider: 'youpi_pg',
+            paymentMethod: 'upi_qr',
+            amount: 450,
+            currency: 'INR',
+            status: 'OBSERVED_UNVERIFIED',
+            verificationSource: 'BANK_SMS_OBSERVER',
+            verificationTimestamp: new Date(Date.now() - 900000).toISOString(),
+            createdAt: new Date(Date.now() - 1100000).toISOString(),
+            reconciliationStatus: 'PENDING_BANK_SETTLEMENT',
+            observedDetails: { senderVpa: 'rahul@oksbi', rawSnippet: 'Cr ₹450 by UPI/429188192018' },
+            notes: { item: 'Triphala Churna 200g' }
+          },
+          {
+            paymentId: 'pay_cod_184912',
+            orderId: 'ord_wel_88192',
+            userId: 'user_anita_05',
+            userName: 'Anita Desai',
+            provider: 'cod',
+            paymentMethod: 'cash_on_delivery',
+            amount: 890,
+            currency: 'INR',
+            status: 'PENDING_COD_CONFIRMATION',
+            verificationSource: 'DOORSTEP_CASH',
+            createdAt: new Date(Date.now() - 7200000).toISOString(),
+            reconciliationStatus: 'PENDING_DELIVERY',
+            notes: { item: 'Ayurvedic Skin Serum' }
+          },
+          {
+            paymentId: 'pay_youpi_109241',
+            orderId: 'ord_cn_77218',
+            userId: 'user_kiran_99',
+            userName: 'Kiran Patel',
+            provider: 'youpi_pg',
+            paymentMethod: 'upi_intent',
+            amount: 500,
+            currency: 'INR',
+            status: 'EXPIRED',
+            verificationSource: 'SYSTEM_TIMER',
+            createdAt: new Date(Date.now() - 86400000).toISOString(),
+            reconciliationStatus: 'FAILED',
+            notes: { item: 'Online Doctor Consultation' }
+          }
+        ];
+        const initialData = {
+          success: true,
+          summary: {
+            totalTransactions: 4,
+            totalVolume: 2589,
+            verifiedRevenue: 749,
+            unverifiedVolume: 450,
+            pendingCount: 1,
+            unverifiedCount: 1,
+            failedCount: 1,
+            refundCount: 0,
+            providerBreakdown: { razorpay: 1, youpiPg: 2, cod: 1 }
+          },
+          payments: samplePayments
+        };
+        store.set('miv_payment_transactions', initialData);
+        return initialData;
+      }
+      return get('/admin/payments/transactions');
+    },
+
+    async reconcilePayment(paymentId, decision, notes = '') {
+      if (USE_MOCK) {
+        let stored = store.get('miv_payment_transactions', null);
+        if (!stored) {
+          stored = await this.getPayments();
+        }
+        const p = stored.payments.find(item => item.paymentId === paymentId);
+        if (p) {
+          p.status = decision === 'VERIFY_SETTLED' ? 'VERIFIED_PAID' : 'FAILED';
+          p.reconciliationStatus = decision === 'VERIFY_SETTLED' ? 'MANUALLY_RECONCILED' : 'REJECTED_UNMATCHED';
+          p.reconciledAt = new Date().toISOString();
+          p.adminNotes = notes;
+          if (decision === 'VERIFY_SETTLED') {
+            stored.summary.verifiedRevenue += p.amount;
+            stored.summary.unverifiedVolume = Math.max(0, stored.summary.unverifiedVolume - p.amount);
+            stored.summary.unverifiedCount = Math.max(0, stored.summary.unverifiedCount - 1);
+          }
+          store.set('miv_payment_transactions', stored);
+        }
+        return { success: true, paymentId, decision, status: p ? p.status : 'VERIFIED_PAID' };
+      }
+      return post('/admin/payments/reconcile', { paymentId, decision, notes });
+    },
+
+    async refundPayment(paymentId, reason = 'Customer requested refund') {
+      if (USE_MOCK) {
+        let stored = store.get('miv_payment_transactions', null);
+        if (!stored) {
+          stored = await this.getPayments();
+        }
+        const p = stored.payments.find(item => item.paymentId === paymentId);
+        if (p) {
+          p.status = 'REFUNDED';
+          p.refundReason = reason;
+          p.refundedAt = new Date().toISOString();
+          stored.summary.refundCount = (stored.summary.refundCount || 0) + 1;
+          stored.summary.verifiedRevenue = Math.max(0, stored.summary.verifiedRevenue - p.amount);
+          store.set('miv_payment_transactions', stored);
+        }
+        return { success: true, paymentId, refundId: `rfnd_${Date.now()}`, status: 'REFUNDED' };
+      }
+      return post('/admin/payments/refund', { paymentId, reason });
+    }
+  },
+
+  models: {
+    async list() {
+      if (USE_MOCK) {
+        return {
+          featureEnabled: true,
+          defaultModel: 'medinvedic-balanced',
+          models: [
+            { id: 'medinvedic-expert', name: 'MedInVedic Expert', badge: 'Premium', shortDescription: 'For complex healthcare questions', accessRequirement: 'premium', imageSupport: true, supportedEfforts: ['low', 'medium', 'high'] },
+            { id: 'medinvedic-advanced', name: 'MedInVedic Advanced', badge: null, shortDescription: 'For detailed research and evidence-based answers', accessRequirement: 'standard', imageSupport: true, supportedEfforts: ['low', 'medium', 'high'] },
+            { id: 'medinvedic-balanced', name: 'MedInVedic Balanced', badge: null, shortDescription: 'Best for everyday health information', accessRequirement: 'free', isDefault: true, imageSupport: true, supportedEfforts: ['low', 'medium'] },
+            { id: 'medinvedic-quick', name: 'MedInVedic Quick', badge: null, shortDescription: 'Fast answers to simpler questions', accessRequirement: 'free', imageSupport: false, supportedEfforts: ['low'] }
+          ]
+        };
+      }
+      return get('/models');
+    },
+
+    async get(id) {
+      if (USE_MOCK) {
+        const list = await this.list();
+        return list.models.find(m => m.id === id) || null;
+      }
+      return get(`/models/${id}`);
+    },
+
+    async select(modelId, effort) {
+      if (USE_MOCK) {
+        return { success: true, model: { id: modelId, effort: effort || 'medium' } };
+      }
+      return post('/models/select', { model: modelId, effort });
     }
   }
 };

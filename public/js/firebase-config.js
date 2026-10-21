@@ -51,7 +51,26 @@ export async function loginUser(email, password) {
 }
 
 export async function logoutUser() {
-  return signOut(auth);
+  try {
+    if (typeof window !== 'undefined' && window.AuthGuard && window.AuthGuard.clearAuthSession) {
+      window.AuthGuard.clearAuthSession();
+    } else if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem('mv_auth_user');
+      localStorage.removeItem('mv_user_role');
+      localStorage.removeItem('mv_token');
+      localStorage.removeItem('mv_auth_token');
+      localStorage.removeItem('miv_user');
+      localStorage.removeItem('miv_token');
+      localStorage.removeItem('miv_cart');
+    }
+  } catch(e) {}
+  try {
+    await signOut(auth);
+  } catch(e) {}
+  if (typeof window !== 'undefined') {
+    const inPages = window.location.pathname.includes('pages/');
+    window.location.replace(inPages ? 'login.html' : 'pages/login.html');
+  }
 }
 
 export function onAuthChange(callback) {

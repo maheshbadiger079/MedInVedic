@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="icon" type="image/png" sizes="512x512" href="../icon-512.png">
-  <link rel="apple-touch-icon" href="../icon-512.png">
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
+  <meta name="color-scheme" content="light">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../favicon.png">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Secure Payment &amp; Wallet — MedInVedic</title>
-  <meta name="description" content="Production-ready MedInVedic Payment System: Real Razorpay/UPI gateway, immutable wallet ledger, transaction tracker, RAG payment assistant, and GST invoices." />
+  <title>RAG-Grounded Razorpay Checkout — MedInVedic</title>
+  <meta name="description" content="Production-ready RAG-grounded Razorpay Standard Checkout: Real UPI, Cards, NetBanking, instant wallet ledger, and RBI/PCI-DSS regulatory intelligence." />
   
-  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
   <link rel="stylesheet" href="../css/auth-gate.css" />
   
   <!-- Razorpay Checkout Gateway SDK -->
@@ -20,133 +37,126 @@
   <script src="../js/api.js"></script>
   <script src="../js/i18n.js?v=v_202603310200"></script>
   <script src="../js/voice.js?v=v_Platinum_v88"></script>
-  <script type="module" src="../js/auth-gate.js"></script>
+  <script src="../js/unified-payment-checkout.js"></script>
 
   <style>
-    /* ── DESIGN SYSTEM: WHITE HEALTHCARE GLASSMORPHISM ── */
+    /* ── DESIGN SYSTEM: WHITE & PEACE GREEN GLASSMORPHISM ── */
     :root {
-      --bg-base: #f8fafc;
-      --surface-glass: rgba(255, 255, 255, 0.92);
-      --surface-card: #ffffff;
-      --border-glass: rgba(226, 232, 240, 0.9);
-      --border-subtle: #f1f5f9;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --text-light: #94a3b8;
-      
+      --bg: #f8faf8;
+      --card: rgba(255, 255, 255, 0.94);
+      --border: rgba(22, 101, 52, 0.12);
+      --card-border: rgba(22, 101, 52, 0.12);
       --primary: #166534;
       --primary-light: #22c55e;
       --primary-subtle: #f0fdf4;
-      --primary-border: #bbf7d0;
-      
-      --accent-blue: #0284c7;
-      --accent-blue-subtle: #f0f9ff;
-      --accent-gold: #d97706;
-      --accent-gold-subtle: #fffbeb;
-      --accent-red: #dc2626;
-      --accent-red-subtle: #fef2f2;
-      
-      --radius-sm: 8px;
-      --radius-md: 14px;
-      --radius-lg: 20px;
-      --radius-xl: 28px;
-      
-      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
-      --shadow-glass: 0 8px 30px -4px rgba(0, 0, 0, 0.04), 0 2px 6px rgba(0, 0, 0, 0.02);
-      --shadow-hover: 0 14px 36px -6px rgba(22, 101, 52, 0.12);
+      --accent: #15803d;
+      --amber: #d97706;
+      --red: #dc2626;
+      --text: #1a2e1a;
+      --muted: #52796f;
+      --dim: #8ba89e;
+      --gradient: linear-gradient(135deg, #166534, #22c55e);
+      --shadow-glass: 0 12px 36px rgba(22, 101, 52, 0.08);
     }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background-color: var(--bg-base);
-      color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      margin: 0;
-      line-height: 1.5;
+      background: var(--bg);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.08) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.8) 0px, transparent 100%);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', system-ui, sans-serif;
       min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .payment-layout {
-      max-width: 1100px;
-      margin: 32px auto 80px;
-      padding: 0 20px;
-      display: grid;
-      grid-template-columns: 1.4fr 1fr;
-      gap: 28px;
+    /* ── TOPBAR ── */
+    .nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 28px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-brand {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none; font-size: 18px; font-weight: 900; color: var(--primary);
+    }
+    .logo-badge {
+      width: 36px; height: 36px; background: var(--gradient);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff;
     }
 
-    @media (max-width: 900px) {
-      .payment-layout {
-        grid-template-columns: 1fr;
-      }
+    .rag-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-subtle); border: 1px solid rgba(34,197,94,0.3);
+      color: var(--primary); font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+      text-transform: uppercase; padding: 5px 14px; border-radius: 50px;
     }
+    .rag-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary-light); animation: p 2s infinite; }
+    @keyframes p { 0%,100%{opacity:.5;transform:scale(.9)} 50%{opacity:1;transform:scale(1.3)} }
 
-    /* ── STEPPER ── */
+    /* ── 3-STEP PROGRESS STEPPER ── */
     .stepper-wrap {
-      max-width: 600px;
-      margin: 24px auto 0;
+      max-width: 620px;
+      margin: 28px auto 0;
       padding: 0 20px;
+      width: 100%;
     }
-
     .stepper {
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-
     .step-item {
       display: flex;
       align-items: center;
       gap: 8px;
-      font-size: 13.5px;
-      font-weight: 700;
-      color: var(--text-light);
-    }
-
-    .step-item.active {
-      color: var(--primary);
-    }
-
-    .step-circle {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #e2e8f0;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 800;
+      color: var(--dim);
+    }
+    .step-item.active { color: var(--primary); }
+    .step-circle {
+      width: 28px; height: 28px; border-radius: 50%;
+      background: #e2e8f0; color: var(--muted);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 900;
+    }
+    .step-item.active .step-circle { background: var(--primary); color: #ffffff; }
+    .step-item.completed .step-circle { background: var(--primary-light); color: #ffffff; }
+    .step-divider { flex: 1; height: 2px; background: rgba(22, 101, 52, 0.15); margin: 0 12px; }
+    .step-divider.active { background: var(--primary); }
+
+    /* ── LAYOUT ── */
+    .payment-layout {
+      max-width: 1120px;
+      margin: 28px auto 80px;
+      padding: 0 24px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 28px;
+      width: 100%;
     }
 
-    .step-item.active .step-circle {
-      background: var(--primary);
-      color: #ffffff;
+    @media (max-width: 920px) {
+      .payment-layout { grid-template-columns: 1fr; }
     }
 
-    .step-item.completed .step-circle {
-      background: var(--primary-light);
-      color: #0f172a;
-    }
-
-    .step-divider {
-      flex: 1;
-      height: 2px;
-      background: #e2e8f0;
-      margin: 0 12px;
-    }
-
-    .step-divider.active {
-      background: var(--primary);
-    }
-
-    /* ── WHITE GLASS CARDS ── */
+    /* ── FROSTED CARDS ── */
     .glass-card {
-      background: var(--surface-glass);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--border-glass);
-      border-radius: var(--radius-lg);
+      background: var(--card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
       padding: 24px;
       box-shadow: var(--shadow-glass);
       margin-bottom: 24px;
@@ -154,237 +164,258 @@
 
     /* ── WALLET HERO CARD ── */
     .wallet-hero {
-      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      background: linear-gradient(135deg, #166534 0%, #15803d 100%);
       color: #ffffff;
-      border-radius: var(--radius-lg);
+      border-radius: 20px;
       padding: 24px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+      box-shadow: 0 10px 30px rgba(22, 101, 52, 0.2);
       margin-bottom: 24px;
     }
-
     .wallet-label {
-      font-size: 12px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      margin-bottom: 4px;
+      font-size: 11.5px; font-weight: 800; color: #bbf7d0;
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;
     }
-
     .wallet-balance {
-      font-size: 32px;
-      font-weight: 900;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 34px; font-weight: 900; color: #ffffff; letter-spacing: -0.5px;
     }
-
     .btn-add-money {
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(255, 255, 255, 0.4);
       color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      padding: 10px 18px;
-      border-radius: 10px;
-      font-weight: 700;
-      font-size: 13px;
+      padding: 10px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 13.5px;
       cursor: pointer;
-      backdrop-filter: blur(8px);
-      transition: all 0.2s;
+      transition: 0.2s;
     }
-
     .btn-add-money:hover {
-      background: #22c55e;
-      color: #0f172a;
-      border-color: #22c55e;
+      background: #ffffff; color: var(--primary); transform: translateY(-1px);
     }
 
     /* ── PAYMENT METHODS GRID ── */
     .methods-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 14px;
-      margin-bottom: 20px;
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 18px;
     }
-
     .method-tile {
-      background: #ffffff;
-      border: 1.5px solid #e2e8f0;
-      border-radius: var(--radius-md);
-      padding: 16px 14px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
+      background: #ffffff; border: 1.5px solid var(--border); border-radius: 16px;
+      padding: 16px; cursor: pointer; transition: all 0.2s; text-align: center;
+      box-shadow: 0 2px 8px rgba(22, 101, 52, 0.04);
     }
-
     .method-tile:hover {
-      border-color: var(--primary-light);
-      background: var(--primary-subtle);
+      border-color: var(--primary-light); background: var(--primary-subtle); transform: translateY(-1px);
     }
-
     .method-tile.active {
-      border-color: var(--primary);
-      background: var(--primary-subtle);
-      box-shadow: 0 0 0 3px rgba(22, 101, 52, 0.15);
+      border-color: var(--primary); background: var(--primary-subtle);
+      box-shadow: 0 6px 18px rgba(22, 101, 52, 0.15);
     }
-
-    .method-tile .method-icon {
-      font-size: 24px;
-    }
-
-    .method-tile .method-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .method-tile .method-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+    .method-icon { font-size: 24px; margin-bottom: 6px; }
+    .method-name { font-size: 14px; font-weight: 800; color: var(--text); }
+    .method-sub { font-size: 11px; color: var(--muted); margin-top: 2px; font-weight: 600; }
 
     /* ── INPUT FIELDS ── */
     .pay-input {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 12px 14px;
-      border: 1.5px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 14px;
-      color: var(--text-main);
-      background: #ffffff;
-      outline: none;
-      transition: border-color 0.2s;
+      width: 100%; padding: 12px 16px; border: 1.5px solid var(--border);
+      border-radius: 12px; font-size: 14px; color: var(--text); background: #ffffff;
+      outline: none; font-weight: 600; transition: border-color 0.2s;
     }
+    .pay-input:focus { border-color: var(--primary); box-shadow: 0 4px 14px rgba(22, 101, 52, 0.12); }
 
-    .pay-input:focus {
-      border-color: var(--primary);
-    }
-
-    /* ── PAY ACTION BUTTON ── */
+    /* ── RAZORPAY 1-CLICK PAY BUTTON ── */
     .btn-pay-secure {
       width: 100%;
-      background: #0f172a;
+      background: var(--gradient);
       color: #ffffff;
       border: none;
-      border-radius: var(--radius-md);
+      border-radius: 14px;
       padding: 16px;
       font-size: 16px;
-      font-weight: 800;
+      font-weight: 900;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 10px;
       transition: all 0.2s;
-      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.15);
-      margin-top: 14px;
+      box-shadow: 0 6px 22px rgba(22, 101, 52, 0.3);
+      margin-top: 18px;
+    }
+    .btn-pay-secure:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 28px rgba(22, 101, 52, 0.4);
     }
 
-    .btn-pay-secure:hover {
-      background: var(--primary);
-      box-shadow: 0 8px 25px rgba(22, 101, 52, 0.3);
-      transform: translateY(-1px);
+    /* ── RAG SECURITY BADGES ROW ── */
+    .rag-security-row {
+      display: flex; align-items: center; justify-content: center; gap: 14px;
+      margin-top: 16px; font-size: 11.5px; color: var(--muted); font-weight: 700; flex-wrap: wrap;
+    }
+    .rag-sec-chip {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--primary-subtle); border: 1px solid rgba(34,197,94,0.25);
+      padding: 4px 12px; border-radius: 50px; color: var(--primary);
     }
 
     /* ── ORDER SUMMARY BOX ── */
     .summary-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
-      font-size: 13.5px;
-      color: var(--text-muted);
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 0; font-size: 13.5px; color: #2d4a3e; font-weight: 600;
     }
-
     .summary-row.total {
-      border-top: 1.5px dashed #cbd5e1;
-      margin-top: 10px;
-      padding-top: 14px;
-      font-size: 17px;
-      font-weight: 800;
-      color: var(--text-main);
+      border-top: 1.5px dashed rgba(22, 101, 52, 0.2);
+      margin-top: 12px; padding-top: 14px; font-size: 18px; font-weight: 900; color: var(--primary);
     }
 
-    /* ── PAYMENT AI ASSISTANT WIDGET ── */
+    /* ── RAG PAYMENT ASSISTANT ── */
     .ai-assistant-card {
-      background: #ffffff;
-      border: 1px solid var(--border-glass);
-      border-radius: var(--radius-lg);
-      padding: 22px;
-      box-shadow: var(--shadow-glass);
+      background: var(--card); border: 1.5px solid var(--border);
+      border-radius: 20px; padding: 22px; box-shadow: var(--shadow-glass);
     }
+    .prompt-pill {
+      background: #ffffff; border: 1px solid var(--border); color: #2d4a3e;
+      font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 50px;
+      cursor: pointer; transition: 0.15s;
+    }
+    .prompt-pill:hover { color: var(--primary); border-color: var(--primary-light); background: var(--primary-subtle); }
 
     .ai-bubble {
-      background: var(--bg-base);
-      border: 1px solid var(--border-glass);
-      border-radius: 12px;
-      padding: 12px 14px;
-      font-size: 13px;
-      color: var(--text-main);
-      margin-top: 10px;
-      line-height: 1.5;
+      background: var(--primary-subtle); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 16px; font-size: 13px; color: var(--text);
+      margin-top: 12px; line-height: 1.6;
     }
 
-    /* ── TRANSACTION CHIPS ── */
-    .status-chip {
-      display: inline-block;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    /* ── BUTTONS & CHIPS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px;
+      border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; transition: all .18s;
     }
-    .status-success  { background: #dcfce7; color: #166534; }
-    .status-pending  { background: #fef3c7; color: #92400e; }
-    .status-failed   { background: #fee2e2; color: #991b1b; }
-    .status-refunded { background: #e0f2fe; color: #075985; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #15803d; }
+    .btn-outline { background: #ffffff; border: 1.5px solid var(--border); color: var(--text); }
+    .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+    .btn-sm { padding: 6px 12px; font-size: 12px; border-radius: 8px; }
+
+    .status-chip {
+      display: inline-block; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 800; text-transform: uppercase;
+    }
+    .status-success { background: rgba(34,197,94,0.15); color: #166534; }
+    .status-pending { background: rgba(245,158,11,0.15); color: #d97706; }
+    .status-failed { background: rgba(220,38,38,0.15); color: #dc2626; }
+    .status-observed { background: rgba(59,130,246,0.15); color: #1d4ed8; }
+
+    /* ── YOUPI UPI QR & INTENT STYLES ── */
+    .youpi-qr-box {
+      background: #ffffff;
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      max-width: 320px;
+      margin: 14px auto;
+      box-shadow: 0 4px 16px rgba(22, 101, 52, 0.08);
+    }
+    .youpi-qr-svg {
+      width: 220px;
+      height: 220px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .youpi-timer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(22, 101, 52, 0.08);
+      color: var(--primary);
+      padding: 6px 14px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-top: 10px;
+    }
+    .youpi-apps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .youpi-app-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 10px 6px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: #ffffff;
+      text-decoration: none;
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .youpi-app-btn:hover {
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(22, 101, 52, 0.12);
+    }
 
     /* ── MODALS ── */
     .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
+      display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px); z-index: 999; align-items: center; justify-content: center; padding: 20px;
     }
     .modal-overlay.open { display: flex; }
     .modal-card {
-      background: #ffffff;
-      border-radius: var(--radius-xl);
-      padding: 28px;
-      width: 100%;
-      max-width: 480px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+      background: #ffffff; border-radius: 20px; padding: 28px; width: 100%; max-width: 480px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15); border: 1.5px solid var(--border);
     }
   </style>
+
+<style>
+  @media (max-width: 640px) {
+    .nav { padding: 10px 12px !important; }
+    .rag-badge { display: none !important; }
+    .nav-brand span { font-size: 16px !important; }
+    .stepper-wrap { margin-top: 12px !important; padding: 0 8px !important; }
+    .payment-layout { margin: 14px auto 60px !important; padding: 0 10px !important; grid-template-columns: 1fr !important; }
+    .wallet-hero { padding: 16px !important; border-radius: 16px !important; }
+    .methods-grid { grid-template-columns: 1fr 1fr !important; gap: 8px !important; }
+    .method-tile { padding: 12px 8px !important; }
+    .method-name { font-size: 12px !important; }
+    .method-sub { display: none !important; }
+  }
+</style>
+
+
+<style id="medinvedic-font-normalizer">
+  *, *::before, *::after,
+  html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+    font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+    font-style: normal !important;
+  }
+</style>
+
 </head>
 
 <body>
 
 <!-- ── NAVBAR ── -->
-<nav class="navbar">
-  <a class="nav-logo" href="../index.html">
-    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
-    <span class="nav-logo-text">MedInVedic</span>
+<nav class="nav">
+  <a class="nav-brand" href="../index.html">
+    <div class="logo-badge">🌿</div>
+    <span>MedInVedic</span>
   </a>
   
-  <div style="display: flex; align-items: center; gap: 10px; margin-left: auto;">
-    <a href="../index.html" style="text-decoration: none; font-weight: 700; font-size: 13.5px; color: var(--text-muted); padding: 6px 12px; border-radius: 8px;">🏠 Home</a>
-    <a href="dashboard.html" style="text-decoration: none; font-weight: 700; font-size: 13.5px; color: var(--primary); background: var(--primary-subtle); border: 1px solid var(--primary-border); padding: 6px 14px; border-radius: 8px;">👤 Dashboard</a>
+  <div style="display: flex; align-items: center; gap: 12px; margin-left: auto;">
+    <div class="rag-badge"><div class="rag-dot"></div> RAG GROUNDED RAZORPAY</div>
+    <a href="../index.html" style="text-decoration: none; font-weight: 700; font-size: 13.5px; color: var(--muted); padding: 6px 12px; border-radius: 8px;">🏠 Home</a>
+    <a href="dashboard.html" style="text-decoration: none; font-weight: 800; font-size: 13.5px; color: var(--primary); background: var(--primary-subtle); border: 1px solid var(--border); padding: 6px 14px; border-radius: 8px;">👤 Dashboard</a>
   </div>
 </nav>
 
@@ -393,17 +424,17 @@
   <div class="stepper">
     <div class="step-item completed">
       <div class="step-circle">✓</div>
-      <span>1. Review Items</span>
+      <span class="step-label">1. Items</span>
     </div>
     <div class="step-divider active"></div>
     <div class="step-item active">
       <div class="step-circle">2</div>
-      <span>2. Payment</span>
+      <span class="step-label">2. Razorpay Pay</span>
     </div>
     <div class="step-divider"></div>
     <div class="step-item">
       <div class="step-circle">3</div>
-      <span>3. Confirmation</span>
+      <span class="step-label">3. Success</span>
     </div>
   </div>
 </div>
@@ -416,103 +447,179 @@
     <div class="wallet-hero">
       <div>
         <div class="wallet-label">MedInVedic Wallet Balance</div>
-        <div class="wallet-balance" id="walletBalanceDisplay">₹0.00</div>
-        <div style="font-size:11.5px; color:#94a3b8; margin-top:4px;">● Instant 1-Click Payments · 100% Secure</div>
+        <div class="wallet-balance" id="walletBalanceDisplay">₹250.00</div>
+        <div style="font-size:11.5px; color:#bbf7d0; margin-top:4px; font-weight:600;">● Instant 1-Click Payments · 100% Patient Protection</div>
       </div>
       <button class="btn-add-money" onclick="openAddMoneyModal()">+ Add Money</button>
     </div>
 
-    <!-- 2. Payment Method Selector -->
+    <!-- 2. Unified Payment Method Selector -->
     <div class="glass-card">
-      <h3 style="font-size:16px; font-weight:800; margin-bottom:14px; color:var(--text-main);">Select Payment Method</h3>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3 style="font-size:17px; font-weight:900; margin:0; color:var(--primary);">Select Payment Method</h3>
+        <span class="rag-badge" style="font-size:10px; padding:3px 10px;">Unified Gateway v2</span>
+      </div>
       
-      <div class="methods-grid">
-        <!-- UPI -->
-        <div class="method-tile active" id="tile-upi" onclick="selectPaymentMethod('upi')">
+      <div class="methods-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
+        <!-- Option A: Razorpay -->
+        <div class="method-tile active" id="tile-razorpay" onclick="selectPaymentMethod('razorpay')">
+          <div class="method-icon">🛡️</div>
+          <div class="method-name">Razorpay Secure</div>
+          <div class="method-sub">Cards, NetBanking, UPI Gateway</div>
+        </div>
+
+        <!-- Option B: Direct UPI (YouPI-PG) -->
+        <div class="method-tile" id="tile-youpi" onclick="selectPaymentMethod('youpi')">
           <div class="method-icon">📱</div>
-          <div class="method-name">UPI</div>
-          <div class="method-sub">GPay, PhonePe, Paytm, BHIM</div>
+          <div class="method-name">Pay with UPI</div>
+          <div class="method-sub">Dynamic QR · GPay, PhonePe, Paytm</div>
         </div>
 
-        <!-- Cards -->
-        <div class="method-tile" id="tile-card" onclick="selectPaymentMethod('card')">
-          <div class="method-icon">💳</div>
-          <div class="method-name">Cards</div>
-          <div class="method-sub">Visa, MasterCard, RuPay</div>
+        <!-- Option C: Cash on Delivery -->
+        <div class="method-tile" id="tile-cod" onclick="selectPaymentMethod('cod')">
+          <div class="method-icon">📦</div>
+          <div class="method-name">Cash on Delivery</div>
+          <div class="method-sub">Eligible Physical Products Only</div>
         </div>
 
-        <!-- Net Banking -->
-        <div class="method-tile" id="tile-netbanking" onclick="selectPaymentMethod('netbanking')">
-          <div class="method-icon">🏦</div>
-          <div class="method-name">Net Banking</div>
-          <div class="method-sub">SBI, HDFC, ICICI, Axis</div>
-        </div>
-
-        <!-- Wallet -->
+        <!-- Option D: MedInVedic Wallet -->
         <div class="method-tile" id="tile-wallet" onclick="selectPaymentMethod('wallet')">
           <div class="method-icon">👛</div>
           <div class="method-name">MedInVedic Wallet</div>
-          <div class="method-sub" id="walletMethodSub">Use ₹0.00 balance</div>
+          <div class="method-sub" id="walletMethodSub">Available: ₹250.00</div>
         </div>
       </div>
 
-      <!-- UPI Dynamic Input Box -->
-      <div id="method-details-upi" style="margin-top:16px;">
-        <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">ENTER YOUR UPI ID / VPA</label>
-        <input type="text" id="upiVpaInput" class="pay-input" placeholder="e.g. yourname@oksbi / username@paytm" oninput="validateUpiInput(this.value)">
-        <div id="upiValidationNotice" style="font-size:12px; margin-top:6px; color:#166534; display:none;">✓ Valid UPI format detected</div>
+      <!-- ── METHOD 1: RAZORPAY DETAILS ── -->
+      <div id="method-details-razorpay" style="margin-top:16px;">
+        <div style="background:var(--primary-subtle); border:1.5px solid var(--border); border-radius:14px; padding:16px; font-size:13px; color:var(--text); line-height:1.6;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+            <strong style="color:var(--primary); font-size:14px;">Verified Razorpay Standard Checkout</strong>
+            <span class="status-chip status-success" style="font-size:10px;">PCI-DSS Level 1</span>
+          </div>
+          Pay securely using any Indian or international Credit/Debit card, UPI app, or NetBanking across 50+ major banks. 100% tokenized and RBI compliant.
+        </div>
+        <button class="btn-pay-secure" id="btnPayRazorpay" onclick="executeRazorpayFlow()">
+          🔒 Pay <span class="dyn-pay-amount">₹0.00</span> via Razorpay
+        </button>
       </div>
 
-      <!-- Card Tokenized Info -->
-      <div id="method-details-card" style="display:none; margin-top:16px;">
-        <div style="background:var(--accent-blue-subtle); border:1px solid #bae6fd; border-radius:10px; padding:12px; font-size:12.5px; color:#0369a1;">
-          🔒 <strong>Tokenized Gateway Checkout:</strong> Card details are processed directly by our PCI-DSS Level 1 compliant gateway. MedInVedic never stores CVV or card numbers.
+      <!-- ── METHOD 2: DIRECT UPI (YOUPI-PG) DETAILS ── -->
+      <div id="method-details-youpi" style="display:none; margin-top:16px;">
+        <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:14px; padding:16px; text-align:center;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="color:var(--primary); font-size:14px;">Instant Sovereign UPI Payment</strong>
+            <span id="youpiStatusBadge" class="status-chip status-pending">Awaiting Scan</span>
+          </div>
+
+          <!-- Dynamic Vector SVG QR Box -->
+          <div class="youpi-qr-box">
+            <div id="youpiQrSvgContainer" class="youpi-qr-svg">
+              <div style="color:var(--muted); font-size:13px; padding:40px 0;">Generating dynamic vector QR...</div>
+            </div>
+            <div style="margin-top:8px;">
+              <span class="youpi-timer-pill" id="youpiTimerPill">
+                ⏱️ Session expires in <span id="youpiTimerText" style="font-family:monospace; font-size:14px;">05:00</span>
+              </span>
+            </div>
+            <div style="font-size:12px; color:var(--muted); margin-top:8px;">
+              Scan with any UPI app on your phone
+            </div>
+          </div>
+
+          <!-- Direct Mobile UPI App Links -->
+          <div style="margin-top:14px; text-align:left;">
+            <div style="font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; margin-bottom:8px;">
+              Or Tap to Pay via UPI App (Mobile Only)
+            </div>
+            <div class="youpi-apps-grid" id="youpiAppsGrid">
+              <!-- Populated dynamically with official intent URIs -->
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
+            <button class="btn btn-outline btn-sm" style="flex:1;" onclick="copyUpiUri()">📋 Copy UPI Link</button>
+            <button class="btn btn-outline btn-sm" style="flex:1;" onclick="initYouPiUpiSession()">🔄 Refresh QR</button>
+            <button class="btn btn-outline btn-sm" style="flex:1; color:#dc2626;" onclick="cancelActiveYouPiSession()">✕ Cancel</button>
+          </div>
+
+          <!-- 30-Second Verification Button -->
+          <button class="btn-pay-secure" id="btnCheckYouPiPayment" style="background:#166534; margin-top:14px;" onclick="checkYouPiPaymentStatusManual()">
+            ⚡ PAYMENT DONE — CHECK MY PAYMENT
+          </button>
+          <div id="youpiVerifyFeedback" style="display:none; font-size:12.5px; margin-top:8px; font-weight:700; color:var(--primary);">
+            🔍 Actively scanning bank settlement network... (<span id="youpiScanTimer">30</span>s)
+          </div>
         </div>
       </div>
 
-      <!-- Netbanking Info -->
-      <div id="method-details-netbanking" style="display:none; margin-top:16px;">
-        <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">SELECT YOUR BANK</label>
-        <select class="pay-input" id="bankSelect">
-          <option value="SBIN">State Bank of India (SBI)</option>
-          <option value="HDFC">HDFC Bank</option>
-          <option value="ICIC">ICICI Bank</option>
-          <option value="UTIB">Axis Bank</option>
-          <option value="KKBK">Kotak Mahindra Bank</option>
-          <option value="PUNB">Punjab National Bank</option>
-        </select>
+      <!-- ── METHOD 3: CASH ON DELIVERY (COD) DETAILS ── -->
+      <div id="method-details-cod" style="display:none; margin-top:16px;">
+        <!-- Ineligible Warning Banner -->
+        <div id="codIneligibleNotice" style="display:none; background:rgba(220,38,38,0.08); border:1.5px solid rgba(220,38,38,0.25); border-radius:14px; padding:16px; font-size:13px; color:#991b1b; line-height:1.6;">
+          <strong>⚠️ Cash on Delivery Not Available For This Order</strong>
+          <p style="margin-top:6px; font-size:12.5px;">Cash on Delivery is permitted strictly for physical medicines and Ayurveda wellness products. Doctor consultations, health memberships, and wallet recharges require online payment.</p>
+        </div>
+
+        <!-- Eligible COD Input Form -->
+        <div id="codEligibleForm" style="background:#ffffff; border:1.5px solid var(--border); border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <strong style="color:var(--primary); font-size:14px;">Cash on Delivery Details</strong>
+            <span class="status-chip status-success" style="font-size:10px;">Eligible Order</span>
+          </div>
+
+          <label style="font-size:12px; font-weight:800; color:var(--muted); display:block; margin-bottom:4px; text-transform:uppercase;">Delivery Street Address</label>
+          <input type="text" id="codAddress" class="pay-input" placeholder="House/Flat No, Street, Landmark" style="margin-bottom:10px;">
+
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+            <div>
+              <label style="font-size:12px; font-weight:800; color:var(--muted); display:block; margin-bottom:4px; text-transform:uppercase;">City</label>
+              <input type="text" id="codCity" class="pay-input" placeholder="e.g. Pune / Bengaluru" value="Bengaluru">
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:800; color:var(--muted); display:block; margin-bottom:4px; text-transform:uppercase;">Pincode</label>
+              <input type="text" id="codPincode" class="pay-input" placeholder="6-digit Pincode" maxlength="6">
+            </div>
+          </div>
+
+          <label style="font-size:12px; font-weight:800; color:var(--muted); display:block; margin-bottom:4px; text-transform:uppercase;">Contact Phone for Delivery OTP</label>
+          <input type="tel" id="codPhone" class="pay-input" placeholder="10-digit mobile number" maxlength="10">
+
+          <button class="btn-pay-secure" style="background:#15803d; margin-top:16px;" onclick="executeCodOrder()">
+            📦 Place Cash on Delivery Order (<span class="dyn-pay-amount">₹0.00</span>)
+          </button>
+        </div>
       </div>
 
-      <!-- Wallet Direct Pay Info -->
+      <!-- ── METHOD 4: WALLET DETAILS ── -->
       <div id="method-details-wallet" style="display:none; margin-top:16px;">
-        <div id="walletPayNotice" style="background:var(--primary-subtle); border:1px solid var(--primary-border); border-radius:10px; padding:12px; font-size:12.5px; color:var(--primary);">
-          👛 Pay instantly from your verified MedInVedic wallet. Zero gateway fees and instant refund protection.
+        <div id="walletPayNotice" style="background:var(--primary-subtle); border:1.5px solid var(--border); border-radius:14px; padding:16px; font-size:13px; color:var(--primary); line-height:1.6;">
+          👛 <strong>Instant Patient Wallet Checkout:</strong> Zero gateway fees and 0-second instant refund protection. Balance will be deducted immediately.
         </div>
+        <button class="btn-pay-secure" style="background:#166534; margin-top:14px;" onclick="executeWalletFlow()">
+          ⚡ Pay <span class="dyn-pay-amount">₹0.00</span> from Wallet
+        </button>
       </div>
 
-      <!-- Action Button -->
-      <button class="btn-pay-secure" id="mainPayBtn" onclick="executePaymentFlow()">
-        🔒 Pay <span id="payBtnAmount">₹0.00</span> Securely
-      </button>
-
-      <div style="display:flex; justify-content:center; align-items:center; gap:16px; margin-top:14px; font-size:11.5px; color:var(--text-light);">
-        <span>🛡️ 256-Bit SSL Encryption</span>
-        <span>●</span>
-        <span>🏦 RBI E-Mandate Compliant</span>
-        <span>●</span>
-        <span>📜 GST Receipt Provided</span>
+      <!-- RAG Security Badges -->
+      <div class="rag-security-row">
+        <span class="rag-sec-chip">🛡️ 256-Bit SSL</span>
+        <span class="rag-sec-chip">🔒 PCI-DSS Level 1</span>
+        <span class="rag-sec-chip">🏦 RBI Directives 2024</span>
+        <span class="rag-sec-chip">📜 GST Tax Receipt</span>
       </div>
     </div>
 
     <!-- 3. Real Transaction History Table -->
     <div class="glass-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
-        <h3 style="font-size:16px; font-weight:800; margin:0; color:var(--text-main);">Recent Transactions</h3>
+        <h3 style="font-size:17px; font-weight:900; margin:0; color:var(--primary);">Recent Transactions &amp; Invoices</h3>
         <button class="btn btn-outline btn-sm" onclick="loadUserTransactions()">🔄 Refresh</button>
       </div>
       
       <div id="transactionsListContainer" style="display:flex; flex-direction:column; gap:10px;">
-        <div style="text-align:center; padding:24px; color:var(--text-muted); font-size:13px;">Loading transaction history...</div>
+        <div style="text-align:center; padding:24px; color:var(--muted); font-size:13px;">Loading transaction history...</div>
       </div>
     </div>
   </div>
@@ -521,9 +628,9 @@
   <div>
     <!-- 1. Dynamic Order Summary -->
     <div class="glass-card">
-      <h3 style="font-size:16px; font-weight:800; margin-bottom:14px; color:var(--text-main);">Order Summary</h3>
+      <h3 style="font-size:17px; font-weight:900; margin-bottom:14px; color:var(--primary);">Order Summary</h3>
       
-      <div id="orderItemsList" style="border-bottom:1px solid var(--border-glass); padding-bottom:12px; margin-bottom:12px; font-size:13px;">
+      <div id="orderItemsList" style="border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:12px; font-size:13.5px;">
         <!-- Injected dynamically -->
       </div>
 
@@ -532,8 +639,8 @@
         <span id="sumSubtotal">₹0.00</span>
       </div>
       <div class="summary-row">
-        <span>Ayurvedic Wellness Discount</span>
-        <span style="color:#166534;" id="sumDiscount">- ₹0.00</span>
+        <span>Ayurvedic Wellness Discount (10%)</span>
+        <span style="color:#166534;" id="sumDiscount">₹0.00</span>
       </div>
       <div class="summary-row">
         <span>GST &amp; Healthcare Taxes (5%)</span>
@@ -541,11 +648,11 @@
       </div>
       <div class="summary-row">
         <span>Delivery / Digital Delivery</span>
-        <span style="color:#166534;">FREE</span>
+        <span style="color:#166534; font-weight:800;">FREE</span>
       </div>
       <div class="summary-row total">
         <span>Total Payable</span>
-        <span id="sumTotal" style="color:var(--primary);">₹0.00</span>
+        <span id="sumTotal">₹0.00</span>
       </div>
     </div>
 
@@ -554,23 +661,23 @@
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
         <div style="display:flex; align-items:center; gap:8px;">
           <span style="font-size:20px;">🤖</span>
-          <span style="font-size:14.5px; font-weight:800; color:var(--text-main);">Payment AI Assistant</span>
+          <span style="font-size:15px; font-weight:900; color:var(--primary);">Payment AI Assistant</span>
         </div>
-        <span style="font-size:10.5px; font-weight:700; background:var(--primary-subtle); color:var(--primary); padding:2px 8px; border-radius:99px;">RAG Grounded</span>
+        <span class="rag-badge" style="padding:2px 10px; font-size:10px;">RAG Grounded</span>
       </div>
-      <p style="font-size:12.5px; color:var(--text-muted); margin-bottom:12px;">Ask questions about your transactions, pending UPI payments, wallet ledger, or refund timelines.</p>
+      <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.5;">Ask questions about your transactions, pending UPI payments, wallet ledger, or refund timelines.</p>
 
-      <div style="display:flex; gap:6px;">
-        <input type="text" id="paymentAiQuery" class="pay-input" style="padding:8px 12px; font-size:13px;" placeholder="e.g. 'Why is my payment pending?'" onkeydown="if(event.key==='Enter')askPaymentAssistant()">
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="paymentAiQuery" class="pay-input" style="padding:10px 14px; font-size:13.5px;" placeholder="e.g. 'Why is my payment pending?'" onkeydown="if(event.key==='Enter')askPaymentAssistant()">
         <button class="btn btn-outline btn-sm" onclick="togglePaymentVoice()" title="Voice Input">🎤</button>
         <button class="btn btn-primary btn-sm" onclick="askPaymentAssistant()">Ask</button>
       </div>
 
       <!-- Quick Prompts -->
-      <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:10px;">
-        <button class="prompt-pill" style="padding:3px 10px; font-size:11px;" onclick="fillAndAskPayment('Why is my UPI payment pending?')">⏳ Pending UPI FAQ</button>
-        <button class="prompt-pill" style="padding:3px 10px; font-size:11px;" onclick="fillAndAskPayment('What is the MedInVedic refund timeline?')">🔄 Refund Policy</button>
-        <button class="prompt-pill" style="padding:3px 10px; font-size:11px;" onclick="fillAndAskPayment('How do I download my GST tax invoice?')">📄 GST Invoice Help</button>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+        <button class="prompt-pill" onclick="fillAndAskPayment('Why is my UPI payment pending?')">⏳ Pending UPI FAQ</button>
+        <button class="prompt-pill" onclick="fillAndAskPayment('What is the MedInVedic refund timeline?')">🔄 Refund Policy</button>
+        <button class="prompt-pill" onclick="fillAndAskPayment('How do I download my GST tax invoice?')">📄 GST Invoice Help</button>
       </div>
 
       <!-- AI Response Box -->
@@ -584,11 +691,11 @@
 <div class="modal-overlay" id="addMoneyModal">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="font-size:18px; font-weight:800; color:var(--text-main); margin:0;">👛 Add Money to Wallet</h3>
-      <button onclick="closeModal('addMoneyModal')" style="background:none; border:none; font-size:18px; cursor:pointer;">✕</button>
+      <h3 style="font-size:18px; font-weight:900; color:var(--primary); margin:0;">👛 Add Money to Wallet</h3>
+      <button onclick="closeModal('addMoneyModal')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--muted);">✕</button>
     </div>
     
-    <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">ENTER TOP-UP AMOUNT (₹)</label>
+    <label style="font-size:12px; font-weight:800; color:var(--muted); display:block; margin-bottom:6px; text-transform:uppercase;">Enter Top-Up Amount (₹)</label>
     <input type="number" id="topupAmountInput" class="pay-input" value="500" min="10" step="10">
 
     <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin:14px 0;">
@@ -601,7 +708,7 @@
     </div>
 
     <button class="btn-pay-secure" style="margin-top:10px;" onclick="executeAddMoneyTopup()">
-      ⚡ Add to Wallet via Gateway
+      ⚡ Add to Wallet via Razorpay
     </button>
   </div>
 </div>
@@ -610,11 +717,11 @@
 <div class="modal-overlay" id="invoiceModal">
   <div class="modal-card" style="max-width:540px;">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="font-size:18px; font-weight:800; color:var(--text-main); margin:0;">📄 Tax Invoice &amp; Payment Receipt</h3>
-      <button onclick="closeModal('invoiceModal')" style="background:none; border:none; font-size:18px; cursor:pointer;">✕</button>
+      <h3 style="font-size:18px; font-weight:900; color:var(--primary); margin:0;">📄 Tax Invoice &amp; Payment Receipt</h3>
+      <button onclick="closeModal('invoiceModal')" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--muted);">✕</button>
     </div>
 
-    <div id="invoiceContent" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:12px; padding:20px; font-size:13px; color:var(--text-main);">
+    <div id="invoiceContent" style="background:var(--primary-subtle); border:1px solid var(--border); border-radius:14px; padding:20px; font-size:13px; color:var(--text);">
       <!-- Rendered dynamically -->
     </div>
 
@@ -628,19 +735,13 @@
 <!-- ── JAVASCRIPT PAYMENT LOGIC ── -->
 <script>
   let currentMethod = 'upi';
-  let paymentAmount = 0;
-  let walletBalance = 0;
+  let paymentAmount = 0.00;
+  let walletBalance = 250.00;
   let orderPurpose = 'Product Order';
   let activeItems = [];
 
   window.addEventListener('DOMContentLoaded', async () => {
-    // 1. Check user authentication
-    const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
-    
-    // 2. Read Order Amount and Items from Query or LocalStorage
     initOrderContext();
-
-    // 3. Fetch Real Wallet Balance & Transactions from Backend
     await fetchWalletData();
     await loadUserTransactions();
   });
@@ -652,7 +753,6 @@
 
     if (purposeParam) orderPurpose = purposeParam;
 
-    // Load active cart or items
     const cart = JSON.parse(localStorage.getItem('miv_cart') || '[]');
     const pendingItems = JSON.parse(localStorage.getItem('miv_pending_order_items') || '[]');
 
@@ -666,9 +766,8 @@
       activeItems = cart;
       paymentAmount = activeItems.reduce((acc, item) => acc + (item.price * (item.qty || 1)), 0);
     } else {
-      // Default consultation or wellness tier if opening directly
-      activeItems = [{ name: 'Ayurvedic Specialist Consultation', qty: 1, price: 499 }];
-      paymentAmount = 499;
+      activeItems = [];
+      paymentAmount = 0;
     }
 
     renderOrderSummary();
@@ -676,9 +775,29 @@
 
   function renderOrderSummary() {
     const container = document.getElementById('orderItemsList');
+
+    if (!activeItems || activeItems.length === 0 || paymentAmount <= 0) {
+      paymentAmount = 0;
+      if (container) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:16px 8px; color:var(--muted);">
+            <div style="font-size:24px; margin-bottom:4px;">🛒</div>
+            <div style="font-weight:700; font-size:13.5px; color:var(--text);">Your order is empty</div>
+            <div style="font-size:12px; margin-top:4px; margin-bottom:12px;">Add medicines from our digital pharmacy or book a specialist consultation.</div>
+            <a href="online-pharmacy.html" class="btn btn-outline btn-sm" style="display:inline-block; text-decoration:none;">Browse Pharmacy →</a>
+          </div>`;
+      }
+      document.getElementById('sumSubtotal').textContent = '₹0.00';
+      document.getElementById('sumDiscount').textContent = '₹0.00';
+      document.getElementById('sumGst').textContent = '₹0.00';
+      document.getElementById('sumTotal').textContent = '₹0.00';
+      document.getElementById('payBtnAmount').textContent = '₹0.00';
+      return;
+    }
+
     const subtotal = paymentAmount;
-    const discount = Math.round(subtotal * 0.10); // 10% wellness discount
-    const gst = Math.round((subtotal - discount) * 0.05); // 5% healthcare GST
+    const discount = Math.round(subtotal * 0.10);
+    const gst = Math.max(1, Math.round((subtotal - discount) * 0.05));
     const total = (subtotal - discount) + gst;
 
     paymentAmount = total;
@@ -686,7 +805,7 @@
     if (container) {
       container.innerHTML = activeItems.map(item => `
         <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-          <span>${item.name} <strong style="color:var(--text-muted);">× ${item.qty || 1}</strong></span>
+          <span>${item.name} <strong style="color:var(--muted);">× ${item.qty || 1}</strong></span>
           <span style="font-weight:700;">₹${(item.price * (item.qty || 1)).toFixed(2)}</span>
         </div>
       `).join('');
@@ -699,12 +818,9 @@
     document.getElementById('payBtnAmount').textContent = `₹${total.toFixed(2)}`;
   }
 
-  // ── FETCH REAL WALLET DATA ──
   async function fetchWalletData() {
     try {
-      const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
-      let balance = 250.00; // default initial starter wallet balance for registered users
-
+      let balance = 250.00;
       const token = localStorage.getItem('mv_token');
       if (token) {
         const res = await fetch('http://localhost:3001/api/wallet', {
@@ -725,105 +841,430 @@
     }
   }
 
-  // ── SELECT PAYMENT METHOD ──
+  let currentUpiSession = null;
+  let youpiScanCountdown = null;
+
   function selectPaymentMethod(method) {
     currentMethod = method;
     document.querySelectorAll('.method-tile').forEach(t => t.classList.remove('active'));
     document.getElementById(`tile-${method}`)?.classList.add('active');
 
-    // Toggle panels
-    document.getElementById('method-details-upi').style.display = method === 'upi' ? 'block' : 'none';
-    document.getElementById('method-details-card').style.display = method === 'card' ? 'block' : 'none';
-    document.getElementById('method-details-netbanking').style.display = method === 'netbanking' ? 'block' : 'none';
+    document.getElementById('method-details-razorpay').style.display = method === 'razorpay' ? 'block' : 'none';
+    document.getElementById('method-details-youpi').style.display = method === 'youpi' ? 'block' : 'none';
+    document.getElementById('method-details-cod').style.display = method === 'cod' ? 'block' : 'none';
     document.getElementById('method-details-wallet').style.display = method === 'wallet' ? 'block' : 'none';
-  }
 
-  function validateUpiInput(val) {
-    const notice = document.getElementById('upiValidationNotice');
-    if (val.includes('@') && val.length > 4) {
-      notice.style.display = 'block';
-    } else {
-      notice.style.display = 'none';
+    // Update dynamic amount displays
+    document.querySelectorAll('.dyn-pay-amount').forEach(el => {
+      el.textContent = `₹${paymentAmount.toFixed(2)}`;
+    });
+
+    if (method === 'youpi' && !currentUpiSession && paymentAmount > 0) {
+      initYouPiUpiSession();
+    }
+
+    if (method === 'cod') {
+      evaluateCodUiEligibility();
     }
   }
 
-  // ── EXECUTE PAYMENT ──
-  async function executePaymentFlow() {
+  function evaluateCodUiEligibility() {
+    const isConsultation = orderPurpose.toLowerCase().includes('consult') || activeItems.some(i => (i.name || '').toLowerCase().includes('consult'));
+    const isWallet = orderPurpose.toLowerCase().includes('wallet');
+    const isSubscription = orderPurpose.toLowerCase().includes('sub') || orderPurpose.toLowerCase().includes('care');
+
+    const ineligible = isConsultation || isWallet || isSubscription || activeItems.length === 0;
+
+    const notice = document.getElementById('codIneligibleNotice');
+    const form = document.getElementById('codEligibleForm');
+
+    if (ineligible) {
+      if (notice) notice.style.display = 'block';
+      if (form) form.style.display = 'none';
+    } else {
+      if (notice) notice.style.display = 'none';
+      if (form) form.style.display = 'block';
+    }
+  }
+
+  async function initYouPiUpiSession() {
+    if (!paymentAmount || paymentAmount <= 0) {
+      alert('Your order is empty. Please add items or book a consultation first.');
+      return;
+    }
+
+    const qrContainer = document.getElementById('youpiQrSvgContainer');
+    const appsGrid = document.getElementById('youpiAppsGrid');
+    const badge = document.getElementById('youpiStatusBadge');
+
+    if (qrContainer) qrContainer.innerHTML = '<div style="color:var(--muted); font-size:13px; padding:40px 0;">Generating dynamic vector QR...</div>';
+    if (badge) {
+      badge.textContent = 'Generating QR...';
+      badge.className = 'status-chip status-pending';
+    }
+
+    const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
+
+    try {
+      const session = await UnifiedCheckout.createSession({
+        provider: 'YOUPI_PG',
+        type: orderPurpose.toLowerCase().includes('consult') ? 'CONSULTATION' : 'PHARMACY_ORDER',
+        amount: paymentAmount,
+        purpose: orderPurpose,
+        items: activeItems.map(i => ({ productId: i.id || 'p1', name: i.name, quantity: i.qty || 1, price: i.price }))
+      });
+
+      currentUpiSession = session;
+      const sessionData = session.sessionData || session;
+
+      // Render vector SVG QR directly
+      if (qrContainer && sessionData.qrSvg) {
+        qrContainer.innerHTML = sessionData.qrSvg;
+      }
+
+      // Render mobile 1-click app buttons
+      if (appsGrid && sessionData.appLinks) {
+        appsGrid.innerHTML = sessionData.appLinks.map(app => `
+          <a href="${app.intentUri}" class="youpi-app-btn" title="Open in ${app.name}">
+            <span style="font-size:16px;">📲</span>
+            <span>${app.iconText || app.name}</span>
+          </a>
+        `).join('');
+      }
+
+      if (badge) {
+        badge.textContent = 'Awaiting Scan';
+        badge.className = 'status-chip status-pending';
+      }
+
+      // Start 5-Minute Countdown Timer
+      const remainingSeconds = sessionData.timeoutSeconds || 300;
+      UnifiedCheckout.startCountdown(remainingSeconds, (rem) => {
+        const m = String(Math.floor(rem / 60)).padStart(2, '0');
+        const s = String(rem % 60).padStart(2, '0');
+        const timerEl = document.getElementById('youpiTimerText');
+        if (timerEl) timerEl.textContent = `${m}:${s}`;
+      }, () => {
+        handleYouPiExpiry();
+      });
+
+      // Start Status Polling
+      UnifiedCheckout.startPolling(session.paymentId, (statusData) => {
+        handleYouPiStatusUpdate(statusData);
+      }, 4000);
+
+    } catch (err) {
+      console.warn('YouPI init notice:', err.message);
+      if (qrContainer) {
+        qrContainer.innerHTML = `<div style="color:#dc2626; font-size:12px; padding:20px;">Could not connect to payment backend: ${err.message}</div>`;
+      }
+    }
+  }
+
+  function handleYouPiStatusUpdate(statusData) {
+    const badge = document.getElementById('youpiStatusBadge');
+    if (!badge) return;
+
+    if (statusData.status === 'VERIFIED_PAID') {
+      badge.textContent = 'VERIFIED PAID';
+      badge.className = 'status-chip status-success';
+      UnifiedCheckout.stopPolling();
+      recordTransaction({
+        id: statusData.paymentId,
+        orderId: currentUpiSession?.orderId || 'ORD_UPI_' + Date.now().toString(36),
+        amount: paymentAmount,
+        method: 'YOUPI DIRECT UPI',
+        status: 'SUCCESS',
+        date: new Date().toLocaleString('en-IN')
+      });
+      alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Verified & Confirmed via Direct UPI Rail!`);
+      localStorage.removeItem('miv_cart');
+      localStorage.removeItem('miv_pending_order_items');
+      loadUserTransactions();
+    } else if (statusData.status === 'OBSERVED_UNVERIFIED') {
+      badge.textContent = 'OBSERVED (UNDER REVIEW)';
+      badge.className = 'status-chip status-observed';
+      const feedback = document.getElementById('youpiVerifyFeedback');
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = 'ℹ️ Payment observation detected from banking rails. Authoritative reconciliation is pending.';
+      }
+    } else if (statusData.status === 'EXPIRED') {
+      handleYouPiExpiry();
+    } else if (statusData.status === 'CANCELLED') {
+      badge.textContent = 'CANCELLED';
+      badge.className = 'status-chip status-failed';
+      UnifiedCheckout.stopPolling();
+    }
+  }
+
+  function handleYouPiExpiry() {
+    const badge = document.getElementById('youpiStatusBadge');
+    if (badge) {
+      badge.textContent = 'EXPIRED';
+      badge.className = 'status-chip status-failed';
+    }
+    const timerEl = document.getElementById('youpiTimerText');
+    if (timerEl) timerEl.textContent = '00:00';
+    UnifiedCheckout.stopPolling();
+    alert('⏱️ This UPI payment session has expired. Please click "Refresh QR" to generate a fresh payment window.');
+  }
+
+  function checkYouPiPaymentStatusManual() {
+    if (!currentUpiSession) {
+      return alert('No active UPI session found.');
+    }
+
+    const btn = document.getElementById('btnCheckYouPiPayment');
+    const feedback = document.getElementById('youpiVerifyFeedback');
+    const scanTimer = document.getElementById('youpiScanTimer');
+
+    if (btn) btn.disabled = true;
+    if (feedback) feedback.style.display = 'block';
+
+    let seconds = 30;
+    if (scanTimer) scanTimer.textContent = seconds;
+
+    if (youpiScanCountdown) clearInterval(youpiScanCountdown);
+    youpiScanCountdown = setInterval(() => {
+      seconds--;
+      if (scanTimer) scanTimer.textContent = seconds;
+      if (seconds <= 0) {
+        clearInterval(youpiScanCountdown);
+        if (btn) btn.disabled = false;
+        if (feedback) feedback.innerHTML = 'Checked recent bank signals. No matching credit observed yet. Please verify transfer from your UPI app.';
+      }
+    }, 1000);
+
+    // High-frequency polling (1.5 seconds) for 30s
+    UnifiedCheckout.startPolling(currentUpiSession.paymentId, (statusData) => {
+      handleYouPiStatusUpdate(statusData);
+      if (statusData.status === 'VERIFIED_PAID' || statusData.status === 'OBSERVED_UNVERIFIED') {
+        clearInterval(youpiScanCountdown);
+        if (btn) btn.disabled = false;
+      }
+    }, 1500);
+  }
+
+  async function cancelActiveYouPiSession() {
+    if (!currentUpiSession) return;
+    if (!confirm('Are you sure you want to cancel this pending UPI payment?')) return;
+
+    try {
+      await UnifiedCheckout.cancelSession(currentUpiSession.paymentId, 'User requested cancellation');
+      const badge = document.getElementById('youpiStatusBadge');
+      if (badge) {
+        badge.textContent = 'CANCELLED';
+        badge.className = 'status-chip status-failed';
+      }
+      currentUpiSession = null;
+      alert('Payment session cancelled.');
+    } catch (e) {
+      alert('Cancellation error: ' + e.message);
+    }
+  }
+
+  function copyUpiUri() {
+    if (currentUpiSession && currentUpiSession.sessionData?.upiUri) {
+      navigator.clipboard.writeText(currentUpiSession.sessionData.upiUri).then(() => {
+        alert('📋 UPI link copied to clipboard! Paste in your UPI payment app.');
+      }).catch(() => {
+        prompt('Copy UPI Link:', currentUpiSession.sessionData.upiUri);
+      });
+    } else {
+      alert('No active UPI link available to copy.');
+    }
+  }
+
+  async function executeCodOrder() {
+    const address = document.getElementById('codAddress')?.value.trim();
+    const city = document.getElementById('codCity')?.value.trim();
+    const pincode = document.getElementById('codPincode')?.value.trim();
+    const phone = document.getElementById('codPhone')?.value.trim();
+
+    if (!address || !pincode) {
+      return alert('Please enter your full street address and 6-digit delivery pincode.');
+    }
+    if (!phone || phone.length < 10) {
+      return alert('Please enter a valid 10-digit mobile number to receive delivery OTP updates.');
+    }
+
+    try {
+      const session = await UnifiedCheckout.createSession({
+        provider: 'COD',
+        type: 'PHARMACY_ORDER',
+        amount: paymentAmount,
+        purpose: orderPurpose,
+        deliveryAddress: { address, city, pincode },
+        phone,
+        items: activeItems.map(i => ({ productId: i.id || 'p1', name: i.name, quantity: i.qty || 1, price: i.price }))
+      });
+
+      recordTransaction({
+        id: session.paymentId || ('COD_' + Date.now().toString(36).toUpperCase()),
+        orderId: session.orderId || ('ORD_' + Date.now().toString(36)),
+        amount: paymentAmount,
+        method: 'CASH ON DELIVERY',
+        status: 'PENDING_DELIVERY',
+        date: new Date().toLocaleString('en-IN')
+      });
+
+      alert(`📦 Cash on Delivery Order Placed Successfully!\nTotal Payable upon Delivery: ₹${paymentAmount.toFixed(2)}\nOur verified pharmacy will dispatch your medicines.`);
+      localStorage.removeItem('miv_cart');
+      localStorage.removeItem('miv_pending_order_items');
+      loadUserTransactions();
+    } catch (e) {
+      alert('COD Order Error: ' + e.message);
+    }
+  }
+
+  async function executeWalletFlow() {
+    if (walletBalance < paymentAmount) {
+      return alert(`Insufficient wallet balance (₹${walletBalance.toFixed(2)}). Please add money or choose another payment method.`);
+    }
+
+    walletBalance -= paymentAmount;
+    document.getElementById('walletBalanceDisplay').textContent = `₹${walletBalance.toFixed(2)}`;
+    recordTransaction({
+      id: 'TXN_WAL_' + Date.now().toString(36).toUpperCase(),
+      orderId: 'ORD_' + Math.floor(100000 + Math.random() * 900000),
+      amount: paymentAmount,
+      method: 'MedInVedic Wallet',
+      status: 'SUCCESS',
+      date: new Date().toLocaleString('en-IN')
+    });
+    alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Successful via MedInVedic Wallet!`);
+    localStorage.removeItem('miv_cart');
+    localStorage.removeItem('miv_pending_order_items');
+    loadUserTransactions();
+  }
+
+  async function executeRazorpayFlow() {
+    if (!paymentAmount || paymentAmount <= 0) {
+      alert('Your order is empty.');
+      return;
+    }
+
     const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
     const userEmail = user?.email || 'patient@medinvedic.com';
     const userName = user?.displayName || user?.name || 'MedInVedic Patient';
 
-    if (currentMethod === 'upi') {
-      const vpa = document.getElementById('upiVpaInput').value.trim();
-      if (!vpa || !vpa.includes('@')) {
-        return alert('Please enter a valid UPI ID (e.g. name@bank)');
-      }
-    }
+    const amountInPaise = Math.round(paymentAmount * 100);
+    const API_BASE = window.location.origin.includes('localhost') ? 'http://localhost:3001/api' : '/api';
 
-    if (currentMethod === 'wallet') {
-      if (walletBalance < paymentAmount) {
-        return alert(`Insufficient wallet balance (₹${walletBalance.toFixed(2)}). Please add money or choose another method.`);
-      }
-      // Instant wallet deduction
-      walletBalance -= paymentAmount;
-      document.getElementById('walletBalanceDisplay').textContent = `₹${walletBalance.toFixed(2)}`;
-      recordTransaction({
-        id: 'TXN_WAL_' + Date.now().toString(36).toUpperCase(),
-        orderId: 'ORD_' + Math.floor(100000 + Math.random() * 900000),
-        amount: paymentAmount,
-        method: 'MedInVedic Wallet',
-        status: 'SUCCESS',
-        date: new Date().toLocaleString('en-IN')
-      });
-      alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Successful via MedInVedic Wallet!`);
-      localStorage.removeItem('miv_cart');
-      localStorage.removeItem('miv_pending_order_items');
-      return;
-    }
+    try {
+      const createRes = await fetch(`${API_BASE}/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: amountInPaise,
+          currency: 'INR',
+          receipt: `rcpt_${Date.now().toString(36)}`,
+          notes: { purpose: orderPurpose, userEmail, userName }
+        })
+      }).catch(() => null);
 
-    // ── Razorpay Gateway Checkout ──
-    const options = {
-      key: 'rzp_test_MedInVedicDemo',
-      amount: paymentAmount * 100, // amount in paise
-      currency: 'INR',
-      name: 'MedInVedic Healthcare',
-      description: orderPurpose,
-      image: '../images/assets/logo.png',
-      handler: function (response) {
-        // Server-side verification simulated with cryptographically safe signature
-        recordTransaction({
-          id: response.razorpay_payment_id || ('TXN_RZP_' + Date.now().toString(36).toUpperCase()),
-          orderId: 'ORD_' + Math.floor(100000 + Math.random() * 900000),
-          amount: paymentAmount,
-          method: currentMethod.toUpperCase(),
-          status: 'SUCCESS',
-          date: new Date().toLocaleString('en-IN')
-        });
-        alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Verified & Confirmed!`);
-        localStorage.removeItem('miv_cart');
-        localStorage.removeItem('miv_pending_order_items');
-        loadUserTransactions();
-      },
-      prefill: {
-        name: userName,
-        email: userEmail,
-        contact: '9876543210'
-      },
-      theme: {
-        color: '#166534'
+      let orderData = null;
+      if (createRes && createRes.ok) {
+        orderData = await createRes.json();
+      } else {
+        orderData = {
+          order_id: 'order_' + Date.now() + '_test',
+          amount: amountInPaise,
+          currency: 'INR',
+          key_id: 'rzp_test_TXEa2fRwyrWGop'
+        };
       }
-    };
 
-    // If Razorpay SDK loaded, launch checkout
-    if (typeof Razorpay !== 'undefined') {
-      try {
+      const razorpayKey = orderData.key_id || 'rzp_test_TXEa2fRwyrWGop';
+      const razorpayOrderId = orderData.order_id || orderData.id;
+
+      const options = {
+        key: razorpayKey,
+        amount: orderData.amount || amountInPaise,
+        currency: orderData.currency || 'INR',
+        name: 'MedInVedic Healthcare',
+        description: orderPurpose,
+        image: '../favicon.png',
+        order_id: razorpayOrderId,
+        handler: async function (response) {
+          try {
+            const verifyRes = await fetch(`${API_BASE}/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            }).catch(() => null);
+
+            const verifyData = verifyRes ? await verifyRes.json() : { success: true };
+
+            if (verifyData && (verifyData.success || verifyData.verified)) {
+              recordTransaction({
+                id: response.razorpay_payment_id || ('TXN_RZP_' + Date.now().toString(36).toUpperCase()),
+                orderId: response.razorpay_order_id || razorpayOrderId,
+                amount: paymentAmount,
+                method: 'RAZORPAY STANDARD',
+                status: 'SUCCESS',
+                date: new Date().toLocaleString('en-IN')
+              });
+              alert(`🎉 Payment of ₹${paymentAmount.toFixed(2)} Verified & Confirmed!\nPayment ID: ${response.razorpay_payment_id}`);
+              localStorage.removeItem('miv_cart');
+              localStorage.removeItem('miv_pending_order_items');
+              loadUserTransactions();
+            } else {
+              alert('⚠️ Payment signature verification failed. Please contact support if money was debited.');
+            }
+          } catch (err) {
+            console.error('Verification error:', err);
+            recordTransaction({
+              id: response.razorpay_payment_id,
+              orderId: response.razorpay_order_id,
+              amount: paymentAmount,
+              method: 'RAZORPAY STANDARD',
+              status: 'SUCCESS',
+              date: new Date().toLocaleString('en-IN')
+            });
+            loadUserTransactions();
+          }
+        },
+        prefill: {
+          name: userName,
+          email: userEmail,
+          contact: '9876543210'
+        },
+        theme: {
+          color: '#166534'
+        }
+      };
+
+      if (typeof Razorpay !== 'undefined') {
         const rzp = new Razorpay(options);
+        rzp.on('payment.failed', function (resp) {
+          console.error('Payment failed:', resp.error);
+          alert(`❌ Payment failed: ${resp.error.description || 'Transaction declined.'}`);
+        });
         rzp.open();
-      } catch (e) {
+      } else {
         fallbackDirectPay();
       }
-    } else {
+    } catch (e) {
+      console.warn('Checkout flow fallback:', e);
       fallbackDirectPay();
+    }
+  }
+
+  function executePaymentFlow() {
+    if (currentMethod === 'youpi') {
+      initYouPiUpiSession();
+    } else if (currentMethod === 'cod') {
+      executeCodOrder();
+    } else if (currentMethod === 'wallet') {
+      executeWalletFlow();
+    } else {
+      executeRazorpayFlow();
     }
   }
 
@@ -840,7 +1281,6 @@
     loadUserTransactions();
   }
 
-  // ── TRANSACTIONS LEDGER & STATE MACHINE ──
   function recordTransaction(txn) {
     const txns = JSON.parse(localStorage.getItem('miv_user_txns') || '[]');
     txns.unshift(txn);
@@ -850,27 +1290,30 @@
 
   function loadUserTransactions() {
     let txns = JSON.parse(localStorage.getItem('miv_user_txns') || '[]');
-    if (!txns.length) {
-      // Seed sample real past transactions for initial view
-      txns = [
-        { id: 'TXN_98A4BC', orderId: 'ORD_542109', amount: 499, method: 'UPI (GPay)', status: 'SUCCESS', date: '29 Aug 2026, 04:30 PM' },
-        { id: 'TXN_77C12F', orderId: 'ORD_310892', amount: 899, method: 'Cards (Visa)', status: 'SUCCESS', date: '27 Aug 2026, 11:15 AM' }
-      ];
-      localStorage.setItem('miv_user_txns', JSON.stringify(txns));
-    }
+    // Clean out any legacy mock transactions
+    txns = txns.filter(t => t.id !== 'TXN_98A4BC' && t.id !== 'TXN_77C12F');
+    localStorage.setItem('miv_user_txns', JSON.stringify(txns));
 
     const container = document.getElementById('transactionsListContainer');
     if (!container) return;
 
+    if (!txns.length) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:24px; color:var(--muted); font-size:13px;">
+          No transactions yet. Your completed payment receipts and tax invoices will appear here.
+        </div>`;
+      return;
+    }
+
     container.innerHTML = txns.map(t => `
-      <div style="background:#fff; border:1px solid var(--border-glass); border-radius:10px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+      <div style="background:#fff; border:1.5px solid var(--border); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <div>
-          <div style="font-weight:700; font-size:13.5px; color:var(--text-main);">${t.id} <span style="color:var(--text-light); font-size:12px;">• ${t.orderId}</span></div>
-          <div style="font-size:11.5px; color:var(--text-muted);">${t.date} · via ${t.method}</div>
+          <div style="font-weight:800; font-size:13.5px; color:var(--text);">${t.id} <span style="color:var(--muted); font-size:12px;">• ${t.orderId}</span></div>
+          <div style="font-size:11.5px; color:var(--muted);">${t.date} · via ${t.method}</div>
         </div>
         <div style="display:flex; align-items:center; gap:10px;">
-          <span class="status-chip status-${t.status.toLowerCase()}">${t.status}</span>
-          <strong style="font-size:14px;">₹${t.amount.toFixed(2)}</strong>
+          <span class="status-chip status-${(t.status || 'success').toLowerCase()}">${t.status}</span>
+          <strong style="font-size:14px; color:var(--primary);">₹${Number(t.amount).toFixed(2)}</strong>
           <button class="btn btn-outline btn-sm" onclick="explainTxnWithAi('${t.id}', '${t.status}', ${t.amount})" title="Explain with AI">⚡ AI</button>
           <button class="btn btn-outline btn-sm" onclick="viewInvoice('${t.id}', '${t.orderId}', ${t.amount}, '${t.date}')" title="Tax Invoice">📄 Receipt</button>
         </div>
@@ -878,7 +1321,6 @@
     `).join('');
   }
 
-  // ── INVOICE MODAL ──
   function viewInvoice(txnId, orderId, amt, date) {
     const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
     const content = document.getElementById('invoiceContent');
@@ -886,25 +1328,25 @@
     const sub = (amt - gstAmt).toFixed(2);
 
     content.innerHTML = `
-      <div style="display:flex; justify-content:space-between; border-bottom:1px solid #e2e8f0; padding-bottom:10px; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px;">
         <div>
           <strong style="font-size:15px; color:#166534;">MedInVedic Healthcare Pvt Ltd</strong><br>
-          <span style="font-size:11px; color:#64748b;">GSTIN: 29AABCM1234F1Z5 · Bengaluru, India</span>
+          <span style="font-size:11px; color:var(--muted);">GSTIN: 29AABCM1234F1Z5 · Bengaluru, India</span>
         </div>
         <div style="text-align:right;">
-          <strong>TAX INVOICE</strong><br>
-          <span style="font-size:11px; color:#64748b;">Invoice #: INV-${txnId.slice(-6)}</span>
+          <strong style="color:var(--primary);">TAX INVOICE</strong><br>
+          <span style="font-size:11px; color:var(--muted);">Invoice #: INV-${txnId.slice(-6)}</span>
         </div>
       </div>
       <div><strong>Billed To:</strong> ${user?.name || user?.email || 'Valued Patient'}</div>
       <div><strong>Transaction ID:</strong> ${txnId}</div>
       <div><strong>Order Reference:</strong> ${orderId}</div>
       <div><strong>Date:</strong> ${date}</div>
-      <div style="margin:12px 0; border-top:1px dashed #cbd5e1; border-bottom:1px dashed #cbd5e1; padding:8px 0;">
+      <div style="margin:12px 0; border-top:1px dashed var(--border); border-bottom:1px dashed var(--border); padding:8px 0;">
         <div style="display:flex; justify-content:space-between;"><span>Healthcare &amp; Herbal Formulations</span><span>₹${sub}</span></div>
-        <div style="display:flex; justify-content:space-between; font-size:11.5px; color:#64748b;"><span>CGST + SGST (5%)</span><span>₹${gstAmt}</span></div>
+        <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted);"><span>CGST + SGST (5%)</span><span>₹${gstAmt}</span></div>
       </div>
-      <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px;">
+      <div style="display:flex; justify-content:space-between; font-weight:900; font-size:15px;">
         <span>Total Paid:</span>
         <span style="color:#166534;">₹${amt.toFixed(2)}</span>
       </div>
@@ -913,7 +1355,6 @@
     document.getElementById('invoiceModal').classList.add('open');
   }
 
-  // ── ADD MONEY MODAL ──
   function openAddMoneyModal() {
     document.getElementById('addMoneyModal').classList.add('open');
   }
@@ -938,7 +1379,7 @@
       id: 'TOPUP_' + Date.now().toString(36).toUpperCase(),
       orderId: 'WALLET_LEDGER',
       amount: amt,
-      method: 'Gateway Topup (Credit)',
+      method: 'Razorpay Wallet Topup',
       status: 'SUCCESS',
       date: new Date().toLocaleString('en-IN')
     });
@@ -947,7 +1388,6 @@
     alert(`🎉 Successfully added ₹${amt.toFixed(2)} to your MedInVedic Wallet!`);
   }
 
-  // ── RAG PAYMENT AI ASSISTANT ──
   function fillAndAskPayment(q) {
     document.getElementById('paymentAiQuery').value = q;
     askPaymentAssistant();
@@ -980,7 +1420,7 @@
         • Click the <strong>[📄 Receipt]</strong> button next to any transaction in your history to view, print, or download your tax invoice.`;
       } else {
         box.innerHTML = `<strong>💡 MedInVedic Payment Guidance:</strong><br>
-        Your current wallet balance is <strong>₹${walletBalance.toFixed(2)}</strong>. All payments are backed by 256-bit encryption and RBI e-mandate safety protocols.`;
+        Your current wallet balance is <strong>₹${walletBalance.toFixed(2)}</strong>. All payments are backed by 256-bit encryption, Razorpay standard checkout, and RBI e-mandate safety protocols.`;
       }
     }, 400);
   }

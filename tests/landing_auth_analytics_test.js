@@ -18,7 +18,11 @@ global.localStorage = (function() {
 })();
 
 global.navigator = { userAgent: 'Chrome/120.0 TestRunner' };
-global.location = { pathname: '/landing.html' };
+global.location = { 
+  pathname: '/landing.html',
+  href: '',
+  replace: function(url) { this.href = url; }
+};
 global.document = {
   title: 'MedInVedic Landing Test',
   addEventListener: () => {},
@@ -34,6 +38,7 @@ console.log('══════════════════════�
 const AnalyticsEngine = require('../public/js/analytics.js');
 const AuthGuard = require('../public/js/auth-guard.js');
 const PHARMACY_RAG = require('../public/js/pharmacy-rag-engine.js');
+const EmailValidator = require('../public/js/email-validator.js');
 
 // Benchmark 1: Analytics Session ID Generation
 console.log('  Testing 1. Analytics Visitor Session ID Generation...');
@@ -57,25 +62,67 @@ assert.strictEqual(summary.demoCompletes, 1, 'Demo completes count should be 1')
 assert.strictEqual(summary.demoCompletionRate, 100, 'Demo completion rate should be 100%');
 console.log('  ✅ PASS: Analytics tracking and admin aggregation verified\n');
 
-// Benchmark 3: Auth Guard Role Enforcement
+// Benchmark 3: Auth Guard Role Enforcement & Email Verification Gate
 console.log('  Testing 3. Auth Guard User & Admin Role Enforcement...');
 assert.strictEqual(AuthGuard.isAuthenticated(), false, 'Unauthenticated by default');
 assert.strictEqual(AuthGuard.getUserRole(), 'VISITOR', 'Default role should be VISITOR');
 assert.strictEqual(AuthGuard.isAdmin(), false, 'Visitor should not have admin rights');
 
-// Simulate Login as Regular User
-AuthGuard.setAuthUser({ uid: 'u123', email: 'patient@medinvedic.ai', role: 'USER' });
+// Simulate Login as Regular User with verified email
+AuthGuard.setAuthUser({ uid: 'u123', email: 'patient@medinvedic.ai', role: 'USER', emailVerified: true });
 assert.strictEqual(AuthGuard.isAuthenticated(), true, 'User should be authenticated');
 assert.strictEqual(AuthGuard.getUserRole(), 'USER', 'Role should be USER');
 assert.strictEqual(AuthGuard.isAdmin(), false, 'Regular USER should not be admin');
+assert.strictEqual(AuthGuard.isEmailVerified(), true, 'Verified user should pass check');
 
-// Simulate Login as Admin
-AuthGuard.setAuthUser({ uid: 'a999', email: 'admin@medinvedic.ai', role: 'ADMIN' });
-assert.strictEqual(AuthGuard.isAdmin(), true, 'ADMIN role should be recognized');
-console.log('  ✅ PASS: Auth Guard roles (VISITOR, USER, ADMIN) verified\n');
+// Simulate unverified user attempting Home page access
+AuthGuard.setAuthUser({ uid: 'u_unverified', email: 'unverified@gmail.com', role: 'USER', emailVerified: false });
+global.location.pathname = '/index.html';
+const unverifiedAllowed = AuthGuard.checkRouteAccess();
+assert.strictEqual(unverifiedAllowed, false, 'Unverified users must be blocked from Home page');
+assert.ok(global.location.href.includes('login.html'), 'Unverified users must be redirected to login.html');
+assert.ok(global.location.href.includes('reason=email_unverified'), 'Redirect must specify email_unverified reason');
 
-// Benchmark 4: RAG Grounded Answer & Citation Check
-console.log('  Testing 4. RAG Grounded Medicine Inquiry & Citation Check...');
+// Simulate unauthorized attempt with admin claim in payload
+AuthGuard.setAuthUser({ uid: 'fake_adm', email: 'other@medinvedic.com', role: 'ADMIN', emailVerified: true });
+assert.strictEqual(AuthGuard.isAdmin(), false, 'Other emails must NOT get admin privileges');
+
+// Simulate Login as Verified Admin
+AuthGuard.setAuthUser({ uid: 'a999', email: 'maheshbadiger079@gmail.com' });
+assert.strictEqual(AuthGuard.isAdmin(), true, 'maheshbadiger079@gmail.com must be recognized as admin');
+
+// Simulate unauthenticated attempt to visit Home page (index.html)
+AuthGuard.clearAuthSession();
+global.location.pathname = '/index.html';
+const homeAccessAllowed = AuthGuard.checkRouteAccess();
+assert.strictEqual(homeAccessAllowed, false, 'Unauthenticated users must NOT be able to access Home page');
+assert.ok(global.location.href.includes('login.html'), 'Unauthenticated user must be redirected to login page');
+console.log('  ✅ PASS: Auth Guard roles & Email Verification Gate verified\n');
+
+// Benchmark 4: Disposable & Fake Email Blocker Engine
+console.log('  Testing 4. Disposable & Fake Email Validation Engine...');
+const disposable1 = EmailValidator.validateEmail('fakeuser@mailinator.com');
+assert.strictEqual(disposable1.valid, false, 'mailinator.com must be blocked');
+assert.ok(disposable1.error.includes('Disposable'), 'Error message must specify disposable block');
+
+const disposable2 = EmailValidator.validateEmail('spam@10minutemail.com');
+assert.strictEqual(disposable2.valid, false, '10minutemail.com must be blocked');
+
+const disposable3 = EmailValidator.validateEmail('user@trashmail.com');
+assert.strictEqual(disposable3.valid, false, 'trashmail.com must be blocked');
+
+const invalidSyntax = EmailValidator.validateEmail('invalid-email-address');
+assert.strictEqual(invalidSyntax.valid, false, 'Malformed email must be blocked');
+
+const validEmail1 = EmailValidator.validateEmail('maheshbadiger079@gmail.com');
+assert.strictEqual(validEmail1.valid, true, 'Legitimate Gmail address must pass');
+
+const validEmail2 = EmailValidator.validateEmail('doctor.sharma@hospital.org.in');
+assert.strictEqual(validEmail2.valid, true, 'Legitimate institutional email must pass');
+console.log('  ✅ PASS: Disposable, fake & invalid emails successfully blocked\n');
+
+// Benchmark 5: RAG Grounded Answer & Citation Check
+console.log('  Testing 5. RAG Grounded Medicine Inquiry & Citation Check...');
 const ragAns = PHARMACY_RAG.askMedicineRAG('Paracetamol 500mg indications and dosage');
 assert.strictEqual(ragAns.type, 'RAG_MEDICINE_EXPLANATION', 'Answer must be grounded in verified sources');
 assert.ok(ragAns.sources.length >= 1, 'Response must contain official citations');
@@ -83,6 +130,6 @@ assert.strictEqual(ragAns.notDiagnosis, true, 'Response must maintain non-diagno
 console.log('  ✅ PASS: RAG grounded citation verification passed\n');
 
 console.log('═══════════════════════════════════════════════════════════════');
-console.log('  Test Results: 4 passed, 0 failed (4 total)');
-console.log('  🎉 LANDING, AUTH GUARD & ANALYTICS SUITE PASSED!');
+console.log('  Test Results: 5 passed, 0 failed (5 total)');
+console.log('  🎉 LANDING, AUTH GUARD, EMAIL VALIDATOR & ANALYTICS SUITE PASSED!');
 console.log('═══════════════════════════════════════════════════════════════\n');

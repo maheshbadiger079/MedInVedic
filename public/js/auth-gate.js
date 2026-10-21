@@ -280,11 +280,9 @@ const updateNavbarProfile = (user) => {
   }
 
   document.querySelectorAll('.logout-btn').forEach(btn => {
-    btn.onclick = async () => {
-      if (confirm('Are you sure you want to logout?')) {
-        await logoutUser();
-        window.closeAuthGate();
-      }
+    btn.onclick = async (e) => {
+      e.preventDefault();
+      await logoutUser();
     };
   });
 };

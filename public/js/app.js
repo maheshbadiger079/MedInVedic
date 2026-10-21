@@ -65,14 +65,14 @@ const ARTICLES = [
 ];
 
 const HOME_REMEDIES = [
-  { id: 'hr1', name: 'Golden Turmeric Milk', category: 'Immunity', desc: 'Ancient "Haldi Doodh" for recovery & strength', ingredients: 'Warm milk, 1/2 tsp Turmeric, pinch of Black pepper', benefits: 'Powerful anti-inflammatory and immunity booster', emoji: '🥛' },
-  { id: 'hr2', name: 'Ginger Honey Tea', category: 'Cold & Cough', desc: 'Instant relief for sore throat and congestion', ingredients: 'Fresh ginger, 1 tbsp Honey, Lemon juice', benefits: 'Antibacterial and soothes the respiratory tract', emoji: '☕' },
-  { id: 'hr3', name: 'Holy Basil (Tulsi) Water', category: 'Detox', desc: 'Daily tonic for respiratory health', ingredients: '5-7 Tulsi leaves, 1 cup Water (boiled)', benefits: 'Relieves stress and improves lung function', emoji: '🌿' },
-  { id: 'hr4', name: 'Aloe Vera Juice', category: 'Skin & Digestion', desc: 'Pure plant-based healing for gut & glow', ingredients: 'Aloe Vera gel (fresh), Water or Orange juice', benefits: 'Cooling effect, aids digestion and skin health', emoji: '🌵' },
-  { id: 'hr5', name: 'Fenugreek (Methi) Water', category: 'Blood Sugar', desc: 'Natural metabolic & sugar control', ingredients: '1 tsp Methi seeds soaked overnight in water', benefits: 'Improves insulin sensitivity and slows sugar absorption', emoji: '🫘' },
-  { id: 'hr6', name: 'Triphala Night Tea', category: 'Detox & Digestion', desc: 'Complete overnight system cleanse', ingredients: '1/2 tsp Triphala powder in warm water', benefits: 'Gentle laxative, detoxifies liver and improves vision', emoji: '🍵' },
-  { id: 'hr7', name: 'Peppermint & Mint Tea', category: 'Digestion', desc: 'Soothes bloating and acid reflux', ingredients: 'Fresh Mint leaves, hot water, pinch of Black salt', benefits: 'Reduces bloating, gas and improves mental focus', emoji: '🍃' },
-  { id: 'hr8', name: 'Cinnamon Honey Paste', category: 'Metabolism', desc: 'Ancient weight & heart tonic', ingredients: '1/2 tsp Cinnamon powder, 1 tsp Raw Honey', benefits: 'Boosts metabolism and reduces bad cholesterol', emoji: '🍯' }
+  { id: 'hr1', name: 'Golden Turmeric Milk', category: 'Immunity', desc: 'Ancient "Haldi Doodh" for recovery & strength', ingredients: 'Warm milk, 1/2 tsp Turmeric, pinch of Black pepper', benefits: 'Powerful anti-inflammatory and immunity booster', image: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=500&q=80', emoji: '🥛' },
+  { id: 'hr2', name: 'Ginger Honey Tea', category: 'Cold & Cough', desc: 'Instant relief for sore throat and congestion', ingredients: 'Fresh ginger, 1 tbsp Honey, Lemon juice', benefits: 'Antibacterial and soothes the respiratory tract', image: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=500&q=80', emoji: '☕' },
+  { id: 'hr3', name: 'Holy Basil (Tulsi) Water', category: 'Detox', desc: 'Daily tonic for respiratory health', ingredients: '5-7 Tulsi leaves, 1 cup Water (boiled)', benefits: 'Relieves stress and improves lung function', image: 'https://images.unsplash.com/photo-1515694346937-94d85e41e6f0?auto=format&fit=crop&w=500&q=80', emoji: '🌿' },
+  { id: 'hr4', name: 'Aloe Vera Juice', category: 'Skin & Digestion', desc: 'Pure plant-based healing for gut & glow', ingredients: 'Aloe Vera gel (fresh), Water or Orange juice', benefits: 'Cooling effect, aids digestion and skin health', image: 'https://images.unsplash.com/photo-1596547609652-9cf5d8d76921?auto=format&fit=crop&w=500&q=80', emoji: '🌵' },
+  { id: 'hr5', name: 'Fenugreek (Methi) Water', category: 'Blood Sugar', desc: 'Natural metabolic & sugar control', ingredients: '1 tsp Methi seeds soaked overnight in water', benefits: 'Improves insulin sensitivity and slows sugar absorption', image: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=500&q=80', emoji: '🫘' },
+  { id: 'hr6', name: 'Triphala Night Tea', category: 'Detox & Digestion', desc: 'Complete overnight system cleanse', ingredients: '1/2 tsp Triphala powder in warm water', benefits: 'Gentle laxative, detoxifies liver and improves vision', image: 'https://images.unsplash.com/photo-1597481499750-3e6b22637e12?auto=format&fit=crop&w=500&q=80', emoji: '🍵' },
+  { id: 'hr7', name: 'Peppermint & Mint Tea', category: 'Digestion', desc: 'Soothes bloating and acid reflux', ingredients: 'Fresh Mint leaves, hot water, pinch of Black salt', benefits: 'Reduces bloating, gas and improves mental focus', image: 'https://images.unsplash.com/photo-1594631252845-29fc4cc8cde9?auto=format&fit=crop&w=500&q=80', emoji: '🍃' },
+  { id: 'hr8', name: 'Cinnamon Honey Paste', category: 'Metabolism', desc: 'Ancient weight & heart tonic', ingredients: '1/2 tsp Cinnamon powder, 1 tsp Raw Honey', benefits: 'Boosts metabolism and reduces bad cholesterol', image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?auto=format&fit=crop&w=500&q=80', emoji: '🍯' }
 ];
 
 // ── CART STATE ──────────────────────
@@ -100,11 +100,18 @@ function addToCart(product) {
   else { cart.push({ ...product, qty: 1 }); }
   saveCart();
   updateCartBadge();
+  if (window.AnalyticsEngine && typeof window.AnalyticsEngine.trackAddToCart === 'function') {
+    window.AnalyticsEngine.trackAddToCart(product);
+  }
   showToast(`${product.name} added to cart`);
 }
 
 function removeFromCart(id) {
   triggerHaptic('light');
+  const item = cart.find(i => i.id === id);
+  if (item && window.AnalyticsEngine && typeof window.AnalyticsEngine.trackRemoveFromCart === 'function') {
+    window.AnalyticsEngine.trackRemoveFromCart(item);
+  }
   cart = cart.filter(i => i.id !== id);
   saveCart();
   updateCartBadge();
@@ -252,25 +259,41 @@ function renderHomeRemedyCard(remedy) {
 }
 
 function openRemedyModal(id) {
-  const remedy = HOME_REMEDIES.find(r => r.id === id);
+  const remedies = window.HOME_REMEDIES || (typeof HOME_REMEDIES !== 'undefined' ? HOME_REMEDIES : []);
+  const remedy = remedies.find(r => r.id === id);
   if (!remedy) return;
 
   const modal = document.getElementById('productModal');
+  if (!modal) return;
   modal.querySelector('.modal-box').innerHTML = `
-    <div class="product-modal-grid">
-      <div class="pmod-gallery">
-        <div class="pmod-remedy-header" style="background: var(--primary-light); padding: 10px; border-radius: 12px; height: 80px; display: flex; align-items: center; justify-content: center; font-size: 40px;">${remedy.emoji}</div>
+    <div class="product-modal-grid" style="background: #ffffff; color: #1e293b; position: relative;">
+      <button class="modal-close-x" onclick="closeProductModal()" style="position: absolute; top: 14px; right: 14px; z-index: 10; background: #f1f5f9; border: 1px solid #cbd5e1; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a'" onmouseout="this.style.background='#f1f5f9'; this.style.color='#475569'">✕</button>
+      <div class="pmod-gallery" style="background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 24px; display: flex; align-items: center; justify-content: center;">
+        <div class="pmod-remedy-header" style="background: #fef3c7; border: 1.5px solid #fde68a; border-radius: 16px; overflow: hidden; width: 100%; height: 220px; display: flex; align-items: center; justify-content: center; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.06);">
+          ${remedy.image ? `<img src="${remedy.image}" alt="${remedy.name}" style="width: 100%; height: 100%; object-fit: cover;" />` : `<span style="font-size: 54px;">${remedy.emoji}</span>`}
+          <span style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.92); padding: 4px 10px; border-radius: 20px; font-size: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">${remedy.emoji}</span>
+        </div>
       </div>
-      <div class="pmod-info">
-        <div class="pmod-name">${remedy.name}</div>
-        <div class="pmod-category">Home Remedy — ${remedy.category}</div>
-        <div class="pmod-section"><h4>Benefits</h4><p>${remedy.benefits}</p></div>
-        <div class="pmod-section"><h4>How to Prepare</h4><p>${remedy.ingredients}</p></div>
-        <div class="pmod-section"><p><em>PRO TIP: Home remedies work best when used alongside healthy lifestyle practices.</em></p></div>
+      <div class="pmod-info" style="background: #ffffff; padding: 28px; border-right: 1px solid #e2e8f0;">
+        <div class="pmod-name" style="font-size: 22px; font-weight: 800; color: #0f172a !important; margin-bottom: 4px;">${remedy.name}</div>
+        <div class="pmod-category" style="color: #d97706 !important; font-weight: 700; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 18px;">Home Remedy — ${remedy.category}</div>
+        <div class="pmod-section" style="margin-bottom: 16px;">
+          <h4 style="color: #475569 !important; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">Key Health Benefits</h4>
+          <p style="color: #334155 !important; font-size: 13.5px; line-height: 1.6; margin: 0;">${remedy.benefits}</p>
+        </div>
+        <div class="pmod-section" style="margin-bottom: 16px;">
+          <h4 style="color: #475569 !important; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px;">Ingredients & Preparation</h4>
+          <p style="color: #334155 !important; font-size: 13.5px; line-height: 1.6; margin: 0;">${remedy.ingredients}</p>
+        </div>
+        <div class="pmod-section" style="margin-bottom: 0; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 10px 14px;">
+          <p style="color: #92400e !important; font-size: 12px; line-height: 1.5; margin: 0;"><em>💡 PRO TIP: Natural kitchen remedies work best when prepared fresh and used consistently alongside balanced lifestyle practices.</em></p>
+        </div>
       </div>
-      <div class="pmod-action">
-        <button class="btn-primary" onclick="closeProductModal()">Got it, Thanks!</button>
-        <div class="delivery-info">Non-commercial advice<br>Make it at home</div>
+      <div class="pmod-action" style="background: #f8fafc; padding: 28px; display: flex; flex-direction: column; gap: 16px; justify-content: center;">
+        <button class="btn-primary" style="background: #d97706; border: none; color: #ffffff; font-weight: 700; font-size: 14px; padding: 12px; border-radius: 10px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'" onclick="closeProductModal()">Got it, Thanks!</button>
+        <div class="delivery-info" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; font-size: 12px; color: #64748b !important; text-align: center; line-height: 1.5;">
+          🌿 <strong>Non-commercial advice</strong><br>Make it easily at home
+        </div>
       </div>
     </div>
   `;
@@ -292,26 +315,36 @@ function openProductModal(id) {
   const imgSrc = getProductImage(product.name, product.tag);
 
   modal.querySelector('.modal-box').innerHTML = `
-    <div class="product-modal-grid">
-      <div class="pmod-gallery">
-        ${discount > 0 ? `<span class="pmod-badge">${discount}% OFF</span>` : ''}
-        <img src="${imgSrc}" style="max-width:100%; max-height:280px; object-fit:contain;" alt="${product.name}">
+    <div class="product-modal-grid" style="background: #ffffff; color: #1e293b; position: relative;">
+      <button class="modal-close-x" onclick="closeProductModal()" style="position: absolute; top: 14px; right: 14px; z-index: 10; background: #f1f5f9; border: 1px solid #cbd5e1; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 700; color: #475569; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a'" onmouseout="this.style.background='#f1f5f9'; this.style.color='#475569'">✕</button>
+      <div class="pmod-gallery" style="background: #f8fafc; border-right: 1px solid #e2e8f0; padding: 24px; display: flex; align-items: center; justify-content: center; position: relative;">
+        ${discount > 0 ? `<span class="pmod-badge" style="position: absolute; top: 14px; left: 14px; background: #166534; color: #ffffff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px;">${discount}% OFF</span>` : ''}
+        <img src="${imgSrc}" style="max-width:100%; max-height:260px; object-fit:contain;" alt="${product.name}">
       </div>
-      <div class="pmod-info">
-        <div class="pmod-name">${product.name}</div>
-        <div class="pmod-category">${product.category}</div>
-        <div class="pmod-price">₹${product.price} <span>₹${product.mrp}</span></div>
-        <div class="pmod-section"><h4>Benefits</h4><p>${product.benefits}</p></div>
-        <div class="pmod-section"><h4>Ingredients / Composition</h4><p>${product.ingredients}</p></div>
-        <div class="pmod-section"><h4>Dosage Instructions</h4><p>${product.dosage}</p></div>
-        ${product.tag === 'rx' ? '<div class="pmod-section"><p class="iv-style-142">⚠️ <strong>Prescription Required</strong> — Please upload prescription before checkout.</p></div>' : ''}
+      <div class="pmod-info" style="background: #ffffff; padding: 28px; border-right: 1px solid #e2e8f0;">
+        <div class="pmod-name" style="font-size: 22px; font-weight: 800; color: #0f172a !important; margin-bottom: 4px;">${product.name}</div>
+        <div class="pmod-category" style="color: ${isAyur ? '#166534' : '#2563eb'} !important; font-weight: 700; font-size: 12.5px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px;">${product.category}</div>
+        <div class="pmod-price" style="font-size: 26px; font-weight: 800; color: #0f172a !important; margin-bottom: 18px;">₹${product.price} <span style="font-size: 15px; font-weight: 400; color: #94a3b8; text-decoration: line-through; margin-left: 8px;">₹${product.mrp}</span></div>
+        <div class="pmod-section" style="margin-bottom: 14px;">
+          <h4 style="color: #475569 !important; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Benefits</h4>
+          <p style="color: #334155 !important; font-size: 13.5px; line-height: 1.6; margin: 0;">${product.benefits}</p>
+        </div>
+        <div class="pmod-section" style="margin-bottom: 14px;">
+          <h4 style="color: #475569 !important; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Ingredients / Composition</h4>
+          <p style="color: #334155 !important; font-size: 13.5px; line-height: 1.6; margin: 0;">${product.ingredients}</p>
+        </div>
+        <div class="pmod-section" style="margin-bottom: 0;">
+          <h4 style="color: #475569 !important; font-size: 11.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px;">Dosage Instructions</h4>
+          <p style="color: #334155 !important; font-size: 13.5px; line-height: 1.6; margin: 0;">${product.dosage}</p>
+        </div>
+        ${product.tag === 'rx' ? '<div class="pmod-section" style="margin-top: 12px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px 12px;"><p style="color: #dc2626 !important; font-size: 12px; margin: 0;">⚠️ <strong>Prescription Required</strong> — Please upload prescription before checkout.</p></div>' : ''}
       </div>
-      <div class="pmod-action">
-        <button class="btn-primary" onclick="addToCart({id:'${product.id}',name:'${product.name}',price:${product.price},tag:'${product.tag}'}); showToast('✅ Added to cart!')" data-i18n="product.addcart">${window.I18n ? window.I18n.t('product.addcart') : 'Add to Cart'}</button>
-        <button class="btn-outline" onclick="openCart()" data-i18n="cart.title">${window.I18n ? window.I18n.t('cart.title') : 'View Cart →'}</button>
-        <div class="delivery-info">🚚 <strong>Free delivery</strong> on orders ₹499+<br>🕒 Estimated: 24–48 hours</div>
-        <div class="iv-style-143" data-i18n="product.instock">${window.I18n ? window.I18n.t('product.instock') : '🏪 In stock — Ready to ship'}</div>
-        ${isAyur ? '' : `<button class="iv-style-144" onclick="searchQuery('${product.keywords[0]}'); closeProductModal();">🌿 See Ayurvedic Alternatives</button>`}
+      <div class="pmod-action" style="background: #f8fafc; padding: 24px; display: flex; flex-direction: column; gap: 12px; justify-content: center;">
+        <button class="btn-primary" style="background: ${isAyur ? '#166534' : '#2563eb'}; color: #ffffff; font-weight: 700; padding: 12px; border-radius: 10px; border: none; cursor: pointer;" onclick="addToCart({id:'${product.id}',name:'${product.name}',price:${product.price},tag:'${product.tag}'}); showToast('✅ Added to cart!')" data-i18n="product.addcart">${window.I18n ? window.I18n.t('product.addcart') : 'Add to Cart'}</button>
+        <button class="btn-outline" style="border: 1.5px solid #cbd5e1; color: #334155; padding: 10px; border-radius: 10px; font-weight: 700; background: #ffffff; cursor: pointer;" onclick="openCart()" data-i18n="cart.title">${window.I18n ? window.I18n.t('cart.title') : 'View Cart →'}</button>
+        <div class="delivery-info" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px; font-size: 12px; color: #475569 !important; line-height: 1.5;">🚚 <strong>Free delivery</strong> on orders ₹499+<br>🕒 Estimated: 24–48 hours</div>
+        <div style="font-size: 12px; color: #166534; font-weight: 700; text-align: center;" data-i18n="product.instock">${window.I18n ? window.I18n.t('product.instock') : '🏪 In stock — Ready to ship'}</div>
+        ${isAyur ? '' : `<button style="background: transparent; border: 1px dashed #166534; color: #166534; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; margin-top: 4px;" onclick="searchQuery('${product.keywords[0]}'); closeProductModal();">🌿 See Ayurvedic Alternatives</button>`}
       </div>
     </div>
   `;
@@ -465,6 +498,11 @@ function closePaymentModal() {
 }
 
 function ensureSharedComponents() {
+  // Guard: Do not inject legacy components on standalone or glassmorphic pages with custom navigation
+  if (document.querySelector('.nav') || document.querySelector('.navbar') || document.querySelector('.admin-nav') || document.getElementById('tabModern')) {
+    return;
+  }
+
   // 1. Toast Container
   if (!document.getElementById('toastContainer')) {
     document.body.insertAdjacentHTML('beforeend', '<div class="toast-container" id="toastContainer"></div>');
@@ -475,8 +513,8 @@ function ensureSharedComponents() {
     const prefix = window.location.pathname.includes('pages/') ? '' : 'pages/';
     const homePrefix = window.location.pathname.includes('pages/') ? '../' : '';
     const sidebarHTML = `
-      <div class="sidebar-overlay" id="sidebarOverlay" onclick="window.toggleSidebar()"></div>
-      <div class="sidebar" id="sidebar">
+      <div class="sidebar-overlay" id="sidebarOverlay" style="display:none;" onclick="window.toggleSidebar()"></div>
+      <div class="sidebar" id="sidebar" style="display:none;">
         <div class="sidebar-header">
           <div class="nav-logo">
             <div class="nav-logo-icon">⚕️</div>
@@ -505,7 +543,7 @@ function ensureSharedComponents() {
   // 3. Cart Panel
   if (!document.getElementById('cartPanel')) {
     const cartHTML = `
-      <div class="cart-panel" id="cartPanel">
+      <div class="cart-panel" id="cartPanel" style="display:none;">
         <div class="cart-header"><h3>Cart</h3><button class="cart-close" onclick="closeCartPanel()">✕</button></div>
         <div class="cart-items" id="cartItems"><div class="empty-cart"><p>Empty</p></div></div>
         <div class="cart-footer">
@@ -519,13 +557,13 @@ function ensureSharedComponents() {
 
   // 4. Product Modal
   if (!document.getElementById('productModal')) {
-    document.body.insertAdjacentHTML('beforeend', '<div class="modal-overlay" id="productModal"><div class="modal-box"></div></div>');
+    document.body.insertAdjacentHTML('beforeend', '<div class="modal-overlay" id="productModal" style="display:none;"><div class="modal-box"></div></div>');
   }
 
   // 5. Prescription Modal
   if (!document.getElementById('prescriptionModal')) {
     const rxHTML = `
-      <div class="modal-overlay" id="prescriptionModal">
+      <div class="modal-overlay" id="prescriptionModal" style="display:none;">
         <div class="modal-box iv-style-16" style="background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 40px; width: 100%; max-width: 500px; position: relative;">
           <button class="iv-style-17" onclick="closePrescriptionModal()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; color: white; cursor: pointer; font-size: 20px;">✕</button>
           <h2 class="iv-style-71" style="font-size: 24px; color: white; margin-bottom: 24px;">Upload Prescription</h2>
@@ -557,7 +595,7 @@ function ensureSharedComponents() {
   // 6. Search Overlay
   if (!document.getElementById('searchOverlay')) {
     const searchHTML = `
-      <div id="searchOverlay">
+      <div id="searchOverlay" style="display:none;">
         <div class="search-modal">
           <button class="search-close" onclick="closeSearch()">✕</button>
           <h2 class="iv-style-6" id="searchQueryTitle">Search Results</h2>
@@ -843,12 +881,23 @@ window.HEALTH_GOALS = HEALTH_GOALS;
 window.renderProductCard = renderProductCard;
 
 function initAuth() {
-  const user = (typeof Token !== 'undefined') ? Token.user() : null;
+  const user = (typeof AuthGuard !== 'undefined' && AuthGuard.getAuthUser) 
+    ? AuthGuard.getAuthUser() 
+    : ((typeof Token !== 'undefined') ? Token.user() : null);
   const sideNavAccount = document.getElementById('sideNavAccount');
-  if (user && user.name && sideNavAccount) {
-    sideNavAccount.innerHTML = '👤 ' + user.name;
-    const isPage = window.location.pathname.includes('/pages/');
+  const navUserName = document.getElementById('navUserName');
+  const navUserInitial = document.getElementById('navUserInitial');
+  const isPage = window.location.pathname.includes('/pages/');
+
+  if (user && sideNavAccount) {
+    const name = user.displayName || user.name || (user.email ? user.email.split('@')[0] : 'User');
+    sideNavAccount.innerHTML = '👤 ' + name;
     sideNavAccount.href = isPage ? 'dashboard.html' : 'pages/dashboard.html';
+  }
+  if (user && navUserName) {
+    const name = user.displayName || user.name || (user.email ? user.email.split('@')[0] : 'User');
+    navUserName.textContent = name;
+    if (navUserInitial) navUserInitial.textContent = name[0].toUpperCase();
   }
 }
 async function syncDatabaseData() {

@@ -72,7 +72,7 @@ async function runTests() {
   // Test 7: AuthGuard Role & Email Whitelist Enforcement
   console.log('\nTesting 7. AuthGuard Role & Whitelist Security...');
   const AuthGuard = require('../public/js/auth-guard');
-  assert(AuthGuard.isAdminEmail('admin@medinvedic.com'), 'admin@medinvedic.com recognized as admin');
+  assert(!AuthGuard.isAdminEmail('admin@medinvedic.com'), 'admin@medinvedic.com not recognized as admin');
   assert(AuthGuard.isAdminEmail('maheshbadiger079@gmail.com'), 'maheshbadiger079@gmail.com recognized as admin');
   assert(!AuthGuard.isAdminEmail('user@gmail.com'), 'Regular user email NOT recognized as admin');
   assert(!AuthGuard.isAdminEmail('hacker@attack.com'), 'Unauthorized email NOT recognized as admin');

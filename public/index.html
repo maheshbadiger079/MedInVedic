@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Synchronous Immediate Authentication Gate: Users MUST login with verified email to access Home page -->
+  <script>
+    (function() {
+      try {
+        var raw = localStorage.getItem('mv_auth_user');
+        var user = raw ? JSON.parse(raw) : null;
+        if (!user || !user.email) {
+          window.location.replace('pages/login.html?reason=auth_required');
+          return;
+        }
+        var isAdm = (user.email.toLowerCase().trim() === 'maheshbadiger079@gmail.com');
+        if (!isAdm && user.emailVerified === false) {
+          window.location.replace('pages/login.html?reason=email_unverified');
+          return;
+        }
+      } catch (e) {
+        window.location.replace('pages/login.html?reason=auth_required');
+      }
+    })();
+  </script>
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
+  <!-- Cloudflare Web Analytics (Free, Privacy-First) -->
+  <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "YOUR_CLOUDFLARE_ANALYTICS_TOKEN"}'></script>
+  <!-- End Cloudflare Web Analytics -->
   <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <link rel="apple-touch-icon" sizes="180x180" href="icon-512.png">
@@ -328,7 +364,6 @@
     }
   </style>
   <script type="module" src="js/auth-gate.js?v=93"></script>
-</head>
 <body>
 
 <!-- ❖❖❖ NAVBAR ❖❖❖ -->
@@ -345,13 +380,22 @@
     <a href="pages/online-pharmacy.html">Pharmacy</a>
     <a href="pages/healing-hub.html">Healing Hub</a>
     <a href="pages/vedicmind.html" style="color: #1e3a8a; font-weight: 700;">🧠 VedicMind AI</a>
-    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" style="color: #0088cc; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">✈️ Telegram Bot</a>
     <a href="#contact" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Contact</a>
   </div>
   <a href="pages/emergency.html" class="nav-sos-btn">
     <div class="pulse-dot-red"></div>
     🚨 SOS Emergency
   </a>
+
+  <div class="nav-auth-desktop" style="display: none; align-items: center; gap: 8px; margin-left: 8px;">
+    <a href="pages/dashboard.html" class="nav-user-pill" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #1e293b; font-size: 13px; font-weight: 700; background: #f8fafc; padding: 6px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all .2s;">
+      <span id="navUserInitial" style="width: 22px; height: 22px; border-radius: 50%; background: #166534; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">👤</span>
+      <span id="navUserName">Account</span>
+    </a>
+    <button class="logout-btn" onclick="API.auth.logout()" title="Secure Logout" style="background: rgba(220,38,38,0.08); color: #dc2626; border: 1px solid rgba(220,38,38,0.25); border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all .2s;">
+      Logout
+    </button>
+  </div>
 
   <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
@@ -362,7 +406,10 @@
 .nav-links-desktop { display: none; gap: 24px; margin-left: 40px; margin-right: auto; }
 .nav-links-desktop a { color: #374151; text-decoration: none; font-size: 14px; font-weight: 600; transition: var(--transition); }
 .nav-links-desktop a:hover { color: #2563EB; }
-@media (min-width: 1024px) { .nav-links-desktop { display: flex; } }
+@media (min-width: 1024px) { 
+  .nav-links-desktop { display: flex; } 
+  .nav-auth-desktop { display: flex !important; }
+}
 
 .nav-sos-btn {
   padding: 8px 16px;
@@ -577,8 +624,10 @@
   .cockpit-pillar-header {
     font-size: 11px;
   }
-}
-
+  .nav-links-desktop { display: none !important; }
+  @media (min-width: 1024px) {
+    .nav-links-desktop { display: flex !important; }
+  }
 </style>
 
 <script>
@@ -588,9 +637,32 @@
     if (s) s.classList.toggle('open');
     if (o) o.classList.toggle('open');
   };
+
+  // Sync navbar authentication state on page load
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const raw = localStorage.getItem('mv_auth_user');
+      if (raw) {
+        const user = JSON.parse(raw);
+        if (user && user.email) {
+          const isAdm = (user.email.toLowerCase().trim() === 'maheshbadiger079@gmail.com');
+          const adminLinks = document.querySelectorAll('#headerAdminLink, .admin-only-link');
+          adminLinks.forEach(el => el.style.display = isAdm ? 'inline-flex' : 'none');
+          
+          const displayName = user.displayName || user.name || user.email.split('@')[0];
+          const nameEl = document.getElementById('navUserName');
+          if (nameEl) nameEl.textContent = displayName;
+          const initEl = document.getElementById('navUserInitial');
+          if (initEl) initEl.textContent = (displayName[0] || 'U').toUpperCase();
+          const authDesktop = document.querySelector('.nav-auth-desktop');
+          if (authDesktop) authDesktop.style.display = 'inline-flex';
+        }
+      }
+    } catch(e) {}
+  });
 </script>
 
-<!-- â”€â”€ SIDEBAR DRAWER â”€â”€ -->
+<!-- ── SIDEBAR DRAWER ── -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
@@ -608,7 +680,6 @@
     <a href="pages/online-pharmacy.html" class="sidebar-link" style="color: #24aeb1; font-weight: 800;">Pharmacy Hub</a>
     <a href="pages/healing-hub.html" class="sidebar-link">Healing Hub</a>
     <a href="pages/admin.html" class="sidebar-link admin-only-link" data-admin-only style="display:none; color: #2d6a4f; font-weight: 800; background: rgba(45,106,79,0.08); border-radius: 8px; padding: 10px 14px; margin-top: 4px;">🛡️ Admin Control Center</a>
-    <a href="https://t.me/MedInVedic_AI_bot" target="_blank" rel="noopener noreferrer" class="sidebar-link" style="color: #0088cc; font-weight: 800; background: rgba(0,136,204,0.08); border-radius: 8px; padding: 10px 14px; margin-top: 4px;">✈️ MedInVedic Telegram Bot</a>
     <a href="#contact" class="sidebar-link" onclick="toggleSidebar(); document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Contact Us</a>
     
     <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
@@ -886,104 +957,241 @@
   <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
        SECTION: PRODUCTS (Side-by-Side Dual Healthcare Catalog)
   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
+  <!-- ❖❖❖ SECTION: OUR THREE HEALING PILLARS ❖❖❖ -->
   <section id="products" class="fade-scroll" style="margin-top: 40px; margin-bottom: 40px;">
-    <!-- Main Products Heading -->
-    <div class="section-label" style="margin-bottom: 24px;">
-      <div class="section-label-icon blue" style="font-size: 18px; font-weight: 800;">📦</div>
-      <div>
-        <h2 style="font-size: 32px; font-weight: 900; color: #18181b; letter-spacing: -0.5px; margin: 0 0 4px;">Products</h2>
-        <p style="color: #71717a; font-size: 15px; margin: 0;">Explore our dual healthcare catalog: Allopathic pharmaceuticals and Ayurvedic natural wellness</p>
+    <!-- Main Healing Pillars Heading -->
+    <div class="healing-pillars-header" style="text-align: center; margin-bottom: 28px;">
+      <h2 style="font-size: 32px; font-weight: 900; color: #18181b; letter-spacing: -0.5px; margin: 0 0 6px;" data-i18n="pillars.title">Our Three Healing Pillars</h2>
+      <p style="color: #71717a; font-size: 15px; margin: 0 auto; max-width: 680px;" data-i18n="pillars.subtitle">Explore comprehensive care across pharmaceutical science, kitchen wisdom, and ancient Ayurvedic wellness</p>
+    </div>
+
+    <!-- 3 Interactive Visual Pillar Cards -->
+    <div class="pillars-grid">
+      <!-- Pillar 1: Modern Medicines -->
+      <div class="pillar-card active" id="pillarTabModern" onclick="switchPillar('modern')">
+        <div class="pillar-bg" style="background-image: url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5h0c-1.4 0-2.5-1.1-2.5-2.5V2"></path>
+              <path d="M8.5 2h7"></path>
+              <path d="M9.5 9h5"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Modern Medicines</h3>
+          <p class="pillar-subtitle">Fast relief for immediate care</p>
+        </div>
+      </div>
+
+      <!-- Pillar 2: Home Remedies -->
+      <div class="pillar-card" id="pillarTabHomeRemedies" onclick="switchPillar('remedies')">
+        <div class="pillar-bg" style="background-image: url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <line x1="12" y1="11" x2="12" y2="17"></line>
+              <line x1="9" y1="14" x2="15" y2="14"></line>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Home Remedies</h3>
+          <p class="pillar-subtitle">Natural solutions from your kitchen</p>
+        </div>
+      </div>
+
+      <!-- Pillar 3: Ayurvedic Wellness -->
+      <div class="pillar-card" id="pillarTabAyurveda" onclick="switchPillar('ayurveda')">
+        <div class="pillar-bg" style="background-image: url('images/assets/med_ayur_bg.jpg');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"></path>
+              <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">Ayurvedic Wellness</h3>
+          <p class="pillar-subtitle">Root-cause healing for long-term health</p>
+        </div>
       </div>
     </div>
 
-    <!-- DUAL PRODUCTS BACK-TO-BACK LAYOUT -->
-    <div class="products-dual-container">
-      <!-- SECTION 1: MODERN MEDICINES -->
-      <div class="product-catalog-box" id="modernSection">
+    <!-- UNIFIED PILLAR CONTAINER -->
+    <div class="pillar-catalog-container">
+      <!-- PANEL 1: MODERN MEDICINES -->
+      <div class="pillar-panel" id="pillarPanelModern">
         <div class="section-label" style="margin-bottom: 16px;">
-          <div class="section-label-icon blue" style="background: #f4f0e8; color: #09090b; border: 1.5px solid #d4d4d8; font-weight: 800;">PHARMA</div>
+          <div class="section-label-icon blue" style="background: #eff6ff; color: #1e40af; border: 1.5px solid #bfdbfe; font-weight: 800;">PHARMA</div>
           <div>
             <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;" data-i18n="section.modern">Modern Medicines</h3>
-            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.modern.sub">Pharmaceutical grade evidence-based solutions</p>
+            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.modern.sub">Pharmaceutical grade evidence-based solutions for immediate relief</p>
           </div>
         </div>
         <div class="cat-tabs" style="margin-bottom: 20px;">
           <button class="cat-tab active blue" onclick="filterModern('all', this)" data-i18n="tab.all">All</button>
-          <button class="cat-tab" onclick="filterModern('Fever & Pain', this)" data-i18n="tab.fever">Fever</button>
-          <button class="cat-tab" onclick="filterModern('Cold & Allergy', this)" data-i18n="tab.cold">Cold</button>
+          <button class="cat-tab" onclick="filterModern('Fever & Pain', this)" data-i18n="tab.fever">Fever & Pain</button>
+          <button class="cat-tab" onclick="filterModern('Cold & Allergy', this)" data-i18n="tab.cold">Cold & Allergy</button>
           <button class="cat-tab" onclick="filterModern('Digestion', this)" data-i18n="tab.digestion">Digestion</button>
         </div>
         <div id="modernProductList" class="products-side-grid">
-          <!-- Skeletons Initial State -->
-          <div class="product-card skeleton-container">
-            <div class="skeleton skeleton-img"></div>
-            <div class="product-info">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-btn"></div>
-            </div>
-          </div>
-          <div class="product-card skeleton-container">
-            <div class="skeleton skeleton-img"></div>
-            <div class="product-info">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-btn"></div>
-            </div>
-          </div>
+          <!-- Populated by JS -->
         </div>
       </div>
 
-      <!-- SECTION 2: AYURVEDIC WELLNESS -->
-      <div class="product-catalog-box" id="ayurSection">
+      <!-- PANEL 2: HOME REMEDIES -->
+      <div class="pillar-panel" id="pillarPanelHomeRemedies" style="display: none;">
         <div class="section-label" style="margin-bottom: 16px;">
-          <div class="section-label-icon green" style="background: #f4f0e8; color: #09090b; border: 1.5px solid #d4d4d8; font-weight: 800;">HERBAL</div>
+          <div class="section-label-icon" style="background: #fffbeb; color: #b45309; border: 1.5px solid #fde68a; font-weight: 800;">KITCHEN</div>
+          <div>
+            <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;">Home Remedies</h3>
+            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;">Time-tested natural healing prepared with everyday kitchen ingredients</p>
+          </div>
+        </div>
+        <div class="cat-tabs" style="margin-bottom: 20px;">
+          <button class="cat-tab active amber" onclick="filterRemedies('all', this)">All</button>
+          <button class="cat-tab" onclick="filterRemedies('Immunity', this)">Immunity</button>
+          <button class="cat-tab" onclick="filterRemedies('Cold & Cough', this)">Cold & Cough</button>
+          <button class="cat-tab" onclick="filterRemedies('Digestion', this)">Digestion</button>
+          <button class="cat-tab" onclick="filterRemedies('Detox', this)">Detox</button>
+        </div>
+        <div id="homeRemediesList" class="products-side-grid">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- PANEL 3: AYURVEDIC WELLNESS -->
+      <div class="pillar-panel" id="pillarPanelAyurveda" style="display: none;">
+        <div class="section-label" style="margin-bottom: 16px;">
+          <div class="section-label-icon green" style="background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; font-weight: 800;">HERBAL</div>
           <div>
             <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;" data-i18n="section.ayur">Ayurvedic Wellness</h3>
-            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.ayur.sub">Natural healing & ancient herbal wisdom</p>
+            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.ayur.sub">Natural healing, herbal formulations & holistic root-cause balance</p>
           </div>
         </div>
         <div class="cat-tabs" style="margin-bottom: 20px;">
           <button class="cat-tab active green" onclick="filterAyur('all', this)" data-i18n="tab.all">All</button>
           <button class="cat-tab" onclick="filterAyur('Immunity', this)" data-i18n="tab.immunity">Immunity</button>
-          <button class="cat-tab" onclick="filterAyur('Stress Relief', this)" data-i18n="tab.stress">Stress</button>
-          <button class="cat-tab" onclick="filterAyur('Skincare', this)" data-i18n="tab.skin">Skin</button>
+          <button class="cat-tab" onclick="filterAyur('Stress Relief', this)" data-i18n="tab.stress">Stress Relief</button>
+          <button class="cat-tab" onclick="filterAyur('Skincare', this)" data-i18n="tab.skin">Skincare</button>
         </div>
         <div id="ayurProductList" class="products-side-grid">
-          <div class="product-card skeleton-container">
-            <div class="skeleton skeleton-img"></div>
-            <div class="product-info">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-btn"></div>
-            </div>
-          </div>
-          <div class="product-card skeleton-container">
-            <div class="skeleton skeleton-img"></div>
-            <div class="product-info">
-              <div class="skeleton skeleton-title"></div>
-              <div class="skeleton skeleton-text"></div>
-              <div class="skeleton skeleton-btn"></div>
-            </div>
-          </div>
+          <!-- Populated by JS -->
         </div>
       </div>
     </div>
   </section>
 
   <style>
-    .products-dual-container {
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .pillar-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      height: 165px;
+      cursor: pointer;
+      border: 2.5px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s ease;
+    }
+    .pillar-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+    }
+    .pillar-card.active {
+      border-color: #2563eb;
+      box-shadow: 0 10px 30px rgba(37, 99, 235, 0.22);
+      transform: translateY(-2px);
+    }
+    .pillar-card#pillarTabHomeRemedies.active {
+      border-color: #d97706;
+      box-shadow: 0 10px 30px rgba(217, 119, 6, 0.22);
+    }
+    .pillar-card#pillarTabAyurveda.active {
+      border-color: #166534;
+      box-shadow: 0 10px 30px rgba(22, 101, 52, 0.22);
+    }
+    .pillar-bg {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .pillar-card:hover .pillar-bg {
+      transform: scale(1.06);
+    }
+    .pillar-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.62) 0%, rgba(15, 23, 42, 0.86) 100%);
+      transition: background 0.3s ease;
+    }
+    .pillar-card.active .pillar-overlay {
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.48) 0%, rgba(15, 23, 42, 0.78) 100%);
+    }
+    .pillar-content {
+      position: relative;
+      z-index: 2;
+      padding: 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 32px;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      pointer-events: none;
     }
-    .product-catalog-box {
+    .pillar-icon {
+      width: 44px;
+      height: 44px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      filter: drop-shadow(0 2px 5px rgba(0,0,0,0.35));
+    }
+    .pillar-title {
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 0 4px;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+    }
+    .pillar-subtitle {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.92);
+      margin: 0;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .pillar-catalog-container {
       background: #ffffff;
-      border: 1.5px solid #d4d4d8;
-      border-radius: 20px;
+      border: 1.5px solid #e4e4e7;
+      border-radius: 24px;
       padding: 28px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
-      min-width: 0;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    }
+    .cat-tab.amber {
+      background: #fffbeb;
+      color: #b45309;
+      border-color: #fde68a;
+    }
+    .cat-tab.amber.active {
+      background: #d97706;
+      color: #ffffff;
+      border-color: #d97706;
     }
     .products-side-grid {
       display: grid;
@@ -993,6 +1201,18 @@
     @media (max-width: 1100px) {
       .products-side-grid {
         grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 860px) {
+      .pillars-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .pillar-card {
+        height: 135px;
+      }
+      .pillar-catalog-container {
+        padding: 18px;
       }
     }
     @media (max-width: 580px) {
@@ -1683,40 +1903,19 @@
       </p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-top: 36px; max-width: 1100px; margin-left: auto; margin-right: auto; padding-bottom: 40px;">
-      <!-- Office Card -->
-      <div class="glass-panel" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
-        <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">📍</div>
-        <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Office Address</h4>
-        <p style="color: #52525b; font-size: 13px; line-height: 1.5;">
-          MedInVedic<br>
-          Pune, Maharashtra<br>
-          India
-        </p>
-      </div>
-
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 36px; max-width: 760px; margin-left: auto; margin-right: auto; padding-bottom: 40px;">
       <!-- Email Support -->
-      <div class="glass-panel" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
+      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">📧</div>
         <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Email Support</h4>
-        <a href="mailto:support.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13px; font-weight: 600; word-break: break-all; margin-top: 4px;">support.medinvedic@gmail.com</a>
+        <a href="mailto:support.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">support.medinvedic@gmail.com</a>
       </div>
 
       <!-- Enterprise Card -->
-      <div class="glass-panel" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
+      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
         <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">🏢</div>
         <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Enterprise</h4>
-        <a href="mailto:enterprise.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13px; font-weight: 600; word-break: break-all; margin-top: 4px;">enterprise.medinvedic@gmail.com</a>
-      </div>
-
-      <!-- Support Hours -->
-      <div class="glass-panel" style="padding: 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
-        <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">🕒</div>
-        <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Support Hours</h4>
-        <p style="color: #52525b; font-size: 13px; line-height: 1.5;">
-          Monday – Saturday<br>
-          9:00 AM – 7:00 PM IST
-        </p>
+        <a href="mailto:enterprise.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">enterprise.medinvedic@gmail.com</a>
       </div>
     </div>
   </section>
@@ -1774,6 +1973,9 @@
     <span>© 2026 MedInVedic. All rights reserved.</span>
     <a href="privacy.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
     <span>Secure &amp; HIPAA Compliant Platform</span>
+    <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.1);color:#10b981;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px;" title="Google Analytics 4 Active">
+      <span style="width:6px;height:6px;border-radius:50%;background:#10b981;display:inline-block;"></span> GA4: G-RW9JCDWBQ7
+    </span>
   </div>
 </footer>
 
@@ -1902,7 +2104,35 @@ window.submitBooking = function() {
 <script src="js/rag-generator.js"></script>
 <script src="js/rag-engine.js"></script>
 <script>
-// â”€â”€ HOME PAGE INIT â”€â”€
+// ── THREE HEALING PILLARS CONTROLS ──
+function switchPillar(pillar) {
+  const tabs = {
+    modern: document.getElementById('pillarTabModern'),
+    remedies: document.getElementById('pillarTabHomeRemedies'),
+    ayurveda: document.getElementById('pillarTabAyurveda')
+  };
+  const panels = {
+    modern: document.getElementById('pillarPanelModern'),
+    remedies: document.getElementById('pillarPanelHomeRemedies'),
+    ayurveda: document.getElementById('pillarPanelAyurveda')
+  };
+
+  Object.keys(tabs).forEach(k => {
+    if (tabs[k]) {
+      if (k === pillar) tabs[k].classList.add('active');
+      else tabs[k].classList.remove('active');
+    }
+    if (panels[k]) {
+      panels[k].style.display = (k === pillar) ? 'block' : 'none';
+    }
+  });
+
+  if (window.AnalyticsEngine && typeof window.AnalyticsEngine.trackEvent === 'function') {
+    window.AnalyticsEngine.trackEvent('healing_pillar_switch', { pillar });
+  }
+}
+window.switchPillar = switchPillar;
+
 function filterModern(cat, btn) {
   if (btn && btn.parentElement) {
     btn.parentElement.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active', 'blue'));
@@ -1912,6 +2142,19 @@ function filterModern(cat, btn) {
   const el = document.getElementById('modernProductList');
   if (el) el.innerHTML = filtered.map(p => renderProductCard(p, 'blue')).join('');
 }
+window.filterModern = filterModern;
+
+function filterRemedies(cat, btn) {
+  if (btn && btn.parentElement) {
+    btn.parentElement.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active', 'amber'));
+    btn.classList.add('active', 'amber');
+  }
+  const remedies = window.HOME_REMEDIES || (typeof HOME_REMEDIES !== 'undefined' ? HOME_REMEDIES : []);
+  const filtered = cat === 'all' ? remedies : remedies.filter(r => r.category.toLowerCase().includes(cat.toLowerCase()));
+  const el = document.getElementById('homeRemediesList');
+  if (el) el.innerHTML = filtered.map(r => renderDetailedRemedyCard(r)).join('');
+}
+window.filterRemedies = filterRemedies;
 
 function filterAyur(cat, btn) {
   if (btn && btn.parentElement) {
@@ -1922,29 +2165,64 @@ function filterAyur(cat, btn) {
   const el = document.getElementById('ayurProductList');
   if (el) el.innerHTML = filtered.map(p => renderProductCard(p, 'green')).join('');
 }
+window.filterAyur = filterAyur;
 
+function renderDetailedRemedyCard(remedy) {
+  const imgUrl = remedy.image || 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=500&q=80';
+  return `
+    <div class="product-card" style="border: 1.5px solid #fde68a; background: #ffffff; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;" onclick="openRemedyModal('${remedy.id}')">
+      <div style="height: 155px; position: relative; overflow: hidden; background: #fef3c7;">
+        <img src="${imgUrl}" alt="${remedy.name}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" />
+        <span style="position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.92); backdrop-filter: blur(4px); padding: 4px 8px; border-radius: 20px; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">${remedy.emoji}</span>
+      </div>
+      <div class="product-info" style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
+        <span class="product-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-weight: 700; font-size: 11px; align-self: flex-start;">${remedy.category}</span>
+        <div class="product-name" style="font-size: 16px; font-weight: 800; color: #18181b; margin: 8px 0 4px;">${remedy.name}</div>
+        <div class="product-desc" style="font-size: 12.5px; color: #52525b; margin-bottom: 10px; line-height: 1.4;">${remedy.desc}</div>
+        <div style="font-size: 11.5px; color: #374151; margin-bottom: 6px; line-height: 1.4;">
+          <strong>🥄 Key Ingredients:</strong> ${remedy.ingredients}
+        </div>
+        <div style="font-size: 11.5px; color: #166534; font-weight: 600; margin-bottom: 14px; line-height: 1.4; margin-top: auto;">
+          <strong>✨ Benefit:</strong> ${remedy.benefits}
+        </div>
+        <button class="add-to-cart-btn" style="background: #d97706; color: #ffffff; border: none; font-weight: 700; width: 100%; border-radius: 10px; padding: 10px; font-size: 13px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'" onclick="event.stopPropagation(); openRemedyModal('${remedy.id}')">
+          🍵 View Recipe & Prep
+        </button>
+      </div>
+    </div>
+  `;
+}
+window.renderDetailedRemedyCard = renderDetailedRemedyCard;
 
-// Chatbot toggle function removed
-
-
-// â”€â”€ HERO SEARCH ENTER KEY â”€â”€
+// ── HERO SEARCH ENTER KEY ──
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('heroSearchInput')?.addEventListener('keydown', e => {
     if (e.key === 'Enter') searchQuery(e.target.value);
   });
 
-  // RENDER PRODUCTS (Slight delay to show skeletons as requested)
+  // RENDER ALL THREE HEALING PILLARS
   setTimeout(() => {
     const modernList = document.getElementById('modernProductList');
+    const remediesList = document.getElementById('homeRemediesList');
     const ayurList = document.getElementById('ayurProductList');
     const trendingGrid = document.getElementById('trendingGrid');
 
-    if (modernList) modernList.innerHTML = MODERN_MEDICINES.map(p => renderProductCard(p, 'blue')).join('');
-    if (ayurList) ayurList.innerHTML = AYURVEDIC_PRODUCTS.map(p => renderProductCard(p, 'green')).join('');
+    if (modernList && typeof MODERN_MEDICINES !== 'undefined') {
+      modernList.innerHTML = MODERN_MEDICINES.map(p => renderProductCard(p, 'blue')).join('');
+    }
+    const remedies = window.HOME_REMEDIES || (typeof HOME_REMEDIES !== 'undefined' ? HOME_REMEDIES : []);
+    if (remediesList && remedies.length > 0) {
+      remediesList.innerHTML = remedies.map(r => renderDetailedRemedyCard(r)).join('');
+    }
+    if (ayurList && typeof AYURVEDIC_PRODUCTS !== 'undefined') {
+      ayurList.innerHTML = AYURVEDIC_PRODUCTS.map(p => renderProductCard(p, 'green')).join('');
+    }
 
-    // TRENDING (mix of both)
-    const trending = [MODERN_MEDICINES[0], AYURVEDIC_PRODUCTS[0], MODERN_MEDICINES[6], AYURVEDIC_PRODUCTS[2]];
-    if (trendingGrid) trendingGrid.innerHTML = trending.map((p, i) => renderProductCard(p, i % 2 === 0 ? 'blue' : 'green')).join('');
+    // TRENDING (mix of pillars)
+    if (trendingGrid && typeof MODERN_MEDICINES !== 'undefined' && typeof AYURVEDIC_PRODUCTS !== 'undefined') {
+      const trending = [MODERN_MEDICINES[0], AYURVEDIC_PRODUCTS[0], MODERN_MEDICINES[6], AYURVEDIC_PRODUCTS[2]];
+      trendingGrid.innerHTML = trending.map((p, i) => renderProductCard(p, i % 2 === 0 ? 'blue' : 'green')).join('');
+    }
   }, 0);
 
   // DOCTORS TEASER (Updated to 3 doctors as requested)
