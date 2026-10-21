@@ -739,14 +739,15 @@ async function runAllTests() {
   console.log('\n8. CLIENT UI ARTIFACTS & PAYMENT PAGE INTEGRITY');
   // ───────────────────────────────────────────────────────────────
 
-  await runTest('Frontend Checkout: payment.html includes all three payment methods', () => {
+  await runTest('Frontend Checkout: payment.html promotes YouPI-PG Live UPI as primary gateway', () => {
     const html = fs.readFileSync(path.join(__dirname, '../public/pages/payment.html'), 'utf8');
     assert.ok(html.includes('unified-payment-checkout.js'), 'Must include unified-payment-checkout.js');
-    assert.ok(html.includes('tile-youpi') || html.includes('method-details-youpi'), 'Must have UPI/YouPI method');
-    assert.ok(html.includes('tile-cod') || html.includes('method-details-cod'), 'Must have Cash on Delivery method');
+    assert.ok(html.includes('tile-youpi'), 'Must have YouPI-PG Live tile');
+    assert.ok(html.includes('method-details-youpi'), 'Must have YouPI-PG Live details');
+    assert.ok(html.includes('tile-cod'), 'Must have Cash on Delivery method');
     assert.ok(html.includes('youpiTimerPill'), 'Must have countdown timer pill');
-    assert.ok(html.includes('youpiAppsGrid') || html.includes('youpiAppList'), 'Must have UPI apps grid');
-    assert.ok(html.includes('btnPayRazorpay') || html.includes('Razorpay'), 'Must have Razorpay option');
+    assert.ok(html.includes('youpiAppsGrid'), 'Must have UPI apps grid');
+    assert.ok(html.includes('Live YouPI-PG Gateway') || html.includes('Live QR'), 'Must display Live YouPI-PG status');
   });
 
   await runTest('Frontend Admin: admin.html contains full Payments & Gateway Management panel', () => {
@@ -794,9 +795,7 @@ async function runAllTests() {
     if (fs.existsSync(envPath)) {
       const envContent = fs.readFileSync(envPath, 'utf8');
       // Must NOT expose these in source control (checked by gitignore)
-      // But in .env they should be present for production
-      // We just verify the structure is documented
-      assert.ok(envContent.includes('RAZORPAY_KEY'), '.env must have RAZORPAY_KEY entries');
+      assert.ok(envContent.includes('FEATURE_YOUPI_PG_ENABLED') || envContent.includes('YOUPI_PAYEE_VPA'), '.env must have YouPI-PG configuration entries');
     } else {
       // .env not committed (correct — it's in .gitignore) — check template
       console.log('     ℹ️  .env not found (expected — must be in .gitignore). Checking for env.example or similar...');

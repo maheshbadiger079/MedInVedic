@@ -139,7 +139,7 @@ class PaymentOrchestrator {
    */
   async createSession(user, requestBody) {
     const {
-      provider = PAYMENT_PROVIDER.RAZORPAY,
+      provider = PAYMENT_PROVIDER.YOUPI_PG,
       type = 'GENERAL',
       itemId,
       customAmount,

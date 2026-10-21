@@ -90,7 +90,8 @@ class YouPiPgAdapter extends BasePaymentProvider {
       expiresAt: expiresAt.toISOString(),
       timeoutSeconds: this.sessionTimeoutSeconds,
       status: PAYMENT_STATUS.PENDING,
-      isExperimental: true
+      isLive: true,
+      mode: 'LIVE'
     };
   }
 

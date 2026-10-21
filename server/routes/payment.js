@@ -192,7 +192,7 @@ const localPaymentSessions = new Map();
 router.post('/payments/session', async (req, res) => {
   try {
     const {
-      provider = PAYMENT_PROVIDER.RAZORPAY,
+      provider = PAYMENT_PROVIDER.YOUPI_PG,
       type = 'GENERAL',
       amount,
       customAmount,

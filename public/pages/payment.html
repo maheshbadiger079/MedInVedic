@@ -429,7 +429,7 @@
     <div class="step-divider active"></div>
     <div class="step-item active">
       <div class="step-circle">2</div>
-      <span class="step-label">2. Razorpay Pay</span>
+      <span class="step-label">2. Pay with UPI</span>
     </div>
     <div class="step-divider"></div>
     <div class="step-item">
@@ -457,32 +457,25 @@
     <div class="glass-card">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
         <h3 style="font-size:17px; font-weight:900; margin:0; color:var(--primary);">Select Payment Method</h3>
-        <span class="rag-badge" style="font-size:10px; padding:3px 10px;">Unified Gateway v2</span>
+        <span class="status-chip status-success" style="font-size:10.5px; padding:3px 10px;">🟢 Live YouPI-PG Gateway</span>
       </div>
       
-      <div class="methods-grid" style="grid-template-columns: repeat(2, 1fr); gap: 12px;">
-        <!-- Option A: Razorpay -->
-        <div class="method-tile active" id="tile-razorpay" onclick="selectPaymentMethod('razorpay')">
-          <div class="method-icon">🛡️</div>
-          <div class="method-name">Razorpay Secure</div>
-          <div class="method-sub">Cards, NetBanking, UPI Gateway</div>
-        </div>
-
-        <!-- Option B: Direct UPI (YouPI-PG) -->
-        <div class="method-tile" id="tile-youpi" onclick="selectPaymentMethod('youpi')">
+      <div class="methods-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px;">
+        <!-- Option A: Direct UPI (YouPI-PG Live) -->
+        <div class="method-tile active" id="tile-youpi" onclick="selectPaymentMethod('youpi')">
           <div class="method-icon">📱</div>
           <div class="method-name">Pay with UPI</div>
-          <div class="method-sub">Dynamic QR · GPay, PhonePe, Paytm</div>
+          <div class="method-sub">Live QR · GPay, PhonePe, Paytm</div>
         </div>
 
-        <!-- Option C: Cash on Delivery -->
+        <!-- Option B: Cash on Delivery -->
         <div class="method-tile" id="tile-cod" onclick="selectPaymentMethod('cod')">
           <div class="method-icon">📦</div>
           <div class="method-name">Cash on Delivery</div>
           <div class="method-sub">Eligible Physical Products Only</div>
         </div>
 
-        <!-- Option D: MedInVedic Wallet -->
+        <!-- Option C: MedInVedic Wallet -->
         <div class="method-tile" id="tile-wallet" onclick="selectPaymentMethod('wallet')">
           <div class="method-icon">👛</div>
           <div class="method-name">MedInVedic Wallet</div>
@@ -490,22 +483,8 @@
         </div>
       </div>
 
-      <!-- ── METHOD 1: RAZORPAY DETAILS ── -->
-      <div id="method-details-razorpay" style="margin-top:16px;">
-        <div style="background:var(--primary-subtle); border:1.5px solid var(--border); border-radius:14px; padding:16px; font-size:13px; color:var(--text); line-height:1.6;">
-          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-            <strong style="color:var(--primary); font-size:14px;">Verified Razorpay Standard Checkout</strong>
-            <span class="status-chip status-success" style="font-size:10px;">PCI-DSS Level 1</span>
-          </div>
-          Pay securely using any Indian or international Credit/Debit card, UPI app, or NetBanking across 50+ major banks. 100% tokenized and RBI compliant.
-        </div>
-        <button class="btn-pay-secure" id="btnPayRazorpay" onclick="executeRazorpayFlow()">
-          🔒 Pay <span class="dyn-pay-amount">₹0.00</span> via Razorpay
-        </button>
-      </div>
-
-      <!-- ── METHOD 2: DIRECT UPI (YOUPI-PG) DETAILS ── -->
-      <div id="method-details-youpi" style="display:none; margin-top:16px;">
+      <!-- ── PRIMARY METHOD: DIRECT UPI (YOUPI-PG LIVE) DETAILS ── -->
+      <div id="method-details-youpi" style="display:block; margin-top:16px;">
         <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:14px; padding:16px; text-align:center;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
             <strong style="color:var(--primary); font-size:14px;">Instant Sovereign UPI Payment</strong>
@@ -849,7 +828,8 @@
     document.querySelectorAll('.method-tile').forEach(t => t.classList.remove('active'));
     document.getElementById(`tile-${method}`)?.classList.add('active');
 
-    document.getElementById('method-details-razorpay').style.display = method === 'razorpay' ? 'block' : 'none';
+    const rzDetails = document.getElementById('method-details-razorpay');
+    if (rzDetails) rzDetails.style.display = method === 'razorpay' ? 'block' : 'none';
     document.getElementById('method-details-youpi').style.display = method === 'youpi' ? 'block' : 'none';
     document.getElementById('method-details-cod').style.display = method === 'cod' ? 'block' : 'none';
     document.getElementById('method-details-wallet').style.display = method === 'wallet' ? 'block' : 'none';
