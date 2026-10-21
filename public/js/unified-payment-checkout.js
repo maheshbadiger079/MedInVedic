@@ -642,7 +642,7 @@
       const amountPaise = Math.round(amount * 100);
       const txnRef = 'miv_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
       const payeeVpa = window.MEDINVEDIC_PAYEE_VPA || localStorage.getItem('miv_payee_vpa') || 'badigermahesh371@oksbi';
-      const payeeName = window.MEDINVEDIC_PAYEE_NAME || localStorage.getItem('miv_payee_name') || 'Mahesh Badiger';
+      const payeeName = window.MEDINVEDIC_PAYEE_NAME || localStorage.getItem('miv_payee_name') || 'MedInVedic Healthcare';
       const txnNote = 'Order ' + txnRef;
 
       const upiUri = 'upi://pay?pa=' + encodeURIComponent(payeeVpa) +

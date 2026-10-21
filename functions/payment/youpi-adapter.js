@@ -18,7 +18,7 @@ class YouPiPgAdapter extends BasePaymentProvider {
   constructor(options = {}) {
     super(PAYMENT_PROVIDER.YOUPI_PG);
     this.payeeVpa = options.payeeVpa || process.env.YOUPI_PAYEE_VPA || 'badigermahesh371@oksbi';
-    this.payeeName = options.payeeName || process.env.YOUPI_PAYEE_NAME || 'Mahesh Badiger';
+    this.payeeName = options.payeeName || process.env.YOUPI_PAYEE_NAME || 'MedInVedic Healthcare';
     this.observerSecret = options.observerSecret || process.env.YOUPI_OBSERVER_SECRET || 'MedInVedicYouPiObserverSecret2026';
     this.sessionTimeoutSeconds = options.sessionTimeoutSeconds || 300; // 5 minutes
     this.featureEnabled = process.env.FEATURE_YOUPI_PG_ENABLED !== 'false'; // Enabled in test/sandbox
