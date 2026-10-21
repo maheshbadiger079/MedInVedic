@@ -218,6 +218,8 @@ class PaymentOrchestrator {
       verificationTimestamp: null,
       reconciliationStatus: 'UNRECONCILED',
       refundStatus: 'NONE',
+      mode: 'LIVE',
+      isLive: true,
       metadata: {
         ...metadata,
         prescriptionRequired: calc.prescriptionRequired,
@@ -268,6 +270,8 @@ class PaymentOrchestrator {
       amount: finalAmount,
       amountPaise,
       currency: 'INR',
+      mode: 'LIVE',
+      isLive: true,
       status: paymentData.status,
       sessionData: sessionResult
     };

@@ -254,6 +254,8 @@ router.post('/payments/session', async (req, res) => {
       expiresAt: sessionResult.expiresAt || null,
       verificationSource: null,
       reconciliationStatus: 'UNRECONCILED',
+      mode: 'LIVE',
+      isLive: true,
       created_at: new Date().toISOString()
     };
 
@@ -270,6 +272,8 @@ router.post('/payments/session', async (req, res) => {
       amount: finalAmt,
       amountPaise,
       currency: 'INR',
+      mode: 'LIVE',
+      isLive: true,
       status: record.status,
       sessionData: sessionResult
     });
