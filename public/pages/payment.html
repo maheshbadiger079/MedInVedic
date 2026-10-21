@@ -505,7 +505,13 @@
               </span>
             </div>
             <div style="font-size:12px; color:var(--muted); margin-top:8px;">
-              Scan with any UPI app on your phone
+              Scan with any UPI app (Google Pay, PhonePe, Paytm, BHIM)
+            </div>
+            <div style="margin-top:10px;">
+              <span style="font-size:12px; font-weight:700; color:var(--primary); background:rgba(34,197,94,0.12); border:1px solid rgba(34,197,94,0.3); border-radius:8px; padding:6px 12px; display:inline-flex; align-items:center; gap:8px;">
+                <span>UPI ID: <strong style="font-family:monospace; color:#15803d;">badigermahesh371@oksbi</strong></span>
+                <button type="button" class="btn btn-outline btn-sm" style="padding:2px 8px; font-size:11px;" onclick="copyPayeeUpiId()">Copy</button>
+              </span>
             </div>
           </div>
 
@@ -1081,6 +1087,15 @@
     } else {
       alert('No active UPI link available to copy.');
     }
+  }
+
+  function copyPayeeUpiId() {
+    const vpa = 'badigermahesh371@oksbi';
+    navigator.clipboard.writeText(vpa).then(() => {
+      alert('📋 UPI ID copied: ' + vpa);
+    }).catch(() => {
+      prompt('Copy UPI ID:', vpa);
+    });
   }
 
   function toggleUtrBox() {

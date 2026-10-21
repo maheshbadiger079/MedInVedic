@@ -640,9 +640,8 @@
       // Sovereign Live Session Fallback
       const amount = Math.max(1, Number(options.amount || options.customAmount || 199));
       const amountPaise = Math.round(amount * 100);
-      const txnRef = 'miv_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
-      const payeeVpa = 'medinvedic@icici';
-      const payeeName = 'MedInVedic Healthcare';
+      const payeeVpa = window.MEDINVEDIC_PAYEE_VPA || localStorage.getItem('miv_payee_vpa') || 'badigermahesh371@oksbi';
+      const payeeName = window.MEDINVEDIC_PAYEE_NAME || localStorage.getItem('miv_payee_name') || 'Mahesh Badiger';
       const txnNote = 'Order ' + txnRef;
 
       const upiUri = 'upi://pay?pa=' + encodeURIComponent(payeeVpa) +
@@ -867,7 +866,7 @@
           body: JSON.stringify({
             amountPaise: Math.round(amount * 100),
             utr: cleanUtr,
-            receivingAccount: 'medinvedic@icici',
+            receivingAccount: 'badigermahesh371@oksbi',
             senderVpa: extraDetails?.senderVpa || 'patient@upi',
             paymentId: pId
           })
