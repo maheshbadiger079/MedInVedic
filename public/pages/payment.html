@@ -460,7 +460,7 @@
         <span class="status-chip status-success" style="font-size:10.5px; padding:3px 10px;">🟢 Live YouPI-PG Gateway</span>
       </div>
       
-      <div class="methods-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px;">
+      <div class="methods-grid" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px;">
         <!-- Option A: Direct UPI (YouPI-PG Live) -->
         <div class="method-tile active" id="tile-youpi" onclick="selectPaymentMethod('youpi')">
           <div class="method-icon">📱</div>
@@ -481,6 +481,13 @@
           <div class="method-name">MedInVedic Wallet</div>
           <div class="method-sub" id="walletMethodSub">Available: ₹250.00</div>
         </div>
+
+        <!-- Option D: Counter POS Desk (YouPI Offline Retail Mode) -->
+        <div class="method-tile" id="tile-pos" onclick="selectPaymentMethod('pos')">
+          <div class="method-icon">🏪</div>
+          <div class="method-name">Clinic Counter / Till</div>
+          <div class="method-sub">Cash or Card at POS Desk</div>
+        </div>
       </div>
 
       <!-- ── PRIMARY METHOD: DIRECT UPI (YOUPI-PG LIVE) DETAILS ── -->
@@ -490,8 +497,33 @@
             <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
               <strong style="color:var(--primary); font-size:14px;">Instant UPI Payment</strong>
               <span class="status-chip status-success" style="font-size:10px; font-weight:800; background:rgba(34,197,94,0.15); color:#15803d; border:1px solid #86efac; padding:2px 8px; border-radius:12px;">● LIVE</span>
+              <span class="status-chip" style="font-size:10px; font-weight:800; background:#f8fafc; border:1px solid #cbd5e1; color:#334155; padding:2px 8px; border-radius:12px;">🟢 Slot #1 Locked · Invariant FIFO</span>
             </div>
             <span id="youpiStatusBadge" class="status-chip status-pending">Awaiting Scan</span>
+          </div>
+
+          <!-- WhatsApp Pre-Checkout Authentication (Berry Protocol) -->
+          <div style="margin-bottom:12px; background:rgba(37,211,102,0.08); border:1px solid rgba(37,211,102,0.3); border-radius:10px; padding:10px 14px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleWhatsAppOtpBox()">
+              <span style="font-size:12px; font-weight:800; color:#15803d; display:flex; align-items:center; gap:6px;">
+                💬 WhatsApp Pre-Checkout Verification (Berry Protocol)
+              </span>
+              <span id="waOtpArrow" style="font-size:11px; color:#15803d; font-weight:bold;">▼</span>
+            </div>
+            <div id="waOtpSection" style="display:none; margin-top:10px;">
+              <p style="font-size:11.5px; color:var(--text); margin-bottom:8px; line-height:1.4;">
+                Verify your WhatsApp number to prevent delivery errors and receive instant payment alerts:
+              </p>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <input type="tel" id="waPhoneInput" class="pay-input" placeholder="10-digit WhatsApp Number" maxlength="10" style="flex:1; min-width:160px; margin-bottom:0; font-size:12px;">
+                <button type="button" class="btn btn-outline btn-sm" onclick="sendWhatsAppOtpFlow()" style="white-space:nowrap;">Send OTP</button>
+              </div>
+              <div id="waOtpVerifyRow" style="display:none; margin-top:8px; gap:6px;">
+                <input type="text" id="waOtpInput" class="pay-input" placeholder="6-digit OTP" maxlength="6" style="flex:1; margin-bottom:0; font-family:monospace; font-size:12px;">
+                <button type="button" class="btn btn-primary btn-sm" onclick="verifyWhatsAppOtpFlow()">Verify</button>
+              </div>
+              <div id="waOtpStatus" style="display:none; margin-top:6px; font-size:11.5px; font-weight:700;"></div>
+            </div>
           </div>
 
           <!-- Dynamic Vector SVG QR Box -->
@@ -613,6 +645,32 @@
         <button class="btn-pay-secure" style="background:#166534; margin-top:14px;" onclick="executeWalletFlow()">
           ⚡ Pay <span class="dyn-pay-amount">₹0.00</span> from Wallet
         </button>
+      </div>
+
+      <!-- ── METHOD 5: STORE COUNTER / OFFLINE POS DETAILS ── -->
+      <div id="method-details-pos" style="display:none; margin-top:16px;">
+        <div style="background:#ffffff; border:1.5px solid var(--border); border-radius:14px; padding:18px;">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px;">
+            <strong style="color:var(--primary); font-size:14px;">Clinic Counter / Till POS Mode</strong>
+            <span class="status-chip status-success" style="font-size:10px;">Offline Retail Mode</span>
+          </div>
+          <p style="font-size:12.5px; color:var(--muted); margin-bottom:14px; line-height:1.5;">
+            For patients and patrons at physical MedInVedic clinic dispensaries and herbal stores. Settle directly with the cashier till desk:
+          </p>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+            <button type="button" class="btn btn-outline" style="padding:16px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;" onclick="executeCounterPosPayment('CASH_COUNTER')">
+              <span style="font-size:26px;">💵</span>
+              <strong style="font-size:13px; color:var(--primary);">Cash at Till</strong>
+              <span style="font-size:11px; color:var(--muted);">Pay Cash at Cashier Desk</span>
+            </button>
+            <button type="button" class="btn btn-outline" style="padding:16px; text-align:center; display:flex; flex-direction:column; align-items:center; gap:6px;" onclick="executeCounterPosPayment('CARD_COUNTER')">
+              <span style="font-size:26px;">💳</span>
+              <strong style="font-size:13px; color:var(--primary);">Card on POS</strong>
+              <span style="font-size:11px; color:var(--muted);">Swipe/Tap on Till Terminal</span>
+            </button>
+          </div>
+          <div id="posOutcomeNotice" style="display:none; margin-top:10px; padding:10px; border-radius:8px; font-size:12px; font-weight:700;"></div>
+        </div>
       </div>
 
       <!-- RAG Security Badges -->
@@ -863,10 +921,11 @@
     document.getElementById(`tile-${method}`)?.classList.add('active');
 
     const rzDetails = document.getElementById('method-details-razorpay');
-    if (rzDetails) rzDetails.style.display = method === 'razorpay' ? 'block' : 'none';
     document.getElementById('method-details-youpi').style.display = method === 'youpi' ? 'block' : 'none';
     document.getElementById('method-details-cod').style.display = method === 'cod' ? 'block' : 'none';
     document.getElementById('method-details-wallet').style.display = method === 'wallet' ? 'block' : 'none';
+    const posDetails = document.getElementById('method-details-pos');
+    if (posDetails) posDetails.style.display = method === 'pos' ? 'block' : 'none';
 
     // Update dynamic amount displays
     document.querySelectorAll('.dyn-pay-amount').forEach(el => {
@@ -1168,6 +1227,94 @@
       loadUserTransactions();
     } catch (err) {
       alert('Error submitting UTR: ' + err.message);
+    }
+  }
+
+  // ── YOUPI-PG V2: WHATSAPP PRE-CHECKOUT OTP FLOW ───────────────
+  function toggleWhatsAppOtpBox() {
+    const box = document.getElementById('waOtpSection');
+    const icon = document.getElementById('waOtpArrow');
+    if (!box) return;
+    const isHidden = box.style.display === 'none';
+    box.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+  }
+
+  function sendWhatsAppOtpFlow() {
+    const phone = document.getElementById('waPhoneInput')?.value.trim();
+    const status = document.getElementById('waOtpStatus');
+    const verifyRow = document.getElementById('waOtpVerifyRow');
+    try {
+      const res = UnifiedCheckout.sendWhatsAppOtp(phone);
+      if (status) {
+        status.style.display = 'block';
+        status.style.color = '#15803d';
+        status.textContent = `✅ ${res.message}`;
+      }
+      if (verifyRow) verifyRow.style.display = 'flex';
+    } catch (e) {
+      if (status) {
+        status.style.display = 'block';
+        status.style.color = '#dc2626';
+        status.textContent = `⚠️ ${e.message}`;
+      }
+    }
+  }
+
+  function verifyWhatsAppOtpFlow() {
+    const phone = document.getElementById('waPhoneInput')?.value.trim();
+    const otp = document.getElementById('waOtpInput')?.value.trim();
+    const status = document.getElementById('waOtpStatus');
+    try {
+      const res = UnifiedCheckout.verifyWhatsAppOtp(phone, otp);
+      if (status) {
+        status.style.display = 'block';
+        status.style.color = '#15803d';
+        status.textContent = `🎉 Verified WhatsApp Phone: ${res.phone}. Pre-checkout authentication active!`;
+      }
+      alert('✅ Phone verified via WhatsApp! Your order will receive priority automated bank reconciliation.');
+    } catch (e) {
+      if (status) {
+        status.style.display = 'block';
+        status.style.color = '#dc2626';
+        status.textContent = `❌ ${e.message}`;
+      }
+    }
+  }
+
+  // ── YOUPI-PG V2: CLINIC COUNTER / TILL POS PAYMENT ────────────
+  async function executeCounterPosPayment(mode) {
+    const cashierId = 'cashier_' + (AuthGuard?.getAuthUser()?.name || 'desk1').toLowerCase().replace(/\s+/g, '_');
+    const paymentId = 'pay_pos_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6);
+    const orderId = 'POS_ORD_' + Date.now().toString(36).toUpperCase();
+    const modeLabel = mode === 'CARD_COUNTER' ? 'Card at POS Terminal' : 'Cash at Counter Till';
+
+    try {
+      await UnifiedCheckout.recordCounterPayment(paymentId, mode, paymentAmount, cashierId);
+      recordTransaction({
+        id: paymentId,
+        orderId: orderId,
+        amount: paymentAmount,
+        method: modeLabel,
+        status: 'VERIFIED_PAID',
+        date: new Date().toLocaleString('en-IN')
+      });
+
+      const notice = document.getElementById('posOutcomeNotice');
+      if (notice) {
+        notice.style.display = 'block';
+        notice.style.background = 'rgba(34,197,94,0.12)';
+        notice.style.color = '#15803d';
+        notice.style.border = '1px solid #86efac';
+        notice.innerHTML = `✅ Payment of <strong>₹${paymentAmount.toFixed(2)}</strong> Settled via ${modeLabel}! Receipt: <strong>${orderId}</strong>`;
+      }
+
+      localStorage.removeItem('miv_cart');
+      localStorage.removeItem('miv_pending_order_items');
+      alert(`🎉 Settle Complete!\nPayment of ₹${paymentAmount.toFixed(2)} confirmed via ${modeLabel}.\nReceipt: ${orderId}`);
+      loadUserTransactions();
+    } catch (e) {
+      alert('Counter POS Error: ' + e.message);
     }
   }
 

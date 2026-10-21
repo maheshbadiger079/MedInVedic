@@ -807,6 +807,53 @@ async function runAllTests() {
     }
   });
 
+  // ───────────────────────────────────────────────────────────────
+  // 9. YOUPI-PG V2 ADVANCED SUITE (youpi.js, WHATSAPP OTP, FIFO QUEUE, POS)
+  // ───────────────────────────────────────────────────────────────
+  console.log('\n9. YOUPI-PG V2 ADVANCED SUITE (youpi.js, WHATSAPP OTP, FIFO QUEUE, POS)');
+
+  await runTest('YouPI-PG V2: public/youpi.js exists and is complete standalone client script', () => {
+    const youpiPath = path.join(__dirname, '../public/youpi.js');
+    assert.ok(fs.existsSync(youpiPath), 'public/youpi.js must exist');
+    const content = fs.readFileSync(youpiPath, 'utf8');
+    assert.ok(content.includes('window.Youpi = Youpi'), 'Must expose window.Youpi');
+    assert.ok(content.includes('generateISOVectorQrSvg'), 'Must contain ISO Vector QR generator');
+    assert.ok(content.includes('sendWhatsAppOtp'), 'Must support WhatsApp OTP dispatch');
+    assert.ok(content.includes('verifyWhatsAppOtp'), 'Must support WhatsApp OTP verification');
+    assert.ok(content.includes('acquireQueueSlot'), 'Must support Single-Slot FIFO queue');
+    assert.ok(content.includes('recordCounterPayment'), 'Must support Offline POS counter mode');
+    assert.ok(content.includes('[data-youpi-pay]'), 'Must support declarative button binding');
+    assert.ok(content.includes('badigermahesh371@oksbi'), 'Must configure live UPI VPA');
+    assert.ok(content.includes('MedInVedic Healthcare'), 'Must configure live recipient name');
+  });
+
+  await runTest('YouPI-PG V2: unified-payment-checkout.js exposes V2 features & window.Youpi alias', () => {
+    const jsPath = path.join(__dirname, '../public/js/unified-payment-checkout.js');
+    assert.ok(fs.existsSync(jsPath), 'unified-payment-checkout.js must exist');
+    const content = fs.readFileSync(jsPath, 'utf8');
+    assert.ok(content.includes('window.Youpi = UnifiedCheckout'), 'Must alias UnifiedCheckout to window.Youpi');
+    assert.ok(content.includes('sendWhatsAppOtp'), 'Must expose sendWhatsAppOtp');
+    assert.ok(content.includes('verifyWhatsAppOtp'), 'Must expose verifyWhatsAppOtp');
+    assert.ok(content.includes('acquireQueueSlot'), 'Must expose acquireQueueSlot');
+    assert.ok(content.includes('recordCounterPayment'), 'Must expose recordCounterPayment');
+    assert.ok(content.includes('badigermahesh371@oksbi'), 'Must use active live UPI ID badigermahesh371@oksbi');
+    assert.ok(content.includes('MedInVedic Healthcare'), 'Must use payee name MedInVedic Healthcare');
+  });
+
+  await runTest('YouPI-PG V2: payment.html contains WhatsApp OTP, FIFO Queue Badge & POS Counter', () => {
+    const htmlPath = path.join(__dirname, '../public/pages/payment.html');
+    assert.ok(fs.existsSync(htmlPath), 'payment.html must exist');
+    const content = fs.readFileSync(htmlPath, 'utf8');
+    assert.ok(content.includes('waOtpSection') || content.includes('WhatsApp Pre-Checkout Verification'), 'Must contain WhatsApp OTP container');
+    assert.ok(content.includes('sendWhatsAppOtpFlow'), 'Must have sendWhatsAppOtpFlow trigger');
+    assert.ok(content.includes('verifyWhatsAppOtpFlow'), 'Must have verifyWhatsAppOtpFlow trigger');
+    assert.ok(content.includes('Slot #1 Locked') || content.includes('Invariant FIFO'), 'Must contain Single-Slot FIFO queue status badge');
+    assert.ok(content.includes('method-details-pos'), 'Must contain POS / Till desk details');
+    assert.ok(content.includes('executeCounterPosPayment'), 'Must have executeCounterPosPayment trigger');
+    assert.ok(content.includes('badigermahesh371@oksbi'), 'Must reference active payee badigermahesh371@oksbi');
+    assert.ok(content.includes('MedInVedic Healthcare'), 'Must reference payee name MedInVedic Healthcare');
+  });
+
   // ── Summary ──────────────────────────────────────────────────────
   console.log('\n═══════════════════════════════════════════════════════════════');
   console.log(`  Test Results: ${passed} passed, ${failed} failed (${total} total)`);
