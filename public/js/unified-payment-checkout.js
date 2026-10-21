@@ -808,6 +808,81 @@
       } catch (e) {}
     },
 
+    submitCustomerUtr: async function (paymentId, utr, extraDetails) {
+      if (!utr || typeof utr !== 'string') {
+        throw new Error('Please enter a valid 12-digit UPI reference / UTR number.');
+      }
+      const cleanUtr = utr.trim().replace(/[^a-zA-Z0-9]/g, '');
+      if (cleanUtr.length < 8) {
+        throw new Error('UTR / Transaction reference must be at least 8 characters long.');
+      }
+
+      const pId = paymentId || ('pay_utr_' + Date.now().toString(36));
+      const amount = Number(extraDetails?.amount || 0);
+
+      try {
+        const stored = JSON.parse(localStorage.getItem('miv_payment_transactions') || '{"summary":{"totalVolume":0,"verifiedRevenue":0,"unverifiedVolume":0,"pendingCount":0,"unverifiedCount":0,"failedCount":0,"refundCount":0},"payments":[]}');
+        const payments = stored.payments || [];
+        
+        let tx = payments.find(p => p.paymentId === pId || p.utr === cleanUtr);
+        if (!tx) {
+          tx = {
+            paymentId: pId,
+            orderId: extraDetails?.orderId || ('ORD_' + Date.now().toString(36).toUpperCase()),
+            userId: extraDetails?.userId || 'user_guest',
+            userName: extraDetails?.userName || 'Valued Patient',
+            provider: 'youpi_pg',
+            paymentMethod: 'upi_manual_utr',
+            amount: amount,
+            currency: 'INR',
+            status: 'OBSERVED_UNVERIFIED',
+            verificationSource: 'CUSTOMER_SUBMITTED_UTR',
+            verificationTimestamp: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            reconciliationStatus: 'CUSTOMER_SUBMITTED_UTR',
+            utr: cleanUtr,
+            observedDetails: {
+              senderVpa: extraDetails?.senderVpa || 'patient@upi',
+              rawSnippet: `Customer UTR: ${cleanUtr} for ₹${amount}`
+            },
+            notes: { item: extraDetails?.purpose || 'Order Placement' }
+          };
+          payments.unshift(tx);
+          stored.summary.unverifiedVolume = (stored.summary.unverifiedVolume || 0) + amount;
+          stored.summary.unverifiedCount = (stored.summary.unverifiedCount || 0) + 1;
+          stored.summary.totalVolume = (stored.summary.totalVolume || 0) + amount;
+        } else {
+          tx.utr = cleanUtr;
+          tx.status = 'OBSERVED_UNVERIFIED';
+          tx.reconciliationStatus = 'CUSTOMER_SUBMITTED_UTR';
+        }
+        stored.payments = payments;
+        localStorage.setItem('miv_payment_transactions', JSON.stringify(stored));
+      } catch (e) {}
+
+      try {
+        await fetch('/api/payment/telemetry/observer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            amountPaise: Math.round(amount * 100),
+            utr: cleanUtr,
+            receivingAccount: 'medinvedic@icici',
+            senderVpa: extraDetails?.senderVpa || 'patient@upi',
+            paymentId: pId
+          })
+        });
+      } catch (e) {}
+
+      return {
+        success: true,
+        paymentId: pId,
+        utr: cleanUtr,
+        status: 'OBSERVED_UNVERIFIED',
+        message: 'UTR registered for bank reconciliation'
+      };
+    },
+
     startCountdown: function (totalSeconds, onTick, onExpire) {
       if (this.activeCountdownInterval) clearInterval(this.activeCountdownInterval);
       let remaining = totalSeconds;

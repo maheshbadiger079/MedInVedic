@@ -533,6 +533,29 @@
           <div id="youpiVerifyFeedback" style="display:none; font-size:12.5px; margin-top:8px; font-weight:700; color:var(--primary);">
             🔍 Actively scanning bank settlement network... (<span id="youpiScanTimer">30</span>s)
           </div>
+
+          <!-- Manual Bank UTR / Reference Submission (For Bank Errors or Direct App Transfers) -->
+          <div style="margin-top:16px; border-top:1px dashed var(--border); padding-top:14px; text-align:left;">
+            <div style="display:flex; justify-content:space-between; align-items:center; cursor:pointer;" onclick="toggleUtrBox()">
+              <span style="font-size:12.5px; font-weight:800; color:var(--primary); display:flex; align-items:center; gap:6px;">
+                🏦 Bank Account Error or Transferred Directly? Submit 12-Digit UTR
+              </span>
+              <span id="utrToggleIcon" style="font-size:12px; color:var(--muted); font-weight:bold;">▼</span>
+            </div>
+            
+            <div id="utrSubmissionBox" style="display:none; margin-top:10px; background:var(--primary-subtle); border:1px solid rgba(34,197,94,0.3); border-radius:10px; padding:14px;">
+              <p style="font-size:12px; color:var(--text); margin-bottom:10px; line-height:1.5;">
+                If your banking app displayed an account error or you completed the payment directly via UPI, enter your bank's <strong>12-digit UPI Ref / UTR number</strong> (found on your payment confirmation screen or SMS) to register your order:
+              </p>
+              <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <input type="text" id="manualUpiUtrInput" class="pay-input" placeholder="Enter 12-digit UTR (e.g. 429188192018)" maxlength="18" style="margin-bottom:0; font-family:monospace; font-size:13.5px; letter-spacing:1px; flex:1; min-width:200px;">
+                <button class="btn btn-primary btn-sm" onclick="submitManualUtr()" style="white-space:nowrap; padding:0 18px; font-weight:800;">
+                  Submit UTR
+                </button>
+              </div>
+              <div id="utrSubmitSuccess" style="display:none; margin-top:10px; font-size:12px; color:#15803d; font-weight:700; line-height:1.4;"></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -1057,6 +1080,77 @@
       });
     } else {
       alert('No active UPI link available to copy.');
+    }
+  }
+
+  function toggleUtrBox() {
+    const box = document.getElementById('utrSubmissionBox');
+    const icon = document.getElementById('utrToggleIcon');
+    if (!box) return;
+    const isHidden = box.style.display === 'none';
+    box.style.display = isHidden ? 'block' : 'none';
+    if (icon) icon.textContent = isHidden ? '▲' : '▼';
+  }
+
+  async function submitManualUtr() {
+    const input = document.getElementById('manualUpiUtrInput');
+    const feedback = document.getElementById('utrSubmitSuccess');
+    if (!input) return;
+    const utr = input.value.trim().replace(/[^a-zA-Z0-9]/g, '');
+
+    if (!utr || utr.length < 8) {
+      alert('⚠️ Please enter a valid 12-digit Bank UTR or UPI Reference Number from your payment confirmation screen or SMS.');
+      input.focus();
+      return;
+    }
+
+    try {
+      const paymentId = currentUpiSession?.paymentId || ('pay_utr_' + Date.now().toString(36) + '_' + Math.random().toString(36).substring(2, 6));
+      const orderId = currentUpiSession?.orderId || ('ORD_' + Date.now().toString(36).toUpperCase());
+      const user = window.AuthGuard ? AuthGuard.getAuthUser() : null;
+
+      if (window.UnifiedCheckout && typeof UnifiedCheckout.submitCustomerUtr === 'function') {
+        await UnifiedCheckout.submitCustomerUtr(paymentId, utr, {
+          amount: paymentAmount,
+          orderId: orderId,
+          userName: user?.name || 'Valued Patient',
+          userEmail: user?.email || '',
+          senderVpa: user?.email || 'patient@upi'
+        });
+      }
+
+      const badge = document.getElementById('youpiStatusBadge');
+      if (badge) {
+        badge.textContent = 'UTR SUBMITTED (UNDER REVIEW)';
+        badge.className = 'status-chip status-observed';
+      }
+
+      if (window.UnifiedCheckout) {
+        UnifiedCheckout.stopPolling();
+      }
+
+      recordTransaction({
+        id: paymentId,
+        orderId: orderId,
+        amount: paymentAmount,
+        method: `UPI Direct (UTR: ${utr})`,
+        status: 'UNDER REVIEW',
+        utr: utr,
+        date: new Date().toLocaleString('en-IN')
+      });
+
+      localStorage.removeItem('miv_cart');
+      localStorage.removeItem('miv_pending_order_items');
+
+      if (feedback) {
+        feedback.style.display = 'block';
+        feedback.innerHTML = `✅ <strong>UTR Reference #${utr} Registered!</strong><br>Your order <strong>${orderId}</strong> has been registered and is under verification with our billing desk. Medicines will be prepared for dispatch once bank settlement is confirmed.`;
+      }
+
+      alert(`✅ Bank UTR Reference #${utr} has been submitted for Order ${orderId}.\n\nOur billing desk will verify bank settlement and dispatch your order.`);
+      loadUserTransactions();
+    } catch (err) {
+      alert('Error submitting UTR: ' + err.message);
     }
   }
 
