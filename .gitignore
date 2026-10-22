@@ -54,3 +54,24 @@ yarn-error.log*
 *.sln
 *.sw?
 Thumbs.db
+
+# ─── One-off dev utility/fix scripts (not part of deployed app) ────────────────
+audit-pages.js
+clean-all-mojibake.js
+clean-decorations.js
+clean-index-greens.js
+deep-clean-all-symbols.js
+find-green-text.js
+find-nav-line.js
+fix-bmi.js
+fix-encoding-clean.js
+fix-encoding.js
+fix-extra-langs.js
+fix-founder.js
+fix-green-text.js
+fix-icons.js
+fix-index-green.js
+fix-symbol-mojibake.js
+insert-sos-nav.js
+update-sos-header.js
+verify-live.js
