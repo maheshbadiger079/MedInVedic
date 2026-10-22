@@ -2,7 +2,12 @@
  * middleware/auth.js — JWT authentication & RBAC middleware
  */
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'medinvedic_jwt_secret_change_in_production';
+
+const JWT_SECRET = process.env.JWT_SECRET || (
+  process.env.NODE_ENV === 'production'
+    ? (() => { throw new Error('FATAL: JWT_SECRET environment variable must be set in production'); })()
+    : 'medinvedic_dev_jwt_secret_9876543210'
+);
 
 function requireAuth(req, res, next) {
   const header = req.headers['authorization'];
@@ -12,7 +17,7 @@ function requireAuth(req, res, next) {
 
   const token = header.split(' ')[1];
   try {
-    const payload = jwt.verify(token, JWT_SECRET);
+    const payload = jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] });
     req.user = payload;  // { id, name, email, role }
     next();
   } catch (err) {

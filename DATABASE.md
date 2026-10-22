@@ -7,7 +7,7 @@
 {
   "name": "Mahesh Badiger",
   "email": "maheshbadiger079@gmail.com",
-  "phone": "+91 97664 41863",
+  "phone": "+91 98000 00000",
   "role": "admin",
   "membership": "CARE_YEARLY",
   "created_at": "2026-08-31T00:00:00.000Z",

@@ -68,36 +68,49 @@ const RAG_GENERATOR = (function () {
   // ──────────────────────────────────────────────────────────────
 
   function formatContent(text) {
-    if (!text) return "";
-    return text
-      .replace(/🚨 /g, '<span class="rag-emergency-inline">🚨 </span>')
-      .replace(/⚠️ /g, '<span class="rag-warning-inline">⚠️ </span>')
-      .replace(/^(•|\*)\s+/gm, '<li>')
-      .replace(/^(\d+)\.\s+(.+)$/gm, '<li><strong>$1.</strong> $2</li>')
-      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\n{2,}/g, '</p><p>')
-      .replace(/<li>/g, '</p><ul><li>')
-      .trim();
+    if (!text) return '';
+    const lines = text.split('\n');
+    let html = '';
+    let inList = false;
+
+    for (const rawLine of lines) {
+      const line = rawLine.trim();
+      if (!line) {
+        if (inList) { html += '</ul>'; inList = false; }
+        continue;
+      }
+      const isBullet = /^[•\-\*]\s/.test(line);
+      const isNumbered = /^\d+\.\s/.test(line);
+
+      if (isBullet || isNumbered) {
+        if (!inList) { html += '<ul class="rag-list">'; inList = true; }
+        const clean = line
+          .replace(/^[•\-\*]\s+/, '')
+          .replace(/^\d+\.\s+/, '')
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        const hasEmergency = clean.includes('🚨');
+        const hasWarning   = clean.includes('⚠️');
+        const cls = hasEmergency ? ' class="rag-emergency-item"'
+                  : hasWarning   ? ' class="rag-warning-item"'
+                  : '';
+        html += `<li${cls}>${clean}</li>`;
+      } else {
+        if (inList) { html += '</ul>'; inList = false; }
+        const formatted = line.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        if (/^[A-Z][A-Z\s\/\(\)]+:/.test(line)) {
+          html += `<p class="rag-section-heading"><strong>${formatted}</strong></p>`;
+        } else {
+          html += `<p class="rag-text">${formatted}</p>`;
+        }
+      }
+    }
+    if (inList) html += '</ul>';
+    return html;
   }
 
   function formatList(text) {
-    if (!text) return "<p>No specific information found in sources.</p>";
-    const lines = text.split('\n').filter(l => l.trim());
-    const items = lines.filter(l => l.match(/^[•\-\*]/) || l.match(/^\d+\./));
-    if (items.length > 0) {
-      return '<ul class="rag-list">' + items.map(i => {
-        const cleaned = i.replace(/^[•\-\*\d\.]\s*/, '').trim();
-        // Mark emergency items
-        if (cleaned.includes('🚨')) {
-          return `<li class="rag-emergency-item">${cleaned.replace(/🚨\s*/g, '')}</li>`;
-        }
-        if (cleaned.includes('⚠️')) {
-          return `<li class="rag-warning-item">${cleaned.replace(/⚠️\s*/g, '')}</li>`;
-        }
-        return `<li>${cleaned}</li>`;
-      }).join('') + '</ul>';
-    }
-    return `<p class="rag-text">${formatContent(text)}</p>`;
+    if (!text) return '<p>No specific information found in sources.</p>';
+    return formatContent(text);
   }
 
   // ──────────────────────────────────────────────────────────────

@@ -18,156 +18,570 @@
   <link rel="apple-touch-icon" href="../favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Svastha OS — Health Habit Autopilot — MedInVedic</title>
+  <title>Medicine &amp; Dinacharya Reminder — MedInVedic</title>
+  <meta name="description" content="Intelligent Dinacharya, medication, and hydration autopilot grounded in Ayurvedic chronobiology (Charaka Dinacharya) and WHO/FDA medication adherence protocols." />
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    
-    .os-lab { 
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      padding: 100px 40px 60px;
+    /* ═══════════════════════════════════════════════
+       WHITE GLASSMORPHISM DESIGN SYSTEM
+    ═══════════════════════════════════════════════ */
+    :root {
+      --primary: #15803d;
+      --primary-soft: rgba(21, 128, 61, 0.09);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.10);
+      --blue: #0284c7;
+      --blue-soft: rgba(2, 132, 199, 0.09);
+      --indigo: #4f46e5;
+      --indigo-soft: rgba(79, 70, 229, 0.09);
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --radius: 22px;
     }
 
-    .os-grid { display: grid; grid-template-columns: 1fr 400px; gap: 40px; margin-top: 60px; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    .chrono-clock-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 40px;
-      padding: 60px;
-      text-align: center;
+    body {
+      background: linear-gradient(135deg, #fffbeb 0%, #f8fafc 40%, #f0fdf4 100%);
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px;
+      left: -100px;
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(217, 119, 6, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px;
+      right: -80px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(21, 128, 61, 0.09) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .back-pill {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 9px 18px;
+      border-radius: 50px;
+      color: #334155;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+    }
+    .back-pill:hover {
+      background: #ffffff;
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+
+    .os-lab {
       position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 85px 24px 80px;
+    }
+
+    .header-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .badge-autopilot {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(217, 119, 6, 0.12), rgba(21, 128, 61, 0.10));
+      border: 1px solid rgba(217, 119, 6, 0.25);
+      color: #b45309;
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--amber);
+      border-radius: 50%;
+      box-shadow: 0 0 10px var(--amber);
+      animation: pulseAnim 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .main-title {
+      font-size: clamp(28px, 4.5vw, 42px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #0f172a 30%, #b45309 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .main-subtitle {
+      font-size: 15px;
+      color: #64748b;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    .os-grid {
+      display: grid;
+      grid-template-columns: 1fr 430px;
+      gap: 30px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .os-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Glass Cards */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+    }
+
+    /* Chrono Clock Module */
+    .chrono-box {
+      text-align: center;
     }
 
     .clock-circle {
-      width: 300px; height: 300px; border-radius: 50%; border: 12px solid rgba(255,255,255,0.05);
-      margin: 0 auto; position: relative; display: flex; align-items: center; justify-content: center;
+      width: 270px;
+      height: 270px;
+      border-radius: 50%;
+      border: 10px solid rgba(217, 119, 6, 0.15);
+      margin: 20px auto 30px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(254, 243, 199, 0.3));
+      box-shadow: inset 0 0 25px rgba(217, 119, 6, 0.08), 0 8px 24px rgba(0, 0, 0, 0.04);
     }
+
     .clock-hand {
-      position: absolute; width: 4px; height: 140px; background: #eab308; top: 10px; left: 50%;
-      transform-origin: bottom center; transform: rotate(45deg); border-radius: 10px;
-      box-shadow: 0 0 20px rgba(234, 179, 8, 0.5); transition: 1s cubic-bezier(0.4, 0, 0.2, 1);
+      position: absolute;
+      width: 4px;
+      height: 100px;
+      background: linear-gradient(to top, #d97706, #f59e0b);
+      top: 35px;
+      left: 50%;
+      margin-left: -2px;
+      transform-origin: bottom center;
+      transform: rotate(0deg);
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(217, 119, 6, 0.4);
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .dosha-indicator { position: absolute; font-size: 11px; font-weight: 800; color: #eab308; text-transform: uppercase; letter-spacing: 2px; }
+    .dosha-tag-clock {
+      position: absolute;
+      font-size: 10px;
+      font-weight: 800;
+      color: #92400e;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: #fef3c7;
+      padding: 2px 8px;
+      border-radius: 10px;
+      border: 1px solid rgba(217, 119, 6, 0.25);
+    }
 
-    .notification-stream {
-      background: rgba(15, 23, 42, 0.95); border-radius: 32px; border: 1px solid rgba(234, 179, 8, 0.2);
-      padding: 32px; height: 600px; overflow-y: auto;
+    .clock-time {
+      font-size: 28px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .clock-phase {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #d97706;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 4px;
+    }
+
+    /* Sub-modules */
+    .os-controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 24px;
+    }
+    @media (max-width: 500px) {
+      .os-controls { grid-template-columns: 1fr; }
+    }
+
+    .os-tile {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      padding: 16px;
+      border-radius: 16px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .os-tile:hover {
+      border-color: #d97706;
+      background: #ffffff;
+      transform: translateY(-1px);
+    }
+    .os-tile.active {
+      border-color: rgba(217, 119, 6, 0.4);
+      background: linear-gradient(135deg, rgba(254, 243, 199, 0.5), rgba(255, 255, 255, 0.9));
+      box-shadow: 0 4px 14px rgba(217, 119, 6, 0.12);
+    }
+    .os-tile-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2px;
+    }
+
+    /* Notification & Adherence Stream */
+    .stream-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
     }
 
     .notif-card {
-      background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
-      padding: 20px; border-radius: 20px; margin-bottom: 16px; animation: slideIn 0.5s ease-out;
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.85);
+      padding: 16px 18px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+      transition: all 0.2s ease;
     }
-    @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
-
-    .notif-time { font-size: 11px; font-weight: 800; color: #eab308; margin-bottom: 8px; display: block; }
-    .notif-body { font-size: 14px; color: var(--gray-300); }
-
-    .os-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
-    .os-tile {
-       background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1);
-       padding: 24px; border-radius: 24px; text-align: center; cursor: pointer; transition: 0.3s;
+    .notif-card:hover {
+      border-color: rgba(217, 119, 6, 0.3);
+      transform: translateY(-1px);
     }
-    .os-tile.active { border-color: #eab308; background: rgba(234, 179, 8, 0.1); }
+
+    .notif-time {
+      font-size: 10.5px;
+      font-weight: 800;
+      color: #b45309;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .notif-body {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.55;
+    }
+    .notif-body strong { color: #0f172a; }
+
+    /* RAG Evidence Cards */
+    .rag-section {
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin-top: 18px;
+    }
+    .rag-section.clinical {
+      background: var(--blue-soft);
+      border: 1px solid rgba(2, 132, 199, 0.20);
+    }
+    .rag-section.ayurvedic {
+      background: var(--primary-soft);
+      border: 1px solid rgba(21, 128, 61, 0.20);
+    }
+
+    .rs-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rs-label.clinical { color: #0284c7; }
+    .rs-label.ayurvedic { color: #15803d; }
+
+    .rs-body {
+      font-size: 12.5px;
+      line-height: 1.6;
+      color: #334155;
+    }
+    .rs-body strong { color: #0f172a; }
+
+    .sources-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .src-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .disclaimer-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.6;
+    }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
-<nav class="navbar">
-  <a class="nav-logo" href="../index.html">
-    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
-    <span class="nav-logo-text">MedInVedic</span>
-  </a>
-</nav>
+<a href="../index.html" class="back-pill">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
+  Back to Clinic
+</a>
 
 <div class="os-lab">
-  <div style="margin-bottom: 48px;">
-     <div style="font-size: 12px; font-weight: 800; color: #eab308; letter-spacing: 4px; margin-bottom: 8px;">SVASTHA OS 1.0</div>
-     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Health Habit Autopilot</h1>
-     <p style="color: var(--gray-400); margin-top: 12px;">Automated biological routine management for peak human performance.</p>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="badge-autopilot">
+      <div class="pulse-dot"></div>
+      Chronobiological Adherence Engine
+    </div>
+    <h1 class="main-title">Medicine &amp; Dinacharya Autopilot</h1>
+    <p class="main-subtitle">
+      Automated circadian schedule orchestration for pharmaceutical adherence, Ayurvedic chronopharmacology (Aushadha Sevana Kala), and hydration synchronization.
+    </p>
   </div>
 
   <div class="os-grid">
-     <div class="chrono-clock-box">
-        <h2 style="font-size: 24px; font-weight: 900; margin-bottom: 48px;">Dinacharya Chronometry</h2>
-        
-        <div class="clock-circle">
-           <div class="clock-hand" id="mainHand"></div>
-           <div class="dosha-indicator" style="top: -30px;">KAPHA TIME</div>
-           <div class="dosha-indicator" style="right: -60px; top: 50%; transform: rotate(90deg);">PITTA TIME</div>
-           <div class="dosha-indicator" style="bottom: -30px;">VATA TIME</div>
-           <div style="font-size: 32px; font-weight: 900;" id="digitalClock">12:30 PM</div>
+    <!-- Left Column: Dinacharya Clock & Active Modules -->
+    <div class="glass-card chrono-box">
+      <h3 style="font-size: 18px; font-weight: 800; color: #0f172a; margin-bottom: 8px;">
+        Circadian Chronometry &amp; Dosha Clock
+      </h3>
+      <p style="font-size: 13px; color: #64748b; margin-bottom: 24px;">
+        Grounded in Charaka Samhita Sutrasthana Ch. 6 (Dinacharya) &amp; Nobel Prize-winning Circadian Clock Biology.
+      </p>
+
+      <div class="clock-circle">
+        <div class="clock-hand" id="mainHand"></div>
+        <div class="dosha-tag-clock" style="top: -12px;">KAPHA (06:00 - 10:00)</div>
+        <div class="dosha-tag-clock" style="right: -10px; top: 50%; transform: translateY(-50%);">PITTA (10:00 - 14:00)</div>
+        <div class="dosha-tag-clock" style="bottom: -12px;">VATA (14:00 - 18:00)</div>
+        <div class="dosha-tag-clock" style="left: -10px; top: 50%; transform: translateY(-50%);">SANDHYA / REST</div>
+
+        <div class="clock-time" id="digitalClock">12:30 PM</div>
+        <div class="clock-phase" id="clockPhase">Pitta Peak (Agni Active)</div>
+      </div>
+
+      <!-- Quick Toggle Protocols -->
+      <div class="os-controls">
+        <div class="os-tile active" onclick="toggleTile(this)">
+          <div class="os-tile-header">
+            <span style="font-size: 20px;">💊</span>
+            <span style="font-size: 11px; font-weight: 800; color: #15803d;">ACTIVE</span>
+          </div>
+          <strong style="font-size: 14px; color: #0f172a;">Aushadha Sevana Kala</strong>
+          <span style="font-size: 12px; color: #64748b;">Post-prandial cardiac/BP meds in 25m.</span>
         </div>
 
-        <div class="os-controls">
-           <div class="os-tile active">
-              <div style="font-size: 24px; margin-bottom: 8px;">💧</div>
-              <strong>Hydration Guard</strong>
-              <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Next sip in 42 mins.</p>
-           </div>
-           <div class="os-tile active">
-              <div style="font-size: 24px; margin-bottom: 8px;">🍱</div>
-              <strong>Agni Timing</strong>
-              <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Pitta peak in 0h 18m.</p>
-           </div>
-           <div class="os-tile">
-              <div style="font-size: 24px; margin-bottom: 8px;">🧘</div>
-              <strong>Prana Recall</strong>
-              <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Scheduled at 6:00 PM.</p>
-           </div>
-           <div class="os-tile active">
-              <div style="font-size: 24px; margin-bottom: 8px;">🌙</div>
-              <strong>Circadian Lock</strong>
-              <p style="font-size: 11px; color: var(--gray-500); margin-top: 4px;">Screen dark at 9:30 PM.</p>
-           </div>
-        </div>
-     </div>
-
-     <div class="notification-stream">
-        <h3 style="font-size: 18px; font-weight: 800; margin: 0 0 24px 0;">OS Feedback Stream</h3>
-        
-        <div class="notif-card">
-           <span class="notif-time">12:30 PM • SYSTEM TRIGGER</span>
-           <div class="notif-body">
-              <strong>Agni Threshold Reached.</strong> Your metabolic fire is at its peak. This is the optimal window for the heaviest meal of the day.
-           </div>
+        <div class="os-tile active" onclick="toggleTile(this)">
+          <div class="os-tile-header">
+            <span style="font-size: 20px;">💧</span>
+            <span style="font-size: 11px; font-weight: 800; color: #0284c7;">ON SCHEDULE</span>
+          </div>
+          <strong style="font-size: 14px; color: #0f172a;">Hydration Guard</strong>
+          <span style="font-size: 12px; color: #64748b;">Warm water sip (200ml) in 35m.</span>
         </div>
 
-        <div class="notif-card">
-           <span class="notif-time">11:15 AM • HYDRATION</span>
-           <div class="notif-body">
-              <strong>Sip Detected.</strong> 150ml intake logged. Remaining target for Pitta-period: 600ml.
-           </div>
+        <div class="os-tile active" onclick="toggleTile(this)">
+          <div class="os-tile-header">
+            <span style="font-size: 20px;">🍱</span>
+            <span style="font-size: 11px; font-weight: 800; color: #d97706;">OPTIMAL</span>
+          </div>
+          <strong style="font-size: 14px; color: #0f172a;">Madhyahna Agni Window</strong>
+          <span style="font-size: 12px; color: #64748b;">Peak digestion window active now.</span>
         </div>
 
-        <div class="notif-card">
-           <span class="notif-time">09:00 AM • ACTIVITY</span>
-           <div class="notif-body">
-              <strong>Kapha-Stability Phase ends.</strong> Transitioning to Pitta (Focus) phase. High-cognitive work recommended now.
-           </div>
+        <div class="os-tile active" onclick="toggleTile(this)">
+          <div class="os-tile-header">
+            <span style="font-size: 20px;">🌙</span>
+            <span style="font-size: 11px; font-weight: 800; color: #4f46e5;">STANDBY</span>
+          </div>
+          <strong style="font-size: 14px; color: #0f172a;">Circadian Melatonin Gate</strong>
+          <span style="font-size: 12px; color: #64748b;">Blue-light attenuation at 09:30 PM.</span>
         </div>
-     </div>
+      </div>
+
+      <!-- RAG Clinical Guidelines -->
+      <div class="rag-section clinical" style="text-align: left;">
+        <div class="rs-label clinical">🏥 Clinical Chronopharmacology (FDA &amp; AHA Guidelines)</div>
+        <div class="rs-body">
+          • <strong>Antihypertensives (ACEi/ARBs):</strong> Taking evening blood pressure medication controls nocturnal non-dipping surges and significantly cuts cardiovascular event risk (Hygia Chronotherapy Trial).<br>
+          • <strong>Statins:</strong> HMG-CoA reductase peak enzyme activity occurs at night; take short-acting statins (simvastatin/pravastatin) at bedtime.<br>
+          • <strong>Hydration:</strong> Front-load 70% of fluids before 06:00 PM to eliminate nocturnal sleep disruption (nocturia).
+        </div>
+      </div>
+
+      <div class="rag-section ayurvedic" style="text-align: left;">
+        <div class="rs-label ayurvedic">🌿 Ayurvedic Aushadha Sevana Kala (Sharngadhara Samhita)</div>
+        <div class="rs-body">
+          • <strong>Abhakta (Empty Stomach):</strong> Rasayana and tonifying herbs (e.g. Triphala/Amalaki at dawn) for deep cellular assimilation.<br>
+          • <strong>Pragbhakta (Before Meals):</strong> Apana Vata balancing medicines (e.g. for constipation or pelvic channels) taken right before food.<br>
+          • <strong>Samabhakta (With Meals):</strong> Digestive Agni stimulants (Trikatu/Hingwashtak) mixed with the first morsel of warm food.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Live Stream & Reminders -->
+    <div class="glass-card">
+      <div class="stream-header">
+        <h3 style="font-size: 17px; font-weight: 800; color: #0f172a;">
+          Live Adherence Feed
+        </h3>
+        <span style="font-size: 11px; font-weight: 700; color: #15803d; background: var(--primary-soft); padding: 4px 10px; border-radius: 50px;">
+          ● REAL-TIME SYNC
+        </span>
+      </div>
+
+      <div class="notif-card">
+        <span class="notif-time">⏰ 12:30 PM • METABOLIC PEAK (PITTA)</span>
+        <div class="notif-body">
+          <strong>Pachaka Agni Threshold Reached.</strong> Peak bile and pancreatic enzyme secretions. Optimal window for your primary balanced meal. Take mid-day prescribed formulations with food.
+        </div>
+      </div>
+
+      <div class="notif-card">
+        <span class="notif-time">💧 11:15 AM • HYDRATION CHECKPOINT</span>
+        <div class="notif-body">
+          <strong>Warm Hydration Logged.</strong> 200ml warm infused water recorded. Remaining daytime target before sunset: 750ml.
+        </div>
+      </div>
+
+      <div class="notif-card">
+        <span class="notif-time">🌿 07:00 AM • MORNING DINACHARYA</span>
+        <div class="notif-body">
+          <strong>Oral Detox Completed.</strong> Gandusha (oil pulling) and copper tongue scraping cleared overnight Ama residues from the oral microbiome.
+        </div>
+      </div>
+
+      <div class="notif-card">
+        <span class="notif-time">🌙 10:00 PM • TONIGHT'S UPCOMING TARGET</span>
+        <div class="notif-body">
+          <strong>Bedtime Rasayana Alert:</strong> Warm spiced golden milk with Ashwagandha (300mg) for restorative GABA receptor modulation and REM sleep induction.
+        </div>
+      </div>
+
+      <!-- Sources -->
+      <div class="sources-row">
+        <div class="src-chip">📜 Sharngadhara Kala</div>
+        <div class="src-chip">📖 Charaka Sutrasthana 6</div>
+        <div class="src-chip">🔬 Hygia Chronotherapy Trial</div>
+        <div class="src-chip">🌍 WHO Adherence Model</div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer-box">
+        <strong>⚕️ Medication Notice:</strong> Scheduled reminders synchronize clinical timing guidelines with classical Ayurvedic Dinacharya. Always take prescription medications strictly as instructed by your prescribing medical practitioner.
+      </div>
+    </div>
   </div>
 </div>
 
-<script src="../js/app.js"></script>
 <script>
+  function toggleTile(el) {
+    el.classList.toggle('active');
+  }
+
   function updateClock() {
     const now = new Date();
     const h = now.getHours();
     const m = now.getMinutes();
-    const s = now.getSeconds();
     
-    const deg = (h * 15) + (m * 0.25); // 24 hour clock simplified
-    document.getElementById('mainHand').style.transform = `rotate(${deg}deg)`;
+    // 24h rotation
+    const deg = (h * 15) + (m * 0.25);
+    const hand = document.getElementById('mainHand');
+    if (hand) hand.style.transform = `rotate(${deg}deg)`;
     
-    document.getElementById('digitalClock').textContent = 
-      `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${h >= 12 ? 'PM' : 'AM'}`;
+    const formattedHour = h % 12 || 12;
+    const ampm = h >= 12 ? 'PM' : 'AM';
+    const digitalClock = document.getElementById('digitalClock');
+    if (digitalClock) {
+      digitalClock.textContent = `${formattedHour.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')} ${ampm}`;
+    }
+
+    const clockPhase = document.getElementById('clockPhase');
+    if (clockPhase) {
+      if (h >= 6 && h < 10) clockPhase.textContent = 'Kapha Phase (Stability & Routine)';
+      else if (h >= 10 && h < 14) clockPhase.textContent = 'Pitta Peak (Maximum Agni)';
+      else if (h >= 14 && h < 18) clockPhase.textContent = 'Vata Phase (Mental Alertness)';
+      else if (h >= 18 && h < 22) clockPhase.textContent = 'Kapha Evening (Digestive Wind-Down)';
+      else clockPhase.textContent = 'Pitta Nocturnal (Cellular Repair)';
+    }
   }
 
   setInterval(updateClock, 1000);

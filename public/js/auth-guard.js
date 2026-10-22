@@ -124,10 +124,20 @@
     localStorage.setItem("mv_auth_user", JSON.stringify(userObj));
     localStorage.setItem("mv_user_role", userObj.role);
     try { applyAdminVisibility(); } catch(e) {}
+    try {
+      if (global.ActivityMonitor && typeof global.ActivityMonitor.reportLogin === "function") {
+        global.ActivityMonitor.reportLogin(userObj);
+      }
+    } catch(e) {}
     return userObj;
   }
 
   function clearAuthSession() {
+    try {
+      if (global.ActivityMonitor && typeof global.ActivityMonitor.reportLogout === "function") {
+        global.ActivityMonitor.reportLogout();
+      }
+    } catch(e) {}
     try {
       localStorage.removeItem("mv_auth_user");
       localStorage.removeItem("mv_user_role");
@@ -147,6 +157,11 @@
   }
 
   function handleLogout() {
+    try {
+      if (global.ActivityMonitor && typeof global.ActivityMonitor.reportLogout === "function") {
+        global.ActivityMonitor.reportLogout();
+      }
+    } catch(e) {}
     clearAuthSession();
     var path = (typeof window !== "undefined" && window.location.pathname) || "";
     var inPages = path.includes("pages/");
@@ -235,6 +250,17 @@
   }
 
   if (typeof document !== "undefined") {
+    try {
+      if (!global.ActivityMonitor && !document.querySelector('script[src*="activity-monitor.js"]')) {
+        var monScript = document.createElement("script");
+        var p = (window.location.pathname || "").toLowerCase();
+        var inPages = p.includes("/pages/") || p.includes("\\pages\\");
+        monScript.src = inPages ? "../monitoring/activity-monitor.js" : "monitoring/activity-monitor.js";
+        monScript.defer = true;
+        document.head.appendChild(monScript);
+      }
+    } catch(e) {}
+
     document.addEventListener("DOMContentLoaded", function() {
       AuthGuard.checkRouteAccess();
       setTimeout(function() { AuthGuard.applyAdminVisibility(); }, 150);

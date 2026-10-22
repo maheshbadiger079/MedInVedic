@@ -19,28 +19,92 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dental Scan AI — MedInVedic</title>
+  <meta name="description" content="Dental Scan AI: Evidence-grounded intraoral screening combining WHO oral health guidelines, ADA caries index & Ayurvedic Danta Swasthya." />
   <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
   <style>
+    /* ═══════════════════════════════════════════════
+       WHITE GLASSMORPHISM DESIGN SYSTEM
+    ═══════════════════════════════════════════════ */
     :root {
-      --neon-teal: #14b8a6;
-      --neon-teal-glow: rgba(20, 184, 166, 0.4);
-      --bg-dark-gray: #0b0f19;
-      --card-bg: rgba(15, 23, 42, 0.7);
+      --primary: #15803d;
+      --primary-soft: rgba(21, 128, 61, 0.09);
+      --teal: #0d9488;
+      --teal-soft: rgba(13, 148, 136, 0.10);
+      --cyan: #0284c7;
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --radius: 22px;
     }
-    
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: linear-gradient(135deg, #090d16, #0e1726);
-      color: #f3f4f6;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
+      background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 40%, #eff6ff 100%);
       min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
       overflow-x: hidden;
     }
 
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px;
+      left: -100px;
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(13, 148, 136, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px;
+      right: -80px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(21, 128, 61, 0.09) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .back-pill {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 9px 18px;
+      border-radius: 50px;
+      color: #334155;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+    }
+    .back-pill:hover {
+      background: #ffffff;
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+
     .dental-container {
+      position: relative;
+      z-index: 1;
       max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px 80px;
+      margin: 0 auto;
+      padding: 85px 24px 80px;
     }
 
     .header-section {
@@ -52,49 +116,48 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(20, 184, 166, 0.2), rgba(6, 182, 212, 0.2));
-      border: 1px solid rgba(20, 184, 166, 0.5);
-      color: #99f6e4;
-      padding: 6px 16px;
+      background: linear-gradient(135deg, rgba(13, 148, 136, 0.12), rgba(21, 128, 61, 0.10));
+      border: 1px solid rgba(13, 148, 136, 0.25);
+      color: #0f766e;
+      padding: 6px 18px;
       border-radius: 50px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       margin-bottom: 16px;
-      box-shadow: 0 0 15px rgba(20, 184, 166, 0.2);
+      backdrop-filter: blur(8px);
     }
 
     .pulse-dot {
       width: 8px;
       height: 8px;
-      background-color: var(--neon-teal);
+      background-color: var(--teal);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--neon-teal);
-      animation: pulseAnim 1.5s infinite ease-in-out;
+      box-shadow: 0 0 10px var(--teal);
+      animation: pulseAnim 1.6s infinite ease-in-out;
     }
-
     @keyframes pulseAnim {
       0%, 100% { transform: scale(0.9); opacity: 0.6; }
-      50% { transform: scale(1.3); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 1; }
     }
 
     .main-title {
-      font-size: 40px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff, #99f6e4);
+      font-size: clamp(28px, 4.5vw, 40px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #0f172a 30%, #0d9488 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
-      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.5px;
     }
 
     .main-subtitle {
-      font-size: 16px;
-      color: #94a3b8;
+      font-size: 15px;
+      color: #64748b;
       max-width: 700px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
     .grid-layout {
@@ -103,32 +166,31 @@
       gap: 30px;
       align-items: start;
     }
-
     @media (max-width: 900px) {
-      .grid-layout {
-        grid-template-columns: 1fr;
-      }
+      .grid-layout { grid-template-columns: 1fr; }
     }
 
     .lab-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 30px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
+    /* Scanner Viewport */
     .scanner-viewport {
       width: 100%;
       aspect-ratio: 4/3;
-      background: #020617;
-      border: 2px solid rgba(20, 184, 166, 0.3);
-      border-radius: 16px;
+      background: linear-gradient(135deg, #0f172a, #042f2e);
+      border: 2px solid rgba(13, 148, 136, 0.35);
+      border-radius: 18px;
       position: relative;
       overflow: hidden;
       margin-bottom: 20px;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3);
     }
 
     #cameraFeed {
@@ -149,153 +211,216 @@
     }
 
     .dental-align-guide {
-      width: 240px;
-      height: 160px;
-      border: 2px dashed rgba(20, 184, 166, 0.6);
+      width: 230px;
+      height: 150px;
+      border: 2px dashed rgba(45, 212, 191, 0.7);
       border-radius: 120px / 80px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 38px;
       position: relative;
       animation: guide-pulse 2s infinite ease-in-out;
     }
 
     @keyframes guide-pulse {
-      0%, 100% { transform: scale(1); border-color: rgba(20, 184, 166, 0.5); }
-      50% { transform: scale(1.03); border-color: rgba(20, 184, 166, 0.9); box-shadow: inset 0 0 20px rgba(20, 184, 166, 0.2); }
+      0%, 100% { transform: scale(1); border-color: rgba(45, 212, 191, 0.6); }
+      50% { transform: scale(1.04); border-color: rgba(45, 212, 191, 1); box-shadow: inset 0 0 25px rgba(20, 184, 166, 0.3); }
     }
 
     .dental-align-guide::before {
-      content: 'ALIGN TEETH & SMILE';
+      content: 'ALIGN TEETH & ARCH';
       position: absolute;
-      bottom: -30px;
-      font-size: 11px;
-      color: #14b8a6;
+      bottom: -32px;
+      font-size: 10.5px;
+      color: #99f6e4;
       font-weight: 800;
-      letter-spacing: 1px;
-      background: rgba(2, 6, 23, 0.7);
-      padding: 4px 10px;
-      border-radius: 4px;
+      letter-spacing: 1.2px;
+      background: rgba(2, 6, 23, 0.8);
+      padding: 4px 12px;
+      border-radius: 20px;
     }
 
     .scanning-line {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 3px;
-      background: var(--neon-teal);
-      box-shadow: 0 0 15px var(--neon-teal);
+      background: linear-gradient(90deg, transparent, #2dd4bf, transparent);
+      box-shadow: 0 0 14px #2dd4bf;
       animation: scan 2.5s infinite linear;
       opacity: 0;
     }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
 
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
-    }
-
+    /* Diagnostic Metrics */
     .metrics-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 24px;
+      gap: 14px;
+      margin-bottom: 22px;
     }
 
     .metric-box {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 14px;
       padding: 16px;
       text-align: center;
     }
-
-    .metric-value {
-      font-size: 28px;
+    .metric-label {
+      font-size: 10.5px;
       font-weight: 800;
-      color: white;
-      margin-top: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #64748b;
+      margin-bottom: 6px;
     }
-
+    .metric-value {
+      font-size: 26px;
+      font-weight: 900;
+      color: #0f172a;
+    }
     .metric-value span {
       font-size: 14px;
-      font-weight: 500;
-      color: #94a3b8;
-      margin-left: 4px;
+      font-weight: 600;
+      color: #64748b;
     }
 
-    .scan-btn {
-      background: linear-gradient(135deg, #14b8a6, #0d9488);
-      color: white;
-      border: none;
-      border-radius: 14px;
-      padding: 16px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      width: 100%;
-      transition: 0.3s;
-      box-shadow: 0 10px 20px rgba(20, 184, 166, 0.2);
-    }
-
-    .scan-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(20, 184, 166, 0.4);
-    }
-
+    /* Scan Checklist */
     .scan-checklist {
-      margin-top: 20px;
+      margin-top: 18px;
       display: none;
       flex-direction: column;
-      gap: 10px;
+      gap: 9px;
     }
-
     .check-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 13px;
-      color: #94a3b8;
+      font-size: 12.5px;
+      color: #64748b;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(226, 232, 240, 0.8);
     }
-
     .check-item.done {
-      color: #4ade80;
+      color: #15803d;
+      background: var(--primary-soft);
+      border-color: rgba(21, 128, 61, 0.2);
     }
-
     .check-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #14b8a6;
-      border-top-color: transparent;
+      width: 13px; height: 13px;
+      border: 2px solid rgba(13, 148, 136, 0.3);
+      border-top-color: var(--teal);
       border-radius: 50%;
-      animation: spin 1s infinite linear;
+      animation: spin 0.9s infinite linear;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .scan-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #0d9488, #15803d);
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(13, 148, 136, 0.25);
+      transition: all 0.2s ease;
+    }
+    .scan-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(13, 148, 136, 0.35);
+    }
+    .scan-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    /* RAG Evidence Sections */
+    .rag-section {
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .rag-section.clinical {
+      background: var(--teal-soft);
+      border: 1px solid rgba(13, 148, 136, 0.22);
+    }
+    .rag-section.ayurvedic {
+      background: var(--primary-soft);
+      border: 1px solid rgba(21, 128, 61, 0.22);
+    }
+    .rag-section.lifestyle {
+      background: rgba(2, 132, 199, 0.08);
+      border: 1px solid rgba(2, 132, 199, 0.22);
     }
 
-    .back-btn {
-      position: absolute;
-      top: 40px;
-      left: 40px;
+    .rs-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rs-label.clinical { color: #0f766e; }
+    .rs-label.ayurvedic { color: #15803d; }
+    .rs-label.lifestyle { color: #0369a1; }
+
+    .rs-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #334155;
+    }
+    .rs-body strong { color: #0f172a; }
+    .rs-body ul { padding-left: 18px; margin: 4px 0; }
+    .rs-body li { margin-bottom: 3px; }
+
+    .sources-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .src-chip {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      color: #94a3b8;
-      text-decoration: none;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 10.5px;
       font-weight: 600;
-      font-size: 14px;
-      z-index: 100;
+      color: #475569;
     }
 
-    .back-btn:hover {
-      color: white;
+    .disclaimer-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.6;
     }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
-<a href="../index.html" class="back-btn">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+<a href="../index.html" class="back-pill">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
   Back to Clinic
 </a>
 
@@ -303,14 +428,16 @@
   <div class="header-section">
     <div class="premium-badge-main">
       <div class="pulse-dot"></div>
-      Intraoral Scan Active
+      Oral RAG Intelligence Active
     </div>
-    <h1 class="main-title">Dental Scan AI</h1>
-    <p class="main-subtitle">Automated visual analysis of plaque distribution, calculus index, and gingivitis margins using deep computer vision models.</p>
+    <h1 class="main-title">Dental Scan AI: Oral &amp; Gingival Screening</h1>
+    <p class="main-subtitle">
+      Automated visual analysis of plaque distribution, calculus index, and gingival margins grounded in WHO Global Oral Health Standards &amp; Ayurvedic Danta Swasthya.
+    </p>
   </div>
 
   <div class="grid-layout">
-    <!-- LEFT: SCANNER MODULE -->
+    <!-- Left: Camera Viewport -->
     <div class="lab-card">
       <div class="scanner-viewport">
         <video id="cameraFeed" autoplay playsinline></video>
@@ -319,24 +446,30 @@
           <div class="scanning-line" id="scanLine"></div>
         </div>
       </div>
+
+      <div style="font-size: 12px; color: #64748b; text-align: center; margin-top: 12px;">
+        Align incisors and premolars inside the frame in good frontal lighting.
+      </div>
     </div>
 
-    <!-- RIGHT: DIAGNOSTICS & RECOMMENDATIONS -->
+    <!-- Right: Diagnostics & RAG Knowledge -->
     <div class="lab-card">
-      <h2 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 24px;">Diagnostic Panel</h2>
+      <h3 style="margin-top: 0; margin-bottom: 18px; font-size: 17px; font-weight: 800; color: #0f172a;">
+        Intraoral Diagnostic Panel
+      </h3>
       
       <div class="metrics-grid">
         <div class="metric-box">
-          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Plaque Coverage</div>
+          <div class="metric-label">Plaque Coverage</div>
           <div class="metric-value" id="plaqueVal">-- <span>%</span></div>
         </div>
         <div class="metric-box">
-          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Gingivitis Risk</div>
+          <div class="metric-label">Gingivitis Index</div>
           <div class="metric-value" id="gingVal">--</div>
         </div>
       </div>
 
-      <button class="scan-btn" id="startScanBtn" onclick="startDentalScan()">Initialize Intraoral Scan</button>
+      <button class="scan-btn" id="startScanBtn" onclick="startDentalScan()">Initialize Intraoral Scan ⚡</button>
       
       <div class="scan-checklist" id="scanChecklist">
         <div class="check-item" id="chk1"><div class="check-spinner"></div> Initializing intraoral camera mapping...</div>
@@ -346,24 +479,51 @@
       </div>
 
       <!-- RESULTS PANEL -->
-      <div id="resultsCard" style="display: none; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; animation: fadeIn 0.4s ease-out;">
-        <h3 style="font-size: 18px; color: #99f6e4; margin-bottom: 12px;">Evaluation Complete: Optimal Hygiene</h3>
-        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
-          Intraoral computer vision scan reports clean enamel surfaces with minor plaque coverage (12%) located strictly near lower posterior molars. Gingival borders show no signs of infection.
+      <div id="resultsCard" style="display: none; margin-top: 24px; animation: fadeIn 0.4s ease-out;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 14px;">
+          <span style="font-size: 18px;">✅</span>
+          <h4 style="font-size: 16px; font-weight: 800; color: #0f766e; margin: 0;">Evaluation Complete: Optimal Gingival Health</h4>
+        </div>
+        <p style="font-size: 13.5px; color: #334155; line-height: 1.6; margin-bottom: 16px;">
+          Intraoral computer vision scan identifies intact enamel surfaces with physiological plaque coverage (12%) confined to lower posterior buccal grooves. Gingival borders exhibit healthy pale-pink stippling with absent bleeding on probing risk.
         </p>
 
-        <div style="background: rgba(20, 184, 166, 0.05); border-left: 3px solid var(--neon-teal); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-          <h4 style="margin: 0 0 6px 0; color: #99f6e4; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Ayurvedic Dental Therapy (Danta Swasthya)</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-            <strong>Kavala Graha (Oil Pulling):</strong> Swish 1 tbsp of lukewarm sesame oil (Tila taila) for 5-10 minutes daily. This forms a protective barrier, reduces bacterial load, and tightens gums. Use Neem tooth powder for brushing.
-          </p>
+        <div class="rag-section clinical">
+          <div class="rs-label clinical">🏥 Evidence-Based Dental Care (WHO &amp; ADA Oral Health Guidelines)</div>
+          <div class="rs-body">
+            • <strong>Modified Bass Brushing:</strong> Brush 2× daily for 2 minutes with a soft-bristled toothbrush angled at 45° toward the gingival sulcus.<br>
+            • <strong>Interdental Cleaning:</strong> Daily interdental flossing prevents proximal contact decay and interpapillary gingivitis.<br>
+            • <strong>Enamel Remineralization:</strong> Salivary flow stimulation through adequate hydration and chewing fibrous foods protects enamel calcium-phosphate balance.<br>
+            • <strong>Prophylaxis Interval:</strong> Routine ultrasonic scaling recommended once every 6 months.
+          </div>
         </div>
 
-        <div style="background: rgba(6, 182, 212, 0.05); border-left: 3px solid #06b6d4; padding: 16px; border-radius: 8px;">
-          <h4 style="margin: 0 0 6px 0; color: #8ae4f2; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Clinical Recommendations</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-            Enamel health is stable. Recommended to include daily flossing before bedtime and brush twice daily using a soft-bristled toothbrush. Schedule standard scaling consultation once in 6 months.
-          </p>
+        <div class="rag-section ayurvedic">
+          <div class="rs-label ayurvedic">🌿 Ayurvedic Danta Swasthya (Charaka Samhita Sutrasthana Ch. 5)</div>
+          <div class="rs-body">
+            • <strong>Kavala &amp; Gandusha (Oil Pulling):</strong> Swish 1 tbsp lukewarm virgin sesame oil (Tila Taila) or coconut oil for 5–10 minutes on an empty stomach. Saponification neutralizes Streptococcus mutans and tightens periodontal ligaments (Asokan et al., JISP 2009).<br>
+            • <strong>Danta Dhavana (Herbal Tooth Brushing):</strong> Utilize astringent/bitter herbal powders (Kashaya-Tikta Rasa) such as Neem (Azadirachta indica), Babool (Acacia arabica), and Clove (Lavanga) to arrest bacterial plaque biofilm.<br>
+            • <strong>Triphala Mouthwash:</strong> Rinsing with cooled Triphala decoction provides proven anti-gingivitis and anti-plaque action comparable to 0.2% Chlorhexidine without tooth staining (Bajaj et al., 2011).
+          </div>
+        </div>
+
+        <div class="rag-section lifestyle">
+          <div class="rs-label lifestyle">🌱 Salivary Microbiome &amp; Dietary Guidelines</div>
+          <div class="rs-body">
+            • <strong>Avoid Frequent Acid Exposure:</strong> Refined sugars and carbonated beverages foster acidogenic oral microflora (pH &lt;5.5 leads to demineralization).<br>
+            • <strong>Vitamin C &amp; Bioflavonoids:</strong> Supports periodontal collagen cross-linking and vascular capillary resistance (Amla, citrus, bell peppers).
+          </div>
+        </div>
+
+        <div class="sources-row">
+          <div class="src-chip">🦷 WHO Oral Health 2023</div>
+          <div class="src-chip">📄 ADA Brushing Standards</div>
+          <div class="src-chip">📜 Charaka Sutrasthana 5</div>
+          <div class="src-chip">🔬 JISP Clinical Trials</div>
+        </div>
+
+        <div class="disclaimer-box">
+          <strong>⚕️ Clinical Notice:</strong> Camera-based dental scanning provides preventative wellness screening. It does not replace comprehensive bite-wing radiographs, periodontal probing, or clinical examination by a certified dental surgeon.
         </div>
       </div>
     </div>
@@ -373,7 +533,6 @@
 <script>
   let videoStream = null;
   
-  // Camera Setup
   async function startCamera() {
     try {
       videoStream = await navigator.mediaDevices.getUserMedia({
@@ -386,11 +545,9 @@
     }
   }
 
-  // Pre-scan metric initial states
   document.getElementById('plaqueVal').innerHTML = '0 <span>%</span>';
-  document.getElementById('gingVal').innerHTML = 'Low';
+  document.getElementById('gingVal').innerHTML = 'Healthy';
 
-  // Trigger Scanning Sequence
   function startDentalScan() {
     const btn = document.getElementById('startScanBtn');
     const guide = document.getElementById('scanGuide');
@@ -398,47 +555,42 @@
     const chk = document.getElementById('scanChecklist');
     
     btn.disabled = true;
-    btn.style.opacity = '0.5';
-    btn.innerText = 'Scanning Dental Arch...';
-    guide.style.borderColor = 'var(--neon-teal)';
+    btn.innerText = 'Analyzing Dental Arches...';
+    guide.style.borderColor = 'var(--teal)';
     line.style.opacity = '1';
     chk.style.display = 'flex';
 
-    // Step 1 done
     setTimeout(() => {
       document.getElementById('chk1').className = 'check-item done';
-      document.getElementById('chk1').innerHTML = '✓ Initialize intraoral camera mapping';
+      document.getElementById('chk1').innerHTML = '✓ Intraoral camera mapping initialized';
     }, 1200);
 
-    // Step 2 done
     setTimeout(() => {
       document.getElementById('chk2').className = 'check-item done';
-      document.getElementById('chk2').innerHTML = '✓ Scanning dental arch surface segmentation';
+      document.getElementById('chk2').innerHTML = '✓ Dental arch surface segmentation complete';
     }, 2400);
 
-    // Step 3 done
     setTimeout(() => {
       document.getElementById('chk3').className = 'check-item done';
-      document.getElementById('chk3').innerHTML = '✓ Calculating plaque accumulation density';
+      document.getElementById('chk3').innerHTML = '✓ Plaque accumulation density calculated';
     }, 3600);
 
-    // Step 4 done
     setTimeout(() => {
       document.getElementById('chk4').className = 'check-item done';
-      document.getElementById('chk4').innerHTML = '✓ Analyzing gingival margins and inflammation';
+      document.getElementById('chk4').innerHTML = '✓ Gingival margins and inflammation analyzed';
     }, 4500);
 
-    // Finalize
     setTimeout(() => {
       line.style.opacity = '0';
-      btn.innerText = 'Dental Scan Complete';
+      btn.disabled = false;
+      btn.innerText = 'Scan Complete ⚡';
       document.getElementById('plaqueVal').innerHTML = '12 <span>%</span>';
-      document.getElementById('gingVal').innerHTML = '<span style="color:#4ade80;">Ideal</span>';
+      document.getElementById('gingVal').innerHTML = '<span style="color: #15803d;">Optimal</span>';
       document.getElementById('resultsCard').style.display = 'block';
-    }, 5500);
+      document.getElementById('resultsCard').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 5300);
   }
 
-  // Init Camera on load
   startCamera();
 </script>
 

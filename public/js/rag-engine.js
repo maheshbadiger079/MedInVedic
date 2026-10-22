@@ -42,9 +42,17 @@ const RAG_ENGINE = (function () {
       // Step 1: Safety & Triage
       const triage = RAG_SAFETY.assess(query);
 
-      // Step 2: Retrieve evidence
+      // Step 2: Retrieve evidence (model-aware retrieval depth)
+      const activeModel = (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedModel() : null;
+      let topK = 5;
+      if (activeModel) {
+        if (activeModel.id === 'medinvedic-expert') topK = 8;
+        else if (activeModel.id === 'medinvedic-advanced') topK = 6;
+        else if (activeModel.id === 'medinvedic-quick') topK = 3;
+      }
+
       await new Promise(resolve => setTimeout(resolve, 500));
-      const rawResults = RAG_RETRIEVER.search(query, 5);
+      const rawResults = RAG_RETRIEVER.search(query, topK);
       const contextDocs = RAG_RETRIEVER.formatContext(rawResults);
 
       // Step 3: Synthesize response
@@ -56,6 +64,15 @@ const RAG_ENGINE = (function () {
         responseData = RAG_GENERATOR.buildInsufficientEvidenceResponse(query);
       } else {
         responseData = RAG_GENERATOR.buildStructuredResponse(query, triage, contextDocs);
+      }
+
+      // Attach model metadata to response
+      if (activeModel) {
+        responseData.model = {
+          id: activeModel.id,
+          name: activeModel.name,
+          effort: (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedEffort() : 'medium'
+        };
       }
 
       // If emergency detected, prepend emergency data to response
@@ -275,13 +292,13 @@ const RAG_ENGINE = (function () {
   function renderWelcomeState() {
     return `
       <div class="rag-welcome" aria-live="polite">
-        <div class="rag-welcome-icon">
+        <div class="rag-welcome-icon" style="color: #000000 !important;">
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
           </svg>
         </div>
-        <div class="rag-welcome-title">Health Intelligence AI</div>
-        <div class="rag-welcome-subtitle">
+        <div class="rag-welcome-title" style="color: #000000 !important; font-weight: 800;">Health Intelligence AI</div>
+        <div class="rag-welcome-subtitle" style="color: #111827 !important; font-weight: 500;">
           Evidence-grounded health information from WHO, CDC, NHS, and clinical guidelines.<br>
           This is an informational assistant — not a replacement for professional medical advice.
         </div>
@@ -563,5 +580,10 @@ window.ragSetLanguage = ragSetLanguage;
 document.addEventListener("DOMContentLoaded", () => {
   if (typeof RAG_SAFETY !== "undefined" && typeof RAG_RETRIEVER !== "undefined" && typeof RAG_GENERATOR !== "undefined") {
     RAG_ENGINE.init();
+  }
+  if (typeof MedInVedicModelSelector !== "undefined") {
+    if (document.getElementById("homeModelSelectorContainer")) {
+      MedInVedicModelSelector.attachTo("homeModelSelectorContainer");
+    }
   }
 });

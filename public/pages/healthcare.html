@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Multi-Species Healthcare &amp; Ayurveda — MedInVedic</title>
+  <meta name="description" content="India's 1st Dual Healthcare Platform: Separated, species-safe clinical information across Human Medicine, Veterinary Science, and Avian Care." />
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="apple-touch-icon" href="../icon-512.png">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <link rel="stylesheet" href="../css/responsive.css" />
+
+  <style>
+    :root {
+      --mv-blue: #2F80ED;
+      --mv-green: #27AE60;
+      --mv-bg: #F4FFF7;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #bbf7d0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #f0fdf4;
+      color: var(--text-dark);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* Navbar */
+    .portal-nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .portal-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #0f172a;
+      font-weight: 900;
+      font-size: 18px;
+    }
+
+    .portal-logo img {
+      width: 34px;
+      height: 34px;
+      object-fit: contain;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .nav-links a {
+      color: #475569;
+      text-decoration: none;
+      font-size: 13.5px;
+      font-weight: 700;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover, .nav-links a.active {
+      color: var(--mv-blue);
+    }
+
+    .nav-btn-sos {
+      background: #ef4444;
+      color: white !important;
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+    }
+
+    /* Main Container */
+    .portal-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
+    }
+
+    /* Header */
+    .portal-hero-header {
+      text-align: center;
+      margin-bottom: 36px;
+    }
+
+    .portal-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      background: #e0f2fe;
+      color: #0284c7;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .portal-title {
+      font-size: 36px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.8px;
+      margin: 0 0 10px;
+    }
+
+    .portal-subtitle {
+      font-size: 16px;
+      color: #64748b;
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* 3 Visual Pillars (Exact Match to User Image) */
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .pillar-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      cursor: pointer;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px;
+      border: 3px solid transparent;
+      transition: all .25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .pillar-card.active {
+      border-color: #2563EB;
+      box-shadow: 0 8px 30px rgba(37, 99, 235, 0.25);
+      transform: translateY(-3px);
+    }
+
+    .pillar-bg {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform .3s ease;
+      z-index: 1;
+    }
+
+    .pillar-card:hover .pillar-bg {
+      transform: scale(1.04);
+    }
+
+    .pillar-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.45) 0%, rgba(15, 23, 42, 0.88) 100%);
+      z-index: 2;
+    }
+
+    .pillar-content {
+      position: relative;
+      z-index: 3;
+      color: white;
+    }
+
+    .pillar-icon {
+      margin-bottom: 8px;
+      color: #ffffff;
+      display: inline-flex;
+    }
+
+    .pillar-title {
+      font-size: 20px;
+      font-weight: 900;
+      margin: 0 0 4px;
+      letter-spacing: -0.3px;
+    }
+
+    .pillar-subtitle {
+      font-size: 12.5px;
+      color: rgba(255, 255, 255, 0.85);
+      margin: 0;
+      font-weight: 500;
+    }
+
+    /* Safety Alert Banner */
+    .cross-species-banner {
+      background: linear-gradient(135deg, #fef2f2, #fee2e2);
+      border: 1.5px solid #fecaca;
+      border-radius: 16px;
+      padding: 18px 24px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .cross-species-banner .icon {
+      font-size: 26px;
+      line-height: 1;
+    }
+
+    /* Sub-species Selector Chips */
+    .species-selector-box {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px 24px;
+      margin-bottom: 30px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+    }
+
+    .selector-heading {
+      font-size: 13px;
+      font-weight: 800;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .species-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .species-chip {
+      background: #f1f5f9;
+      border: 1.5px solid #bbf7d0;
+      border-radius: 99px;
+      padding: 8px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+    }
+
+    .species-chip:hover {
+      background: #bbf7d0;
+    }
+
+    .species-chip.active {
+      background: #0f172a;
+      color: white;
+      border-color: #0f172a;
+    }
+
+    /* Search & Filter Bar */
+    .filter-bar {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .search-input-wrapper {
+      flex: 1;
+      min-width: 280px;
+      position: relative;
+    }
+
+    .search-input-wrapper input {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 14px 18px 14px 44px;
+      border-radius: 12px;
+      border: 1.5px solid var(--border-color);
+      background: #ffffff;
+      font-size: 14px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color .2s;
+    }
+
+    .search-input-wrapper input:focus {
+      border-color: var(--mv-blue);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #94a3b8;
+    }
+
+    .safety-check-btn {
+      background: #2563EB;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 0 20px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background .2s;
+    }
+
+    .safety-check-btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* Cards Grid */
+    .medicines-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: 22px;
+    }
+
+    .med-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .med-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+
+    .med-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+
+    .species-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .species-badge.human { background: #eff6ff; color: #1d4ed8; }
+    .species-badge.animal { background: #fef3c7; color: #b45309; }
+    .species-badge.bird { background: #f0fdf4; color: #15803d; }
+
+    .evidence-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+
+    .evidence-badge.strong { background: #dcfce7; color: #166534; }
+    .evidence-badge.traditional { background: #e0f2fe; color: #0369a1; }
+    .evidence-badge.limited { background: #fef9c3; color: #854d0e; }
+    .evidence-badge.safety_concern { background: #fee2e2; color: #991b1b; }
+
+    .med-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 4px;
+    }
+
+    .med-generic {
+      font-size: 12.5px;
+      color: #64748b;
+      margin: 0 0 12px;
+    }
+
+    .med-section-label {
+      font-size: 11px;
+      font-weight: 800;
+      color: #94a3b8;
+      text-transform: uppercase;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .med-text {
+      font-size: 13px;
+      color: #334155;
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .med-warning-box {
+      background: #fff1f2;
+      border-left: 3px solid #f43f5e;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: #9f1239;
+      line-height: 1.45;
+    }
+
+    .compatibility-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    .compat-pill {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .compat-pill.safe { background: #ecfdf5; color: #047857; }
+    .compat-pill.unsafe { background: #fef2f2; color: #b91c1c; text-decoration: line-through; }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: white;
+      border-radius: 20px;
+      max-width: 580px;
+      width: 100%;
+      overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 24px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .pillars-grid {
+        grid-template-columns: 1fr;
+      }
+      .medicines-grid {
+        grid-template-columns: 1fr;
+      }
+      .portal-title {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="portal-nav">
+    <a href="../index.html" class="portal-logo">
+      <img src="../images/assets/logo_new.png?v=v_newlogo_v2" alt="MedInVedic Logo">
+      <span>MedInVedic</span>
+    </a>
+    <div class="nav-links">
+      <a href="../index.html#home">Home</a>
+      <a href="healthcare.html" class="active">Healthcare</a>
+      <a href="consult.html">Doctors</a>
+      <a href="online-pharmacy.html">Pharmacy</a>
+      <a href="emergency.html" class="nav-btn-sos">🚨 SOS Emergency</a>
+    </div>
+  </nav>
+
+  <div class="portal-container">
+    
+    <!-- Hero Header -->
+    <div class="portal-hero-header">
+      <div class="portal-badge">Dual Healthcare Platform • Multi-Species Architecture</div>
+      <h1 class="portal-title">Multi-Species Healthcare &amp; Ayurveda</h1>
+      <p class="portal-subtitle">
+        Separated, species-safe clinical care across Humans, Animals, and Birds. 
+        Explore pharmaceutical science, Ayurvedic formulations, and species-compatible wellness with rigorous evidence.
+      </p>
+    </div>
+
+    <!-- ❖❖❖ OUR THREE HEALING PILLARS (Exact visual match to attached reference) ❖❖❖ -->
+    <div class="pillars-grid">
+      
+      <!-- Pillar 1: Human Health -->
+      <div class="pillar-card active" id="pillarHuman" onclick="selectPillar('human')">
+        <div class="pillar-bg" style="background-image: url('https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M14.5 2v17.5c0 1.4-1.1 2.5-2.5 2.5h0c-1.4 0-2.5-1.1-2.5-2.5V2"></path>
+              <path d="M8.5 2h7"></path>
+              <path d="M9.5 9h5"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">👨‍⚕️ Human Health</h3>
+          <p class="pillar-subtitle">Modern Medicine, Ayurveda, Home Remedies &amp; Doctor Consultation</p>
+        </div>
+      </div>
+
+      <!-- Pillar 2: Animal Health -->
+      <div class="pillar-card" id="pillarAnimal" onclick="selectPillar('animal')">
+        <div class="pillar-bg" style="background-image: url('https://images.unsplash.com/photo-1548767797-d8c844163c4c?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M10 5.172C10 3.782 8.423 2.679 6.5 3c-2.823.47-4.113 6.006-4 7 .08.703 1.725 1.722 3.5 1 1.695-.69 4-1.828 4-4.828z"></path>
+              <path d="M14 5.172C14 3.782 15.577 2.679 17.5 3c2.823.47 4.113 6.006 4 7-.08.703-1.725 1.722-3.5 1-1.695-.69-4-1.828-4-4.828z"></path>
+              <path d="M7 14c0 3.5 2.239 7 5 7s5-3.5 5-7c0-2.5-2.239-4-5-4s-5 1.5-5 4z"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">🐕 Animal Health</h3>
+          <p class="pillar-subtitle">Veterinary Medicine, Animal Ayurveda, Nutrition &amp; Care</p>
+        </div>
+      </div>
+
+      <!-- Pillar 3: Bird Health -->
+      <div class="pillar-card" id="pillarBird" onclick="selectPillar('bird')">
+        <div class="pillar-bg" style="background-image: url('https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=800&q=80');"></div>
+        <div class="pillar-overlay"></div>
+        <div class="pillar-content">
+          <div class="pillar-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M16 7h.01"></path>
+              <path d="M3.4 18H12a8 8 0 0 0 8-8V7a4 4 0 0 0-7.28-2.3L2 18z"></path>
+              <path d="m20 7 2 .5-2 .5"></path>
+              <path d="M10 18v3"></path>
+              <path d="M14 17.75V21"></path>
+              <path d="M7 18a6 6 0 0 0 3.84-10.61"></path>
+            </svg>
+          </div>
+          <h3 class="pillar-title">🐦 Bird Health</h3>
+          <p class="pillar-subtitle">Avian Medicine, Gentle Nutrition, Habitat Safety &amp; Avian Care</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Cross-Species Safety Warning Alert -->
+    <div class="cross-species-banner" id="crossSpeciesNotice">
+      <div class="icon">⚠️</div>
+      <div>
+        <strong style="color: #991b1b; font-size: 14px;">Cross-Species Safety Rule:</strong>
+        <p style="margin: 4px 0 0; color: #7f1d1d; font-size: 13px; line-height: 1.5;">
+          Never apply human medicines or human dosages to animals or birds. Common human pain relievers (like Paracetamol and Ibuprofen) can be fatal to cats and dogs. Always verify species compatibility before administering any treatment.
+        </p>
+      </div>
+    </div>
+
+    <!-- Sub-Species Selector (Interactive) -->
+    <div class="species-selector-box">
+      <div class="selector-heading">
+        <span id="selectorLabel">Who is this information for?</span>
+        <span id="activeSelectionSummary" style="color: #2563EB; font-weight: 700;">Human</span>
+      </div>
+      <div class="species-chips" id="speciesChipsContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <!-- Search & Live Safety Checker Bar -->
+    <div class="filter-bar">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="medSearchInput" placeholder="Search medicines, symptoms, or formulations for this species..." oninput="handleSearch(this.value)">
+      </div>
+      <button class="safety-check-btn" onclick="openSafetyCheckModal()">
+        <span>🛡️ Cross-Species Safety Check</span>
+      </button>
+    </div>
+
+    <!-- Evidence Legend -->
+    <div style="display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; font-size: 12px; color: #64748b;">
+      <span style="font-weight: 700; color: #334155;">Evidence Key:</span>
+      <span class="evidence-badge strong">🟢 Strong Clinical Evidence</span>
+      <span class="evidence-badge traditional">🔵 Traditional Ayurvedic / Herbal Use</span>
+      <span class="evidence-badge limited">🟡 Limited Evidence</span>
+      <span class="evidence-badge safety_concern">🔴 Safety Concern / Contraindicated</span>
+    </div>
+
+    <!-- Medicines Grid -->
+    <div class="medicines-grid" id="medicinesContainer">
+      <!-- Populated dynamically via JS -->
+    </div>
+
+  </div>
+
+  <!-- Safety Check Modal -->
+  <div class="modal-overlay" id="safetyModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: #0f172a;">🛡️ Cross-Species Medicine Safety Validator</h3>
+        <button onclick="closeSafetyCheckModal()" style="background: none; border: none; font-size: 18px; cursor: pointer;">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: #64748b; margin-top: 0;">
+          Verify whether a medicine or household substance is safe or toxic for a specific animal or bird before giving it.
+        </p>
+        
+        <div style="margin-bottom: 14px;">
+          <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px;">Target Species:</label>
+          <select id="safetySpeciesSelect" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit;">
+            <option value="cat">🐈 Cat (Feline)</option>
+            <option value="dog">🐕 Dog (Canine)</option>
+            <option value="bird">🦜 Bird / Parrot (Avian)</option>
+            <option value="cow">🐄 Cow / Cattle</option>
+            <option value="rabbit">🐇 Rabbit</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom: 16px;">
+          <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 6px;">Medicine or Substance Name:</label>
+          <input type="text" id="safetySubstanceInput" placeholder="e.g. Paracetamol, Ibuprofen, Tea Tree Oil, Garlic..." style="width: 100%; box-sizing: border-box; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color); font-family: inherit;">
+        </div>
+
+        <button onclick="executeSafetyCheck()" style="width: 100%; background: #2563EB; color: white; border: none; border-radius: 8px; padding: 12px; font-weight: 700; cursor: pointer;">
+          Run Safety Assessment
+        </button>
+
+        <div id="safetyResultArea" style="margin-top: 20px; display: none;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+  <script>
+    let _activeHealthcareType = 'human';
+    let _activeSpecies = 'human';
+    let _allMedicines = [];
+
+    const SPECIES_CONFIG = {
+      human: [
+        { id: 'human', name: 'Human (Adult / Child)', icon: '🧑' }
+      ],
+      animal: [
+        { id: 'all_animals', name: 'All Animals', icon: '🐾' },
+        { id: 'dog', name: 'Dog', icon: '🐕' },
+        { id: 'cat', name: 'Cat', icon: '🐈' },
+        { id: 'cow', name: 'Cow / Cattle', icon: '🐄' },
+        { id: 'buffalo', name: 'Buffalo', icon: '🐃' },
+        { id: 'goat', name: 'Goat', icon: '🐐' },
+        { id: 'sheep', name: 'Sheep', icon: '🐑' },
+        { id: 'horse', name: 'Horse', icon: '🐎' },
+        { id: 'rabbit', name: 'Rabbit', icon: '🐇' }
+      ],
+      bird: [
+        { id: 'all_birds', name: 'All Birds', icon: '🪶' },
+        { id: 'parrot', name: 'Parrot / Macaw', icon: '🦜' },
+        { id: 'pigeon', name: 'Pigeon / Dove', icon: '🕊️' },
+        { id: 'chicken', name: 'Chicken / Poultry', icon: '🐔' },
+        { id: 'duck', name: 'Duck / Waterfowl', icon: '🦆' },
+        { id: 'lovebird', name: 'Lovebird', icon: '🐤' },
+        { id: 'cockatiel', name: 'Cockatiel', icon: '🦜' },
+        { id: 'finch', name: 'Finch / Canary', icon: '🐦' }
+      ]
+    };
+
+    function selectPillar(type) {
+      _activeHealthcareType = type;
+      
+      // Update visual active state on cards
+      document.querySelectorAll('.pillar-card').forEach(c => c.classList.remove('active'));
+      if (type === 'human') document.getElementById('pillarHuman').classList.add('active');
+      if (type === 'animal') document.getElementById('pillarAnimal').classList.add('active');
+      if (type === 'bird') document.getElementById('pillarBird').classList.add('active');
+
+      // Set default species for category
+      if (type === 'human') _activeSpecies = 'human';
+      else if (type === 'animal') _activeSpecies = 'all_animals';
+      else if (type === 'bird') _activeSpecies = 'all_birds';
+
+      renderSpeciesChips();
+      fetchAndRenderMedicines();
+    }
+
+    function renderSpeciesChips() {
+      const container = document.getElementById('speciesChipsContainer');
+      const list = SPECIES_CONFIG[_activeHealthcareType] || [];
+      
+      container.innerHTML = list.map(sp => `
+        <button class="species-chip ${(_activeSpecies === sp.id) ? 'active' : ''}" onclick="selectSpecies('${sp.id}', '${sp.name}')">
+          <span>${sp.icon}</span>
+          <span>${sp.name}</span>
+        </button>
+      `).join('');
+
+      document.getElementById('activeSelectionSummary').textContent = 
+        `${_activeHealthcareType.toUpperCase()} • ${_activeSpecies.replace('_', ' ').toUpperCase()}`;
+    }
+
+    function selectSpecies(id, name) {
+      _activeSpecies = id;
+      renderSpeciesChips();
+      fetchAndRenderMedicines();
+    }
+
+    async function fetchAndRenderMedicines() {
+      const container = document.getElementById('medicinesContainer');
+      container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">Loading verified clinical information...</div>`;
+
+      try {
+        const queryParams = new URLSearchParams({
+          healthcare_type: _activeHealthcareType,
+          ...( (_activeSpecies !== 'all_animals' && _activeSpecies !== 'all_birds') ? { species: _activeSpecies } : {} )
+        });
+
+        const res = await fetch(`http://localhost:3001/api/healthcare/medicines?${queryParams.toString()}`);
+        const data = await res.json();
+        _allMedicines = data.medicines || [];
+        renderMedicinesList(_allMedicines);
+      } catch (err) {
+        console.warn('API error, falling back to local dataset', err);
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #ef4444;">Could not connect to healthcare engine. Please ensure server is running.</div>`;
+      }
+    }
+
+    function renderMedicinesList(items) {
+      const container = document.getElementById('medicinesContainer');
+      if (!items || items.length === 0) {
+        container.innerHTML = `
+          <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; background: white; border-radius: 16px; border: 1px solid var(--border-color);">
+            <div style="font-size: 36px; margin-bottom: 10px;">🔍</div>
+            <h3 style="font-size: 16px; color: #0f172a; margin: 0 0 6px;">No medicines found for this specific species filter</h3>
+            <p style="font-size: 13px; color: #64748b; margin: 0;">Try selecting a different species or searching with broader keywords.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = items.map(med => {
+        const badgeClass = med.healthcare_type;
+        const evidenceClass = med.evidence_level || 'traditional';
+        const evidenceLabel = 
+          evidenceClass === 'strong' ? '🟢 Strong Evidence' :
+          evidenceClass === 'traditional' ? '🔵 Traditional Care' :
+          evidenceClass === 'limited' ? '🟡 Limited Evidence' : '🔴 Safety Concern';
+
+        // Render species compatibility tags
+        let compatHtml = '';
+        if (med.species_compatibility) {
+          compatHtml = Object.entries(med.species_compatibility).map(([sp, safe]) => `
+            <span class="compat-pill ${safe ? 'safe' : 'unsafe'}">
+              ${safe ? '✓' : '✗'} ${sp.charAt(0).toUpperCase() + sp.slice(1)}
+            </span>
+          `).join('');
+        }
+
+        return `
+          <div class="med-card">
+            <div>
+              <div class="med-header">
+                <span class="species-badge ${badgeClass}">
+                  ${med.healthcare_type === 'human' ? '🧑 HUMAN' : med.healthcare_type === 'animal' ? '🐕 VETERINARY' : '🐦 AVIAN'}
+                </span>
+                <span class="evidence-badge ${evidenceClass}">${evidenceLabel}</span>
+              </div>
+              <h3 class="med-title">${med.name}</h3>
+              <p class="med-generic"><strong>Generic:</strong> ${med.generic_name}</p>
+              
+              <div class="med-section-label">Indications</div>
+              <p class="med-text">${med.indications}</p>
+
+              <div class="med-section-label">Pharmacology & Mechanism</div>
+              <p class="med-text">${med.how_it_works}</p>
+
+              ${med.warnings ? `
+                <div class="med-warning-box">
+                  <strong>⚠️ Critical Caution:</strong> ${med.warnings}
+                </div>
+              ` : ''}
+            </div>
+
+            <div>
+              <div class="compatibility-bar">
+                <span style="font-size: 11px; font-weight: 800; color: #64748b; align-self: center; margin-right: 4px;">Species:</span>
+                ${compatHtml}
+              </div>
+              <div style="margin-top: 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #94a3b8;">
+                <span>Source: ${med.source || 'Clinical Formulary'}</span>
+                <span>${med.prescription_required ? '🔒 Rx Required' : '🌿 OTC Available'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function handleSearch(val) {
+      const q = val.toLowerCase().trim();
+      if (!q) {
+        renderMedicinesList(_allMedicines);
+        return;
+      }
+      const filtered = _allMedicines.filter(m => 
+        m.name.toLowerCase().includes(q) ||
+        m.generic_name.toLowerCase().includes(q) ||
+        m.indications.toLowerCase().includes(q) ||
+        m.category.toLowerCase().includes(q)
+      );
+      renderMedicinesList(filtered);
+    }
+
+    function openSafetyCheckModal() {
+      document.getElementById('safetyModal').classList.add('open');
+    }
+
+    function closeSafetyCheckModal() {
+      document.getElementById('safetyModal').classList.remove('open');
+    }
+
+    async function executeSafetyCheck() {
+      const substance = document.getElementById('safetySubstanceInput').value.trim();
+      const species = document.getElementById('safetySpeciesSelect').value;
+      const resArea = document.getElementById('safetyResultArea');
+
+      if (!substance) {
+        alert('Please enter a medicine or substance name.');
+        return;
+      }
+
+      resArea.style.display = 'block';
+      resArea.innerHTML = `<div style="text-align: center; padding: 16px; color: #64748b;">Evaluating toxicology and species compatibility...</div>`;
+
+      try {
+        const res = await fetch('http://localhost:3001/api/healthcare/safety-check', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: substance, species })
+        });
+        const data = await res.json();
+
+        if (!data.safe) {
+          resArea.innerHTML = `
+            <div style="background: #fef2f2; border: 2px solid #ef4444; border-radius: 12px; padding: 16px;">
+              <div style="display: flex; gap: 8px; align-items: center; color: #991b1b; font-weight: 800; font-size: 14px; margin-bottom: 6px;">
+                <span>🚨 ${data.risk_level}</span>
+              </div>
+              <p style="margin: 0 0 8px; font-weight: 700; color: #7f1d1d; font-size: 13px;">${data.warning}</p>
+              <p style="margin: 0 0 10px; color: #991b1b; font-size: 12px; line-height: 1.5;">${data.rationale}</p>
+              <div style="background: #ffffff; border-radius: 6px; padding: 8px 12px; font-size: 12px; font-weight: 700; color: #b91c1c;">
+                Action: ${data.action}
+              </div>
+            </div>
+          `;
+        } else {
+          resArea.innerHTML = `
+            <div style="background: #f0fdf4; border: 1.5px solid #86efac; border-radius: 12px; padding: 16px; color: #166534;">
+              <strong style="font-size: 13px;">✓ Safe Profile</strong>
+              <p style="margin: 6px 0 0; font-size: 12.5px; line-height: 1.5;">${data.message}</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        resArea.innerHTML = `<div style="color: #ef4444; font-size: 13px;">Error contacting safety validator service.</div>`;
+      }
+    }
+
+    // Init on Load
+    document.addEventListener('DOMContentLoaded', () => {
+      selectPillar('human');
+    });
+  </script>
+</body>
+</html>

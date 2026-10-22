@@ -207,11 +207,23 @@ function getProductImage(name, tag) {
 }
 
 // ── TOAST ────────────────────────────
-function showToast(msg, duration = 3000) {
-  const container = document.getElementById('toastContainer');
-  if (!container) return;
+function showToast(msg, duration = 3000, type = 'info') {
+  let container = document.getElementById('toastContainer');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container';
+    document.body.appendChild(container);
+  }
   const toast = document.createElement('div');
-  toast.className = 'toast';
+  toast.className = 'toast' + (type === 'error' ? ' toast-error' : type === 'success' ? ' toast-success' : '');
+  if (type === 'error') {
+    toast.style.background = '#dc2626';
+    toast.style.color = '#ffffff';
+  } else if (type === 'success') {
+    toast.style.background = '#166534';
+    toast.style.color = '#ffffff';
+  }
   toast.textContent = msg;
   container.appendChild(toast);
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateY(16px)'; setTimeout(() => toast.remove(), 300); }, duration);
@@ -630,7 +642,7 @@ function confirmPaymentWhatsApp() {
     `💰 *Total Amount Paid*: ₹${total}%0A%0A` +
     `📝 *Action*: I have completed the payment via UPI. Please confirm my order!`;
 
-  const whatsappURL = `https://wa.me/919766441863?text=${message}`;
+  const whatsappURL = `https://wa.me/?text=${message}`;
   window.open(whatsappURL, '_blank');
 
   // Optional: clear cart after redirecting to whatsapp if user confirms?

@@ -24,6 +24,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Prakriti Pariksha — Ayurvedic Constitution — MedInVedic</title>
+  <meta name="description" content="AI Prakriti Pariksha: Discover your unique Ayurvedic mind-body constitution with clinically grounded constitutional analysis.">
   <link rel="stylesheet" href="../css/style.css" />
   <script src="../js/analytics.js"></script>
   <script src="../js/auth-guard.js"></script>
@@ -323,6 +324,47 @@
     document.getElementById('vVal').textContent = vPct + '%';
     document.getElementById('pVal').textContent = pPct + '%';
     document.getElementById('kVal').textContent = kPct + '%';
+
+    // Determine accurate constitution
+    let prakritiName = 'Tridoshic';
+    let desc = 'Analysis indicates a balanced tridoshic constitution where Vata, Pitta, and Kapha work in equilibrium.';
+    let herbTip = 'Triphala and Ashwagandha to sustain doshic balance and cellular vitality.';
+    let lifeTip = 'Maintain regular circadian rhythm, balanced seasonal eating, and mindful breathing.';
+
+    if (tally.v >= 2) {
+      prakritiName = 'Vata-Pitta';
+      desc = 'Analysis indicates a dynamic Vata-dominant constitution with high agility, alertness, and active metabolism.';
+      herbTip = 'Ashwagandha to balance nervous fatigue and Brahmi for calm mental clarity.';
+      lifeTip = 'Maintain warm, cooked meals, consistent sleep timings, and daily oil massage (Abhyanga).';
+    } else if (tally.p >= 2) {
+      prakritiName = 'Pitta-Kapha';
+      desc = 'Analysis indicates strong metabolic fire (Agni), high focus, robust immunity, and structured stamina.';
+      herbTip = 'Amla and Shatavari to soothe excess internal heat and support digestive harmony.';
+      lifeTip = 'Favor cooling foods, avoid excess spicy or fried items, and practice sheetali pranayama.';
+    } else if (tally.k >= 2) {
+      prakritiName = 'Vata-Kapha';
+      desc = 'Analysis indicates steady endurance, calm composure, and deep resilience, requiring warming stimulation.';
+      herbTip = 'Trikatu and Tulsi-Giloy to kindle digestive fire and eliminate sluggishness.';
+      lifeTip = 'Engage in invigorating morning workouts, light warm foods, and avoid daytime naps.';
+    }
+
+    const titleEl = document.getElementById('doshaTitle');
+    const descEl = document.getElementById('doshaDesc');
+    const herbEl = document.getElementById('herbTip');
+    const lifeEl = document.getElementById('lifeTip');
+
+    if (titleEl) titleEl.textContent = `${prakritiName} Prakriti`;
+    if (descEl) descEl.textContent = desc;
+    if (herbEl) herbEl.textContent = herbTip;
+    if (lifeEl) lifeEl.textContent = lifeTip;
+
+    // Persist real assessed Prakriti to User Profile
+    try {
+      const profile = JSON.parse(localStorage.getItem('mv_user_profile') || '{}');
+      profile.prakriti = prakritiName;
+      profile.updatedAt = new Date().toISOString();
+      localStorage.setItem('mv_user_profile', JSON.stringify(profile));
+    } catch (e) {}
 
     setTimeout(() => {
       document.getElementById('vBar').style.width = vPct + '%';

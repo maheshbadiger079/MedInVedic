@@ -26,6 +26,10 @@
   <title>MedInVedic AI — RAG Health Intelligence Assistant</title>
   <meta name="description" content="Evidence-grounded health intelligence. Ask about symptoms, medicines, and Ayurvedic remedies — answers retrieved from WHO, NHS, ICMR, and Charaka Samhita sources." />
   <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
+  <link rel="stylesheet" href="../css/rag-engine.css" />
+  <link rel="stylesheet" href="../css/ai-model-selector.css" />
+  <script src="../js/medical-kb.js"></script>
+  <script src="../js/ai-model-selector.js"></script>
   <script src="../js/rag-knowledge-base.js"></script>
   <script src="../js/rag-safety.js"></script>
   <script src="../js/rag-retriever.js"></script>
@@ -119,7 +123,7 @@
     .welcome-icon { font-size: 48px; margin-bottom: 16px; }
     .welcome h1 { 
       font-size: clamp(28px, 5vw, 40px); font-weight: 900; 
-      color: #166534; margin-bottom: 12px; letter-spacing: -0.5px; 
+      color: #1a1a1a; margin-bottom: 12px; letter-spacing: -0.5px; 
     }
     .welcome p { font-size: 15px; color: #2d4a3e; max-width: 580px; margin: 0 auto 28px; line-height: 1.6; font-weight: 500; }
 
@@ -143,7 +147,8 @@
     /* ── MESSAGES ── */
     .msg { max-width: 88%; animation: slideUp 0.25s ease-out; }
     .msg-user { align-self: flex-end; }
-    .msg-ai { align-self: flex-start; }
+    .msg-ai { align-self: flex-start; width: 100%; max-width: 100%; }
+    .msg-ai .rag-response-card { width: 100%; margin: 6px 0 12px; }
 
     @keyframes slideUp { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
@@ -326,6 +331,7 @@
     </div>
   </div>
   <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+    <div id="aiModelSelectorContainer"></div>
     <div class="rag-pill"><div class="rag-dot"></div> RAG ACTIVE</div>
     <select class="lang-select" id="langSel" onchange="changeLang(this.value)">
       <option value="en-IN">English</option>
@@ -416,6 +422,9 @@ function checkRAGModules() {
 
 window.addEventListener('load', () => {
   checkRAGModules();
+  if (typeof MedInVedicModelSelector !== 'undefined') {
+    MedInVedicModelSelector.attachTo('aiModelSelectorContainer', { alignRight: true });
+  }
   const params = new URLSearchParams(window.location.search);
   const q = params.get('q');
   if (q) {
@@ -451,10 +460,13 @@ function addUserMsg(text) {
   scrollBottom();
 }
 
-function addAIMsg(html) {
+function addAIMsg(html, modelName) {
+  const activeModel = (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedModel() : null;
+  const label = modelName || (activeModel ? activeModel.name : null);
+  const modelTag = label ? ` <span style="font-size:10px; font-weight:800; background:rgba(22,101,52,0.1); color:var(--primary); padding:2px 8px; border-radius:50px; margin-left:6px;">${escHtml(label)}</span>` : '';
   const d = document.createElement('div');
   d.className = 'msg msg-ai';
-  d.innerHTML = `<div class="msg-label">🤖 MedInVedic AI</div><div class="bubble-ai">${html}</div>`;
+  d.innerHTML = `<div class="msg-label">🤖 MedInVedic AI${modelTag}</div><div class="bubble-ai">${html}</div>`;
   chatArea.appendChild(d);
   scrollBottom();
   return d;
@@ -526,15 +538,31 @@ function processQuery(query) {
       return;
     }
 
-    // RAG retrieval
-    const retrievalResult = RAG_RETRIEVER.retrieve(query);
+    // Model-aware RAG retrieval
+    const activeModel = (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedModel() : null;
+    let topK = 5;
+    if (activeModel) {
+      if (activeModel.id === 'medinvedic-expert') topK = 8;
+      else if (activeModel.id === 'medinvedic-advanced') topK = 6;
+      else if (activeModel.id === 'medinvedic-quick') topK = 3;
+    }
+
+    const retrievalResult = RAG_RETRIEVER.retrieve(query, topK);
     const chunks = retrievalResult.results || retrievalResult.chunks || [];
 
     // Generate structured response
     const response = RAG_GENERATOR.buildStructuredResponse(query, safetyResult, chunks);
+    if (activeModel) {
+      response.model = {
+        id: activeModel.id,
+        name: activeModel.name,
+        effort: (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedEffort() : 'medium'
+      };
+    }
 
     renderRAGResponse(response, safetyResult);
-    conversationHistory.push({ role: 'ai', content: response.directAnswer || 'Information retrieved.' });
+    const summaryText = (response.sections && response.sections.directAnswer) ? response.sections.directAnswer.replace(/<[^>]+>/g, '').substring(0, 300) : (response.directAnswer || 'Information retrieved.');
+    conversationHistory.push({ role: 'ai', content: summaryText });
 
   } catch (err) {
     console.error('RAG error:', err);
@@ -544,75 +572,27 @@ function processQuery(query) {
 
 /* ── RENDER RAG RESPONSE ── */
 function renderRAGResponse(response, safetyResult) {
-  const triage = safetyResult.intent || 'NORMAL';
-  const hasEvidence = response.evidenceStatus && response.evidenceStatus !== 'INSUFFICIENT';
+  const activeModel = (typeof MedInVedicModelSelector !== 'undefined') ? MedInVedicModelSelector.getSelectedModel() : null;
+  const modelBadge = activeModel ? `<span style="font-size:10px; background:rgba(34,197,94,0.15); color:var(--primary); font-weight:800; padding:2px 8px; border-radius:12px; margin-left:6px;">${activeModel.name}</span>` : '';
 
-  if (!hasEvidence && !response.directAnswer) {
+  // Check if truly insufficient evidence
+  if (response.type === 'insufficient_evidence' || (!response.sections?.directAnswer && (!response.sources || response.sources.length === 0))) {
     addAIMsg(`
       <div style="font-size:13.5px; color:var(--text); line-height:1.6;">
-        <strong style="color:#166534;">Insufficient verified information found</strong><br><br>
+        <strong style="color: #0f172a;">Insufficient verified information found</strong><br><br>
         ${response.message || 'I could not find verified clinical information for this specific query.'}<br><br>
         <span style="color:var(--amber);">💡 Please consult a qualified doctor for personalized medical advice.</span>
-        ${response.recommendation ? `<br><br>📋 <strong>Suggestion:</strong> ${response.recommendation}` : ''}
       </div>
     `);
     return;
   }
 
-  const cardId = 'rc_' + Date.now();
-  const triageCls = `triage-${triage}`;
-  const sourcesHtml = (response.sources || []).slice(0, 3).map(s => `
-    <div class="source-bar">
-      📚 <span class="src-org">${s.source || s.org || 'Medical Source'}</span>
-      ${s.tier ? `<span class="evidence-chip">${s.tier}</span>` : ''}
-      ${s.evidence_level ? `<span class="evidence-chip">${s.evidence_level}</span>` : ''}
-      ${s.doc ? `<span style="font-size:11px; color:var(--dim);">· ${s.doc}</span>` : ''}
-    </div>
-  `).join('');
-
-  // Build tabs content
-  const modernHtml = buildModernTab(response);
-  const ayurvedaHtml = buildAyurvedaTab(response);
-  const selfcareHtml = buildSelfCareTab(response);
-
-  const html = `
-    <div class="result-card" id="${cardId}">
-      <div class="rc-head">
-        <div>
-          <div class="rc-title">${escHtml(response.conditionName || response.topic || 'Health Information')}</div>
-          <div class="rc-sub">RAG-Retrieved · Evidence-Grounded</div>
-        </div>
-        <span class="triage-badge ${triageCls}">🚦 ${triage}</span>
-      </div>
-      <div class="rc-body">
-        ${response.redFlags && response.redFlags.length ? `
-        <div class="emergency-banner" style="background:rgba(245,158,11,0.08); border-color:rgba(245,158,11,0.3); color:#fcd34d; margin-bottom:14px;">
-          ⚠️ <strong>Red Flags — Seek Medical Attention If:</strong><br>
-          ${response.redFlags.slice(0,3).map(f => `• ${f}`).join('<br>')}
-        </div>` : ''}
-
-        <div class="rc-tabs">
-          <button class="rc-tab active" onclick="switchRCTab(this, '${cardId}', 'modern')">Modern Medicine</button>
-          <button class="rc-tab" onclick="switchRCTab(this, '${cardId}', 'ayurveda')">Ayurveda</button>
-          <button class="rc-tab" onclick="switchRCTab(this, '${cardId}', 'selfcare')">Self-Care</button>
-        </div>
-
-        <div class="rc-pane active" id="${cardId}_modern">${modernHtml}</div>
-        <div class="rc-pane" id="${cardId}_ayurveda">${ayurvedaHtml}</div>
-        <div class="rc-pane" id="${cardId}_selfcare">${selfcareHtml}</div>
-
-        ${sourcesHtml}
-
-        <div style="margin-top:10px; font-size:11px; color:var(--dim); padding:8px; background:rgba(245,158,11,0.04); border:1px solid rgba(245,158,11,0.12); border-radius:8px;">
-          ⚕️ ${response.disclaimer || 'This information is for educational purposes only. Consult a qualified healthcare professional before making any medical decisions. Not a substitute for professional medical care.'}
-        </div>
-      </div>
-    </div>
-  `;
+  // Render the verified clinical RAG response card from rag-generator.js
+  const cardHtml = RAG_GENERATOR.renderResponseCard(response);
 
   const wrapper = document.createElement('div');
   wrapper.className = 'msg msg-ai';
-  wrapper.innerHTML = `<div class="msg-label">🤖 MedInVedic AI</div>${html}`;
+  wrapper.innerHTML = `<div class="msg-label">🤖 MedInVedic AI ${modelBadge}</div>${cardHtml}`;
   chatArea.appendChild(wrapper);
   scrollBottom();
 }
@@ -744,7 +724,7 @@ function processFallbackQuery(query) {
   if (foundKey && window.MEDICAL_KB[foundKey]) {
     const d = window.MEDICAL_KB[foundKey];
     addAIMsg(`<div style="font-size:13.5px; line-height:1.6;">
-      <strong style="color:#166534; font-size:15px;">📋 ${d.condition || foundKey}</strong><br><br>
+      <strong style="color: #1a1a1a; font-size:15px;">📋 ${d.condition || foundKey}</strong><br><br>
       ${d.description || ''}<br><br>
       <span style="color:var(--muted); font-size:11.5px;">Source: MedInVedic Medical Knowledge Base · ⚕️ Not a diagnosis — consult your doctor.</span>
     </div>`);

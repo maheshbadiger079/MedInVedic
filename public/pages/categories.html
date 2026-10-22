@@ -686,9 +686,9 @@
       <span>MedInVedic</span>
     </a>
 
-    <div class="nav-location" onclick="showToast('📍 Delivery location: Pune 412115')">
+    <div class="nav-location" onclick="showToast('📍 Delivery location: ' + (document.getElementById('deliveryLocationHeader')?.textContent || 'Current Location'))" style="cursor: pointer;">
       <span>📍</span>
-      <span id="deliveryLocationHeader">Pune 412115</span>
+      <span id="deliveryLocationHeader">Detecting...</span>
     </div>
 
     <div class="nav-actions">
@@ -1052,6 +1052,32 @@
     document.addEventListener('DOMContentLoaded', () => {
       setCatalogMode('modern');
       updateBadge();
+      const savedLoc = localStorage.getItem('mv_delivery_location');
+      const headerLoc = document.getElementById('deliveryLocationHeader');
+      if (savedLoc) {
+        if (headerLoc) headerLoc.textContent = savedLoc;
+      } else if (headerLoc) {
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition(async (pos) => {
+            try {
+              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}&zoom=18&addressdetails=1`);
+              if (res.ok) {
+                const data = await res.json();
+                const a = data.address || {};
+                const loc = a.suburb || a.city || a.town || a.county || 'Detected Area';
+                headerLoc.textContent = loc;
+                localStorage.setItem('mv_delivery_location', loc);
+                return;
+              }
+            } catch (e) {}
+            headerLoc.textContent = 'Current Location';
+          }, () => {
+            headerLoc.textContent = 'Current Location';
+          }, { timeout: 8000 });
+        } else {
+          headerLoc.textContent = 'Current Location';
+        }
+      }
     });
   </script>
 </body>

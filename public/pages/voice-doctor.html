@@ -19,6 +19,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vani Vaidya — Voice-First AI Health Assistant — MedInVedic</title>
+  <meta name="description" content="Vani Vaidya: Multilingual voice-first AI health assistant providing interactive health guidance, symptom analysis, and remedy suggestions.">
   
   <!-- Stylesheets -->
   <link rel="stylesheet" href="../css/style.css?v=v_RAG_v90" />
@@ -71,7 +72,7 @@
   <div class="sidebar-body">
     <a href="../index.html" class="sidebar-link">🏠 Home</a>
     <a href="ai-assistant.html" class="sidebar-link" style="color: #3b82f6; font-weight: 800;">🧠 AI Health Assistant</a>
-    <a href="voice-doctor.html" class="sidebar-link active" style="color: #22c55e; font-weight: 800;">🎙️ Vani Vaidya (Voice AI)</a>
+    <a href="voice-doctor.html" class="sidebar-link active" style="color: #1a1a1a; font-weight: 800;">🎙️ Vani Vaidya (Voice AI)</a>
     <a href="categories.html" class="sidebar-link">📦 Categories</a>
     <a href="consult.html" class="sidebar-link">👨‍⚕️ Consult</a>
     <a href="healing-hub.html" class="sidebar-link">✨ Healing Hub</a>
@@ -123,7 +124,7 @@
   <!-- 50+ Multilingual Selector Panel (Indian Prioritized) -->
   <div class="vani-lang-panel">
     <div class="vani-lang-header">
-      <div style="font-size: 11.5px; font-weight: 900; color: #22c55e; letter-spacing: 2px; text-transform: uppercase;">
+      <div style="font-size: 11.5px; font-weight: 900; color: #1a1a1a; letter-spacing: 2px; text-transform: uppercase;">
         🇮🇳 50+ Languages Supported (Select Preferred)
       </div>
       <input type="text" id="langSearchInput" class="vani-lang-search" placeholder="🔍 Search language..." oninput="filterLanguages(this.value)">
@@ -170,7 +171,7 @@
            <!-- Safe Next Steps -->
            <div class="insight-box" style="background: #f0fdf4; border-color: #86efac;">
               <span style="font-size: 28px; display: block; margin-bottom: 8px;">🥣</span>
-              <strong style="color: #15803d; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Safe Next Steps</strong>
+              <strong style="color: #1a1a1a; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Safe Next Steps</strong>
               <div style="font-size: 14.5px; margin-top: 8px; color: #1e293b; line-height: 1.6; font-weight: 500;" id="resRemedy"></div>
            </div>
            
@@ -186,7 +187,7 @@
               <span style="font-size: 28px; display: block; margin-bottom: 8px;">💊</span>
               <strong style="color: #b45309; font-size: 13px; text-transform: uppercase; letter-spacing: 1px;">Medicine Information</strong>
               <div style="font-size: 14.5px; margin-top: 8px; color: #1e293b; line-height: 1.6; font-weight: 500;" id="resMedicine"></div>
-              <a href="#" id="buyMedicineBtn" class="shop-btn" style="color: #b45309; font-weight: 900;">View in Pharmacy 🛒</a>
+              <a href="categories.html" id="buyMedicineBtn" class="shop-btn" style="color: #b45309; font-weight: 900;">View in Pharmacy 🛒</a>
            </div>
         </div>
 
@@ -392,7 +393,7 @@ TSH: 5.8 µIU/mL" style="width:100%; height:120px; padding:12px; border-radius:1
         <p style="margin:0 0 6px; color:#f87171;">${m.warnings}</p>
         <p style="margin:0 0 6px;"><strong>Dosage Boundary:</strong> ${m.dosageGuidance}</p>
         <p style="margin:0 0 6px; color:#60a5fa;"><strong>Ayurvedic Parallel:</strong> ${m.ayurvedicParallel}</p>
-        <div style="margin-top:10px;"><a href="../${m.storeLink}" style="color:#fbbf24; font-weight:800; text-decoration:none;">View in Pharmacy Hub 🛒</a></div>
+        <div style="margin-top:10px;"><a href="${m.storeLink}" style="color:#fbbf24; font-weight:800; text-decoration:none;">View in Pharmacy Hub 🛒</a></div>
       `;
     } else {
       resContainer.innerHTML = `<div style="color:#f87171;">${res.error}</div>`;

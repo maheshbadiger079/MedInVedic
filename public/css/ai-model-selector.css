@@ -1,0 +1,392 @@
+/**
+ * ai-model-selector.css — MedInVedic AI Model Selector Dropdown
+ * ══════════════════════════════════════════════════════════════
+ * Matches the reference design with high-fidelity dark surface,
+ * clear typography, active checkmarks, badges, and smooth animations.
+ */
+
+/* ── TRIGGER BUTTON ── */
+.mv-model-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(22, 101, 52, 0.08);
+  border: 1.5px solid rgba(22, 101, 52, 0.2);
+  color: #166534;
+  font-family: inherit;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  user-select: none;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.mv-model-trigger:hover,
+.mv-model-trigger:focus-visible {
+  background: rgba(22, 101, 52, 0.14);
+  border-color: #22c55e;
+  color: #14532d;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.mv-model-trigger.is-open {
+  background: rgba(22, 101, 52, 0.18);
+  border-color: #166534;
+}
+
+.mv-model-trigger .mv-trigger-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #166534;
+  font-size: 13px;
+}
+
+.mv-model-trigger .mv-trigger-label {
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+.mv-model-trigger .mv-trigger-chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.2s ease;
+  color: #166534;
+}
+
+.mv-model-trigger.is-open .mv-trigger-chevron {
+  transform: rotate(180deg);
+}
+
+/* Dark mode / dark header variant */
+.mv-dark-header .mv-model-trigger {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  color: #f3f4f6;
+}
+
+.mv-dark-header .mv-model-trigger:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* ── DROPDOWN PANEL (Matches reference image) ── */
+.mv-model-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  background: #18191c;
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.6), 0 8px 20px rgba(0, 0, 0, 0.3);
+  z-index: 99999;
+  padding: 10px 0;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Inter", sans-serif;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-6px) scale(0.98);
+  transform-origin: top left;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.18s;
+  pointer-events: none;
+}
+
+.mv-model-dropdown.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Right alignment modifier */
+.mv-model-dropdown.align-right {
+  left: auto;
+  right: 0;
+  transform-origin: top right;
+}
+
+/* ── MODEL LIST ITEM ── */
+.mv-model-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.mv-model-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 12px 20px;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  text-align: left;
+  transition: background 0.14s ease;
+  outline: none;
+  user-select: none;
+  color: inherit;
+}
+
+.mv-model-item:hover,
+.mv-model-item:focus-visible {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mv-model-item.is-active {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.mv-model-item-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mv-model-icon {
+  width: 20px;
+  height: 20px;
+  margin-top: 1px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a1a1aa;
+}
+
+.mv-model-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+  min-width: 0;
+}
+
+.mv-model-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mv-model-name {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: #f4f4f5;
+  letter-spacing: -0.2px;
+}
+
+.mv-model-badge {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #d4d4d8;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  letter-spacing: 0.1px;
+}
+
+.mv-model-badge.premium {
+  background: #27272a;
+  color: #f4f4f5;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.mv-model-desc {
+  font-size: 12.5px;
+  color: #94969e;
+  line-height: 1.4;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* ── CHECKMARK ── */
+.mv-model-check {
+  width: 18px;
+  height: 18px;
+  margin-left: 12px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #38bdf8; /* Blue checkmark as in reference screenshot */
+}
+
+/* ── DIVIDER ── */
+.mv-model-divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 8px 0;
+}
+
+/* ── FOOTER SETTINGS (Response Effort) ── */
+.mv-model-footer {
+  padding: 4px 20px 8px;
+}
+
+.mv-effort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  width: 100%;
+  color: inherit;
+  outline: none;
+  border-radius: 8px;
+  transition: opacity 0.15s ease;
+}
+
+.mv-effort-row:hover,
+.mv-effort-row:focus-visible {
+  opacity: 0.9;
+}
+
+.mv-effort-label {
+  font-size: 13px;
+  color: #94969e;
+  font-weight: 400;
+}
+
+.mv-effort-val {
+  font-size: 13px;
+  font-weight: 600;
+  color: #f4f4f5;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.mv-effort-val svg {
+  width: 12px;
+  height: 12px;
+  color: #a1a1aa;
+}
+
+.mv-model-caption {
+  font-size: 11px;
+  color: #71717a;
+  line-height: 1.4;
+  margin: 6px 0 0 0;
+  font-weight: 400;
+}
+
+/* ── UPGRADE TOAST / MODAL ── */
+.mv-upgrade-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.95);
+  background: #18191c;
+  color: #f4f4f5;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 24px 28px;
+  max-width: 420px;
+  width: 90vw;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+  z-index: 100000;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.mv-upgrade-dialog.is-open {
+  display: block;
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.mv-upgrade-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 99999;
+  display: none;
+}
+
+.mv-upgrade-backdrop.is-open {
+  display: block;
+}
+
+.mv-upgrade-title {
+  font-size: 18px;
+  font-weight: 800;
+  margin-bottom: 8px;
+  color: #f4f4f5;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mv-upgrade-text {
+  font-size: 13.5px;
+  color: #a1a1aa;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.mv-upgrade-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.mv-upgrade-btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: 0.15s;
+}
+
+.mv-upgrade-btn.cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: #f4f4f5;
+}
+
+.mv-upgrade-btn.cancel:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.mv-upgrade-btn.confirm {
+  background: linear-gradient(135deg, #166534, #22c55e);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.3);
+}
+
+.mv-upgrade-btn.confirm:hover {
+  transform: translateY(-1px);
+}
+
+/* ── MOBILE RESPONSIVENESS ── */
+@media (max-width: 640px) {
+  .mv-model-dropdown {
+    width: min(360px, calc(100vw - 24px));
+    position: fixed;
+    top: auto !important;
+    bottom: 20px !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translate(-50%, 20px) scale(0.96);
+  }
+
+  .mv-model-dropdown.is-open {
+    transform: translate(-50%, 0) scale(1);
+  }
+}

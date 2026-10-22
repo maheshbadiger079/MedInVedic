@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Record Vault — Secure Personal Health Records & PHR RAG — MedInVedic</title>
+  <meta name="description" content="MedInVedic Record Vault: Secure encrypted storage for all your prescriptions, lab reports, imaging, and discharge summaries with interactive Personal Health Record RAG." />
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../favicon.png" />
+  <link rel="stylesheet" href="../css/style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --primary: #15803d;
+      --primary-light: #22c55e;
+      --primary-subtle: #f0fdf4;
+      --primary-border: #dcfce7;
+      --text-dark: #0f172a;
+      --text-muted: #64748b;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .vault-nav {
+      background: #ffffff;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .vault-nav-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: var(--text-dark);
+    }
+    .vault-nav-left img {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+    }
+    .vault-nav-title {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary);
+    }
+    .vault-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Container */
+    .vault-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* Header Banner */
+    .vault-header {
+      background: #ffffff;
+      border: 1px solid var(--primary-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .vault-header-info h1 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 6px;
+    }
+    .vault-header-info p {
+      color: var(--text-muted);
+      font-size: 14px;
+      max-width: 600px;
+      line-height: 1.5;
+    }
+    .vault-stats {
+      display: flex;
+      gap: 16px;
+    }
+    .stat-pill {
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      padding: 10px 18px;
+      border-radius: 12px;
+      text-align: center;
+    }
+    .stat-pill .num {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      display: block;
+    }
+    .stat-pill .lbl {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Grid Layout */
+    .vault-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 24px;
+    }
+    @media (max-width: 960px) {
+      .vault-layout { grid-template-columns: 1fr; }
+    }
+
+    /* Upload Zone */
+    .upload-card {
+      background: #ffffff;
+      border: 2px dashed #cbd5e1;
+      border-radius: 18px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-bottom: 24px;
+    }
+    .upload-card:hover {
+      border-color: var(--primary);
+      background: var(--primary-subtle);
+    }
+    .upload-icon {
+      font-size: 38px;
+      margin-bottom: 12px;
+    }
+    .upload-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 4px;
+    }
+    .upload-sub {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    /* Tabs & Document List */
+    .vault-panel {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .vault-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid #e2e8f0;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+    }
+    .v-tab {
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 99px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    .v-tab.active {
+      background: var(--primary);
+      color: #ffffff;
+    }
+
+    .doc-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .doc-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 18px;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      transition: all 0.2s;
+    }
+    .doc-item:hover {
+      border-color: var(--primary-border);
+      background: #fafaf9;
+    }
+    .doc-meta {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .doc-icon {
+      font-size: 26px;
+    }
+    .doc-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+    }
+    .doc-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+    .doc-actions {
+      display: flex;
+      gap: 8px;
+    }
+    .btn-action {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      color: var(--text-dark);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-action:hover {
+      background: #e2e8f0;
+    }
+
+    /* RAG Sidebar Panel */
+    .rag-panel {
+      background: #ffffff;
+      border: 1px solid var(--primary-border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      height: fit-content;
+    }
+    .rag-panel-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .rag-badge {
+      background: var(--primary-subtle);
+      border: 1px solid var(--primary-border);
+      color: var(--primary);
+      padding: 3px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .rag-chat-history {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      min-height: 240px;
+      max-height: 340px;
+      overflow-y: auto;
+      font-size: 13px;
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .rag-msg-user {
+      align-self: flex-end;
+      background: var(--primary);
+      color: #ffffff;
+      padding: 8px 12px;
+      border-radius: 12px 12px 2px 12px;
+      max-width: 85%;
+    }
+    .rag-msg-ai {
+      align-self: flex-start;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      color: var(--text-dark);
+      padding: 10px 14px;
+      border-radius: 12px 12px 12px 2px;
+      max-width: 95%;
+      line-height: 1.45;
+    }
+    .rag-prompt-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .rag-chip {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+    }
+    .rag-chip:hover {
+      background: var(--primary-subtle);
+      border-color: var(--primary-border);
+      color: var(--primary);
+    }
+    .rag-input-box {
+      display: flex;
+      gap: 8px;
+    }
+    .rag-input {
+      flex: 1;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 13px;
+      outline: none;
+    }
+    .rag-input:focus {
+      border-color: var(--primary);
+    }
+    .rag-send-btn {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <nav class="vault-nav">
+    <a href="../index.html" class="vault-nav-left">
+      <img src="../images/assets/logo_new.png" alt="MedInVedic Logo" />
+      <span class="vault-nav-title">MedInVedic Record Vault</span>
+    </a>
+    <div class="vault-nav-actions">
+      <a href="dashboard.html" class="btn-action">← Health Dashboard</a>
+      <a href="emergency.html" class="btn-action" style="background:#fee2e2; border-color:#fca5a5; color:#991b1b; font-weight:800;">🚨 SOS</a>
+    </div>
+  </nav>
+
+  <div class="vault-container">
+    
+    <!-- Header -->
+    <div class="vault-header">
+      <div class="vault-header-info">
+        <h1>📑 Personal Medical Record Vault</h1>
+        <p>End-to-end encrypted storage for laboratory reports, prescriptions, scans, and summaries with grounded Personal Health Record (PHR) RAG intelligence.</p>
+      </div>
+      <div class="vault-stats">
+        <div class="stat-pill">
+          <span class="num" id="statDocCount">4</span>
+          <span class="lbl">Stored Records</span>
+        </div>
+        <div class="stat-pill">
+          <span class="num" style="color:#059669;">AES-256</span>
+          <span class="lbl">Client Encrypted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Layout -->
+    <div class="vault-layout">
+      
+      <!-- Left Column: Records -->
+      <div>
+        
+        <!-- Drag & Drop Upload Zone -->
+        <div class="upload-card" onclick="document.getElementById('vaultUploadInput').click()">
+          <input type="file" id="vaultUploadInput" style="display:none;" onchange="handleVaultUpload(this)" accept=".pdf,image/*" />
+          <div class="upload-icon">📤</div>
+          <div class="upload-title">Drop your Lab Reports, Prescriptions, or Scan PDFs here</div>
+          <div class="upload-sub">Supports PDF, PNG, JPG (Client-side encrypted, HIPAA / DPDP compliant)</div>
+        </div>
+
+        <!-- Document Viewer Panel -->
+        <div class="vault-panel">
+          <div class="vault-tabs">
+            <button class="v-tab active" onclick="filterDocs('all', this)">All Documents (<span id="tabAllCount">4</span>)</button>
+            <button class="v-tab" onclick="filterDocs('lab', this)">🩸 Lab Reports (2)</button>
+            <button class="v-tab" onclick="filterDocs('prescription', this)">💊 Prescriptions (1)</button>
+            <button class="v-tab" onclick="filterDocs('scan', this)">🔬 Scans & Imaging (1)</button>
+          </div>
+
+          <div class="doc-list" id="docListContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right Column: Personal Health Record RAG -->
+      <div>
+        <div class="rag-panel">
+          <div class="rag-panel-header">
+            <span style="font-size:20px;">🧠</span>
+            <div>
+              <div style="font-size:15px; font-weight:800;">Personal Record RAG</div>
+              <div style="font-size:11px; color:var(--text-muted);">Retrieves grounded answers from your authorized documents</div>
+            </div>
+            <span class="rag-badge">PHR RAG</span>
+          </div>
+
+          <!-- Suggested Query Chips -->
+          <div class="rag-prompt-chips">
+            <span class="rag-chip" onclick="askPhrPrompt('What did my last blood report show?')">🩸 Last Blood Report</span>
+            <span class="rag-chip" onclick="askPhrPrompt('Compare my recent HbA1c results')">📊 Compare HbA1c</span>
+            <span class="rag-chip" onclick="askPhrPrompt('What medications appear in my prescriptions?')">💊 Active Medicines</span>
+            <span class="rag-chip" onclick="askPhrPrompt('Summarize my medical history')">📑 History Summary</span>
+          </div>
+
+          <!-- RAG Chat History -->
+          <div class="rag-chat-history" id="phrChatHistory">
+            <div class="rag-msg-ai">
+              👋 <strong>Hello!</strong> I am your <strong>Personal Health Record Assistant</strong>. Ask me any question about your uploaded laboratory tests, prescriptions, or imaging reports. Every answer is grounded directly in your authorized records.
+            </div>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="rag-input-box">
+            <input type="text" id="phrInput" class="rag-input" placeholder="Ask about your medical records..." onkeydown="if(event.key==='Enter')sendPhrQuery()" />
+            <button class="rag-send-btn" onclick="sendPhrQuery()">Ask RAG</button>
+          </div>
+
+          <div style="margin-top:12px; font-size:11px; color:var(--text-muted); line-height:1.4;">
+            🔒 <em>Strict user-isolated retrieval. Your medical records are never used for model training or cross-patient search.</em>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // Demo patient record catalog
+    let records = [
+      {
+        id: "rec_001",
+        name: "Comprehensive Metabolic Panel & HbA1c.pdf",
+        type: "lab",
+        date: "Oct 2, 2026",
+        facility: "Dr. Lal PathLabs",
+        summary: "HbA1c 6.8% (Borderline Prameha/Prediabetes), Fasting Glucose 118 mg/dL, Normal kidney/liver markers.",
+        biomarkers: { hba1c: "6.8%", glucose: "118 mg/dL", creatinine: "0.9 mg/dL" }
+      },
+      {
+        id: "rec_002",
+        name: "Lipid Profile & Vitamin D3.pdf",
+        type: "lab",
+        date: "Aug 15, 2026",
+        facility: "Thyrocare Technologies",
+        summary: "Total Cholesterol 195 mg/dL, LDL 128 mg/dL (Mild Kapha imbalance), Vitamin D3 24 ng/mL (Insufficient).",
+        biomarkers: { ldl: "128 mg/dL", vitD: "24 ng/mL" }
+      },
+      {
+        id: "rec_003",
+        name: "Ayurvedic & Allopathic Dual Prescription.pdf",
+        type: "prescription",
+        date: "Sep 20, 2026",
+        facility: "MedInVedic Telehealth",
+        summary: "Metformin 500mg (OD post breakfast), Gudmar Churna 3g (BD before meals), Triphala 1 tsp warm water at bed.",
+        medications: ["Metformin 500mg", "Gudmar Churna 3g", "Triphala Churna"]
+      },
+      {
+        id: "rec_004",
+        name: "Chest X-Ray Digital Imaging Report.pdf",
+        type: "scan",
+        date: "May 10, 2026",
+        facility: "Apex Diagnostic Imaging",
+        summary: "Normal cardiac silhouette, clear lung fields, no active pulmonary infiltrates.",
+        imaging: "Normal study"
+      }
+    ];
+
+    function renderDocList(filtered) {
+      const container = document.getElementById('docListContainer');
+      if (!container) return;
+      container.innerHTML = filtered.map(d => `
+        <div class="doc-item">
+          <div class="doc-meta">
+            <div class="doc-icon">${d.type === 'lab' ? '🩸' : d.type === 'prescription' ? '💊' : '🔬'}</div>
+            <div>
+              <div class="doc-name">${d.name}</div>
+              <div class="doc-sub">${d.date} • ${d.facility} • <span style="color:#15803d; font-weight:700;">Verified</span></div>
+            </div>
+          </div>
+          <div class="doc-actions">
+            <button class="btn-action" onclick="askPhrPrompt('Explain ${d.name}')">🔍 Explain</button>
+            <button class="btn-action" onclick="alert('Viewing encrypted preview of ${d.name}')">👁️ View</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterDocs(type, btn) {
+      document.querySelectorAll('.v-tab').forEach(t => t.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      if (type === 'all') {
+        renderDocList(records);
+      } else {
+        renderDocList(records.filter(r => r.type === type));
+      }
+    }
+
+    function handleVaultUpload(input) {
+      if (!input.files || !input.files[0]) return;
+      const file = input.files[0];
+      const newRec = {
+        id: 'rec_' + Date.now(),
+        name: file.name,
+        type: file.name.toLowerCase().includes('presc') ? 'prescription' : file.name.toLowerCase().includes('scan') ? 'scan' : 'lab',
+        date: 'Today',
+        facility: 'Patient Uploaded (Secure Vault)',
+        summary: 'Uploaded document queued for OCR text extraction and indexing.'
+      };
+      records.unshift(newRec);
+      renderDocList(records);
+      document.getElementById('statDocCount').textContent = records.length;
+      document.getElementById('tabAllCount').textContent = records.length;
+      
+      const chat = document.getElementById('phrChatHistory');
+      chat.innerHTML += `
+        <div class="rag-msg-ai">
+          ✅ <strong>New Document Indexed:</strong> "${file.name}" has been encrypted with AES-256 and added to your private RAG context. You can now query its biomarkers or prescriptions.
+        </div>
+      `;
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    function askPhrPrompt(text) {
+      document.getElementById('phrInput').value = text;
+      sendPhrQuery();
+    }
+
+    function sendPhrQuery() {
+      const input = document.getElementById('phrInput');
+      const query = input.value.trim();
+      if (!query) return;
+      input.value = '';
+
+      const chat = document.getElementById('phrChatHistory');
+      chat.innerHTML += `<div class="rag-msg-user">${query}</div>`;
+      chat.scrollTop = chat.scrollHeight;
+
+      // Simulate PHR RAG Retrieval & Response Generation
+      setTimeout(() => {
+        let answer = "";
+        const q = query.toLowerCase();
+
+        if (q.includes('last blood') || q.includes('metabolic') || q.includes('glucose') || q.includes('hba1c')) {
+          answer = `
+            <strong>📊 Retrieval Grounded in Comprehensive Metabolic Panel (Oct 2, 2026):</strong><br><br>
+            • <strong>HbA1c:</strong> 6.8% (Normal < 5.7%, Prediabetes 5.7–6.4%, Diabetes ≥ 6.5%).<br>
+            • <strong>Fasting Blood Sugar:</strong> 118 mg/dL.<br>
+            • <strong>Kidney & Liver Markers:</strong> Serum Creatinine (0.9 mg/dL) and eGFR are within normal limits.<br><br>
+            🌿 <strong>Ayurvedic Context (Rakta Dhatu):</strong> Correlates with Kapha-Pitta imbalance causing metabolic sludge (Ama). Lifestyle recommendation: Gudmar Churna and post-meal brisk walking.<br><br>
+            <span style="font-size:11px; color:#64748b;"><em>Source: Dr. Lal PathLabs CMP #rec_001.</em></span>
+          `;
+        } else if (q.includes('medication') || q.includes('prescription') || q.includes('medicine')) {
+          answer = `
+            <strong>💊 Retrieval Grounded in Dual Prescription (Sep 20, 2026):</strong><br><br>
+            You currently have 3 prescribed medications recorded in your vault:<br>
+            1. <strong>Metformin 500mg</strong> — Once daily (OD) post-breakfast (Allopathic glycemic control).<br>
+            2. <strong>Gudmar Churna (Gymnema Sylvestre) 3g</strong> — Twice daily (BD) before meals.<br>
+            3. <strong>Triphala Churna 1 tsp</strong> — At bedtime with warm water for digestive regularity.<br><br>
+            <span style="font-size:11px; color:#64748b;"><em>Source: Telehealth Prescription #rec_003.</em></span>
+          `;
+        } else if (q.includes('history') || q.includes('summarize')) {
+          answer = `
+            <strong>📑 Medical History Summary Across 4 Authorized Records:</strong><br><br>
+            • <strong>Metabolic Health:</strong> Mild glycemic elevation (HbA1c 6.8%, Fasting Glucose 118 mg/dL).<br>
+            • <strong>Lipid Profile:</strong> Total Cholesterol 195 mg/dL, LDL 128 mg/dL.<br>
+            • <strong>Nutritional Deficiencies:</strong> Vitamin D3 was low (24 ng/mL) in August 2026.<br>
+            • <strong>Cardiopulmonary:</strong> Chest X-Ray was clear (May 2026).<br>
+            • <strong>Current Therapy:</strong> Metformin 500mg combined with Ayurvedic herbs (Gudmar, Triphala).
+          `;
+        } else {
+          answer = `
+            <strong>🔍 Retrieval Results:</strong><br><br>
+            I searched across your 4 active health records for <em>"${query}"</em>. Your records show active lab results for glucose and lipids, plus an integrated prescription. Please consult your clinician before modifying dosages or treatments.
+          `;
+        }
+
+        chat.innerHTML += `<div class="rag-msg-ai">${answer}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }, 600);
+    }
+
+    // Initialize document list
+    renderDocList(records);
+  </script>
+
+</body>
+</html>

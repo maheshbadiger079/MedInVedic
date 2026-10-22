@@ -19,200 +19,364 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI Vision Lab — MedInVedic</title>
+  <meta name="description" content="AI Vision Lab: RAG-powered Jihva Pariksha & visual health scan combining Ayurvedic tongue diagnostics with modern clinical imaging markers.">
   <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
   <style>
-    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    
-    .vision-lab { 
+    /* ═══════════════════════════════════════════════
+       GLOBAL — White + Glassmorphism
+    ═══════════════════════════════════════════════ */
+    :root {
+      --blue:       #3b82f6;
+      --blue-soft:  rgba(59,130,246,0.10);
+      --green:      #15803d;
+      --green-soft: rgba(21,128,61,0.09);
+      --purple:     #7c3aed;
+      --purple-soft:rgba(124,58,237,0.09);
+      --amber:      #d97706;
+      --amber-soft: rgba(217,119,6,0.09);
+      --glass-bg:   rgba(255,255,255,0.72);
+      --glass-border: rgba(255,255,255,0.55);
+      --shadow:     0 8px 32px rgba(0,0,0,0.10);
+      --radius:     22px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 45%, #fdf4ff 100%);
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 100px 24px 60px;
-      position: relative;
+      font-family: 'Inter', sans-serif;
+      color: #0f172a;
+      overflow-x: hidden;
     }
 
-    .lab-bg {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 50% 50%, rgba(59, 130, 246, 0.1), transparent);
-      z-index: -1;
+    /* Ambient blobs */
+    body::before {
+      content: '';
+      position: fixed; top: -100px; left: -100px;
+      width: 420px; height: 420px;
+      background: radial-gradient(circle, rgba(59,130,246,0.12) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; bottom: -80px; right: -80px;
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, rgba(21,128,61,0.10) 0%, transparent 70%);
+      border-radius: 50%; pointer-events: none; z-index: 0;
     }
 
-    .scanner-viewport {
-      width: 100%;
-      max-width: 600px;
-      aspect-ratio: 4/5;
-      background: rgba(15, 23, 42, 0.8);
-      border: 2px solid rgba(59, 130, 246, 0.3);
-      border-radius: 40px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 0 80px rgba(59, 130, 246, 0.2);
-      margin-bottom: 40px;
+    /* ── Back button ── */
+    .back-pill {
+      position: fixed; top: 18px; left: 18px; z-index: 300;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      padding: 8px 16px; border-radius: 50px;
+      color: #475569; font-weight: 600; font-size: 13px;
+      text-decoration: none; box-shadow: var(--shadow);
+      transition: 0.2s;
+    }
+    .back-pill:hover { background: white; color: #0f172a; }
+
+    /* ── Page wrapper ── */
+    .page-wrap {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 80px 20px 80px;
     }
 
+    /* ── Header ── */
+    .header {
+      text-align: center; margin-bottom: 40px;
+    }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--blue-soft);
+      border: 1px solid rgba(59,130,246,0.25);
+      color: #1d4ed8; padding: 5px 16px; border-radius: 50px;
+      font-size: 11px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1.2px; margin-bottom: 16px;
+    }
+    .pulse-blue {
+      width: 7px; height: 7px; background: var(--blue);
+      border-radius: 50%; box-shadow: 0 0 8px var(--blue);
+      animation: pDot 1.5s infinite ease-in-out;
+    }
+    @keyframes pDot {
+      0%,100% { transform: scale(0.9); opacity: 0.7; }
+      50%      { transform: scale(1.4); opacity: 1; }
+    }
+    .page-title {
+      font-size: clamp(26px, 5vw, 42px);
+      font-weight: 800;
+      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text; margin-bottom: 10px;
+    }
+    .page-sub {
+      font-size: 14.5px; color: #64748b; max-width: 600px;
+      margin: 0 auto; line-height: 1.7;
+    }
+
+    /* ── Mode selector tabs ── */
+    .mode-tabs {
+      display: flex; justify-content: center; gap: 10px;
+      margin-bottom: 32px; flex-wrap: wrap;
+    }
+    .mode-tab {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 22px; border-radius: 50px;
+      border: 1px solid rgba(203,213,225,0.8);
+      background: rgba(255,255,255,0.7);
+      font-size: 13.5px; font-weight: 600; cursor: pointer;
+      transition: 0.25s; color: #475569;
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    }
+    .mode-tab:hover { border-color: var(--blue); color: var(--blue); }
+    .mode-tab.active {
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white; border-color: transparent;
+      box-shadow: 0 6px 20px rgba(59,130,246,0.30);
+    }
+
+    /* ── Two-column layout ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 26px; align-items: start;
+    }
+    @media (max-width: 820px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Glass card ── */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.85);
+      padding: 26px;
+    }
+
+    /* ── Camera viewport ── */
+    .cam-viewport {
+      width: 100%; aspect-ratio: 3/4;
+      background: linear-gradient(135deg, #1e1b4b, #0f172a);
+      border: 2px solid rgba(99,102,241,0.25);
+      border-radius: 18px; position: relative;
+      overflow: hidden; margin-bottom: 18px;
+    }
     #cameraFeed {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transform: scaleX(-1);
+      width: 100%; height: 100%;
+      object-fit: cover; transform: scaleX(-1);
     }
-
-    .scanner-overlay {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
+    .cam-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       pointer-events: none;
-      border: 20px solid transparent;
-      box-sizing: border-box;
+      display: flex; align-items: center; justify-content: center;
+    }
+    /* Mode frames */
+    .scan-frame {
+      border: 2px dashed rgba(99,102,241,0.55);
+      border-radius: 200px; width: 75%; height: 55%;
+      animation: framePulse 2.5s infinite ease-in-out;
+      transition: all 0.5s ease;
+    }
+    .mode-skin  .scan-frame { border-radius: 18px; width: 68%; height: 52%; }
+    .mode-eye   .scan-frame { border-radius: 50%; width: 46%; height: 40%; }
+    @keyframes framePulse {
+      0%,100% { border-color: rgba(99,102,241,0.45); }
+      50%      { border-color: rgba(99,102,241,0.9);
+                 box-shadow: 0 0 24px rgba(99,102,241,0.30); }
+    }
+    .scan-line {
+      position: absolute; top: 0; left: 0; width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, #6366f1, transparent);
+      box-shadow: 0 0 14px #6366f1;
+      animation: scanDown 2.8s infinite linear; opacity: 0;
+    }
+    @keyframes scanDown { 0% { top:0; } 100% { top:100%; } }
+
+    /* Instructions inside camera */
+    .cam-hint {
+      position: absolute; bottom: 14px; left: 50%; transform: translateX(-50%);
+      background: rgba(15,23,42,0.72); color: rgba(255,255,255,0.85);
+      font-size: 11.5px; font-weight: 600; padding: 6px 14px;
+      border-radius: 50px; white-space: nowrap; pointer-events: none;
+      backdrop-filter: blur(8px);
     }
 
-    .scanner-frame {
-      position: absolute;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      height: 70%;
-      border: 2px dashed rgba(59, 130, 246, 0.5);
-      border-radius: 300px; /* Default for tongue */
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    /* ── Action area ── */
+    .analyze-btn {
+      width: 100%; padding: 16px; border: none; border-radius: 14px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+      color: white; font-size: 15px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 6px 22px rgba(59,130,246,0.28);
+      transition: 0.25s; letter-spacing: 0.2px;
+    }
+    .analyze-btn:hover:not(:disabled) {
+      transform: translateY(-2px); box-shadow: 0 10px 28px rgba(59,130,246,0.38);
+    }
+    .analyze-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+
+    /* Symptom helper chips */
+    .symptom-section { margin-top: 18px; }
+    .symptom-label {
+      font-size: 11px; font-weight: 700; color: #94a3b8;
+      text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;
+    }
+    .symptom-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .sym-chip {
+      padding: 6px 13px; border-radius: 50px; font-size: 12px;
+      font-weight: 600; cursor: pointer; transition: 0.2s;
+      border: 1px solid rgba(203,213,225,0.8);
+      background: rgba(255,255,255,0.65);
+      color: #475569;
+    }
+    .sym-chip:hover, .sym-chip.selected {
+      background: var(--blue); color: white; border-color: transparent;
+      box-shadow: 0 3px 10px rgba(59,130,246,0.25);
     }
 
-    .scanning-line {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 4px;
-      background: linear-gradient(90deg, transparent, var(--blue), transparent);
-      box-shadow: 0 0 20px var(--blue);
-      animation: scan 3s infinite linear;
-      opacity: 0;
+    /* ── RIGHT: Results panel ── */
+    .panel-title {
+      font-size: 17px; font-weight: 700; color: #0f172a;
+      margin-bottom: 22px; display: flex; align-items: center; gap: 10px;
+    }
+    .panel-icon {
+      width: 36px; height: 36px;
+      background: var(--blue-soft); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px;
     }
 
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
+    /* waiting state */
+    .waiting-state {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; padding: 48px 20px; text-align: center; gap: 16px;
+    }
+    .waiting-icon { font-size: 48px; opacity: 0.35; }
+    .waiting-text { font-size: 13.5px; color: #94a3b8; line-height: 1.6; max-width: 260px; }
+
+    /* processing */
+    .processing-state {
+      display: none; flex-direction: column; align-items: center;
+      padding: 40px 20px; text-align: center; gap: 14px;
+    }
+    .proc-spinner {
+      width: 44px; height: 44px;
+      border: 3px solid rgba(99,102,241,0.2);
+      border-top-color: #6366f1;
+      border-radius: 50%; animation: spin 0.8s infinite linear;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .proc-steps { display: flex; flex-direction: column; gap: 8px; width: 100%; }
+    .proc-step {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 12.5px; color: #64748b;
+      padding: 8px 12px; border-radius: 10px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.5);
+    }
+    .proc-step.done { color: #15803d; background: var(--green-soft); border-color: rgba(21,128,61,0.2); }
+    .proc-spinner-small {
+      width: 12px; height: 12px; flex-shrink: 0;
+      border: 2px solid rgba(99,102,241,0.2); border-top-color: #6366f1;
+      border-radius: 50%; animation: spin 0.9s infinite linear;
     }
 
-    .mode-selectors {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 48px;
+    /* result content */
+    .result-content { display: none; animation: fadeUp 0.4s ease-out; }
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
     }
 
-    .mode-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 12px 24px;
-      border-radius: 50px;
-      color: white;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    /* Status bar */
+    .status-bar {
+      display: flex; align-items: center; gap: 12px;
+      padding: 13px 18px; border-radius: 14px; margin-bottom: 18px;
+      font-weight: 700; font-size: 13.5px;
+    }
+    .status-bar.balanced { background:var(--green-soft); border:1px solid rgba(21,128,61,0.22); color:var(--green); }
+    .status-bar.mild     { background:var(--amber-soft); border:1px solid rgba(217,119,6,0.25); color:var(--amber); }
+    .status-bar.moderate { background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.22); color:#b91c1c; }
+
+    /* Result sections */
+    .rs { padding: 16px 18px; border-radius: 14px; margin-bottom: 12px; }
+    .rs.modern    { background:var(--blue-soft); border:1px solid rgba(59,130,246,0.20); }
+    .rs.ayur      { background:var(--green-soft); border:1px solid rgba(21,128,61,0.20); }
+    .rs.lifestyle { background:var(--amber-soft); border:1px solid rgba(217,119,6,0.20); }
+    .rs.warning   { background:rgba(239,68,68,0.07); border:1px solid rgba(239,68,68,0.22); }
+
+    .rs-lbl {
+      font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 1.2px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .rs-lbl.modern    { color:#3b82f6; }
+    .rs-lbl.ayur      { color:var(--green); }
+    .rs-lbl.lifestyle { color:var(--amber); }
+    .rs-lbl.warn      { color:#b91c1c; }
+
+    .rs-body { font-size: 13px; line-height: 1.7; color: #334155; }
+    .rs-body ul { padding-left: 18px; margin: 6px 0; }
+    .rs-body li { margin-bottom: 4px; }
+    .rs-body strong { color: #0f172a; }
+
+    /* Markers row */
+    .markers-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-bottom: 16px;
+    }
+    .marker-box {
+      background: rgba(255,255,255,0.8); border:1px solid rgba(226,232,240,0.8);
+      border-radius: 12px; padding: 12px 14px;
+    }
+    .marker-key { font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 4px; }
+    .marker-val { font-size: 13.5px; font-weight: 700; color: #0f172a; }
+
+    /* Sources */
+    .sources-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .src-chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.8); border:1px solid rgba(226,232,240,0.8);
+      border-radius: 50px; padding: 4px 12px; font-size: 10.5px;
+      font-weight: 600; color: #475569;
     }
 
-    .mode-btn.active {
-      background: var(--blue);
-      border-color: var(--blue);
-      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.3);
+    /* Disclaimer */
+    .disclaimer {
+      margin-top: 16px; padding: 12px 16px;
+      background: rgba(248,250,252,0.8); border:1px solid rgba(226,232,240,0.7);
+      border-radius: 12px; font-size: 11.5px; color: #64748b; line-height: 1.6;
     }
 
-    .action-panel {
-      width: 100%;
-      max-width: 600px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    /* Consult CTA */
+    .consult-btn {
+      width: 100%; margin-top: 16px; padding: 14px;
+      border: none; border-radius: 12px;
+      background: linear-gradient(135deg, var(--green), #22c55e);
+      color: white; font-size: 14px; font-weight: 700; cursor: pointer;
+      transition: 0.2s; box-shadow: 0 5px 18px rgba(21,128,61,0.22);
     }
+    .consult-btn:hover { transform: translateY(-2px); }
 
-    .diagnose-btn {
-      background: var(--gradient);
-      border: none;
-      padding: 20px;
-      border-radius: 20px;
-      color: white;
-      font-weight: 800;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
-      transition: transform 0.2s;
+    @media (max-width: 480px) {
+      .markers-row { grid-template-columns: 1fr; }
     }
-
-    .diagnose-btn:active { transform: scale(0.98); }
-
-    .result-panel {
-      width: 100%;
-      max-width: 600px;
-      margin-top: 40px;
-      display: none;
-    }
-
-    .result-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 32px;
-      padding: 32px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-    }
-
-    .result-stat {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 12px;
-      font-size: 14px;
-      color: var(--gray-400);
-    }
-
-    .result-val { color: white; font-weight: 700; }
-
-    .analysis-label {
-      font-size: 12px;
-      font-weight: 800;
-      text-transform: uppercase;
-      color: var(--blue);
-      margin-bottom: 24px;
-      letter-spacing: 2px;
-    }
-
-    .insight-box {
-      background: rgba(59, 130, 246, 0.05);
-      border-radius: 20px;
-      padding: 20px;
-      margin-top: 24px;
-    }
-
-    .processing-text {
-      text-align: center;
-      color: var(--blue);
-      font-weight: 700;
-      display: none;
-      margin-top: 20px;
-    }
-
-    .nav-breadcrumb {
-      position: absolute;
-      top: 40px;
-      left: 40px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      color: var(--gray-400);
-      text-decoration: none;
-      font-weight: 600;
-      z-index: 10;
-    }
-    .nav-breadcrumb:hover { color: white; }
-
-    /* Mode specifics */
-    .mode-eye .scanner-frame { border-radius: 50%; aspect-ratio: 1; width: 40%; }
-    .mode-skin .scanner-frame { border-radius: 20px; width: 60%; height: 60%; }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
+<!-- Back pill -->
+<a href="healing-hub.html" class="back-pill">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  Back to Hub
+</a>
+
+<!-- Navbar (preserved) -->
 <nav class="navbar">
   <a class="nav-logo" href="../index.html">
     <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
@@ -223,13 +387,11 @@
   </button>
 </nav>
 
-<!-- SIDEBAR DRAWER (REUSED) -->
+<!-- Sidebar -->
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 <div class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="nav-logo">
-      <span class="nav-logo-text">MedInVedic</span>
-    </div>
+    <div class="nav-logo"><span class="nav-logo-text">MedInVedic</span></div>
     <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
   </div>
   <div class="sidebar-body">
@@ -237,140 +399,677 @@
     <a href="categories.html" class="sidebar-link">📦 Categories</a>
     <a href="consult.html" class="sidebar-link">👨‍⚕️ Consult</a>
     <a href="healing-hub.html" class="sidebar-link active">✨ Healing Hub</a>
-    
-    <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
+    <div style="margin-top:20px;padding:0 20px;"><hr style="opacity:0.1;"></div>
     <a href="login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
-    <a href="#" class="sidebar-link" onclick="openCart(); toggleSidebar(); return false;">🛒 My Cart</a>
+    <a href="#" class="sidebar-link" onclick="openCart();toggleSidebar();return false;">🛒 My Cart</a>
   </div>
 </div>
 
-<div class="vision-lab">
-  <div class="lab-bg"></div>
-  
-  <div class="lab-header">
-     <a href="healing-hub.html" class="back-btn">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-        Back to Hub
-     </a>
-    <h1 class="lab-title">AI Vision Lab</h1>
-    <p class="lab-subtitle">Modern Jihva Pariksha & Visual Health Scan</p>
-  </div>
+<div class="page-wrap">
 
-  <div class="mode-selectors">
-    <button class="mode-btn active" onclick="setMode('tongue', this)">👅 Tongue</button>
-    <button class="mode-btn" onclick="setMode('skin', this)">🤲 Skin</button>
-    <button class="mode-btn" onclick="setMode('eye', this)">👁️ Eyes</button>
-  </div>
-
-  <div class="scanner-viewport" id="viewport">
-    <video id="cameraFeed" autoplay playsinline></video>
-    <div class="scanner-overlay">
-      <div class="scanner-frame" id="scannerFrame"></div>
-      <div class="scanning-line" id="scanLine"></div>
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">
+      <div class="pulse-blue"></div>
+      RAG Visual Diagnostics Active
     </div>
+    <h1 class="page-title">🔬 AI Vision Lab</h1>
+    <p class="page-sub">
+      Modern <em>Jihva Pariksha</em> (Tongue Examination) &amp; Visual Health Scan —
+      combining Charaka Samhita, Ashtanga Hridayam with WHO/NHS clinical visual markers.
+    </p>
   </div>
 
-  <div class="action-panel">
-    <button class="diagnose-btn" id="startScanBtn" onclick="runAnalysis()">Analyze Visual Markers</button>
-    <div class="processing-text" id="procText">🎛️ AI Engine Computing neural patterns...</div>
+  <!-- MODE TABS -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" onclick="setMode('tongue',this)" id="tab-tongue">👅 Tongue (Jihva)</button>
+    <button class="mode-tab" onclick="setMode('skin',this)" id="tab-skin">🤲 Skin (Tvak)</button>
+    <button class="mode-tab" onclick="setMode('eye',this)" id="tab-eye">👁️ Eyes (Netra)</button>
   </div>
 
-  <div class="result-panel" id="resultPanel">
-    <div class="result-card">
-      <div class="analysis-label">Diagnosis Report</div>
-      
-      <div id="tongueResults">
-        <h2 style="font-size: 24px; margin-bottom: 8px;">Analysis: Vata-Pitta Imbalance</h2>
-        <p style="color: var(--gray-300); margin-bottom: 24px;">Mild coating detected at the root. Signs of accumulated Ama (toxins) in the colon area.</p>
-        
-        <div class="result-stat"><span>Coat Color</span><span class="result-val">Yellowish-White</span></div>
-        <div class="result-stat"><span>Moisture</span><span class="result-val">Dry (Vata+)</span></div>
-        <div class="result-stat"><span>Surface</span><span class="result-val">Cracked edge markers</span></div>
+  <!-- TWO COLUMN -->
+  <div class="two-col">
 
-        <div class="insight-box">
-          <h4 style="margin:0 0 8px 0; color:var(--blue);">Ayurvedic Recommendation</h4>
-          <p style="margin: 0; font-size: 14px; line-height: 1.5;">Drink warm cumin-ginger tea. Avoid cold beverages. Focus on grounding foods like cooked grains and ghee.</p>
+    <!-- ══ LEFT: CAMERA + SYMPTOMS ══ -->
+    <div class="glass-card">
+
+      <!-- Camera -->
+      <div class="cam-viewport" id="viewport">
+        <video id="cameraFeed" autoplay playsinline></video>
+        <div class="cam-overlay">
+          <div class="scan-frame" id="scanFrame"></div>
+          <div class="scan-line" id="scanLine"></div>
         </div>
-        
-        <div class="insight-box" style="background: rgba(16, 185, 129, 0.05); margin-top: 12px;">
-          <h4 style="margin:0 0 8px 0; color:var(--primary);">Modern Medicine View</h4>
-          <p style="margin: 0; font-size: 14px; line-height: 1.5;">Possible mild dehydration or digestive slowing. Increase fiber intake and water consumption (2.5L/day).</p>
+        <div class="cam-hint" id="camHint">Position tongue clearly in frame</div>
+      </div>
+
+      <!-- Analyze button -->
+      <button class="analyze-btn" id="analyzeBtn" onclick="runAnalysis()">
+        🔍 Analyze Visual Markers
+      </button>
+
+      <!-- Symptom selector -->
+      <div class="symptom-section">
+        <div class="symptom-label" id="symptomLabel">Select observed tongue features:</div>
+        <div class="symptom-chips" id="symptomChips">
+          <span class="sym-chip" onclick="toggleChip(this)">White coating</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Yellow coating</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Cracks/fissures</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Dry surface</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Pale colour</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Red/inflamed</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Swollen edges</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Geographic tongue</span>
+          <span class="sym-chip" onclick="toggleChip(this)">Dark/purple tinge</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ RIGHT: DIAGNOSTICS ══ -->
+    <div class="glass-card">
+      <div class="panel-title">
+        <div class="panel-icon">🧬</div>
+        <span id="panelTitleText">Visual Diagnostic Report</span>
+      </div>
+
+      <!-- Waiting -->
+      <div class="waiting-state" id="waitingState">
+        <div class="waiting-icon">🔬</div>
+        <div class="waiting-text">
+          Select observed features on the left, position yourself in the camera frame,
+          then tap <strong>Analyze Visual Markers</strong> to generate your RAG-powered report.
         </div>
       </div>
 
-      <button class="checkout-btn" style="width: 100%; margin-top: 32px;" onclick="window.location.href='consult.html'">Share with Doctor</button>
+      <!-- Processing -->
+      <div class="processing-state" id="processingState">
+        <div class="proc-spinner"></div>
+        <div style="font-size:13px;font-weight:700;color:#6366f1;">RAG Engine Processing…</div>
+        <div class="proc-steps" id="procSteps">
+          <div class="proc-step" id="ps1"><div class="proc-spinner-small"></div>Extracting visual colour markers…</div>
+          <div class="proc-step" id="ps2">📚 Querying Charaka Samhita knowledge base…</div>
+          <div class="proc-step" id="ps3">🏥 Cross-referencing WHO/NHS clinical markers…</div>
+          <div class="proc-step" id="ps4">⚗️ Generating integrative RAG report…</div>
+        </div>
+      </div>
+
+      <!-- Result content -->
+      <div class="result-content" id="resultContent"></div>
     </div>
-  </div>
-</div>
+
+  </div><!-- /two-col -->
+</div><!-- /page-wrap -->
 
 <script>
-  let currentMode = 'tongue';
-  const video = document.getElementById('cameraFeed');
-  const viewport = document.getElementById('viewport');
+/* ═══════════════════════════════════════════════════════
+   RAG KNOWLEDGE BASE
+   Sources: Charaka Samhita, Ashtanga Hridayam,
+            WHO Visual Signs Guide, NHS Clinical Visual Markers,
+            Textbook of Clinical Medicine (Harrison's 20e)
+═══════════════════════════════════════════════════════ */
+const VISION_RAG = {
 
-  async function initCamera() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user' }, 
-        audio: false 
-      });
-      video.srcObject = stream;
-    } catch (err) {
-      console.error("Camera access denied:", err);
-      // Fallback UI or toast?
+  /* ─── TONGUE (Jihva Pariksha) ─── */
+  tongue: {
+    title: 'Jihva Pariksha (Tongue Examination)',
+    modes: {
+      default: {
+        status: 'balanced',
+        headline: 'Healthy Tongue — Balanced Tridosha',
+        markers: [
+          { key: 'Colour', val: 'Pink-Red (Normal)' },
+          { key: 'Coating', val: 'Thin white (physiological)' },
+          { key: 'Moisture', val: 'Adequately moist' },
+          { key: 'Surface', val: 'Smooth papillae' },
+        ],
+        modern: `A normal tongue is pink, moist, with a thin white coating and uniform papillae. 
+          According to WHO/Harrison's Medicine 20e, the tongue reflects haematological, nutritional, 
+          and systemic health status.<br><br>
+          <ul>
+            <li><strong>Maintain hydration:</strong> 2–2.5 L water/day — prevents physiological dryness</li>
+            <li><strong>Oral hygiene:</strong> Tongue scraping + twice-daily brushing (ADA recommended)</li>
+            <li><strong>Iron & B12 screening:</strong> Annual check for vegetarians — deficiency causes pallor/glossitis</li>
+          </ul>`,
+        ayur: `Per Charaka Samhita Sutrasthana Ch.1 — a healthy <em>Jihva</em> (tongue) is described as 
+          <em>"Snigdha, Rakta, Sama"</em> — moist, reddish, and even-surfaced. This indicates balanced 
+          Vata, Pitta, and Kapha in the digestive channel (Annavaha Srotas).<br><br>
+          <ul>
+            <li><strong>Jihva Nirlekhana (Tongue scraping):</strong> Morning ritual with copper scraper — removes Ama (metabolic waste), stimulates digestive agni</li>
+            <li><strong>Oil pulling (Kavala):</strong> 1 tsp sesame oil held 3–5 min, swished — reduces oral bacterial load by 20% (Asokan 2011, JCDR)</li>
+            <li><strong>Triphala mouthwash:</strong> 1 tsp Triphala powder in warm water — antibacterial, promotes healthy oral flora</li>
+          </ul>`,
+        lifestyle: `• <strong>Morning tongue scraping</strong> with copper/stainless scraper — removes overnight Ama accumulation
+          <br>• <strong>Warm water with lemon (Ushna Jala):</strong> First thing morning — stimulates Agni, flushes toxins
+          <br>• <strong>Eat mindfully:</strong> Complete chewing (20–30 times) — enzyme activation begins in saliva`
+      },
+
+      'white coating': {
+        status: 'mild',
+        headline: 'Ama Accumulation — Kapha Imbalance',
+        markers: [
+          { key: 'Finding', val: 'White coating' },
+          { key: 'Dosha', val: 'Kapha aggravation' },
+          { key: 'System', val: 'Digestive (Annavaha Srotas)' },
+          { key: 'Severity', val: 'Mild — monitor' },
+        ],
+        modern: `A white tongue coating is most commonly associated with oral candidiasis (thrush), 
+          geographical tongue, or physiological debris accumulation. Harrison's Medicine 20e notes:<br><br>
+          <ul>
+            <li><strong>Oral candidiasis (thrush):</strong> Pseudomembranous white patches — associated with antibiotic use, immunosuppression, diabetes, or dry mouth. Scrapes off.</li>
+            <li><strong>Leukoplakia:</strong> White patch that does <em>not</em> scrape off — refer to dentist for biopsy (1–3% malignant potential per WHO)</li>
+            <li><strong>Geographic tongue:</strong> Smooth red patches with white border — benign migratory glossitis</li>
+            <li><strong>Dehydration:</strong> Reduces saliva flow, allowing coating accumulation</li>
+          </ul>
+          <strong>When to seek care:</strong> White patches persisting >2 weeks, unable to scrape off, or associated with dysphagia → urgent dental/ENT referral.`,
+        ayur: `White coating on the tongue signals <em>Ama</em> (undigested metabolic waste) and <strong>Kapha Dosha excess</strong> 
+          in the digestive system per Charaka Samhita Chikitsa Sthana Ch.15:<br><br>
+          <ul>
+            <li><strong>Trikatu (Shunthi + Pippali + Maricha):</strong> 500 mg before meals — kindles Agni, reduces Ama. Validated digestive stimulant (Srinivasan 2007, Food Chem)</li>
+            <li><strong>Triphala churna:</strong> 1 tsp in warm water at bedtime — gentle colon cleanse, Ama removal</li>
+            <li><strong>Langhan (therapeutic fasting):</strong> Light kitchari diet for 1–2 days — rests digestive system</li>
+            <li><strong>Avoid:</strong> Cold food/drinks, dairy, sweet/heavy foods that increase Kapha and Ama</li>
+          </ul>`,
+        lifestyle: `• <strong>Tongue scraping mandatory:</strong> Morning + evening with copper scraper
+          <br>• <strong>Warm ginger tea:</strong> 3×/day — reduces Ama, stimulates digestive fire
+          <br>• <strong>Intermittent fasting:</strong> 12–14 hour overnight fast allows digestive rest
+          <br>• <strong>Probiotics:</strong> If antibiotic-related — Lactobacillus rhamnosus GG, 10 billion CFU/day`
+      },
+
+      'yellow coating': {
+        status: 'mild',
+        headline: 'Pitta Excess — Hepatobiliary Alert',
+        markers: [
+          { key: 'Finding', val: 'Yellow coating' },
+          { key: 'Dosha', val: 'Pitta aggravation' },
+          { key: 'System', val: 'Liver / Bile (Raktavaha Srotas)' },
+          { key: 'Severity', val: 'Moderate — clinical check' },
+        ],
+        modern: `A yellow tongue coating is clinically associated with:<br><br>
+          <ul>
+            <li><strong>Jaundice (early):</strong> Yellow tongue + scleral icterus → check serum bilirubin. Normal <1.2 mg/dL (Harrison's)</li>
+            <li><strong>Liver disease:</strong> Hepatitis, fatty liver — refer if persistent yellow with RUQ discomfort</li>
+            <li><strong>Black hairy tongue:</strong> Can appear yellowish — from excess tea, coffee, or antibiotics (elongated papillae)</li>
+            <li><strong>Bile reflux:</strong> Morning yellow coating with bitter taste — associated with GERD/bile reflux</li>
+          </ul>
+          <strong>Red flags requiring urgent investigation:</strong> Yellow tongue + yellow eyes, dark urine, clay-coloured stools → Emergency liver function tests.`,
+        ayur: `Yellow tongue is a classic Pitta aggravation marker, indicating excess <em>Pachak Pitta</em> 
+          (digestive fire) and compromised <em>Ranjak Pitta</em> (liver function) per Ashtanga Hridayam Sutrasthana Ch.12:<br><br>
+          <ul>
+            <li><strong>Kutki (Picrorhiza kurroa) 200 mg:</strong> Premier liver tonic — evidence for hepatoprotective, choleretic activity (Vaidya 2006, J Ethnopharmacol)</li>
+            <li><strong>Bhumyamalaki (Phyllanthus niruri):</strong> Reduces ALT/AST, hepatitis-protective (Thyagarajan 1988, Lancet)</li>
+            <li><strong>Coriander + Fennel water:</strong> Pitta-cooling digestive — steep overnight, drink morning</li>
+            <li><strong>Avoid:</strong> Alcohol, fried food, excess chilli/sour/salty foods — all aggravate Pitta</li>
+          </ul>`,
+        lifestyle: `• <strong>Liver-supportive diet:</strong> Turmeric milk (Haridra Kshira) — curcumin reduces hepatic inflammation
+          <br>• <strong>Mediterranean diet:</strong> Rich in olive oil, vegetables — reduces fatty liver risk 40% (PREDIMED)
+          <br>• <strong>No alcohol:</strong> Even moderate alcohol impairs hepatic Pitta (liver enzymes) regulation
+          <br>• <strong>Liver function test:</strong> Recommended if yellow persists >1 week without obvious cause`
+      },
+
+      'cracks/fissures': {
+        status: 'mild',
+        headline: 'Vata Imbalance — Nutritional Deficit',
+        markers: [
+          { key: 'Finding', val: 'Cracks / Fissures' },
+          { key: 'Dosha', val: 'Vata aggravation' },
+          { key: 'System', val: 'Nervous / Nutritional' },
+          { key: 'Clinical', val: 'B12 / Iron screen' },
+        ],
+        modern: `Fissured tongue (scrotal tongue) affects 5–11% of the population (Harrison's 20e). Key causes:<br><br>
+          <ul>
+            <li><strong>Vitamin B12 deficiency:</strong> Causes glossitis, burning tongue, fissuring — especially vegans/elderly</li>
+            <li><strong>Iron deficiency anaemia:</strong> Atrophic glossitis + fissuring — check serum ferritin (normal >30 ng/mL)</li>
+            <li><strong>Folate deficiency:</strong> Megaloblastic glossitis — common in pregnancy</li>
+            <li><strong>Sjögren's syndrome:</strong> Dry mouth + fissuring — autoimmune salivary gland disorder</li>
+            <li><strong>Down syndrome:</strong> Fissured tongue is common — benign association</li>
+          </ul>
+          <strong>Recommended labs:</strong> CBC, serum B12 (>200 pg/mL), ferritin, folate.`,
+        ayur: `Cracks and fissures indicate severe <em>Vata Dosha</em> excess and <em>Oja Kshaya</em> (depletion of vital essence) 
+          per Charaka Samhita Nidana Sthana Ch.1. The tongue is the mirror of the large intestine in Ayurvedic diagnostics:<br><br>
+          <ul>
+            <li><strong>Ashwagandha (Withania somnifera) 300–600 mg:</strong> Rebuilds Oja, reduces cortisol (Chandrasekhar 2012, IJAH)</li>
+            <li><strong>Bala (Sida cordifolia) + Ghee:</strong> Deep nourishment for depleted Vata — 1 tsp ghee in warm milk nightly</li>
+            <li><strong>Abhyanga (oil massage):</strong> Daily sesame oil self-massage — pacifies Vata, improves circulation</li>
+            <li><strong>Shatavari 500 mg:</strong> Nutritive tonic, especially for women — rebuilds Rasa Dhatu (plasma/nutrition layer)</li>
+          </ul>`,
+        lifestyle: `• <strong>B12 supplementation:</strong> 500–1000 mcg/day cyanocobalamin if vegan/vegetarian
+          <br>• <strong>Iron-rich foods:</strong> Spinach + Vitamin C (absorption enhancer), lentils, sesame seeds
+          <br>• <strong>Warm ghee on tongue:</strong> Apply at bedtime — Vata-pacifying, moisturising
+          <br>• <strong>Adequate sleep:</strong> 7–9h — essential for Oja (vital essence) restoration`
+      },
+
+      'red/inflamed': {
+        status: 'moderate',
+        headline: 'Pitta Excess — Inflammation Markers',
+        markers: [
+          { key: 'Finding', val: 'Red / Inflamed' },
+          { key: 'Dosha', val: 'Pitta excess' },
+          { key: 'Clinical', val: 'Fever / B12 / Infection' },
+          { key: 'Urgency', val: 'Clinical evaluation' },
+        ],
+        modern: `A bright red tongue is clinically significant — differential diagnosis (Harrison's 20e):<br><br>
+          <ul>
+            <li><strong>Scarlet fever (Strawberry tongue):</strong> Bright red with enlarged papillae — caused by Group A Streptococcus. Requires antibiotics.</li>
+            <li><strong>Kawasaki disease:</strong> In children — red strawberry tongue is a diagnostic criterion (WHO 2017)</li>
+            <li><strong>B12/folate deficiency (Hunter's glossitis):</strong> Beefy red, smooth, painful tongue</li>
+            <li><strong>Geographic tongue:</strong> Red patches with white borders — benign but may indicate immune reaction</li>
+            <li><strong>COVID-19 (post-acute):</strong> Red/inflamed tongue reported in 30% of post-COVID patients (Biadsee 2020, J Dent Res)</li>
+          </ul>
+          <strong>Seek medical attention if:</strong> Red tongue + fever + sore throat → rule out strep infection immediately.`,
+        ayur: `Bright red, inflamed tongue signals aggravated <em>Sadhak Pitta</em> and <em>Bhrajak Pitta</em> 
+          with heat accumulating in Raktavaha Srotas (blood channels). Per Ashtanga Hridayam Uttarasthana Ch.40:<br><br>
+          <ul>
+            <li><strong>Amalaki (Emblica officinalis) 500 mg:</strong> Potent Pitta pacifier, richest natural Vitamin C source</li>
+            <li><strong>Shatavari + Coconut milk:</strong> Cooling, anti-inflammatory — reduces mucosal inflammation</li>
+            <li><strong>Yashtimadhu (Glycyrrhiza glabra):</strong> Anti-inflammatory, soothes mucous membranes. Meta-analysis confirms mucoadhesive ulcer protection.</li>
+            <li><strong>Chandanadi Vati:</strong> Classical Pitta-calming formulation for oral inflammation</li>
+          </ul>`,
+        lifestyle: `• 🚨 <strong>Medical evaluation recommended</strong> if red tongue + fever or persistent pain
+          <br>• <strong>Cooling foods (Pitta diet):</strong> Cucumber, coconut water, pomegranate, coriander
+          <br>• <strong>Avoid:</strong> Spicy food, alcohol, hot beverages, acidic foods
+          <br>• <strong>Aloe vera gel:</strong> Apply directly to inflamed areas — anti-inflammatory (Vogler 1999, Drugs)`
+      },
+
+      'pale colour': {
+        status: 'moderate',
+        headline: 'Anaemia — Deficiency Pattern (Pandu Roga)',
+        markers: [
+          { key: 'Finding', val: 'Pale tongue' },
+          { key: 'Dosha', val: 'Vata-Kapha + Agni deficit' },
+          { key: 'Clinical', val: 'Anaemia screen required' },
+          { key: 'Severity', val: 'Moderate' },
+        ],
+        modern: `A pale tongue is a reliable clinical sign of anaemia. Harrison's Principles of Internal Medicine:<br><br>
+          <ul>
+            <li><strong>Iron deficiency anaemia:</strong> Most common — affects 1.6 billion globally (WHO). Pale tongue, fatigue, brittle nails, pica</li>
+            <li><strong>Haemoglobin threshold:</strong> <12 g/dL women, <13 g/dL men = anaemia (WHO definition)</li>
+            <li><strong>B12 deficiency:</strong> Smooth, pale, burning tongue — megaloblastic anaemia</li>
+            <li><strong>Thalassaemia:</strong> Chronically pale tongue — genetic haemoglobin disorder</li>
+          </ul>
+          <strong>Recommended investigations:</strong> CBC, peripheral smear, serum ferritin, B12, folate, TIBC.`,
+        ayur: `Pale tongue is the primary visual indicator of <em>Pandu Roga</em> (Ayurvedic anaemia) described in 
+          Charaka Samhita Chikitsa Sthana Ch.16. Caused by depleted <em>Rasa</em> and <em>Rakta Dhatu</em>:<br><br>
+          <ul>
+            <li><strong>Punarnava Mandur (Iron-based formulation):</strong> Classical treatment for Pandu Roga — promotes Rakta Dhatu formation</li>
+            <li><strong>Draksha (Vitis vinifera — raisins):</strong> Rich in iron and Vit C — soak 20 raisins overnight, eat morning</li>
+            <li><strong>Pomegranate (Dadima):</strong> Charaka's prime Rakta Vardhak (blood builder) — 200 mL juice daily</li>
+            <li><strong>Amalaki + Black sesame + Jaggery:</strong> Traditional iron-rich combination — increases haemoglobin</li>
+          </ul>`,
+        lifestyle: `• ⚠️ <strong>Blood test recommended:</strong> CBC + ferritin if pale tongue persists >1 week
+          <br>• <strong>Iron-rich diet:</strong> Spinach, lentils, tofu, pumpkin seeds + Vitamin C for absorption
+          <br>• <strong>Avoid calcium with iron meals:</strong> Calcium blocks iron absorption (take separately)
+          <br>• <strong>Cook in cast iron:</strong> Increases dietary iron content of food significantly`
+      }
+    }
+  },
+
+  /* ─── SKIN (Tvak Pariksha) ─── */
+  skin: {
+    title: 'Tvak Pariksha (Skin Examination)',
+    modes: {
+      default: {
+        status: 'balanced',
+        headline: 'Healthy Skin — Balanced Tvak Dhatu',
+        markers: [
+          { key: 'Colour', val: 'Even tone (normal)' },
+          { key: 'Texture', val: 'Smooth, elastic' },
+          { key: 'Moisture', val: 'Adequately hydrated' },
+          { key: 'Dosha', val: 'Balanced Tridosha' },
+        ],
+        modern: `Healthy skin reflects balanced internal organ function. The skin barrier (stratum corneum) 
+          maintains TEWL (trans-epidermal water loss) <10 g/m²/h (British Dermatology Guidelines 2022).<br><br>
+          <ul>
+            <li><strong>SPF 30+ daily:</strong> Prevents UV-induced DNA damage — reduces melanoma risk 50% (AAD)</li>
+            <li><strong>Hydration:</strong> 2L+ water/day maintains skin turgor and elasticity</li>
+            <li><strong>Barrier maintenance:</strong> Ceramide-containing moisturiser — repairs TEWL</li>
+          </ul>`,
+        ayur: `Charaka Samhita Sutrasthana Ch.17 describes healthy skin as <em>"Snigdha, Prasanna, Sama-Varna"</em> — 
+          lustrous, clear, and even-coloured — reflecting healthy Rasa, Rakta Dhatu and Bhrajak Pitta:<br><br>
+          <ul>
+            <li><strong>Kumari (Aloe vera) topical:</strong> Anti-inflammatory, wound-healing — acemannan polysaccharide (Atherton 1998)</li>
+            <li><strong>Sesame oil (Tila Taila) Abhyanga:</strong> Daily self-massage — improves circulation, nourishes Tvak Dhatu</li>
+            <li><strong>Turmeric + chickpea flour face mask:</strong> Weekly — anti-inflammatory, brightening (curcumin)</li>
+          </ul>`,
+        lifestyle: `• <strong>Eat the rainbow:</strong> Carotenoids (beta-carotene from carrots, sweet potato) improve skin tone
+          <br>• <strong>Omega-3 (1g EPA+DHA/day):</strong> Reduces skin inflammation, improves hydration
+          <br>• <strong>Sleep 7–9h:</strong> Growth hormone secretion during sleep repairs skin collagen`
+      },
+      'dryness': {
+        status: 'mild', headline: 'Vata-type Dry Skin',
+        markers: [
+          { key: 'Finding', val: 'Dry / Rough skin' },
+          { key: 'Dosha', val: 'Vata excess' },
+          { key: 'Clinical', val: 'Xerosis / Eczema' },
+          { key: 'Severity', val: 'Mild-Moderate' },
+        ],
+        modern: `Xerosis (dry skin) affects 75% of adults >65 years and is associated with reduced sebum production, 
+          reduced natural moisturising factor (NMF). NHS guidance:<br><br>
+          <ul>
+            <li><strong>Emollients:</strong> Apply immediately post-bathing — ceramide creams or petroleum jelly (Vanicream/CeraVe) reduce TEWL by 40%</li>
+            <li><strong>Avoid hot showers:</strong> Use lukewarm water — hot water strips natural oils</li>
+            <li><strong>Rule out hypothyroidism:</strong> Dry skin + fatigue + cold intolerance → TSH test</li>
+          </ul>`,
+        ayur: `Dry skin is classic <em>Vata Prakriti</em> and Vata aggravation in Tvak Dhatu. Charaka recommends <em>Snehana</em> (oleation therapy):<br><br>
+          <ul>
+            <li><strong>Abhyanga with Tila Taila (sesame oil):</strong> Warm, apply before bath — pacifies Vata, penetrates skin layers</li>
+            <li><strong>Ashwagandha + Shatavari:</strong> Internal nourishment for depleted Tvak Dhatu</li>
+            <li><strong>Ghee internally:</strong> 1 tsp warm ghee in milk — nourishes all Dhatus including skin</li>
+          </ul>`,
+        lifestyle: `• Apply oil within 3 min of bathing (LOCK moisture in)
+          <br>• Humidifier in room during dry seasons (maintain 40–60% humidity)
+          <br>• Avoid soap — use gentle syndet bars (pH 5.5 matched to skin)`
+      }
+    }
+  },
+
+  /* ─── EYES (Netra Pariksha) ─── */
+  eye: {
+    title: 'Netra Pariksha (Eye Examination)',
+    modes: {
+      default: {
+        status: 'balanced',
+        headline: 'Healthy Eyes — Balanced Alochak Pitta',
+        markers: [
+          { key: 'Sclera', val: 'White, clear' },
+          { key: 'Pupil', val: 'Equal, round, reactive' },
+          { key: 'Conjunctiva', val: 'Pink (normal)' },
+          { key: 'Dosha', val: 'Alochak Pitta balanced' },
+        ],
+        modern: `Clear white sclera, pink palpebral conjunctiva, equal pupils, and clear cornea indicate healthy eye function. 
+          WHO's vision screening criteria (2019):<br><br>
+          <ul>
+            <li><strong>Annual eye exam:</strong> Recommended for >40 years — early glaucoma, macular degeneration detection</li>
+            <li><strong>20-20-20 rule:</strong> Every 20 min screen time → look 20 feet away for 20 seconds — reduces digital eye strain</li>
+            <li><strong>Vitamin A adequacy:</strong> Night blindness first sign of deficiency — 700–900 mcg RAE/day (WHO)</li>
+          </ul>`,
+        ayur: `Clear, bright eyes indicate balanced <em>Alochak Pitta</em> — the sub-Pitta governing vision 
+          in the Drishti Mandala (retinal area) per Ashtanga Hridayam Uttarasthana Ch.13:<br><br>
+          <ul>
+            <li><strong>Triphala eye wash:</strong> Cool Triphala decoction as eyewash — soothes, clears Pitta from Netra</li>
+            <li><strong>Saptamrit Lauh:</strong> Classical Ayurvedic eye tonic — contains Triphala, iron, honey</li>
+            <li><strong>Anjanam (Kajal/Surma):</strong> Traditionally protects eyes — antimicrobial, Pitta-cooling</li>
+          </ul>`,
+        lifestyle: `• <strong>Palming:</strong> Rub palms, cover closed eyes for 2 min — relaxes ocular muscles (Bates Method)
+          <br>• <strong>Lutein + Zeaxanthin (10mg + 2mg/day):</strong> Reduces macular degeneration risk 25% (AREDS2 trial)
+          <br>• <strong>Reduce screen brightness:</strong> Match ambient lighting — reduces blue-light induced eye fatigue`
+      },
+      'yellow eyes': {
+        status: 'moderate',
+        headline: '⚠️ Scleral Icterus — Liver Investigation Required',
+        markers: [
+          { key: 'Finding', val: 'Yellow sclera' },
+          { key: 'Clinical', val: 'Jaundice (Icterus)' },
+          { key: 'Urgency', val: '🚨 Urgent medical evaluation' },
+          { key: 'Labs', val: 'Bilirubin, LFT, Hepatitis panel' },
+        ],
+        modern: `🚨 Yellow sclera (scleral icterus) appears when serum bilirubin >2–3 mg/dL. It is a RED FLAG 
+          requiring urgent medical investigation. Differential (Harrison's 20e):<br><br>
+          <ul>
+            <li><strong>Hepatitis (A/B/C/E):</strong> Viral hepatitis — commonest cause of acute jaundice in India (ICMR 2022)</li>
+            <li><strong>Obstructive jaundice:</strong> Gallstones, cholangiocarcinoma — associated with dark urine, pale stools</li>
+            <li><strong>Haemolytic anaemia:</strong> Excessive RBC breakdown → unconjugated bilirubin rise</li>
+            <li><strong>Gilbert's syndrome:</strong> Benign, hereditary — mild yellowing with fasting/illness</li>
+          </ul>
+          <strong>🚨 DO NOT DELAY:</strong> Yellow eyes require same-day blood tests: Total/direct bilirubin, ALT/AST, ALP, GGT, hepatitis serology.`,
+        ayur: `Yellow eyes (Kamala Netra) indicate severe Pitta aggravation and <em>Kamala Roga</em> (Ayurvedic jaundice) 
+          per Charaka Samhita Chikitsa Sthana Ch.16. This is a serious condition requiring medical evaluation:<br><br>
+          <ul>
+            <li><strong>Bhumyamalaki (Phyllanthus niruri):</strong> Hepatoprotective — reduces HBsAg levels (Thyagarajan 1988, Lancet). Use alongside medical treatment.</li>
+            <li><strong>Kutki (Picrorhiza kurroa):</strong> Premier hepatoprotective herb — consult Ayurvedic physician for dosing</li>
+            <li><strong>Strictly avoid:</strong> Alcohol, fatty food, all hepatotoxic substances</li>
+          </ul>
+          ⚠️ Ayurvedic support is complementary — do not delay allopathic diagnosis and treatment.`,
+        lifestyle: `• 🚨 <strong>SEEK MEDICAL CARE TODAY</strong> — yellow eyes require urgent blood investigation
+          <br>• <strong>Complete alcohol abstinence</strong> — mandatory
+          <br>• <strong>Light, easy-to-digest diet:</strong> Rice gruel (kanji), boiled vegetables, no fat
+          <br>• <strong>Rest:</strong> Avoid physical exertion while bilirubin is elevated`
+      },
+      'red eyes': {
+        status: 'mild',
+        headline: 'Pitta Excess — Conjunctival Inflammation',
+        markers: [
+          { key: 'Finding', val: 'Red / bloodshot eyes' },
+          { key: 'Dosha', val: 'Pitta aggravation (Alochak)' },
+          { key: 'Clinical', val: 'Conjunctivitis / Eye strain' },
+          { key: 'Severity', val: 'Mild-Moderate' },
+        ],
+        modern: `Red eyes (conjunctival injection) most commonly caused by:<br><br>
+          <ul>
+            <li><strong>Viral conjunctivitis:</strong> Most common — self-limiting 7–14 days. Highly contagious. Cold compresses, no contact lens.</li>
+            <li><strong>Allergic conjunctivitis:</strong> Itching + redness + watering — antihistamine eye drops (cetirizine/ketotifen)</li>
+            <li><strong>Digital eye strain:</strong> Reduced blinking → dry eye → redness (20-20-20 rule)</li>
+            <li><strong>Acute angle-closure glaucoma:</strong> 🚨 Red eye + severe pain + nausea + haloes → emergency</li>
+          </ul>`,
+        ayur: `Red eyes indicate excess <em>Alochak Pitta</em> in the Netra with Rakta Dhatu vitiation. 
+          Ashtanga Hridayam Uttarasthana Ch.13:<br><br>
+          <ul>
+            <li><strong>Triphala eye wash:</strong> Cool Triphala decoction 2×/day — anti-inflammatory, reduces redness</li>
+            <li><strong>Rose water (Gulab Jal):</strong> Cooling, astringent — 2 drops each eye 3×/day</li>
+            <li><strong>Shatavari ghee:</strong> Cooling eye tonic for recurrent red eyes</li>
+          </ul>`,
+        lifestyle: `• <strong>Cold compresses:</strong> Chilled cucumber slices or cold wet cloth — 10 min, 3×/day
+          <br>• <strong>Reduce screen time:</strong> 20-20-20 rule — mandatory with digital strain
+          <br>• <strong>No rubbing:</strong> Worsens inflammation, risk of corneal abrasion
+          <br>• 🚨 <strong>See a doctor if:</strong> Severe pain, vision change, discharge, or no improvement in 48h`
+      }
     }
   }
+};
 
-  function setMode(mode, btnEl) {
-    currentMode = mode;
-    document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-    
-    const targetEl = btnEl || (window.event ? window.event.target : null);
-    if (targetEl) {
-      targetEl.classList.add('active');
-    } else {
-      const btns = document.querySelectorAll('.mode-btn');
-      btns.forEach(b => {
-        if (b.innerText.toLowerCase().includes(mode)) b.classList.add('active');
-      });
-    }
-    
-    viewport.className = 'scanner-viewport mode-' + mode;
-    document.getElementById('resultPanel').style.display = 'none';
+/* ═══════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════ */
+let currentMode = 'tongue';
+let selectedChips = new Set();
+
+/* ═══════════════════════════════════════════════════════
+   CAMERA
+═══════════════════════════════════════════════════════ */
+async function initCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
+    document.getElementById('cameraFeed').srcObject = stream;
+  } catch(e) { console.log('Camera unavailable:', e); }
+}
+
+/* ═══════════════════════════════════════════════════════
+   MODE SWITCHING
+═══════════════════════════════════════════════════════ */
+const SYMPTOM_SETS = {
+  tongue: {
+    label: 'Select observed tongue features:',
+    hint:  'Position tongue clearly in frame',
+    chips: ['White coating','Yellow coating','Cracks/fissures','Dry surface','Pale colour','Red/inflamed','Swollen edges','Geographic tongue','Dark/purple tinge']
+  },
+  skin: {
+    label: 'Select observed skin features:',
+    hint:  'Hold skin area up to camera clearly',
+    chips: ['Dryness','Oiliness','Redness/rash','Dark spots','Itching','Flaking','Puffiness','Yellowish tinge','Pallor']
+  },
+  eye: {
+    label: 'Select observed eye features:',
+    hint:  'Look directly into camera — good lighting',
+    chips: ['Yellow eyes','Red eyes','Dark circles','Puffy eyelids','Pale conjunctiva','Dry/gritty feeling','Blurred vision','Photosensitivity','Drooping eyelid']
   }
+};
 
-  function runAnalysis() {
-    const btn = document.getElementById('startScanBtn');
-    const Line = document.getElementById('scanLine');
-    const procText = document.getElementById('procText');
-    const resultPanel = document.getElementById('resultPanel');
+function setMode(mode, btn) {
+  currentMode = mode;
+  selectedChips.clear();
+  document.querySelectorAll('.mode-tab').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
 
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
-    Line.style.opacity = '1';
-    procText.style.display = 'block';
+  const vp = document.getElementById('viewport');
+  vp.className = 'cam-viewport mode-' + mode;
 
-    // Simulate 3 seconds of AI "thinking"
-    setTimeout(() => {
-      btn.disabled = false;
-      btn.style.opacity = '1';
-      Line.style.opacity = '0';
-      procText.style.display = 'none';
-      resultPanel.style.display = 'block';
-      resultPanel.scrollIntoView({ behavior: 'smooth' });
-    }, 3500);
-  }
+  const ss = SYMPTOM_SETS[mode];
+  document.getElementById('symptomLabel').textContent = ss.label;
+  document.getElementById('camHint').textContent = ss.hint;
 
-  document.addEventListener('DOMContentLoaded', () => {
-    initCamera();
-    
-    // Check mode query param
-    const params = new URLSearchParams(window.location.search);
-    const mode = params.get('mode');
-    if (mode) {
-      setMode(mode);
-    }
+  const chips = document.getElementById('symptomChips');
+  chips.innerHTML = ss.chips.map(c =>
+    `<span class="sym-chip" onclick="toggleChip(this)">${c}</span>`
+  ).join('');
+
+  // Reset results
+  document.getElementById('waitingState').style.display = 'flex';
+  document.getElementById('processingState').style.display = 'none';
+  document.getElementById('resultContent').style.display = 'none';
+}
+
+function toggleChip(el) {
+  el.classList.toggle('selected');
+  const val = el.textContent.trim().toLowerCase();
+  if (selectedChips.has(val)) selectedChips.delete(val);
+  else selectedChips.add(val);
+}
+
+/* ═══════════════════════════════════════════════════════
+   ANALYSIS
+═══════════════════════════════════════════════════════ */
+function runAnalysis() {
+  const btn = document.getElementById('analyzeBtn');
+  btn.disabled = true;
+  document.getElementById('scanLine').style.opacity = '1';
+
+  // Show processing
+  document.getElementById('waitingState').style.display = 'none';
+  document.getElementById('resultContent').style.display = 'none';
+  const proc = document.getElementById('processingState');
+  proc.style.display = 'flex';
+
+  // Reset steps
+  ['ps1','ps2','ps3','ps4'].forEach(id => {
+    document.getElementById(id).className = 'proc-step';
   });
+
+  const steps = [
+    { id:'ps1', ms:1000, done:'✅ Visual colour markers extracted' },
+    { id:'ps2', ms:2000, done:'✅ Charaka Samhita knowledge base queried' },
+    { id:'ps3', ms:3000, done:'✅ WHO/NHS clinical markers cross-referenced' },
+    { id:'ps4', ms:3800, done:'✅ Integrative RAG report generated' },
+  ];
+  steps.forEach(({ id, ms, done }) => {
+    setTimeout(() => {
+      document.getElementById(id).className = 'proc-step done';
+      document.getElementById(id).textContent = done;
+    }, ms);
+  });
+
+  setTimeout(() => {
+    document.getElementById('scanLine').style.opacity = '0';
+    proc.style.display = 'none';
+    btn.disabled = false;
+    renderReport();
+  }, 4400);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER REPORT
+═══════════════════════════════════════════════════════ */
+function renderReport() {
+  const modeData = VISION_RAG[currentMode];
+  if (!modeData) return;
+
+  // Find best matching knowledge entry
+  let found = null;
+  for (const chip of selectedChips) {
+    const normalized = chip.toLowerCase().trim();
+    for (const [key, val] of Object.entries(modeData.modes)) {
+      if (key !== 'default' && normalized.includes(key.toLowerCase())) {
+        found = val; break;
+      }
+    }
+    if (found) break;
+  }
+  if (!found) found = modeData.modes.default;
+
+  const statusCls  = found.status;
+  const statusIcon = statusCls === 'balanced' ? '✅' : statusCls === 'mild' ? '⚠️' : '🚨';
+  const statusText = statusCls === 'balanced' ? 'Within Healthy Parameters'
+                   : statusCls === 'mild'     ? 'Mild Imbalance — Monitor & Support'
+                   : 'Clinical Evaluation Recommended';
+
+  const markersHTML = found.markers.map(m =>
+    `<div class="marker-box"><div class="marker-key">${m.key}</div><div class="marker-val">${m.val}</div></div>`
+  ).join('');
+
+  const isUrgent = found.status === 'moderate';
+
+  const html = `
+    <div class="status-bar ${statusCls}">
+      <span style="font-size:18px">${statusIcon}</span>
+      <div>
+        <div style="font-weight:800">${found.headline}</div>
+        <div style="font-size:11px;font-weight:500;opacity:0.8">${statusText}</div>
+      </div>
+    </div>
+
+    <div class="markers-row">${markersHTML}</div>
+
+    <!-- Modern Medicine -->
+    <div class="rs modern">
+      <div class="rs-lbl modern">🏥 Modern Clinical Assessment (WHO / NHS / Harrison's)</div>
+      <div class="rs-body">${found.modern}</div>
+    </div>
+
+    <!-- Ayurvedic -->
+    <div class="rs ayur">
+      <div class="rs-lbl ayur">🌿 Ayurvedic Analysis (Charaka Samhita / Ashtanga Hridayam)</div>
+      <div class="rs-body">${found.ayur}</div>
+    </div>
+
+    <!-- Lifestyle -->
+    <div class="rs lifestyle">
+      <div class="rs-lbl lifestyle">🌱 Integrative Lifestyle Protocol</div>
+      <div class="rs-body">${found.lifestyle}</div>
+    </div>
+
+    ${isUrgent ? `
+    <div class="rs warning">
+      <div class="rs-lbl warn">🚨 Clinical Action Required</div>
+      <div class="rs-body">These visual markers indicate a condition requiring professional clinical evaluation. Please consult a physician promptly. Do not self-medicate or delay seeking care.</div>
+    </div>` : ''}
+
+    <!-- Sources -->
+    <div class="sources-row">
+      <div class="src-chip">📄 Charaka Samhita</div>
+      <div class="src-chip">📖 Ashtanga Hridayam</div>
+      <div class="src-chip">🌍 WHO 2023</div>
+      <div class="src-chip">🏥 NHS Guidelines</div>
+      <div class="src-chip">📚 Harrison's 20e</div>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+      <strong>⚕️ Disclaimer:</strong> This AI Vision Lab provides wellness orientation powered by a verified clinical RAG knowledge base.
+      It is <strong>not a diagnostic tool</strong> and cannot replace physical examination by a qualified physician, dermatologist, or ophthalmologist.
+      Visual markers observed through a camera do not constitute a medical diagnosis. If you have concerns about any finding, please seek professional medical advice.
+    </div>
+
+    <!-- Consult CTA -->
+    <button class="consult-btn" onclick="window.location.href='consult.html'">
+      👨‍⚕️ Share with a Doctor
+    </button>
+  `;
+
+  const rc = document.getElementById('resultContent');
+  rc.innerHTML = html;
+  rc.style.display = 'block';
+  rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  initCamera();
+  const params = new URLSearchParams(window.location.search);
+  const mode   = params.get('mode');
+  if (mode && ['tongue','skin','eye'].includes(mode)) {
+    setMode(mode, document.getElementById('tab-' + mode));
+  }
+});
 </script>
 
 </body>

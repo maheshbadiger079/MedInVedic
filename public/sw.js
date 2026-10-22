@@ -1,5 +1,5 @@
 // MedInVedic Service Worker - Fresh Network-First v1788375218621
-const CACHE_NAME = 'medinvedic-v1788375218622';
+const CACHE_NAME = 'medinvedic-v1791798500000';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

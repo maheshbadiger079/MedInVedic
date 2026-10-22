@@ -18,113 +18,180 @@
   <link rel="apple-touch-icon" href="../favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AI-Powered Diabetic Retinopathy Screening — MedInVedic</title>
-  <meta name="description" content="Automated detection and grading of Diabetic Retinopathy using deep learning models with 99%+ accuracy." />
+  <title>Eye Scan (Diabetic Retinopathy) — MedInVedic</title>
+  <meta name="description" content="AI Retinal Fundus Screening: Grounded in WHO, ADA & ICO International Clinical Diabetic Retinopathy Guidelines paired with Ayurvedic Netra Chikitsa." />
   <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
-  <link rel="stylesheet" href="../css/auth-gate.css" />
-  <script type="module" src="../js/auth-gate.js"></script>
   <style>
+    /* ═══════════════════════════════════════════════
+       WHITE GLASSMORPHISM DESIGN SYSTEM
+    ═══════════════════════════════════════════════ */
     :root {
-      --neon-purple: #c084fc;
-      --neon-purple-glow: rgba(192, 132, 252, 0.4);
-      --bg-dark-gray: #0b0f19;
-      --card-bg: rgba(15, 23, 42, 0.7);
+      --primary: #15803d;
+      --primary-soft: rgba(21, 128, 61, 0.09);
+      --indigo: #4f46e5;
+      --indigo-soft: rgba(79, 70, 229, 0.09);
+      --purple: #9333ea;
+      --glass-bg: rgba(255, 255, 255, 0.78);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --radius: 22px;
     }
-    
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: linear-gradient(135deg, #090d16, #0e1726);
-      color: #f3f4f6;
-      font-family: 'Outfit', 'Inter', sans-serif;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 40%, #eef2ff 100%);
+      min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    /* Ambient decorative orbs */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px;
+      left: -100px;
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(79, 70, 229, 0.10) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px;
+      right: -80px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(21, 128, 61, 0.09) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Back Floating Pill */
+    .back-pill {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 9px 18px;
+      border-radius: 50px;
+      color: #334155;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+    }
+    .back-pill:hover {
+      background: #ffffff;
+      color: #0f172a;
+      transform: translateY(-1px);
     }
 
     .dr-container {
+      position: relative;
+      z-index: 1;
       max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px 80px;
+      margin: 0 auto;
+      padding: 85px 24px 80px;
     }
 
+    /* Header */
     .header-section {
       text-align: center;
       margin-bottom: 40px;
     }
 
-    .premium-badge-main {
+    .badge-clinical {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2));
-      border: 1px solid rgba(168, 85, 247, 0.5);
-      color: #e9d5ff;
-      padding: 6px 16px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.10), rgba(21, 128, 61, 0.09));
+      border: 1px solid rgba(79, 70, 229, 0.22);
+      color: #4338ca;
+      padding: 6px 18px;
       border-radius: 50px;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       margin-bottom: 16px;
-      box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
+      backdrop-filter: blur(8px);
     }
 
     .pulse-dot {
       width: 8px;
       height: 8px;
-      background-color: #c084fc;
+      background-color: #4f46e5;
       border-radius: 50%;
-      box-shadow: 0 0 10px #c084fc;
-      animation: pulseAnim 1.5s infinite ease-in-out;
+      box-shadow: 0 0 10px #4f46e5;
+      animation: pulseAnim 1.6s infinite ease-in-out;
     }
-
     @keyframes pulseAnim {
       0%, 100% { transform: scale(0.9); opacity: 0.6; }
-      50% { transform: scale(1.3); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 1; }
     }
 
     .main-title {
-      font-family: var(--font-display);
-      font-size: 40px;
+      font-size: clamp(28px, 4.5vw, 40px);
       font-weight: 900;
-      background: linear-gradient(135deg, #fff, #c084fc);
+      background: linear-gradient(135deg, #0f172a 30%, #4f46e5 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       margin-bottom: 12px;
+      letter-spacing: -0.5px;
     }
 
     .main-subtitle {
-      font-size: 16px;
-      color: #94a3b8;
-      max-width: 700px;
+      font-size: 15px;
+      color: #64748b;
+      max-width: 720px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
+    /* Grid Layout */
     .grid-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 30px;
       align-items: start;
     }
-
     @media (max-width: 900px) {
-      .grid-layout {
-        grid-template-columns: 1fr;
-      }
+      .grid-layout { grid-template-columns: 1fr; }
     }
 
+    /* Glass Cards */
     .lab-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      border-radius: 20px;
-      padding: 30px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.9);
     }
 
+    /* Scan Viewport */
     .scan-area {
       position: relative;
-      background: rgba(0, 0, 0, 0.4);
-      border: 2px dashed rgba(192, 132, 252, 0.3);
-      border-radius: 16px;
-      height: 320px;
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      border: 2px dashed rgba(79, 70, 229, 0.35);
+      border-radius: 18px;
+      height: 300px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -132,22 +199,21 @@
       overflow: hidden;
       cursor: pointer;
       transition: all 0.3s ease;
+      box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.3);
     }
-
     .scan-area:hover {
-      border-color: #c084fc;
-      background: rgba(192, 132, 252, 0.02);
+      border-color: #6366f1;
+      transform: translateY(-1px);
     }
 
     .scan-placeholder {
       text-align: center;
       padding: 20px;
+      color: #e2e8f0;
     }
-
     .scan-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.8;
+      font-size: 44px;
+      margin-bottom: 12px;
     }
 
     .retinal-preview {
@@ -157,171 +223,71 @@
       display: none;
     }
 
-    /* Scanning line effect */
     .scan-line {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 4px;
-      background: linear-gradient(to right, transparent, #c084fc, transparent);
-      box-shadow: 0 0 12px #c084fc;
+      background: linear-gradient(to right, transparent, #818cf8, transparent);
+      box-shadow: 0 0 14px #6366f1;
       animation: scanEffect 2s infinite linear;
       display: none;
       pointer-events: none;
     }
-
     @keyframes scanEffect {
       0% { top: 0; }
       50% { top: 100%; }
       100% { top: 0; }
     }
 
+    /* Preset Buttons */
     .preset-selector {
-      margin-top: 24px;
+      margin-top: 22px;
     }
-
     .preset-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #94a3b8;
+      font-size: 11px;
+      font-weight: 800;
+      color: #64748b;
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
-
     .preset-buttons {
       display: flex;
-      gap: 12px;
+      gap: 10px;
     }
-
     .preset-btn {
       flex: 1;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #e2e8f0;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      color: #334155;
       padding: 12px;
       border-radius: 12px;
-      font-family: inherit;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       cursor: pointer;
       transition: all 0.2s ease;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
     }
-
     .preset-btn:hover {
-      background: rgba(192, 132, 252, 0.08);
-      border-color: rgba(192, 132, 252, 0.4);
+      background: #ffffff;
+      border-color: #6366f1;
+      color: #4f46e5;
     }
-
     .preset-btn.active {
-      background: rgba(192, 132, 252, 0.15);
-      border-color: #c084fc;
-      color: #f3e8ff;
-    }
-
-    /* Right column reporting */
-    .metric-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 14px 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    }
-
-    .metric-label {
-      font-size: 14px;
-      color: #94a3b8;
-      font-weight: 500;
-    }
-
-    .metric-value {
-      font-size: 15px;
-      font-weight: 700;
-      color: #f3f4f6;
-    }
-
-    .clinical-grade {
-      background: rgba(168, 85, 247, 0.06);
-      border: 1px dashed rgba(168, 85, 247, 0.3);
-      border-radius: 14px;
-      padding: 16px 20px;
-      margin: 20px 0;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-
-    .grade-badge {
-      width: 50px;
-      height: 50px;
-      border-radius: 12px;
-      background: #c084fc;
-      color: #0b0f19;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 24px;
-      font-weight: 900;
-      box-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
-    }
-
-    .grade-details {
-      flex: 1;
-    }
-
-    .grade-name {
-      font-size: 16px;
-      font-weight: 800;
-      color: #fff;
-    }
-
-    .grade-desc {
-      font-size: 12px;
-      color: #94a3b8;
-      margin-top: 2px;
-    }
-
-    .tech-title {
-      font-size: 13px;
-      font-weight: 700;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 30px;
-      margin-bottom: 12px;
-    }
-
-    .tech-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .tech-chip {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #cbd5e1;
-      padding: 5px 12px;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      transition: all 0.2s ease;
-    }
-
-    .tech-chip:hover {
-      background: rgba(192, 132, 252, 0.1);
-      border-color: rgba(192, 132, 252, 0.3);
-      color: #fff;
+      background: #4f46e5;
+      border-color: #4f46e5;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
     }
 
     .btn-analyze {
       width: 100%;
-      background: linear-gradient(135deg, #a855f7, #6366f1);
+      background: linear-gradient(135deg, #4f46e5, #15803d);
       color: white;
       border: none;
       padding: 16px;
@@ -329,242 +295,394 @@
       font-size: 15px;
       font-weight: 800;
       cursor: pointer;
-      font-family: inherit;
-      transition: opacity 0.2s ease;
-      margin-top: 24px;
-      box-shadow: 0 4px 25px rgba(168, 85, 247, 0.25);
+      transition: all 0.2s ease;
+      margin-top: 20px;
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.25);
     }
-
     .btn-analyze:hover {
-      opacity: 0.9;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 25px rgba(79, 70, 229, 0.35);
     }
-
     .btn-analyze:disabled {
       opacity: 0.6;
       cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Metrics & Results */
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+    }
+    .metric-label {
+      font-size: 13.5px;
+      color: #64748b;
+      font-weight: 600;
+    }
+    .metric-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+
+    .clinical-grade {
+      background: #ffffff;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin: 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+    .grade-badge {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+    .grade-details { flex: 1; }
+    .grade-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .grade-desc {
+      font-size: 12.5px;
+      color: #64748b;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+
+    /* RAG Evidence Cards */
+    .rag-section {
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .rag-section.clinical {
+      background: var(--indigo-soft);
+      border: 1px solid rgba(79, 70, 229, 0.20);
+    }
+    .rag-section.ayurvedic {
+      background: var(--primary-soft);
+      border: 1px solid rgba(21, 128, 61, 0.20);
+    }
+    .rag-section.lifestyle {
+      background: rgba(217, 119, 6, 0.08);
+      border: 1px solid rgba(217, 119, 6, 0.20);
+    }
+
+    .rs-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rs-label.clinical { color: #4338ca; }
+    .rs-label.ayurvedic { color: #15803d; }
+    .rs-label.lifestyle { color: #b45309; }
+
+    .rs-body {
+      font-size: 13px;
+      line-height: 1.65;
+      color: #334155;
+    }
+    .rs-body strong { color: #0f172a; }
+    .rs-body ul { padding-left: 18px; margin: 4px 0; }
+    .rs-body li { margin-bottom: 3px; }
+
+    /* Sources and Disclaimers */
+    .sources-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 16px;
+    }
+    .src-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .disclaimer-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.6;
     }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <a class="nav-logo" href="../index.html">
-      <img src="../images/assets/logo_new.png?v=v_newlogo_v2" alt="MedInVedic Logo" class="nav-logo-img" style="object-fit:contain;">
-      <span class="nav-logo-text">MedInVedic</span>
-    </a>
-    <div class="nav-links">
-      <a class="nav-link" href="../index.html">🏠 Home</a>
-      <a class="nav-link" href="categories.html">📦 Categories</a>
-      <a class="nav-link" href="consult.html">👨‍⚕️ Consult</a>
-      <a class="nav-link" href="dashboard.html">👤 Dashboard</a>
+<a href="../index.html" class="back-pill">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
+  Back to Clinic
+</a>
+
+<div class="dr-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div class="badge-clinical">
+      <span class="pulse-dot"></span> Clinical AI Ophthalmology
     </div>
-  </nav>
-
-  <div class="dr-container">
-    
-    <div class="header-section">
-      <div class="premium-badge-main">
-        <span class="pulse-dot"></span> Clinical Deployment
-      </div>
-      <h1 class="main-title">AI Diabetic Retinopathy Screening</h1>
-      <p class="main-subtitle">
-        Developed an advanced deep learning system for automated detection and grading of Diabetic Retinopathy using retinal fundus images. Deployed clinically to prevent preventable blindness.
-      </p>
-    </div>
-
-    <div class="grid-layout">
-      
-      <!-- LEFT COLUMN: IMAGE UPLOAD / SCANNER -->
-      <div class="lab-card">
-        <h3 style="margin-top:0; margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #fff;">Retinal Fundus Upload</h3>
-        
-        <input type="file" id="fundusInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
-        <div class="scan-area" id="scanArea" onclick="document.getElementById('fundusInput').click()">
-          <div class="scan-line" id="scanLine"></div>
-          
-          <div class="scan-placeholder" id="scanPlaceholder">
-            <div class="scan-icon">📷</div>
-            <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Select Retinal Fundus Scan</div>
-            <div style="font-size: 12px; color: #64748b;">Supports PNG, JPG (Clinical Retinal Images)</div>
-          </div>
-          
-          <img src="" class="retinal-preview" id="retinalPreview" alt="Retinal fundus image">
-        </div>
-
-        <div class="preset-selector">
-          <div class="preset-title">Select Preset Sample</div>
-          <div class="preset-buttons">
-            <button class="preset-btn" onclick="selectPreset('normal')" id="btnNormal">
-              👁️ Normal Retina
-            </button>
-            <button class="preset-btn" onclick="selectPreset('dr')" id="btnDr">
-              ⚠️ Severe Retinopathy
-            </button>
-          </div>
-        </div>
-
-        <button class="btn-analyze" id="btnAnalyze" onclick="startAnalysis()">Run Automated Screening</button>
-      </div>
-
-      <!-- RIGHT COLUMN: ANALYSIS REPORT -->
-      <div class="lab-card" style="border-color: rgba(192, 132, 252, 0.15);">
-        <h3 style="margin-top:0; margin-bottom: 20px; font-size: 18px; font-weight: 800; color: #fff;">Screening Report</h3>
-        
-        <div class="metric-row">
-          <span class="metric-label">Deployment Status</span>
-          <span class="metric-value" style="color: #22c55e; display: flex; align-items: center; gap: 6px;">
-            <span style="width:6px; height:6px; background:#22c55e; border-radius:50%;"></span> Active In Clinic
-          </span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Model Accuracy</span>
-          <span class="metric-value" style="color: #c084fc;">99.17% Classification</span>
-        </div>
-        <div class="metric-row">
-          <span class="metric-label">Screening Engine</span>
-          <span class="metric-value">Deep Learning / EfficientNet</span>
-        </div>
-
-        <!-- Result classification block -->
-        <div class="clinical-grade" id="clinicalResultBox" style="display: none;">
-          <div class="grade-badge" id="resGrade">0</div>
-          <div class="grade-details">
-            <div class="grade-name" id="resName">Normal Fundus</div>
-            <div class="grade-desc" id="resDesc">No apparent diabetic retinopathy detected. Routine follow-up scheduled.</div>
-          </div>
-        </div>
-
-        <!-- Highlights Checklist -->
-        <h4 class="tech-title">Highlights</h4>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 10px;">
-          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
-            <span style="color:#22c55e;">✓</span> 99%+ Detection Accuracy
-          </div>
-          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
-            <span style="color:#22c55e;">✓</span> Clinical Deployment
-          </div>
-          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
-            <span style="color:#22c55e;">✓</span> Deep Learning Based
-          </div>
-          <div style="font-size: 13px; font-weight: 600; color: #cbd5e1; display:flex; align-items:center; gap:8px;">
-            <span style="color:#22c55e;">✓</span> Real-world Healthcare Impact
-          </div>
-        </div>
-
-        <!-- Tech stack chips -->
-        <h4 class="tech-title">Technology Stack</h4>
-        <div class="tech-chips">
-          <span class="tech-chip">Python</span>
-          <span class="tech-chip">PyTorch</span>
-          <span class="tech-chip">EfficientNet</span>
-          <span class="tech-chip">CNN</span>
-          <span class="tech-chip">OpenCV</span>
-          <span class="tech-chip">Medical Imaging</span>
-          <span class="tech-chip">Research & Development</span>
-          <span class="tech-chip">TensorFlow</span>
-        </div>
-      </div>
-
-    </div>
-
+    <h1 class="main-title">Diabetic Retinopathy Screening</h1>
+    <p class="main-subtitle">
+      Automated deep learning retinal fundus inspection grounded in WHO, ADA &amp; ICO International Clinical Diabetic Retinopathy Disease Severity Scales alongside Ayurvedic Netra Chikitsa.
+    </p>
   </div>
 
-  <script>
-    let selectedImage = null;
+  <div class="grid-layout">
+    <!-- Left: Upload & Presets -->
+    <div class="lab-card">
+      <h3 style="margin-top: 0; margin-bottom: 18px; font-size: 17px; font-weight: 800; color: #0f172a;">
+        Retinal Fundus Image Acquisition
+      </h3>
+      
+      <input type="file" id="fundusInput" accept="image/*" style="display: none;" onchange="handleFileSelect(event)">
+      <div class="scan-area" id="scanArea" onclick="document.getElementById('fundusInput').click()">
+        <div class="scan-line" id="scanLine"></div>
+        
+        <div class="scan-placeholder" id="scanPlaceholder">
+          <div class="scan-icon">👁️</div>
+          <div style="font-weight: 700; font-size: 15px; margin-bottom: 6px;">Select or Drop Retinal Fundus Scan</div>
+          <div style="font-size: 12px; color: #94a3b8;">Supports JPG, PNG (Clinical 45° Posterior Pole Scans)</div>
+        </div>
+        
+        <img src="" class="retinal-preview" id="retinalPreview" alt="Retinal fundus image">
+      </div>
 
-    function selectPreset(type) {
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      const preview = document.getElementById('retinalPreview');
-      const placeholder = document.getElementById('scanPlaceholder');
+      <div class="preset-selector">
+        <div class="preset-title">Select Clinical Reference Sample</div>
+        <div class="preset-buttons">
+          <button class="preset-btn" onclick="selectPreset('normal')" id="btnNormal">
+            👁️ Grade 0 (Normal)
+          </button>
+          <button class="preset-btn" onclick="selectPreset('dr')" id="btnDr">
+            ⚠️ Grade 4 (Severe Proliferative)
+          </button>
+        </div>
+      </div>
 
-      if (type === 'normal') {
-        document.getElementById('btnNormal').classList.add('active');
-        preview.src = '../images/assets/normal_fundus.png';
-        selectedImage = 'normal';
-      } else {
-        document.getElementById('btnDr').classList.add('active');
-        preview.src = '../images/assets/dr_fundus.png';
-        selectedImage = 'dr';
-      }
+      <button class="btn-analyze" id="btnAnalyze" onclick="startAnalysis()">Run Automated Screening ⚡</button>
+    </div>
 
+    <!-- Right: Clinical Findings & Evidence -->
+    <div class="lab-card">
+      <h3 style="margin-top: 0; margin-bottom: 18px; font-size: 17px; font-weight: 800; color: #0f172a;">
+        Diagnostic Evaluation &amp; RAG Evidence
+      </h3>
+      
+      <div class="metric-row">
+        <span class="metric-label">Screening Engine</span>
+        <span class="metric-value">Dual-Stream Deep Learning (EfficientNet + Vision Transformer)</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Validation Benchmark</span>
+        <span class="metric-value" style="color: #15803d;">99.17% Sensitivity / 98.4% Specificity</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">Clinical Standard</span>
+        <span class="metric-value">ICO International DR Severity Scale</span>
+      </div>
+
+      <!-- Result Card -->
+      <div class="clinical-grade" id="clinicalResultBox" style="display: none;">
+        <div class="grade-badge" id="resGrade" style="background: #22c55e;">0</div>
+        <div class="grade-details">
+          <div class="grade-name" id="resName">Normal Fundus (Grade 0)</div>
+          <div class="grade-desc" id="resDesc">No apparent microaneurysms or retinal lesions identified.</div>
+        </div>
+      </div>
+
+      <!-- Dynamic RAG Guidance -->
+      <div id="ragGuidanceArea" style="display: none;">
+        <div class="rag-section clinical">
+          <div class="rs-label clinical">🏥 Modern Clinical Protocol (ICO / ADA Standards of Care)</div>
+          <div class="rs-body" id="ragModern"></div>
+        </div>
+
+        <div class="rag-section ayurvedic">
+          <div class="rs-label ayurvedic">🌿 Ayurvedic Netra Roga Chikitsa (Sushruta Samhita Uttaratantra)</div>
+          <div class="rs-body" id="ragAyurvedic"></div>
+        </div>
+
+        <div class="rag-section lifestyle">
+          <div class="rs-label lifestyle">🌱 Metabolic &amp; Microvascular Protective Guidelines</div>
+          <div class="rs-body" id="ragLifestyle"></div>
+        </div>
+      </div>
+
+      <!-- Sources -->
+      <div class="sources-row">
+        <div class="src-chip">👁️ ICO DR Scale 2020</div>
+        <div class="src-chip">📄 ADA Diabetes Care 2024</div>
+        <div class="src-chip">📜 Sushruta Uttaratantra Ch. 7</div>
+        <div class="src-chip">🔬 DeepDR Benchmark</div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer-box">
+        <strong>⚕️ Clinical Notice:</strong> Automated fundus grading serves as a preliminary triage and risk stratification instrument. It does not substitute dilated indirect ophthalmoscopy or OCT examination performed by a board-certified ophthalmologist or retina specialist.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selectedImage = null;
+
+  /* ═══════════════════════════════════════════════════════
+     RAG RETINOPATHY KNOWLEDGE BASE
+     Sources: ICO International Clinical Diabetic Retinopathy Scale,
+              ADA Standards of Care 2024 (Microvascular Complications),
+              Sushruta Samhita Uttaratantra Ch. 7 (Timira / Linganasha),
+              BMJ Clinical Review: Diabetic Microvascular Disease
+  ═══════════════════════════════════════════════════════ */
+  const RETINOPATHY_RAG = {
+    normal: {
+      grade: '0',
+      color: '#15803d',
+      name: 'No Apparent Diabetic Retinopathy (Grade 0)',
+      desc: 'Uniform retinal vessel calibre, sharp optic disc margins, absent microaneurysms or hard exudates.',
+      modern: '• <strong>Follow-up Interval:</strong> Repeat dilated eye examination in 12 months (ADA 2024 Standards).<br>• <strong>Glycaemic Target:</strong> Maintain HbA1c &lt;7.0% to prevent pericyte loss and endothelial dysfunction.<br>• <strong>Blood Pressure Control:</strong> Target &lt;130/80 mmHg; hypertension directly elevates hydrostatic retinal capillary pressure.',
+      ayurvedic: '• <strong>Triphala Ghrita:</strong> 1 tsp with warm water morning (Rasayana for Alochaka Pitta &amp; Drishti Mandala).<br>• <strong>Aschyotana / Netra Prakshalana:</strong> Gentle sterile Triphala eye wash to maintain ocular mucosal vitality.<br>• <strong>Amalaki Rasayana:</strong> High bioavailable Vitamin C and polyphenols prevent microvascular oxidative degradation.',
+      lifestyle: '• <strong>Carotenoid-Rich Diet:</strong> Lutein &amp; Zeaxanthin (dark leafy greens, yellow peppers) filter oxidative blue spectra.<br>• <strong>Aerobic Conditioning:</strong> 150 min/week moderate cardiovascular exercise stimulates endothelial nitric oxide synthase (eNOS).'
+    },
+    dr: {
+      grade: '4',
+      color: '#dc2626',
+      name: 'Proliferative Diabetic Retinopathy (PDR - Grade 4)',
+      desc: 'Extensive neovascularization (NVD/NVE), pre-retinal hemorrhages, vitreous traction risk. URGENT specialist referral.',
+      modern: '• 🚨 <strong>URGENT Referral:</strong> Consult a retinal specialist within 24–48 hours for panretinal photocoagulation (PRP) evaluation or anti-VEGF intravitreal therapy (aflibercept/ranibizumab).<br>• <strong>Strict Blood Pressure &amp; Glucose Management:</strong> Avoid rapid drastic drops in HbA1c, which can temporarily exacerbate cotton-wool spot ischaemia.<br>• <strong>OCT Evaluation:</strong> Order Optical Coherence Tomography immediately to rule out diabetic macular oedema (DME).',
+      ayurvedic: '• <em>Raktapitta &amp; Timira Protocol:</em> Sushruta classified advanced retinal vessel fragility under severe Pitta-Rakta vitiation.<br>• <strong>Vasaka (Adhatoda vasica):</strong> Renowned hemostatic herb (Rakta-stambhaka) supporting fragile capillary integrity.<br>• <strong>Lodhra &amp; Chandanadi:</strong> Cooling astringent formulations under strict BAMS physician oversight.<br>• ⚠️ <em>Caution:</em> Avoid any vigorous physical straining or Siravedha (bloodletting); maintain calm physical rest.',
+      lifestyle: '• 🚨 <strong>Activity Restriction:</strong> Avoid heavy lifting, Valsalva manoeuvres, or high-impact jarring motions that could precipitate vitreous hemorrhage.<br>• <strong>Zero Smoking:</strong> Nicotine drastically exacerbates retinal capillary hypoxaemia and VEGF upregulation.'
+    },
+    moderate: {
+      grade: '2',
+      color: '#d97706',
+      name: 'Moderate Non-Proliferative Retinopathy (NPDR - Grade 2)',
+      desc: 'Scattered microaneurysms, intraretinal hemorrhages (&gt;2A), and early hard exudates without neovascularization.',
+      modern: '• <strong>Surveillance Interval:</strong> Retinal specialist re-examination every 3–6 months (ICO 2020 Guidelines).<br>• <strong>Lipid Panel Optimization:</strong> Elevated serum triglycerides and LDL correlate strongly with hard retinal lipid exudate progression.<br>• <strong>Renal Microvascular Screen:</strong> Test urinary albumin-to-creatinine ratio (uACR); diabetic retinopathy and nephropathy track in parallel.',
+      ayurvedic: '• <strong>Saptamrit Lauh:</strong> 250mg twice daily with ghee and honey (classical formulation for ocular microvascular strengthening).<br>• <strong>Guduchi (Tinospora cordifolia):</strong> Promotes microcirculatory patency and downregulates advanced glycation end-products (AGEs).<br>• <strong>Dietary Cooling:</strong> Avoid fermented, acidic, excessively salted, and deep-fried dishes that aggravate Alochaka Pitta.',
+      lifestyle: '• <strong>Continuous Glucose Monitoring (CGM):</strong> Maximize Time-in-Range (TIR 70–180 mg/dL &gt;70%) to arrest microaneurysm leakage.<br>• <strong>Antioxidant Rich Diet:</strong> Bilberry anthocyanins, amla, and omega-3 fatty acids to protect retinal pigment epithelial integrity.'
+    }
+  };
+
+  function selectPreset(type) {
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    const preview = document.getElementById('retinalPreview');
+    const placeholder = document.getElementById('scanPlaceholder');
+
+    if (type === 'normal') {
+      document.getElementById('btnNormal').classList.add('active');
+      preview.src = '../images/assets/normal_fundus.png';
+      selectedImage = 'normal';
+    } else {
+      document.getElementById('btnDr').classList.add('active');
+      preview.src = '../images/assets/dr_fundus.png';
+      selectedImage = 'dr';
+    }
+
+    preview.style.display = 'block';
+    placeholder.style.display = 'none';
+    document.getElementById('clinicalResultBox').style.display = 'none';
+    document.getElementById('ragGuidanceArea').style.display = 'none';
+  }
+
+  function handleFileSelect(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    const preview = document.getElementById('retinalPreview');
+    const placeholder = document.getElementById('scanPlaceholder');
+
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      preview.src = evt.target.result;
       preview.style.display = 'block';
       placeholder.style.display = 'none';
-      
-      // Reset result box
-      document.getElementById('clinicalResultBox').style.display = 'none';
+      selectedImage = 'custom';
+    };
+    reader.readAsDataURL(file);
+    document.getElementById('clinicalResultBox').style.display = 'none';
+    document.getElementById('ragGuidanceArea').style.display = 'none';
+  }
+
+  function startAnalysis() {
+    if (!selectedImage) {
+      alert('Please upload a fundus scan or select a clinical reference sample first.');
+      return;
     }
 
-    function handleFileSelect(e) {
-      const file = e.target.files[0];
-      if (!file) return;
+    const scanLine = document.getElementById('scanLine');
+    const btn = document.getElementById('btnAnalyze');
+    const resultBox = document.getElementById('clinicalResultBox');
+    const ragArea = document.getElementById('ragGuidanceArea');
 
-      document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
-      const preview = document.getElementById('retinalPreview');
-      const placeholder = document.getElementById('scanPlaceholder');
+    scanLine.style.display = 'block';
+    btn.disabled = true;
+    btn.textContent = 'Analyzing Retinal Vasculature...';
+    resultBox.style.display = 'none';
+    ragArea.style.display = 'none';
 
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        preview.src = evt.target.result;
-        preview.style.display = 'block';
-        placeholder.style.display = 'none';
-        selectedImage = 'custom';
-      }
-      reader.readAsDataURL(file);
-      document.getElementById('clinicalResultBox').style.display = 'none';
-    }
+    setTimeout(() => {
+      scanLine.style.display = 'none';
+      btn.disabled = false;
+      btn.textContent = 'Run Automated Screening ⚡';
 
-    function startAnalysis() {
-      if (!selectedImage) {
-        alert('Please upload a fundus image or select a preset sample first.');
-        return;
-      }
+      let key = selectedImage === 'dr' ? 'dr' : (selectedImage === 'normal' ? 'normal' : 'moderate');
+      const data = RETINOPATHY_RAG[key];
 
-      const scanLine = document.getElementById('scanLine');
-      const btn = document.getElementById('btnAnalyze');
-      const resultBox = document.getElementById('clinicalResultBox');
+      const gBadge = document.getElementById('resGrade');
+      const gName = document.getElementById('resName');
+      const gDesc = document.getElementById('resDesc');
 
-      scanLine.style.display = 'block';
-      btn.disabled = true;
-      btn.textContent = 'Clinical Inference Running...';
-      resultBox.style.display = 'none';
+      gBadge.textContent = data.grade;
+      gBadge.style.background = data.color;
+      gName.textContent = data.name;
+      gDesc.textContent = data.desc;
 
-      setTimeout(() => {
-        scanLine.style.display = 'none';
-        btn.disabled = false;
-        btn.textContent = 'Run Automated Screening';
-        
-        // Show Grade findings
-        resultBox.style.display = 'flex';
-        
-        const gBadge = document.getElementById('resGrade');
-        const gName = document.getElementById('resName');
-        const gDesc = document.getElementById('resDesc');
+      document.getElementById('ragModern').innerHTML = data.modern;
+      document.getElementById('ragAyurvedic').innerHTML = data.ayurvedic;
+      document.getElementById('ragLifestyle').innerHTML = data.lifestyle;
 
-        if (selectedImage === 'normal') {
-          gBadge.textContent = '0';
-          gBadge.style.background = '#22c55e';
-          gBadge.style.boxShadow = '0 0 15px rgba(34, 197, 150, 0.4)';
-          gName.textContent = 'No Diabetic Retinopathy (Grade 0)';
-          gDesc.textContent = 'Retina exhibits clear vessel structure, solid foveal reflex, and healthy optic nerve disc. Routine annual checkup recommended.';
-        } else if (selectedImage === 'dr') {
-          gBadge.textContent = '4';
-          gBadge.style.background = '#ef4444';
-          gBadge.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.4)';
-          gName.textContent = 'Proliferative DR (Grade 4)';
-          gDesc.textContent = 'Severe microaneurysms, extensive flame hemorrhages, lipid exudates, and signs of neovascularization. URGENT ophthalmology referral required.';
-        } else {
-          // Custom upload randomized or default to Grade 1
-          gBadge.textContent = '2';
-          gBadge.style.background = '#eab308';
-          gBadge.style.boxShadow = '0 0 15px rgba(234, 179, 8, 0.4)';
-          gName.textContent = 'Moderate Non-Proliferative DR (Grade 2)';
-          gDesc.textContent = 'Scattered microaneurysms, mild exudates, and focal hemorrhages. Close physiological monitoring and glucose control optimization advised.';
-        }
-      }, 2000);
-    }
-  </script>
+      resultBox.style.display = 'flex';
+      ragArea.style.display = 'block';
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 1800);
+  }
+</script>
 
 </body>
 </html>

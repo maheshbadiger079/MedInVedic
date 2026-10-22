@@ -890,7 +890,8 @@
     <h1 class="hero-title">Consult a Doctor Instantly</h1>
     <p class="hero-subtitle">Connect with certified physicians and Ayurvedic Vaidyas via chat or video from anywhere in the world.</p>
     <div class="hero-pills">
-      <div class="hero-pill-btn" onclick="window.open('https://wa.me/919766441863?text=Hi MedInVedic, I need to book a verified medical consultation.', '_blank')">
+      
+      <div class="hero-pill-btn" onclick="window.open('https://wa.me/?text=Hi MedInVedic, I need to book a verified medical consultation.', '_blank')">
         💬 WhatsApp Chat
       </div>
       <div class="hero-pill-btn" onclick="openDigitalRxDemo()">
@@ -1816,7 +1817,7 @@
       `💳 Fee: ₹${doc.fee}`
     );
 
-    window.open(`https://wa.me/919766441863?text=${text}`, '_blank');
+    window.open(`https://wa.me/?text=${text}`, '_blank');
     closeModal('bookingModal');
     showToast('Consultation request sent via WhatsApp', 'success');
   }

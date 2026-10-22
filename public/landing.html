@@ -560,7 +560,7 @@
 
 <body>
 
-<!-- ❖❖❖ TOP STRIP ABOVE HEADER (Login / Register) ❖❖❖ -->
+<!-- ——— TOP STRIP ABOVE HEADER (Login / Register) ——— -->
 <div class="top-header-strip" style="background: #111827; color: #9ca3af; font-size: 13px; font-weight: 600; padding: 7px 24px; border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1002;">
   <div style="display: flex; align-items: center; gap: 14px;">
     <span style="display: inline-flex; align-items: center; gap: 6px; color: #f3f4f6;">
@@ -579,10 +579,10 @@
 
 <!-- NAVBAR -->
 <nav class="landing-nav">
-  <div class="nav-brand">
+  <a class="nav-brand" href="index.html" style="display:flex;align-items:center;gap:12px;text-decoration:none;">
     <img src="images/assets/logo.png" alt="MedInVedic">
     <span class="nav-brand-text">MedInVedic</span>
-  </div>
+  </a>
   <div class="nav-links">
     <a href="#how-it-works" class="nav-link">How It Works</a>
     <a href="#features" class="nav-link">Features</a>
@@ -604,7 +604,7 @@
   </p>
   <div class="hero-btns">
     <button class="btn-cta" style="padding: 14px 28px; font-size: 15px;" onclick="scrollToVideo()">
-      ✨ Explore Dual Platform ↓
+      ✨ Explore Dual Platform →
     </button>
     <button class="btn-ghost" style="padding: 14px 28px; font-size: 15px;" onclick="openRegisterModal()">
       Get Started Free →
@@ -620,17 +620,17 @@
       </div>
       <div style="display: flex; gap: 8px;">
         <button id="tabDualBtn" onclick="switchShowcaseTab('dual')" style="background: #0f172a; color: #fff; border: none; padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">🌿 Dual Paradigm UI</button>
-        <button id="tabArchBtn" onclick="switchShowcaseTab('arch')" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">🏗️ Architecture</button>
+        <button id="tabArchBtn" onclick="switchShowcaseTab('arch')" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 5px 12px; border-radius: 8px; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: all 0.2s;">🌿 Architecture</button>
       </div>
     </div>
 
     <!-- Dual Paradigm Artwork UI View -->
     <div id="showcaseDual" class="video-box" style="background: #ffffff; padding: 24px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
       <div style="position: relative; max-width: 740px; width: 100%; border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px rgba(15, 23, 42, 0.12); border: 1.5px solid #e2e8f0;">
-        <img src="images/medinvedic-hero.jpg" alt="MedInVedic Dual Healthcare Platform UI - Modern Medicine & Ayurveda" style="width: 100%; height: auto; max-height: 480px; object-fit: cover; display: block;" />
+        <img src="images/dual-healthcare-artwork.jpg" onerror="this.src='images/medinvedic-hero.jpg'" alt="MedInVedic Dual Healthcare Platform UI - Modern Medicine & Ayurveda" style="width: 100%; height: auto; max-height: 560px; object-fit: cover; display: block;" />
         <div style="position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(180deg, transparent 0%, rgba(7, 25, 17, 0.9) 100%); padding: 22px 24px; color: #ffffff; display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 10px;">
           <div>
-            <div style="font-size: 12px; font-weight: 700; color: #34d399; letter-spacing: 0.5px; text-transform: uppercase;">Unified Clinical Intelligence</div>
+            <div style="font-size: 12px; font-weight: 700; color: #4ade80; letter-spacing: 0.5px; text-transform: uppercase;">Unified Clinical Intelligence</div>
             <div style="font-size: 17px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Allopathic Pharmacology × Ayurvedic Phytotherapy</div>
           </div>
           <span style="background: rgba(34, 197, 94, 0.3); border: 1px solid rgba(52, 211, 153, 0.5); color: #a7f3d0; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; backdrop-filter: blur(8px);">AI Synchronized</span>
@@ -649,7 +649,7 @@
         <span>Access the Interactive NotebookLM Clinical Case File</span>
       </div>
       <a href="https://notebooklm.google.com/notebook/42b9e7e0-825d-4c35-9182-b97b71c2a2b0/artifact/aaf4c60b-2fe3-4267-8ce2-155514b7202e" target="_blank" class="notebooklm-btn">
-        Explore NotebookLM Workspace ↗
+        Explore NotebookLM Workspace →
       </a>
     </div>
   </div>
@@ -727,7 +727,7 @@
       <span class="feat-pill" style="background:rgba(34,197,94,0.22); color:#a7f3d0; border-color:rgba(52,211,153,0.4); font-weight:800;">Featured AI Tutor</span>
     </div>
     <div class="feat-card" onclick="window.location.href='pages/prescription-decoder.html'" style="cursor:pointer;">
-      <div class="feat-icon">📄</div>
+      <div class="feat-icon">📋</div>
       <h3>Lipi Vaidya (Rx Decoder)</h3>
       <p>Instant plain-language medical translation for doctor prescriptions, dosage guidance, side effects, and Ayurvedic parallels.</p>
       <span class="feat-pill">RAG Grounded</span>
@@ -761,7 +761,7 @@
 
     <div class="rag-output" id="demoRagOutput">
       <strong>[Verified RAG Response]:</strong> Paracetamol (Acetaminophen 500mg) is indicated for fever reduction (antipyretic) and mild-to-moderate analgesia.
-      <br><span style="color:#b91c1c; font-weight:600;">⚠ Precaution:</span> Maximum 4000mg/day. Avoid combining with alcohol (hepatotoxicity risk).
+      <br><span style="color:#b91c1c; font-weight:600;">⚠️ Precaution:</span> Maximum 4000mg/day. Avoid combining with alcohol (hepatotoxicity risk).
       <br><span style="color:#475569; font-size:11px; font-weight:600;">Official Citations: [1] CDSCO Allopathic Guidelines [2] WHO Essential Medicines List (2023)</span>
     </div>
   </div>
@@ -774,7 +774,7 @@
     <span style="color: #cbd5e1;">•</span>
     <a href="pages/register.html" style="color: #475569; text-decoration: none; font-weight: 600;">Register</a>
   </div>
-  <div>© 2026 MedInVedic Healthcare Platform. All rights reserved.</div>
+  <div>&copy; <span class="landingCurrentYear">2026</span> MedInVedic Healthcare Platform. All rights reserved.</div>
   <div style="margin-top: 8px; font-size: 12px; color: #52525b;">
     Educational Information Platform · Not a substitute for direct professional medical advice.
   </div>
@@ -845,7 +845,7 @@
       out.innerHTML = `
         <strong>[Verified RAG Response]:</strong> Information retrieved for "<strong>${q}</strong>".
         <br>MedInVedic RAG system verifies clinical pharmacopoeia and Ayurvedic literature before formulating grounded responses.
-        <br><span style="color:#34d399">✓ Zero Hallucination Policy Enforced</span> · <span style="color:#38bdf8; font-size:11px;">Citations: CDSCO / WHO / Charaka Samhita</span>
+        <br><span style="color:#1a1a1a">✓ Zero Hallucination Policy Enforced</span> · <span style="color:#38bdf8; font-size:11px;">Citations: CDSCO / WHO / Charaka Samhita</span>
       `;
     }, 600);
   }
@@ -874,7 +874,7 @@
               🌿 Enter MedInVedic Platform →
             </a>
             <a href="pages/dashboard.html" class="btn-ghost" style="padding: 14px 28px; font-size: 15px; text-decoration:none;">
-              👤 My Dashboard
+              💤 My Dashboard
             </a>
           `;
         }
@@ -883,5 +883,12 @@
   });
 </script>
 
+<script id="landingCurrentYearScript">
+(function(){
+  var els = document.querySelectorAll(".landingCurrentYear");
+  els.forEach(function(e){ e.textContent = new Date().getFullYear(); });
+})();
+</script>
 </body>
 </html>
+

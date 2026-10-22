@@ -69,4 +69,25 @@ router.put('/:id/verify', requirePharmacist, (req, res) => {
   res.json({ success: true, status: newStatus });
 });
 
+// GET /api/prescriptions/file/:filename — Secure authenticated prescription access
+router.get('/file/:filename', requireAuth, (req, res) => {
+  const safeFilename = path.basename(req.params.filename);
+  const rx = db.get('SELECT * FROM prescriptions WHERE file_path LIKE ?', [`%${safeFilename}`]);
+  if (!rx) {
+    return res.status(404).json({ error: 'Prescription file not found' });
+  }
+
+  // Authorization check: patient owner OR staff (admin, super_admin, doctor_verifier, pharmacist)
+  const isOwner = rx.user_id === req.user.id;
+  const isStaff = ['admin', 'super_admin', 'doctor_verifier', 'pharmacist'].includes((req.user.role || '').toLowerCase());
+
+  if (!isOwner && !isStaff) {
+    return res.status(403).json({ error: 'Access denied: You are not authorized to view this prescription.' });
+  }
+
+  const fullPath = path.join(__dirname, '../../public/uploads/prescriptions', safeFilename);
+  res.sendFile(fullPath);
+});
+
 module.exports = router;
+

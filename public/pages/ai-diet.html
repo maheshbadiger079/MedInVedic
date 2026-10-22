@@ -23,280 +23,1152 @@
   <link rel="apple-touch-icon" href="../favicon.png">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ahara Intelligence — AI Diet Architect — MedInVedic</title>
+  <title>AI Nutritionist & Ahara Blueprint — RAG Diet Architect — MedInVedic</title>
+  <meta name="description" content="AI Nutritionist: Personalized RAG-powered diet plans synthesizing ICMR-NIN 2024 dietary guidelines, IFCT 2017 data, and Charaka Samhita Ahara Vidhi.">
   <link rel="stylesheet" href="../css/style.css" />
   <script src="../js/analytics.js"></script>
   <script src="../js/auth-guard.js"></script>
+  <script src="../js/diet-rag-engine.js"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f8faf8;
-      --card: rgba(255, 255, 255, 0.90);
-      --card-border: rgba(22, 101, 52, 0.12);
-      --primary: #166534;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --card-border: #e2e8f0;
+      --primary: #15803d;
+      --primary-dark: #166534;
       --primary-light: #22c55e;
-      --accent: #15803d;
-      --text: #1a2e1a;
-      --muted: #52796f;
-      --gradient: linear-gradient(135deg, #166534, #22c55e);
+      --primary-subtle: #f0fdf4;
+      --text: #0f172a;
+      --text-muted: #475569;
+      --text-light: #64748b;
+      --accent: #0284c7;
+      --accent-subtle: #f0f9ff;
+      --amber: #d97706;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+      --shadow-md: 0 4px 14px rgba(0,0,0,0.05);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.06);
     }
+
     body {
       background: var(--bg);
-      background-image: 
-        radial-gradient(at 0% 0%, rgba(34, 197, 94, 0.08) 0px, transparent 50%),
-        radial-gradient(at 100% 100%, rgba(22, 101, 52, 0.08) 0px, transparent 50%),
-        radial-gradient(at 50% 50%, rgba(240, 253, 244, 0.6) 0px, transparent 100%);
       color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-    }
-    .diet-architect { 
-      min-height: calc(100vh - 64px);
       display: flex;
       flex-direction: column;
+    }
+
+    /* Navbar */
+    .diet-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--card-border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
       align-items: center;
-      padding: 40px 20px 60px;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
     }
-    .wizard-container {
-      width: 100%;
-      max-width: 860px;
-      background: var(--card);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 40px 36px;
-      backdrop-filter: blur(24px);
-      box-shadow: 0 20px 50px rgba(22, 101, 52, 0.08);
-      position: relative;
+    .nav-left { display: flex; align-items: center; gap: 14px; }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--primary);
+      text-decoration: none;
+      background: var(--primary-subtle);
+      border: 1px solid #bbf7d0;
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: all 0.15s;
     }
-    .step { display: none; animation: slideUp 0.4s ease-out; }
-    .step.active { display: block; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-
-    .step-label { color: var(--primary); font-weight: 800; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; display: block; }
-    .step-title { font-size: 26px; font-weight: 900; color: var(--text); margin-bottom: 28px; }
-
-    .option-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 32px; }
-    .option-card {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1.5px solid rgba(22, 101, 52, 0.15);
+    .back-btn:hover { background: #dcfce7; }
+    .brand-title { font-size: 17px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+    .rag-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--primary-subtle);
+      border: 1px solid #86efac;
+      color: var(--primary-dark);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 5px 12px;
       border-radius: 20px;
-      padding: 24px 16px;
+    }
+    .rag-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--primary-light); animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:0.6;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.2)} }
+
+    /* Main Container */
+    .diet-container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* Header Banner */
+    .header-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .header-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #15803d, #22c55e, #0284c7);
+    }
+    .header-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--primary);
+      background: var(--primary-subtle);
+      padding: 4px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .header-title { font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 6px; }
+    .header-desc { font-size: 14px; color: var(--text-muted); line-height: 1.5; max-width: 820px; }
+
+    /* Quick Presets */
+    .presets-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+      padding-top: 16px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .preset-label { font-size: 12px; font-weight: 700; color: var(--text-muted); }
+    .preset-btn {
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      color: #334155;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
       cursor: pointer;
+      transition: all 0.15s;
+    }
+    .preset-btn:hover { background: var(--primary-subtle); border-color: var(--primary-light); color: var(--primary); }
+
+    /* Wizard Form Layout */
+    .wizard-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 32px;
+      box-shadow: var(--shadow-md);
+    }
+    .section-heading {
+      font-size: 16px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .form-grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .form-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .field-group { display: flex; flex-direction: column; gap: 6px; }
+    .field-label { font-size: 12.5px; font-weight: 700; color: #1e293b; }
+    .field-input, .field-select {
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      color: #0f172a;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 14px;
+      border-radius: 10px;
+      outline: none;
+      transition: border 0.2s;
+    }
+    .field-input:focus, .field-select:focus {
+      border-color: var(--primary);
+      background: #ffffff;
+    }
+
+    /* Option Pills Grid */
+    .pills-group { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+    .pill-checkbox {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f8fafc;
+      border: 1.5px solid #cbd5e1;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #334155;
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.15s;
+    }
+    .pill-checkbox:hover { border-color: var(--primary-light); background: #f0fdf4; }
+    .pill-checkbox.active {
+      background: var(--primary-subtle);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 6px rgba(21, 128, 61, 0.15);
+    }
+    .pill-checkbox input { display: none; }
+
+    /* CTA Button */
+    .generate-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #15803d, #22c55e);
+      color: #ffffff;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 24px;
+      font-size: 15px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(22, 101, 52, 0.25);
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .generate-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(22, 101, 52, 0.35);
+    }
+
+    /* Results Dashboard */
+    .result-section { display: none; flex-direction: column; gap: 24px; }
+
+    /* Telemetry Metric Cards */
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .metric-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .metric-head { font-size: 11.5px; font-weight: 800; text-transform: uppercase; color: var(--text-light); margin-bottom: 4px; }
+    .metric-value { font-size: 24px; font-weight: 900; color: #0f172a; }
+    .metric-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+
+    /* Macros Breakdown */
+    .macro-bar-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      padding: 22px 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .macro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+    .macro-item {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 12px 14px;
       text-align: center;
     }
-    .option-card:hover { border-color: var(--primary-light); background: #fff; transform: translateY(-2px); }
-    .option-card.selected { border-color: var(--primary); background: rgba(240, 253, 244, 0.85); box-shadow: 0 8px 20px rgba(22, 101, 52, 0.12); }
-    .option-icon { font-size: 36px; margin-bottom: 12px; display: block; }
-    .option-name { font-size: 16px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
-    .option-desc { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    .macro-name { font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted); }
+    .macro-val { font-size: 20px; font-weight: 900; color: #0f172a; margin: 4px 0; }
+    .macro-pct { font-size: 11.5px; color: var(--primary); font-weight: 700; }
 
-    .nav-btns { display: flex; justify-content: space-between; align-items: center; margin-top: 32px; }
-    .btn-next { background: var(--gradient); color: white; border: none; padding: 14px 36px; border-radius: 12px; font-weight: 800; font-size: 14px; cursor: pointer; box-shadow: 0 4px 16px rgba(22, 101, 52, 0.2); transition: all 0.2s; }
-    .btn-next:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(22, 101, 52, 0.28); }
-    .btn-prev { background: transparent; color: var(--muted); border: 1.5px solid var(--card-border); padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; }
+    /* 7-Day Day Selector */
+    .day-selector {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: thin;
+    }
+    .day-tab {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #334155;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .day-tab:hover { background: #f0fdf4; border-color: var(--primary-light); }
+    .day-tab.active {
+      background: var(--primary-subtle);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+      box-shadow: 0 2px 8px rgba(21, 128, 61, 0.15);
+    }
 
-    /* Result UI */
-    .diet-result { display: none; width: 100%; max-width: 960px; animation: fadeIn 0.6s ease-out; }
-    .diet-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-    .meal-card {
-      background: var(--card);
+    /* Meals Grid */
+    .meals-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .meal-card-item {
+      background: #ffffff;
       border: 1px solid var(--card-border);
-      border-radius: 22px;
-      padding: 28px;
-      box-shadow: 0 8px 24px rgba(22, 101, 52, 0.05);
+      border-radius: 18px;
+      padding: 24px 28px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
       position: relative;
     }
-    .meal-tag { position: absolute; top: -12px; left: 24px; background: var(--primary); color: white; padding: 3px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
-    .meal-time { font-size: 12px; color: var(--muted); margin-bottom: 12px; margin-top: 4px; }
-    .meal-name { font-size: 18px; font-weight: 800; margin-bottom: 8px; color: var(--text); }
-    .meal-desc { font-size: 13.5px; color: var(--muted); line-height: 1.6; margin-bottom: 16px; }
-    .logic-pill { background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.25); padding: 10px 14px; border-radius: 10px; font-size: 11.5px; color: var(--primary); font-weight: 600; }
+    .meal-card-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .slot-pill {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      padding: 4px 12px;
+      border-radius: 6px;
+      color: #ffffff;
+    }
+    .slot-breakfast { background: #15803d; }
+    .slot-lunch { background: #0284c7; }
+    .slot-snack { background: #d97706; }
+    .slot-dinner { background: #4f46e5; }
+    .meal-timing { font-size: 12px; font-weight: 700; color: var(--text-light); }
+    .meal-title { font-size: 18px; font-weight: 800; color: #0f172a; }
+    .meal-ingredients-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 12.5px;
+      color: #334155;
+      line-height: 1.5;
+    }
+    .meal-macros-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      font-weight: 700;
+      color: #475569;
+    }
+    .macro-chip {
+      background: #f1f5f9;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+    .rationales-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 768px) {
+      .rationales-container { grid-template-columns: 1fr; }
+    }
+    .rationale-card {
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .rationale-ayurveda {
+      background: #fdf4ff;
+      border: 1px solid #f0abfc;
+      color: #701a75;
+    }
+    .rationale-clinical {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #14532d;
+    }
+    .rationale-title { font-weight: 800; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
+    /* Swap Options */
+    .swap-panel {
+      margin-top: 6px;
+      padding-top: 12px;
+      border-top: 1px dashed #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .swap-label { font-size: 11.5px; font-weight: 700; color: var(--text-light); }
+    .swap-btn {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1e293b;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .swap-btn:hover { background: var(--primary-subtle); border-color: var(--primary-light); color: var(--primary); }
+
+    /* Smart Grocery List */
+    .grocery-card {
+      background: #ffffff;
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+    .grocery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .grocery-category {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .grocery-category-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grocery-items-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .grocery-item-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .grocery-item-check input { cursor: pointer; }
+
+    /* Citations Card */
+    .citations-card {
+      background: #f8fafc;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 20px 24px;
+    }
+    .citation-item {
+      margin-top: 10px;
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+    .citation-title { font-weight: 800; color: #0f172a; }
+
+    /* Action bar */
+    .action-bar-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .btn-action {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s;
+    }
+    .btn-action:hover { background: #f8fafc; border-color: var(--primary); color: var(--primary); }
+
+    /* Print styles */
+    @media print {
+      .diet-nav, .wizard-card, .action-bar-row, .swap-panel { display: none !important; }
+      body { background: #ffffff !important; }
+      .diet-container { max-width: 100% !important; padding: 0 !important; }
+      .result-section { display: flex !important; }
+    }
   </style>
 
-<style id="medinvedic-font-normalizer">
-  *, *::before, *::after,
-  html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
-    font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-    font-style: normal !important;
-  }
-</style>
-
+  <style id="medinvedic-font-normalizer">
+    *, *::before, *::after,
+    html, body, button, input, select, textarea, a, p, span, h1, h2, h3, h4, h5, h6, li, td, th, div, label, b, strong, em, i {
+      font-family: Arial, Helvetica, "Plus Jakarta Sans", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+      font-style: normal !important;
+    }
+  </style>
 </head>
 <body>
 
-<nav class="navbar" style="background:rgba(255,255,255,0.9); border-bottom:1px solid var(--card-border); padding:0 24px; height:64px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(16px);">
-  <a class="nav-logo" href="../index.html" style="display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--primary); font-weight:900; font-size:18px;">
-    <div style="width:36px; height:36px; background:var(--gradient); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; color:#fff;">🌿</div>
-    <span>MedInVedic</span>
-  </a>
-  <div style="display:flex; gap:16px;">
-    <a href="dashboard.html" style="text-decoration:none; color:var(--muted); font-size:13.5px; font-weight:600;">Dashboard</a>
-    <a href="prakriti-analysis.html" style="text-decoration:none; color:var(--muted); font-size:13.5px; font-weight:600;">Prakriti Test</a>
-    <a href="ai-diet.html" style="text-decoration:none; color:var(--primary); font-size:13.5px; font-weight:700;">🥗 Diet Architect</a>
+<!-- Navigation Bar -->
+<header class="diet-nav">
+  <div class="nav-left">
+    <a href="../index.html" class="back-btn">← Back to Hub</a>
+    <div class="brand-title">🥗 MedInVedic AI Nutritionist</div>
   </div>
-</nav>
-
-<div class="diet-architect">
-  <div class="wizard-container" id="formWizard">
-    <!-- STEP 1: Season -->
-    <div class="step active" id="step1">
-      <span class="step-label">Step 1 of 3 · Seasonal Calibration</span>
-      <h1 class="step-title">Select Current Season (Rutucharya)</h1>
-      <div class="option-grid">
-        <div class="option-card" onclick="selectOption('season', 'Spring', this)">
-          <span class="option-icon">🌸</span>
-          <div class="option-name">Spring (Vasantha)</div>
-          <p class="option-desc">Detoxifying light foods to clear Kapha.</p>
-        </div>
-        <div class="option-card" onclick="selectOption('season', 'Summer', this)">
-          <span class="option-icon">☀️</span>
-          <div class="option-name">Summer (Grishma)</div>
-          <p class="option-desc">Cooling hydrating foods to pacify Pitta.</p>
-        </div>
-        <div class="option-card" onclick="selectOption('season', 'Monsoon', this)">
-          <span class="option-icon">🌧️</span>
-          <div class="option-name">Monsoon (Varsha)</div>
-          <p class="option-desc">Warm digestible meals to ground Vata.</p>
-        </div>
-        <div class="option-card" onclick="selectOption('season', 'Autumn', this)">
-          <span class="option-icon">🍂</span>
-          <div class="option-name">Autumn (Sharad)</div>
-          <p class="option-desc">Sweet and bitter foods for liver balance.</p>
-        </div>
-      </div>
-      <div class="nav-btns" style="justify-content: flex-end;">
-        <button class="btn-next" onclick="goToStep(2)">Continue →</button>
-      </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <div class="rag-status-badge">
+      <div class="rag-dot"></div>
+      RAG ACTIVE · ICMR-NIN &amp; CHARAKA
     </div>
-
-    <!-- STEP 2: Dosha -->
-    <div class="step" id="step2">
-       <span class="step-label">Step 2 of 3 · Metabolic Profile</span>
-       <h1 class="step-title">Select Your Body Constitution</h1>
-       <div class="option-grid">
-         <div class="option-card" onclick="selectOption('dosha', 'Vata', this)">
-           <span class="option-icon">💨</span>
-           <div class="option-name">Vata</div>
-           <p class="option-desc">Air &amp; Space · Needs warm, nourishing, oily meals.</p>
-         </div>
-         <div class="option-card" onclick="selectOption('dosha', 'Pitta', this)">
-           <span class="option-icon">🔥</span>
-           <div class="option-name">Pitta</div>
-           <p class="option-desc">Fire &amp; Water · Needs cooling, sweet, bitter greens.</p>
-         </div>
-         <div class="option-card" onclick="selectOption('dosha', 'Kapha', this)">
-           <span class="option-icon">🌊</span>
-           <div class="option-name">Kapha</div>
-           <p class="option-desc">Earth &amp; Water · Needs warm, light, spiced foods.</p>
-         </div>
-       </div>
-       <div class="nav-btns">
-         <button class="btn-prev" onclick="goToStep(1)">← Back</button>
-         <button class="btn-next" onclick="goToStep(3)">Continue →</button>
-       </div>
-    </div>
-
-    <!-- STEP 3: Goal -->
-    <div class="step" id="step3">
-       <span class="step-label">Step 3 of 3 · Wellness Objective</span>
-       <h1 class="step-title">What is your primary health goal?</h1>
-       <div class="option-grid">
-         <div class="option-card" onclick="selectOption('goal', 'Energy', this)">
-           <span class="option-icon">⚡</span>
-           <div class="option-name">Vitality &amp; Ojas</div>
-           <p class="option-desc">Sustained energy and reduced fatigue.</p>
-         </div>
-         <div class="option-card" onclick="selectOption('goal', 'Digestion', this)">
-           <span class="option-icon">🌿</span>
-           <div class="option-name">Digestive Health (Agni)</div>
-           <p class="option-desc">Eliminate bloating, acid reflux, and heaviness.</p>
-         </div>
-         <div class="option-card" onclick="selectOption('goal', 'Weight', this)">
-           <span class="option-icon">⚖️</span>
-           <div class="option-name">Healthy Weight</div>
-           <p class="option-desc">Natural metabolic calibration and lean tissue.</p>
-         </div>
-       </div>
-       <div class="nav-btns">
-         <button class="btn-prev" onclick="goToStep(2)">← Back</button>
-         <button class="btn-next" onclick="generateDietPlan()">Generate Diet Protocol 🥗</button>
-       </div>
-    </div>
+    <a href="smart-lifestyle.html" style="font-size:12.5px; font-weight:700; color:var(--text-muted); text-decoration:none; padding:6px 12px;">🏃 Fitness Coach</a>
+    <a href="lab-integrator.html" style="font-size:12.5px; font-weight:700; color:var(--text-muted); text-decoration:none; padding:6px 12px;">🔬 Lab Reader</a>
   </div>
+</header>
 
-  <!-- RESULT VIEW -->
-  <div class="diet-result" id="dietResult">
-    <div style="text-align: center; margin-bottom: 32px;">
-      <div style="display:inline-block; background:rgba(34,197,94,0.15); color:var(--primary); font-size:11px; font-weight:800; padding:3px 12px; border-radius:20px; margin-bottom:8px;">CUSTOMIZED AHARA BLUEPRINT</div>
-      <h2 style="font-size: 28px; font-weight: 900; color:var(--text);" id="resultTitle">Personalized Daily Nutrition Plan</h2>
-      <p style="color:var(--muted); font-size:14px; margin-top:4px;" id="resultSubtitle">Calibrated for Pitta constitution during Summer season.</p>
+<main class="diet-container">
+
+  <!-- Header Banner -->
+  <section class="header-card">
+    <span class="header-tag">Module A — Evidence-Based Clinical Nutrition</span>
+    <h1 class="header-title">Personalized Ahara Blueprint &amp; RAG Nutritionist</h1>
+    <p class="header-desc">
+      Synthesizing authoritative guidelines from <strong>ICMR-NIN 2024</strong>, <strong>Indian Food Composition Tables (IFCT 2017)</strong>, and classical <strong>Charaka Samhita Ahara Vidhi</strong>. Calculates your metabolic rate, macro splits, seasonal Rutucharya, and builds a customized 7-day meal plan.
+    </p>
+
+    <!-- 1-Click Quick Presets -->
+    <div class="presets-bar">
+      <span class="preset-label">⚡ Quick Presets:</span>
+      <button class="preset-btn" onclick="loadPreset('diabetic_veg')">🥗 Diabetic Vegetarian (50y)</button>
+      <button class="preset-btn" onclick="loadPreset('active_vata')">⚡ Active Vata Professional (28y)</button>
+      <button class="preset-btn" onclick="loadPreset('pitta_weight')">🔥 Pitta Weight Loss (35y)</button>
+      <button class="preset-btn" onclick="loadPreset('hypertension_dash')">❤️ Hypertension / DASH (45y)</button>
+    </div>
+  </section>
+
+  <!-- Interactive Configuration Form -->
+  <section class="wizard-card" id="inputCard">
+    <h2 class="section-heading">👤 1. Biological &amp; Metabolic Baseline</h2>
+    <div class="form-grid-4">
+      <div class="field-group">
+        <label class="field-label" for="inpAge">Age (Years)</label>
+        <input class="field-input" type="number" id="inpAge" value="32" min="15" max="100">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="inpGender">Biological Sex</label>
+        <select class="field-select" id="inpGender">
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="inpHeight">Height (cm)</label>
+        <input class="field-input" type="number" id="inpHeight" value="172" min="100" max="230">
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="inpWeight">Weight (kg)</label>
+        <input class="field-input" type="number" id="inpWeight" value="68" min="30" max="250">
+      </div>
     </div>
 
-    <div class="diet-grid">
-      <!-- Breakfast -->
-      <div class="meal-card">
-        <span class="meal-tag">Breakfast</span>
-        <div class="meal-time">8:00 AM · Gentle Agni Awakening</div>
-        <div class="meal-name">Warm Spiced Oatmeal &amp; Stewed Apples</div>
-        <div class="meal-desc">Steel-cut oats with cardamom, cinnamon, soaked almonds, and gentle organic ghee.</div>
-        <div class="logic-pill">✨ Stabilizes morning cortisol &amp; primes digestion</div>
+    <h2 class="section-heading">🎯 2. Nutrition Goals &amp; Daily Activity</h2>
+    <div class="form-grid-3">
+      <div class="field-group">
+        <label class="field-label" for="inpGoal">Health &amp; Wellness Goal</label>
+        <select class="field-select" id="inpGoal">
+          <option value="vitality">Vitality &amp; Sustained Ojas (Maintenance)</option>
+          <option value="weight_loss">Sustainable Fat Loss (Caloric Deficit)</option>
+          <option value="muscle_gain">Lean Muscle &amp; Tissue Building</option>
+          <option value="diabetes_management">Glycemic Control &amp; HbA1c Management</option>
+          <option value="heart_health">Cardiovascular Support &amp; DASH Protocol</option>
+        </select>
       </div>
-
-      <!-- Lunch -->
-      <div class="meal-card">
-        <span class="meal-tag" style="background:#0284c7;">Main Meal</span>
-        <div class="meal-time">12:30 PM · Peak Agni Fire</div>
-        <div class="meal-name">Moong Dal Khichdi &amp; Steamed Greens</div>
-        <div class="meal-desc">Split yellow moong, basmati rice, cumin tempering, turmeric, and local leafy greens.</div>
-        <div class="logic-pill">✨ Maximum nutrient absorption with zero digestive strain</div>
+      <div class="field-group">
+        <label class="field-label" for="inpActivity">Activity Level</label>
+        <select class="field-select" id="inpActivity">
+          <option value="sedentary">Sedentary (Desk Job, minimal walking)</option>
+          <option value="light">Lightly Active (1-3 days light exercise)</option>
+          <option value="moderate" selected>Moderately Active (3-5 days exercise/yoga)</option>
+          <option value="very_active">Very Active (6-7 days intensive training)</option>
+        </select>
       </div>
-
-      <!-- Dinner -->
-      <div class="meal-card">
-        <span class="meal-tag" style="background:#d97706;">Dinner</span>
-        <div class="meal-time">7:30 PM · Evening Calming</div>
-        <div class="meal-name">Butternut Squash &amp; Ginger Broth</div>
-        <div class="meal-desc">Light pumpkin and ginger soup with roasted pumpkin seeds and fresh coriander garnish.</div>
-        <div class="logic-pill">✨ Promotes melatonin synthesis &amp; restful deep sleep</div>
+      <div class="field-group">
+        <label class="field-label" for="inpDietPref">Dietary Preference</label>
+        <select class="field-select" id="inpDietPref">
+          <option value="vegetarian" selected>Vegetarian (Lacto-Vegetarian)</option>
+          <option value="nonveg">Non-Vegetarian (Eggs, Fish, Poultry)</option>
+          <option value="vegan">100% Plant-Based (Vegan)</option>
+          <option value="jain">Jain (No Root Veg, No Onion/Garlic)</option>
+        </select>
       </div>
     </div>
 
-    <div style="margin-top: 28px; text-align: center;">
-      <a href="online-pharmacy.html" style="display:inline-block; padding:12px 28px; background:var(--gradient); color:#fff; text-decoration:none; font-weight:700; border-radius:12px; font-size:13.5px; box-shadow:0 6px 18px rgba(22,101,52,0.2);">Order Organic Ayurvedic Ingredients →</a>
+    <h2 class="section-heading">🌿 3. Ayurvedic Constitution &amp; Season</h2>
+    <div class="form-grid-3">
+      <div class="field-group">
+        <label class="field-label" for="inpPrakriti">Ayurvedic Prakriti</label>
+        <select class="field-select" id="inpPrakriti">
+          <option value="Vata">Vata (Air &amp; Space · Needs warm, nourishing, oily foods)</option>
+          <option value="Pitta" selected>Pitta (Fire &amp; Water · Needs cooling, sweet, bitter greens)</option>
+          <option value="Kapha">Kapha (Earth &amp; Water · Needs warm, light, spiced foods)</option>
+          <option value="Tridoshic">Tridoshic (Balanced Constitution)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="inpSeason">Current Season (Rutucharya)</label>
+        <select class="field-select" id="inpSeason">
+          <option value="Grishma" selected>Summer (Grishma · Cooling, hydrating emphasis)</option>
+          <option value="Varsha">Monsoon (Varsha · Warm, easily digestible Agni care)</option>
+          <option value="Sharad">Autumn (Sharad · Liver cleansing, bitter/sweet)</option>
+          <option value="Hemanta">Winter (Hemanta · Rich, grounding, building)</option>
+          <option value="Vasantha">Spring (Vasantha · Detoxifying, light Kapha clearing)</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="inpCuisine">Regional Cuisine Preference</label>
+        <select class="field-select" id="inpCuisine">
+          <option value="any">Diverse Regional Blend</option>
+          <option value="north_indian">North Indian (Rotis, Dals, Sabzis)</option>
+          <option value="south_indian">South Indian (Millets, Idlis, Sambars)</option>
+          <option value="west_indian">West Indian (Jowar, Poha, Khichdi)</option>
+          <option value="global">Global Mediterranean</option>
+        </select>
+      </div>
     </div>
-  </div>
-</div>
+
+    <h2 class="section-heading">⚠️ 4. Allergies &amp; Health Conditions (Safety Guardrails)</h2>
+    <div style="margin-bottom: 16px;">
+      <span class="field-label" style="margin-bottom:6px; display:block;">Food Allergens to Exclude:</span>
+      <div class="pills-group" id="allergiesContainer">
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="gluten">🌾 Gluten</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="dairy">🥛 Dairy / Lactose</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="nuts">🥜 Tree Nuts / Peanuts</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="soy">🌱 Soy</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="eggs">🥚 Eggs</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="fish">🐟 Fish / Shellfish</label>
+      </div>
+    </div>
+
+    <div>
+      <span class="field-label" style="margin-bottom:6px; display:block;">Relevant Health Conditions (Voluntarily Disclosed):</span>
+      <div class="pills-group" id="conditionsContainer">
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="diabetes">🩸 Type 2 Diabetes / Pre-diabetes</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="hypertension">❤️ Hypertension (High BP)</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="gerd">🔥 Acid Reflux / GERD</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="thyroid">🦋 Hypothyroidism</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="pcod">🌸 PCOD / PCOS</label>
+        <label class="pill-checkbox" onclick="togglePill(this)"><input type="checkbox" value="ckd">🧪 Kidney Care (Low Protein)</label>
+      </div>
+    </div>
+
+    <button class="generate-btn" onclick="executeDietRAG()">
+      <span>🥗 Generate 7-Day RAG Nutrition Blueprint</span>
+    </button>
+  </section>
+
+  <!-- RAG Generated Results Section -->
+  <section class="result-section" id="resultSection">
+    
+    <!-- Action controls (Print, Reconfigure) -->
+    <div class="action-bar-row">
+      <button class="btn-action" onclick="window.print()">🖨️ Export / Print Plan</button>
+      <button class="btn-action" onclick="scrollToConfig()">⚙️ Adjust Inputs</button>
+    </div>
+
+    <!-- Clinical Safety & RAG Summary Banner -->
+    <div class="header-card" style="background:#f0fdf4; border-color:#86efac;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span style="background:#15803d; color:#fff; font-size:11px; font-weight:800; padding:2px 10px; border-radius:12px;">CLINICAL RAG SYNTHESIS</span>
+        <span style="font-size:12px; font-weight:700; color:#166534;" id="planSubtitleBadge">Active Protocol</span>
+      </div>
+      <h3 style="font-size:20px; font-weight:900; color:#0f172a; margin-bottom:6px;" id="planSummaryTitle">Personalized 7-Day Nutrition Blueprint</h3>
+      <div id="safetyAlertsBox" style="font-size:13px; color:#14532d; line-height:1.6;"></div>
+    </div>
+
+    <!-- Telemetry Cards -->
+    <div class="telemetry-grid">
+      <div class="metric-card">
+        <div class="metric-head">Basal Metabolic Rate (BMR)</div>
+        <div class="metric-value" id="valBMR">--</div>
+        <div class="metric-sub">kcal/day (Mifflin-St Jeor)</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-head">Total Daily Energy (TDEE)</div>
+        <div class="metric-value" id="valTDEE">--</div>
+        <div class="metric-sub">kcal/day based on activity</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-head">Target Calorie Budget</div>
+        <div class="metric-value" style="color:var(--primary);" id="valTargetCals">--</div>
+        <div class="metric-sub" id="valGoalNote">Goal calibrated</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-head">Recommended Hydration</div>
+        <div class="metric-value" style="color:var(--accent);" id="valHydration">--</div>
+        <div class="metric-sub">Litres/day (Climate-adjusted)</div>
+      </div>
+    </div>
+
+    <!-- Macronutrient Breakdown -->
+    <div class="macro-bar-card">
+      <h3 style="font-size:15px; font-weight:800; color:#0f172a;">📊 Daily Macronutrient Target Splits (ICMR-NIN 2024)</h3>
+      <div class="macro-grid">
+        <div class="macro-item">
+          <div class="macro-name">Daily Protein</div>
+          <div class="macro-val" id="valProtein">--</div>
+          <div class="macro-pct">High Biological Value</div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-name">Complex Carbs</div>
+          <div class="macro-val" id="valCarbs">--</div>
+          <div class="macro-pct">Low Glycemic Index</div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-name">Healthy Fats</div>
+          <div class="macro-val" id="valFat">--</div>
+          <div class="macro-pct">MUFA/PUFA &amp; A2 Ghee</div>
+        </div>
+        <div class="macro-item">
+          <div class="macro-name">Dietary Fiber</div>
+          <div class="macro-val" id="valFiber">--</div>
+          <div class="macro-pct">Soluble &amp; Insoluble</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7-Day Day Selector Tabs -->
+    <div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h3 style="font-size:16px; font-weight:800; color:#0f172a;">📅 7-Day Meal Schedule</h3>
+        <span style="font-size:12px; color:var(--text-muted); font-weight:600;">Select day to inspect meals &amp; timings</span>
+      </div>
+      <div class="day-selector" id="daySelectorContainer">
+        <!-- Day tabs rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Day Meals Container -->
+    <div class="meals-grid" id="dayMealsContainer">
+      <!-- Meal cards rendered via JS -->
+    </div>
+
+    <!-- Aggregated Smart Grocery List -->
+    <div class="grocery-card">
+      <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <div>
+          <h3 style="font-size:18px; font-weight:900; color:#0f172a;">🛒 RAG-Generated 7-Day Grocery List</h3>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:2px;">Consolidated ingredients across all 7 days with authentic Indian and whole-food items.</p>
+        </div>
+        <a href="online-pharmacy.html" style="font-size:12.5px; font-weight:700; color:var(--primary); text-decoration:none; background:var(--primary-subtle); padding:6px 14px; border-radius:8px; border:1px solid #bbf7d0;">Browse MedInVedic Organics →</a>
+      </div>
+
+      <div class="grocery-grid" id="groceryGridContainer">
+        <!-- Rendered via JS -->
+      </div>
+    </div>
+
+    <!-- Evidence Citations -->
+    <div class="citations-card">
+      <h4 style="font-size:13px; font-weight:800; color:#0f172a; display:flex; align-items:center; gap:6px;">
+        📚 Clinical &amp; Classical Evidence Citations
+      </h4>
+      <div id="citationsContainer">
+        <!-- Rendered via JS -->
+      </div>
+      <div style="margin-top:16px; padding-top:12px; border-top:1px solid #e2e8f0; font-size:11.5px; color:var(--text-light); line-height:1.5;">
+        ⚕️ <strong>Clinical Safety Notice:</strong> MedInVedic RAG Nutritionist outputs are for educational and wellness guidance grounded in published literature. Never embark on severe caloric restriction without consulting a registered dietitian or your primary physician.
+      </div>
+    </div>
+
+  </section>
+
+</main>
 
 <script>
-  let currentStep = 1;
-  const selections = { season: null, dosha: null, goal: null };
+  // UI State
+  let currentActiveDayIndex = 0;
+  let currentGeneratedPlan = null;
 
-  function selectOption(category, val, el) {
-    const parent = el.closest('.option-grid');
-    parent.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    selections[category] = val;
+  function togglePill(el) {
+    const cb = el.querySelector('input[type="checkbox"]');
+    cb.checked = !cb.checked;
+    if (cb.checked) {
+      el.classList.add('active');
+    } else {
+      el.classList.remove('active');
+    }
   }
 
-  function goToStep(step) {
-    if (step === 2 && !selections.season) { alert('Please select a season.'); return; }
-    if (step === 3 && !selections.dosha) { alert('Please select your dosha.'); return; }
-
-    currentStep = step;
-    document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-    document.getElementById('step' + step).classList.add('active');
+  function getSelectedCheckboxes(containerId) {
+    const container = document.getElementById(containerId);
+    const checked = [];
+    container.querySelectorAll('input[type="checkbox"]:checked').forEach(cb => {
+      checked.push(cb.value);
+    });
+    return checked;
   }
 
-  function generateDietPlan() {
-    if (!selections.goal) { alert('Please select a wellness goal.'); return; }
-
-    document.getElementById('formWizard').style.display = 'none';
-    document.getElementById('dietResult').style.display = 'block';
-
-    document.getElementById('resultSubtitle').textContent = 
-      `Calibrated for ${selections.dosha || 'Vata'} constitution during ${selections.season || 'Spring'} for ${selections.goal || 'Vitality'}.`;
+  function setSelectedCheckboxes(containerId, values) {
+    const container = document.getElementById(containerId);
+    container.querySelectorAll('.pill-checkbox').forEach(label => {
+      const cb = label.querySelector('input[type="checkbox"]');
+      if (values.includes(cb.value)) {
+        cb.checked = true;
+        label.classList.add('active');
+      } else {
+        cb.checked = false;
+        label.classList.remove('active');
+      }
+    });
   }
+
+  function scrollToConfig() {
+    document.getElementById('inputCard').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // Quick Preset Loader
+  function loadPreset(type) {
+    if (type === 'diabetic_veg') {
+      document.getElementById('inpAge').value = 50;
+      document.getElementById('inpGender').value = 'male';
+      document.getElementById('inpHeight').value = 170;
+      document.getElementById('inpWeight').value = 76;
+      document.getElementById('inpGoal').value = 'diabetes_management';
+      document.getElementById('inpActivity').value = 'light';
+      document.getElementById('inpDietPref').value = 'vegetarian';
+      document.getElementById('inpPrakriti').value = 'Kapha';
+      document.getElementById('inpSeason').value = 'Grishma';
+      setSelectedCheckboxes('allergiesContainer', []);
+      setSelectedCheckboxes('conditionsContainer', ['diabetes']);
+    } else if (type === 'active_vata') {
+      document.getElementById('inpAge').value = 28;
+      document.getElementById('inpGender').value = 'female';
+      document.getElementById('inpHeight').value = 165;
+      document.getElementById('inpWeight').value = 54;
+      document.getElementById('inpGoal').value = 'muscle_gain';
+      document.getElementById('inpActivity').value = 'very_active';
+      document.getElementById('inpDietPref').value = 'vegetarian';
+      document.getElementById('inpPrakriti').value = 'Vata';
+      document.getElementById('inpSeason').value = 'Varsha';
+      setSelectedCheckboxes('allergiesContainer', []);
+      setSelectedCheckboxes('conditionsContainer', []);
+    } else if (type === 'pitta_weight') {
+      document.getElementById('inpAge').value = 35;
+      document.getElementById('inpGender').value = 'male';
+      document.getElementById('inpHeight').value = 175;
+      document.getElementById('inpWeight').value = 84;
+      document.getElementById('inpGoal').value = 'weight_loss';
+      document.getElementById('inpActivity').value = 'moderate';
+      document.getElementById('inpDietPref').value = 'vegetarian';
+      document.getElementById('inpPrakriti').value = 'Pitta';
+      document.getElementById('inpSeason').value = 'Grishma';
+      setSelectedCheckboxes('allergiesContainer', []);
+      setSelectedCheckboxes('conditionsContainer', ['gerd']);
+    } else if (type === 'hypertension_dash') {
+      document.getElementById('inpAge').value = 45;
+      document.getElementById('inpGender').value = 'male';
+      document.getElementById('inpHeight').value = 172;
+      document.getElementById('inpWeight').value = 79;
+      document.getElementById('inpGoal').value = 'heart_health';
+      document.getElementById('inpActivity').value = 'light';
+      document.getElementById('inpDietPref').value = 'vegetarian';
+      document.getElementById('inpPrakriti').value = 'Pitta';
+      document.getElementById('inpSeason').value = 'Sharad';
+      setSelectedCheckboxes('allergiesContainer', []);
+      setSelectedCheckboxes('conditionsContainer', ['hypertension']);
+    }
+
+    executeDietRAG();
+  }
+
+  // Execution
+  function executeDietRAG() {
+    const age = parseInt(document.getElementById('inpAge').value) || 30;
+    const gender = document.getElementById('inpGender').value;
+    const height = parseInt(document.getElementById('inpHeight').value) || 170;
+    const weight = parseInt(document.getElementById('inpWeight').value) || 70;
+    const goal = document.getElementById('inpGoal').value;
+    const activityLevel = document.getElementById('inpActivity').value;
+    const dietPref = document.getElementById('inpDietPref').value;
+    const prakriti = document.getElementById('inpPrakriti').value;
+    const season = document.getElementById('inpSeason').value;
+    const cuisine = document.getElementById('inpCuisine').value;
+    const allergies = getSelectedCheckboxes('allergiesContainer');
+    const medicalConditions = getSelectedCheckboxes('conditionsContainer');
+
+    const profile = {
+      age,
+      gender,
+      height,
+      weight,
+      goal,
+      activityLevel,
+      dietPref,
+      prakriti,
+      season,
+      cuisine,
+      allergies,
+      medicalConditions
+    };
+
+    if (typeof DietRAGEngine === 'undefined') {
+      alert('Diet RAG Engine is still initializing. Please wait a moment.');
+      return;
+    }
+
+    const plan = DietRAGEngine.generate7DayPlan(profile);
+    currentGeneratedPlan = plan;
+    renderResults(plan);
+  }
+
+  function renderResults(plan) {
+    const resSec = document.getElementById('resultSection');
+    resSec.style.display = 'flex';
+
+    // Telemetry
+    document.getElementById('valBMR').textContent = plan.metrics.bmr + ' kcal';
+    document.getElementById('valTDEE').textContent = plan.metrics.tdee + ' kcal';
+    document.getElementById('valTargetCals').textContent = plan.metrics.targetCalories + ' kcal';
+    document.getElementById('valHydration').textContent = plan.metrics.waterLitres + ' L';
+
+    const goalTitles = {
+      vitality: 'Maintenance & Vitality Protocol',
+      weight_loss: '450 kcal Sustainable Deficit',
+      muscle_gain: '350 kcal Lean Mass Surplus',
+      diabetes_management: 'Glycemic Stabilization Protocol',
+      heart_health: 'Cardiovascular DASH Protocol'
+    };
+    document.getElementById('valGoalNote').textContent = goalTitles[plan.userProfile.goal] || 'Custom Protocol';
+
+    // Macros
+    document.getElementById('valProtein').textContent = plan.metrics.macros.proteinG + ' g';
+    document.getElementById('valCarbs').textContent = plan.metrics.macros.carbsG + ' g';
+    document.getElementById('valFat').textContent = plan.metrics.macros.fatG + ' g';
+    document.getElementById('valFiber').textContent = plan.metrics.macros.fiberG + ' g';
+
+    // Subtitle & Clinical Alerts
+    document.getElementById('planSubtitleBadge').textContent = `${plan.userProfile.prakriti} · ${plan.userProfile.season} Rutucharya · ${plan.userProfile.dietPref.toUpperCase()}`;
+    document.getElementById('planSummaryTitle').textContent = `7-Day Clinical Nutrition Plan for ${plan.userProfile.prakriti} Constitution`;
+
+    const alertsBox = document.getElementById('safetyAlertsBox');
+    let alertsHtml = '';
+    if (plan.clinicalGuidance && plan.clinicalGuidance.length) {
+      alertsHtml += `<strong>Clinical Adaptations:</strong> ${plan.clinicalGuidance.join(' ')}<br>`;
+    }
+    if (plan.ayurvedicGuidance && plan.ayurvedicGuidance.length) {
+      alertsHtml += `<strong>Ayurvedic Principles:</strong> ${plan.ayurvedicGuidance.join(' ')}`;
+    }
+    alertsBox.innerHTML = alertsHtml;
+
+    // Render Day Selector Tabs
+    const daySelector = document.getElementById('daySelectorContainer');
+    daySelector.innerHTML = '';
+    plan.schedule.forEach((dayData, idx) => {
+      const btn = document.createElement('button');
+      btn.className = `day-tab ${idx === currentActiveDayIndex ? 'active' : ''}`;
+      btn.innerHTML = `${dayData.day} <span style="font-size:11px; font-weight:600; opacity:0.8;">(${dayData.totalCalories} kcal)</span>`;
+      btn.onclick = () => {
+        currentActiveDayIndex = idx;
+        document.querySelectorAll('.day-tab').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderDayMeals(plan.schedule[idx]);
+      };
+      daySelector.appendChild(btn);
+    });
+
+    renderDayMeals(plan.schedule[currentActiveDayIndex]);
+    renderGroceryList(plan.groceryList);
+    renderCitations(plan.citations);
+
+    resSec.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function renderDayMeals(dayData) {
+    const container = document.getElementById('dayMealsContainer');
+    container.innerHTML = '';
+
+    const slots = [
+      { key: 'breakfast', label: 'Breakfast', cls: 'slot-breakfast' },
+      { key: 'lunch', label: 'Lunch (Peak Agni)', cls: 'slot-lunch' },
+      { key: 'snack', label: 'Mid-Day Snack', cls: 'slot-snack' },
+      { key: 'dinner', label: 'Dinner (Laghu Ahara)', cls: 'slot-dinner' }
+    ];
+
+    slots.forEach(slot => {
+      const meal = dayData.meals[slot.key];
+      if (!meal) return;
+
+      const card = document.createElement('div');
+      card.className = 'meal-card-item';
+
+      let swapHtml = '';
+      if (meal.swapOptions && meal.swapOptions.length > 0) {
+        swapHtml = `
+          <div class="swap-panel">
+            <span class="swap-label">🔄 1-Click Meal Swap:</span>
+            ${meal.swapOptions.map(alt => `
+              <button class="swap-btn" onclick="swapMeal('${dayData.day}', '${slot.key}', '${alt.id}')">
+                Swap with ${alt.name.split(' with ')[0]}
+              </button>
+            `).join('')}
+          </div>
+        `;
+      }
+
+      card.innerHTML = `
+        <div class="meal-card-head">
+          <span class="slot-pill ${slot.cls}">${slot.label}</span>
+          <span class="meal-timing">⏰ ${meal.time}</span>
+        </div>
+        <div>
+          <h4 class="meal-title">${meal.name}</h4>
+          <div class="meal-macros-row" style="margin-top:6px;">
+            <span class="macro-chip">⚡ ${meal.calories} kcal</span>
+            <span class="macro-chip">🥩 ${meal.protein}g Protein</span>
+            <span class="macro-chip">🌾 ${meal.carbs}g Carbs</span>
+            <span class="macro-chip">🥑 ${meal.fat}g Fat</span>
+            <span class="macro-chip">🥦 ${meal.fiber}g Fiber</span>
+          </div>
+        </div>
+        <div class="meal-ingredients-box">
+          <strong>Key Ingredients (IFCT 2017):</strong> ${meal.ingredients ? meal.ingredients.join(' · ') : 'Standard ingredients'}
+        </div>
+        <div class="rationales-container">
+          <div class="rationale-card rationale-ayurveda">
+            <div class="rationale-title">🌿 Ayurvedic Rationale (Charaka Samhita)</div>
+            ${meal.ayurvedicRationale || 'Alleviates dosha accumulation and nurtures Agni.'}
+          </div>
+          <div class="rationale-card rationale-clinical">
+            <div class="rationale-title">🔬 Clinical Rationale (ICMR-NIN 2024 / ADA)</div>
+            ${meal.clinicalRationale || 'Provides essential micronutrients with low glycemic load.'}
+          </div>
+        </div>
+        ${swapHtml}
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function swapMeal(dayName, slotKey, newMealId) {
+    if (!currentGeneratedPlan) return;
+    const dayObj = currentGeneratedPlan.schedule.find(d => d.day === dayName);
+    if (!dayObj) return;
+
+    const pool = DietRAGEngine.MEAL_DATABASE[slotKey] || [];
+    const newMeal = pool.find(m => m.id === newMealId);
+    if (!newMeal) return;
+
+    dayObj.meals[slotKey] = {
+      ...newMeal,
+      time: dayObj.meals[slotKey].time,
+      swapOptions: pool.filter(m => m.id !== newMeal.id).slice(0, 2)
+    };
+
+    renderDayMeals(dayObj);
+  }
+
+  function renderGroceryList(groceryList) {
+    const container = document.getElementById('groceryGridContainer');
+    container.innerHTML = '';
+
+    const categories = [
+      { key: 'produce', title: '🥬 Fresh Produce & Greens', icon: '🥬' },
+      { key: 'grains', title: '🌾 Whole Grains & Millets', icon: '🌾' },
+      { key: 'pulsesProteins', title: '🫘 Pulses, Proteins & Dairy', icon: '🫘' },
+      { key: 'spicesOils', title: '🧂 Ayurvedic Spices & Oils', icon: '🧂' }
+    ];
+
+    categories.forEach(cat => {
+      const items = groceryList[cat.key] || [];
+      const col = document.createElement('div');
+      col.className = 'grocery-category';
+      col.innerHTML = `
+        <div class="grocery-category-title">${cat.title} (${items.length})</div>
+        <ul class="grocery-items-list">
+          ${items.map(item => `
+            <li>
+              <label class="grocery-item-check">
+                <input type="checkbox">
+                <span>${item}</span>
+              </label>
+            </li>
+          `).join('')}
+        </ul>
+      `;
+      container.appendChild(col);
+    });
+  }
+
+  function renderCitations(citations) {
+    const container = document.getElementById('citationsContainer');
+    container.innerHTML = '';
+
+    citations.forEach(cit => {
+      const div = document.createElement('div');
+      div.className = 'citation-item';
+      div.innerHTML = `
+        <div class="citation-title">📖 ${cit.title} · <span style="font-weight:600; color:var(--primary);">${cit.evidenceLevel}</span></div>
+        <div style="font-size:11.5px; color:#475569;">${cit.author}</div>
+        <div style="font-size:11.5px; color:#334155; margin-top:2px;"><em>"${cit.recommendation}"</em></div>
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  // Initialize with standard profile on load
+  window.addEventListener('DOMContentLoaded', () => {
+    executeDietRAG();
+  });
 </script>
+
 </body>
 </html>

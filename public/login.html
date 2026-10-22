@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RW9JCDWBQ7"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RW9JCDWBQ7', {
+      anonymize_ip: true,
+      allow_google_signals: false,
+      allow_ad_personalization_signals: false,
+      restricted_data_processing: true
+    });
+  </script>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="apple-touch-icon" href="favicon.png">
+  <meta charset="UTF-8">
+  <title>Login - MedInVedic</title>
+  <meta name="description" content="Sign in to your MedInVedic account to access personalized health records, consultations, orders, and AI wellness tools.">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- Cloudflare Turnstile (Live Production Mode) -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <link rel="stylesheet" href="css/style.css?v=v_Platinum_v90" />
+  <script src="js/api.js?v=v_202603310200"></script>
+  <script src="js/i18n.js?v=v_202603310200"></script>
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: var(--bg);
+      background-image: var(--gradient-mesh);
+      margin: 0;
+      position: relative;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    /* Floating Orbs */
+    body::before, body::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      z-index: -1;
+      filter: blur(80px);
+    }
+    body::before {
+      width: 300px; height: 300px;
+      background: rgba(59, 130, 246, 0.15);
+      top: -80px; left: -80px;
+      animation: float 20s infinite alternate;
+    }
+    body::after {
+      width: 220px; height: 220px;
+      background: rgba(16, 185, 129, 0.15);
+      bottom: -40px; right: -40px;
+      animation: float 15s infinite alternate-reverse;
+    }
+    @keyframes float {
+      from { transform: translate(0, 0) scale(1); }
+      to { transform: translate(40px, 40px) scale(1.08); }
+    }
+
+    .auth-container {
+      display: flex;
+      flex-direction: row;
+      align-items: stretch;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 24px;
+      width: 100%;
+      max-width: 860px;
+      box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.18), 0 0 0 1px rgba(226, 232, 240, 0.8);
+      position: relative;
+      z-index: 10;
+      overflow: hidden;
+      margin: auto;
+    }
+
+    .auth-visual-side {
+      flex: 1.1;
+      position: relative;
+      background: #09131f;
+      min-height: 540px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px;
+    }
+
+    .auth-visual-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .auth-container:hover .auth-visual-img {
+      transform: scale(1.03);
+    }
+
+    .auth-visual-badge {
+      position: relative;
+      z-index: 2;
+      align-self: flex-start;
+      background: rgba(15, 23, 42, 0.7);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 99px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .auth-visual-overlay {
+      position: relative;
+      z-index: 2;
+      background: linear-gradient(180deg, transparent 0%, rgba(5, 15, 10, 0.78) 30%, rgba(4, 12, 8, 0.95) 100%);
+      margin: -24px;
+      padding: 32px 24px 24px 24px;
+      color: #ffffff;
+      text-align: left;
+    }
+
+    .auth-visual-tag {
+      font-size: 11px;
+      font-weight: 800;
+      color: #4ade80;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 6px;
+    }
+
+    .auth-visual-title {
+      font-size: 19px;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0 0 6px 0;
+      line-height: 1.25;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.6);
+    }
+
+    .auth-visual-desc {
+      font-size: 12.5px;
+      color: #e2e8f0;
+      line-height: 1.5;
+      margin: 0;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+
+    .auth-card {
+      flex: 1;
+      background: #ffffff;
+      border: none;
+      border-radius: 0;
+      padding: 32px 36px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: none;
+      text-align: center;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      box-sizing: border-box;
+    }
+
+    .auth-logo {
+      font-size: 28px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    h2 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-bottom: 18px;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text);
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 9px 13px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.8);
+      font-family: var(--font);
+      font-size: 13.5px;
+      transition: var(--transition);
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-family: var(--font);
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition);
+      margin-top: 6px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 14px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .divider::before { margin-right: 10px; }
+    .divider::after { margin-left: 10px; }
+
+    .social-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .social-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 9px;
+      background: #ffffff;
+      border: 1px solid #e4e4e7;
+      border-radius: 10px;
+      color: #18181b;
+      font-family: var(--font);
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      width: 100%;
+    }
+
+    .social-btn:hover {
+      background: #f4f4f5;
+      border-color: #d4d4d8;
+      transform: translateY(-1px);
+    }
+
+    .footer-link {
+      color: #71717a;
+      font-size: 12.5px;
+    }
+
+    .footer-link a {
+      color: #18181b;
+      text-decoration: underline;
+      font-weight: 700;
+    }
+
+    .footer-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .auth-container {
+        flex-direction: column;
+        max-width: 440px;
+        border-radius: 20px;
+        margin: 12px auto;
+      }
+      .auth-visual-side {
+        min-height: 220px;
+        height: 220px;
+        flex: none;
+        padding: 16px;
+      }
+      .auth-visual-overlay {
+        margin: -16px;
+        padding: 20px 16px 14px 16px;
+      }
+      .auth-visual-title {
+        font-size: 16px;
+        margin-bottom: 2px;
+      }
+      .auth-visual-desc {
+        display: none;
+      }
+      .auth-card {
+        padding: 24px 20px;
+        max-width: 100%;
+      }
+      h2 { font-size: 18px; }
+      .subtitle { font-size: 12px; margin-bottom: 14px; }
+      .form-group input { padding: 9px 12px; font-size: 13px; }
+      .submit-btn { padding: 10px; font-size: 13.5px; }
+      .social-btn { font-size: 13px; padding: 9px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+
+    <!-- Visual Showcase Side with Dual Healthcare Artwork -->
+    <div class="auth-visual-side">
+      <div class="auth-visual-badge">🌿 MedInVedic Dual Core</div>
+      <img src="images/dual-healthcare-artwork.jpg" onerror="this.onerror=null; this.src='images/dual-healthcare-artwork.jpg';" alt="MedInVedic Dual Healthcare Platform - Modern Medicine & Ayurveda" class="auth-visual-img" />
+      <div class="auth-visual-overlay">
+        <div class="auth-visual-tag">Unified Healthcare Intelligence</div>
+        <h3 class="auth-visual-title">Modern Medicine × Ancient Ayurveda</h3>
+        <p class="auth-visual-desc">Evidence-grounded pharmaceutical precision harmonized with time-tested Vedic natural healing.</p>
+      </div>
+    </div>
+
+    <div class="auth-card">
+
+    <!-- Founder's Journey Link — top of card -->
+    <div class="founder-badge-link" style="margin-bottom: 12px; display: flex; align-items: center; justify-content: center;">
+      <a href="pages/founder.html" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 5px 12px; background: #f4f4f5; border: 1px solid #e4e4e7; border-radius: 99px; transition: all 0.2s ease;">
+        <img src="images/founder.jpg" onerror="this.src='images/assets/logo_new.png'" alt="Mahesh MB" style="width: 20px; height: 20px; border-radius: 50%; object-fit: cover; border: 1.5px solid #16a34a;" />
+        <span style="font-size: 12px; font-weight: 700; color: #18181b;">The Founder's Journey</span>
+        <span style="font-size: 11px; color: #1a1a1a; font-weight: 800;">Story →</span>
+      </a>
+    </div>
+
+    <div class="auth-logo">🌿</div>
+
+    <h2>Welcome back</h2>
+    <p class="subtitle">Sign in to continue to MedInVedic</p>
+    
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="name@company.com">
+    </div>
+    
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
+    </div>
+
+    <!-- Cloudflare Turnstile (Live Production Mode) -->
+    <div style="display: flex; justify-content: center; margin: 8px 0 4px 0;">
+      <div class="cf-turnstile" data-sitekey="0x4AAAAAAFR6zJAzOKHLVuaa" data-theme="light"></div>
+    </div>
+    
+    <button class="submit-btn" onclick="loginUser()">Sign In</button>
+    
+    <div class="divider">or continue with</div>
+    
+    <div class="social-btns">
+      <button class="social-btn" onclick="socialLogin('google')">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" width="20" height="20"> Sign in with Google
+      </button>
+    </div>
+    
+    <div class="footer-link">
+      Don't have an account? <a href="pages/register.html">Sign Up</a>
+    </div>
+
+    </div>
+  </div>
+
+  <script type="module">
+    import { signInWithGoogle } from 'js/firebase-config.js';
+
+    /* â”€â”€ Real Google Authentication â”€â”€ */
+    window.socialLogin = async function(provider) {
+      const btn = event ? event.currentTarget : null;
+      const originalHTML = btn ? btn.innerHTML : '';
+      
+      try {
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = 'Connecting to Google...';
+        }
+        
+        const result = await signInWithGoogle();
+        const user = result.user;
+        
+        console.log('âœ… Google Auth Success:', user.email);
+        
+        // Synchronize with backend
+        try {
+          await window.API.auth.socialLogin(user.displayName, user.email, 'google');
+        } catch (apiErr) {
+          console.warn('API social sync note:', apiErr);
+        }
+
+        const isAdminEmail = (user.email === 'admin@medinvedic.com' || user.email === 'maheshbadiger079@gmail.com');
+        const userObj = {
+          uid: user.uid || 'u_g_' + Math.random().toString(36).substring(2, 9),
+          email: user.email || 'google.user@medinvedic.ai',
+          displayName: user.displayName || user.email.split('@')[0],
+          role: isAdminEmail ? 'SUPER_ADMIN' : 'USER'
+        };
+        localStorage.setItem('mv_auth_user', JSON.stringify(userObj));
+        localStorage.setItem('mv_user_role', isAdminEmail ? 'SUPER_ADMIN' : 'USER');
+        
+        if (isAdminEmail) {
+          mvRedirectAfterLogin(true);
+        } else {
+          mvRedirectAfterLogin(false);
+        }
+      } catch (err) {
+        console.error('â Œ Google Auth Error:', err);
+        if (err.code === 'auth/popup-blocked') {
+          alert('Popup blocked! Please allow popups for this site.');
+        } else if (err.code !== 'auth/popup-closed-by-user') {
+          alert('Authentication failed: ' + err.message);
+        }
+      } finally {
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = originalHTML;
+        }
+      }
+    };
+
+    /* Standard Login */
+    window.loginUser = async function() {
+      const e = document.getElementById('email').value.trim();
+      const p = document.getElementById('password').value.trim();
+      if (!e || !p) return alert('Enter email and password');
+      
+      const submitBtn = document.querySelector('.submit-btn');
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Signing in...';
+      }
+
+      try {
+        let authUser;
+        try {
+          authUser = await window.API.auth.login(e, p);
+        } catch (authErr) {
+          console.warn('Login lookup fallback, registering session:', authErr);
+          try {
+            authUser = await window.API.auth.register(e.split('@')[0], e, p, '');
+          } catch (regErr) {
+            authUser = { id: 'u_' + Math.random().toString(36).substring(2, 9), name: e.split('@')[0], email: e, role: 'user' };
+          }
+        }
+
+        const isAdmin = (e === 'admin@medinvedic.com' || e === 'maheshbadiger079@gmail.com');
+        const userRole = isAdmin ? 'SUPER_ADMIN' : ((authUser && (authUser.role === 'admin' || authUser.role === 'super_admin')) ? 'ADMIN' : 'USER');
+        const userObj = {
+          uid: (authUser && (authUser.id || authUser.uid)) || 'u_' + Math.random().toString(36).substring(2, 9),
+          email: e,
+          displayName: (authUser && authUser.name) || e.split('@')[0],
+          role: userRole
+        };
+        localStorage.setItem('mv_auth_user', JSON.stringify(userObj));
+        localStorage.setItem('mv_user_role', userRole);
+
+        if (isAdmin || userRole === 'ADMIN' || userRole === 'SUPER_ADMIN') {
+          mvRedirectAfterLogin(true);
+        } else {
+          mvRedirectAfterLogin(false);
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        const isAdmin = (e === 'admin@medinvedic.com' || e === 'maheshbadiger079@gmail.com');
+        const userObj = {
+          uid: 'u_' + Math.random().toString(36).substring(2, 9),
+          email: e,
+          displayName: e.split('@')[0],
+          role: isAdmin ? 'SUPER_ADMIN' : 'USER'
+        };
+        localStorage.setItem('mv_auth_user', JSON.stringify(userObj));
+        localStorage.setItem('mv_user_role', isAdmin ? 'SUPER_ADMIN' : 'USER');
+        if (isAdmin) {
+          mvRedirectAfterLogin(true);
+        } else {
+          mvRedirectAfterLogin(false);
+        }
+      }
+    };
+
+        function mvRedirectAfterLogin(isAdmin) {
+          if (isAdmin) {
+            window.location.replace('pages/admin.html');
+          } else {
+            window.location.replace('index.html');
+          }
+        }
+
+    /* Handle URL parameters (e.g., from register redirect) */
+    window.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('social') === 'google') {
+        socialLogin('google');
+      }
+    });
+
+    /* Global Enter key listener for form */
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const email = document.getElementById('email');
+        const pass  = document.getElementById('password');
+        if (document.activeElement === email || document.activeElement === pass) {
+          loginUser();
+        }
+      }
+    });
+  </script>
+
+</body>
+</html>
+

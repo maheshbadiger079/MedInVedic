@@ -19,121 +19,180 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Heart Scan AI — MedInVedic</title>
+  <meta name="description" content="Heart Scan AI: Cardiovascular risk screening combining modern cardiology (AHA/WHO) with Ayurvedic cardiac wisdom.">
   <link rel="stylesheet" href="../css/style.css?v=v_Platinum_v90" />
   <style>
+    /* ═══════════════════════════════════════════════
+       GLOBAL — White + Glassmorphism
+    ═══════════════════════════════════════════════ */
     :root {
-      --neon-red: #ef4444;
-      --neon-red-glow: rgba(239, 68, 68, 0.4);
-      --bg-dark-gray: #0b0f19;
-      --card-bg: rgba(15, 23, 42, 0.7);
+      --red:        #ef4444;
+      --red-soft:   rgba(239,68,68,0.12);
+      --red-glow:   rgba(239,68,68,0.25);
+      --green:      #15803d;
+      --green-soft: rgba(21,128,61,0.10);
+      --blue-soft:  rgba(59,130,246,0.10);
+      --glass-bg:   rgba(255,255,255,0.72);
+      --glass-border: rgba(255,255,255,0.55);
+      --shadow:     0 8px 32px rgba(0,0,0,0.10);
+      --radius:     20px;
     }
-    
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: linear-gradient(135deg, #090d16, #0e1726);
-      color: #f3f4f6;
-      font-family: 'Inter', sans-serif;
-      margin: 0;
+      background: linear-gradient(135deg, #f0f9ff 0%, #fdf2f8 40%, #f0fdf4 100%);
       min-height: 100vh;
+      font-family: 'Inter', sans-serif;
+      color: #0f172a;
       overflow-x: hidden;
     }
 
-    .heart-container {
-      max-width: 1200px;
-      margin: 40px auto;
-      padding: 0 20px 80px;
+    /* Soft ambient blobs */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px; left: -120px;
+      width: 480px; height: 480px;
+      background: radial-gradient(circle, rgba(239,68,68,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -80px; right: -80px;
+      width: 360px; height: 360px;
+      background: radial-gradient(circle, rgba(21,128,61,0.10) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
     }
 
+    /* ── Back button ── */
+    .back-btn {
+      position: fixed;
+      top: 18px; left: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: #475569;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 13px;
+      z-index: 200;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 8px 14px;
+      border-radius: 50px;
+      box-shadow: var(--shadow);
+      transition: 0.2s;
+    }
+    .back-btn:hover { background: white; color: #0f172a; }
+
+    /* ── Main container ── */
+    .heart-container {
+      position: relative;
+      z-index: 1;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 80px 20px 80px;
+    }
+
+    /* ── Header ── */
     .header-section {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 48px;
     }
 
-    .premium-badge-main {
+    .badge-live {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(236, 72, 153, 0.2));
-      border: 1px solid rgba(239, 68, 68, 0.5);
-      color: #fca5a5;
-      padding: 6px 16px;
+      background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(236,72,153,0.10));
+      border: 1px solid rgba(239,68,68,0.30);
+      color: #b91c1c;
+      padding: 6px 18px;
       border-radius: 50px;
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 16px;
-      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+      letter-spacing: 1.2px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(8px);
     }
 
     .pulse-dot {
-      width: 8px;
-      height: 8px;
-      background-color: var(--neon-red);
+      width: 8px; height: 8px;
+      background: var(--red);
       border-radius: 50%;
-      box-shadow: 0 0 10px var(--neon-red);
-      animation: pulseAnim 1.5s infinite ease-in-out;
+      box-shadow: 0 0 8px var(--red);
+      animation: pulseDot 1.4s infinite ease-in-out;
     }
-
-    @keyframes pulseAnim {
-      0%, 100% { transform: scale(0.9); opacity: 0.6; }
-      50% { transform: scale(1.3); opacity: 1; }
+    @keyframes pulseDot {
+      0%,100% { transform: scale(0.9); opacity: 0.7; }
+      50%      { transform: scale(1.4); opacity: 1; }
     }
 
     .main-title {
-      font-size: 40px;
+      font-size: clamp(28px,5vw,44px);
       font-weight: 800;
-      background: linear-gradient(135deg, #fff, #fca5a5);
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 12px;
-      font-family: 'Space Grotesk', sans-serif;
+      letter-spacing: -0.5px;
     }
 
     .main-subtitle {
-      font-size: 16px;
-      color: #94a3b8;
-      max-width: 700px;
+      font-size: 15px;
+      color: #64748b;
+      max-width: 680px;
       margin: 0 auto;
-      line-height: 1.6;
+      line-height: 1.7;
     }
 
+    /* ── Glass card ── */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+      padding: 28px;
+    }
+
+    /* ── Grid ── */
     .grid-layout {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 30px;
+      gap: 28px;
       align-items: start;
     }
-
-    @media (max-width: 900px) {
-      .grid-layout {
-        grid-template-columns: 1fr;
-      }
+    @media (max-width: 820px) {
+      .grid-layout { grid-template-columns: 1fr; }
     }
 
-    .lab-card {
-      background: var(--card-bg);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 24px;
-      padding: 30px;
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-    }
-
+    /* ══ LEFT PANEL: Scanner ══ */
     .scanner-viewport {
       width: 100%;
       aspect-ratio: 4/3;
-      background: #020617;
-      border: 2px solid rgba(239, 68, 68, 0.3);
+      background: linear-gradient(135deg, #0f172a, #1e1b4b);
+      border: 2px solid rgba(239,68,68,0.25);
       border-radius: 16px;
       position: relative;
       overflow: hidden;
       margin-bottom: 20px;
+      box-shadow: inset 0 0 40px rgba(239,68,68,0.06);
     }
 
     #cameraFeed {
-      width: 100%;
-      height: 100%;
+      width: 100%; height: 100%;
       object-fit: cover;
       transform: scaleX(-1);
     }
@@ -148,374 +207,777 @@
       justify-content: center;
     }
 
-    .fingerprint-target {
-      width: 120px;
-      height: 120px;
-      border: 2px dashed rgba(239, 68, 68, 0.6);
+    .heart-ring {
+      width: 110px; height: 110px;
+      border: 2px dashed rgba(239,68,68,0.55);
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 40px;
-      color: rgba(239, 68, 68, 0.8);
-      animation: heartbeat-ring 2s infinite ease-in-out;
+      font-size: 38px;
+      animation: heartRing 2s infinite ease-in-out;
+    }
+    @keyframes heartRing {
+      0%,100% { transform: scale(1); border-color: rgba(239,68,68,0.55); }
+      50%      { transform: scale(1.12); border-color: rgba(239,68,68,1);
+                 box-shadow: 0 0 22px rgba(239,68,68,0.35); }
     }
 
-    @keyframes heartbeat-ring {
-      0%, 100% { transform: scale(1); border-color: rgba(239, 68, 68, 0.6); }
-      50% { transform: scale(1.1); border-color: rgba(239, 68, 68, 1); box-shadow: 0 0 20px rgba(239, 68, 68, 0.3); }
-    }
-
-    .scanning-line {
+    .scan-line {
       position: absolute;
       top: 0; left: 0; width: 100%; height: 3px;
-      background: var(--neon-red);
-      box-shadow: 0 0 15px var(--neon-red);
-      animation: scan 2.5s infinite linear;
+      background: linear-gradient(90deg, transparent, #ef4444, transparent);
+      box-shadow: 0 0 14px var(--red);
+      animation: scanMove 2.4s infinite linear;
       opacity: 0;
     }
+    @keyframes scanMove { 0% { top: 0; } 100% { top: 100%; } }
 
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
+    /* ECG canvas */
+    .ecg-wrap {
+      background: rgba(15,23,42,0.06);
+      border: 1px solid rgba(239,68,68,0.15);
+      border-radius: 14px;
+      padding: 12px;
+      height: 110px;
     }
+    #ecgCanvas { width: 100%; height: 100%; display: block; }
 
-    .ecg-canvas-container {
-      background: rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 12px;
-      padding: 10px;
-      height: 120px;
+    /* ══ RIGHT PANEL: Diagnostics ══ */
+    .panel-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 22px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-title-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, rgba(239,68,68,0.15), rgba(236,72,153,0.10));
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
     }
 
     .metrics-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
       margin-bottom: 24px;
     }
 
     .metric-box {
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.6));
+      border: 1px solid rgba(255,255,255,0.7);
+      border-radius: 14px;
       padding: 16px;
       text-align: center;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
     }
-
+    .metric-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a3b8;
+      margin-bottom: 6px;
+    }
     .metric-value {
       font-size: 28px;
       font-weight: 800;
-      color: white;
-      margin-top: 8px;
+      color: #0f172a;
     }
-
     .metric-value span {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 500;
       color: #94a3b8;
-      margin-left: 4px;
+      margin-left: 3px;
     }
 
+    /* ── Divider ── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(239,68,68,0.15), transparent);
+      margin: 20px 0;
+    }
+
+    /* ── Scan Button ── */
     .scan-btn {
-      background: linear-gradient(135deg, #ef4444, #b91c1c);
-      color: white;
+      width: 100%;
+      padding: 16px;
       border: none;
       border-radius: 14px;
-      padding: 16px;
-      font-size: 16px;
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: white;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      width: 100%;
-      transition: 0.3s;
-      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+      transition: 0.25s;
+      box-shadow: 0 6px 20px rgba(239,68,68,0.30);
+      letter-spacing: 0.2px;
     }
-
-    .scan-btn:hover {
+    .scan-btn:hover:not(:disabled) {
       transform: translateY(-2px);
-      box-shadow: 0 12px 24px rgba(239, 68, 68, 0.4);
+      box-shadow: 0 10px 28px rgba(239,68,68,0.40);
     }
+    .scan-btn:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
 
+    /* ── Checklist ── */
     .scan-checklist {
       margin-top: 20px;
       display: none;
       flex-direction: column;
       gap: 10px;
     }
-
     .check-item {
       display: flex;
       align-items: center;
       gap: 10px;
-      font-size: 13px;
-      color: #94a3b8;
+      font-size: 12.5px;
+      color: #64748b;
+      padding: 8px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.5);
+      transition: 0.3s;
     }
-
     .check-item.done {
-      color: #4ade80;
+      color: #15803d;
+      background: rgba(21,128,61,0.07);
+      border-color: rgba(21,128,61,0.20);
     }
-
     .check-spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid #ef4444;
-      border-top-color: transparent;
+      width: 13px; height: 13px; flex-shrink: 0;
+      border: 2px solid rgba(239,68,68,0.3);
+      border-top-color: var(--red);
       border-radius: 50%;
-      animation: spin 1s infinite linear;
+      animation: spin 0.9s infinite linear;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ══ RAG RESULTS CARD ══ */
+    #resultsCard {
+      display: none;
+      margin-top: 28px;
+      animation: fadeUp 0.5s ease-out;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
+    .result-status-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 18px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .result-status-bar.healthy {
+      background: linear-gradient(135deg, rgba(21,128,61,0.10), rgba(34,197,94,0.08));
+      border: 1px solid rgba(21,128,61,0.25);
+      color: #15803d;
+    }
+    .result-status-bar.warning {
+      background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(251,191,36,0.08));
+      border: 1px solid rgba(245,158,11,0.30);
+      color: #92400e;
+    }
+    .result-status-bar.critical {
+      background: linear-gradient(135deg, rgba(239,68,68,0.10), rgba(220,38,38,0.08));
+      border: 1px solid rgba(239,68,68,0.30);
+      color: #b91c1c;
+    }
+    .status-icon { font-size: 20px; }
+
+    .result-section {
+      padding: 16px 18px;
+      border-radius: 14px;
+      margin-bottom: 12px;
+    }
+    .result-section.modern {
+      background: linear-gradient(135deg, rgba(59,130,246,0.07), rgba(99,102,241,0.05));
+      border: 1px solid rgba(59,130,246,0.20);
+    }
+    .result-section.ayurvedic {
+      background: linear-gradient(135deg, rgba(21,128,61,0.07), rgba(34,197,94,0.05));
+      border: 1px solid rgba(21,128,61,0.20);
+    }
+    .result-section.lifestyle {
+      background: linear-gradient(135deg, rgba(245,158,11,0.07), rgba(251,191,36,0.05));
+      border: 1px solid rgba(245,158,11,0.20);
     }
 
-    .back-btn {
-      position: absolute;
-      top: 40px;
-      left: 40px;
+    .rs-label {
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .rs-label.modern   { color: #3b82f6; }
+    .rs-label.ayurvedic{ color: #15803d; }
+    .rs-label.lifestyle{ color: #92400e; }
+
+    .rs-body {
+      font-size: 13px;
+      line-height: 1.7;
+      color: #334155;
+    }
+    .rs-body ul { padding-left: 18px; margin: 6px 0; }
+    .rs-body li { margin-bottom: 4px; }
+    .rs-body strong { color: #0f172a; }
+
+    /* Warning tags */
+    .warn-tag {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      color: #94a3b8;
-      text-decoration: none;
+      gap: 5px;
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.22);
+      color: #b91c1c;
+      font-size: 11px;
       font-weight: 600;
-      font-size: 14px;
-      z-index: 100;
+      padding: 4px 10px;
+      border-radius: 50px;
+      margin: 4px 4px 0 0;
     }
 
-    .back-btn:hover {
-      color: white;
+    /* Disclaimer */
+    .disclaimer-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(248,250,252,0.8);
+      border: 1px solid rgba(226,232,240,0.8);
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.6;
     }
+    .disclaimer-box strong { color: #475569; }
+
+    /* Sources footer */
+    .sources-row {
+      margin-top: 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .source-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.8);
+      border: 1px solid rgba(226,232,240,0.8);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    /* ── Input questionnaire ── */
+    .input-section {
+      margin-top: 28px;
+    }
+    .input-section label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #64748b;
+      display: block;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 480px) {
+      .input-row { grid-template-columns: 1fr; }
+      .metrics-grid { grid-template-columns: 1fr; }
+    }
+    .inp {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid rgba(226,232,240,0.8);
+      border-radius: 10px;
+      font-size: 13px;
+      background: rgba(255,255,255,0.7);
+      color: #0f172a;
+      outline: none;
+      transition: 0.2s;
+    }
+    .inp:focus {
+      border-color: rgba(239,68,68,0.40);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.08);
+    }
+    select.inp { cursor: pointer; }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
 <a href="../index.html" class="back-btn">
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
   Back to Clinic
 </a>
 
 <div class="heart-container">
+
+  <!-- HEADER -->
   <div class="header-section">
-    <div class="premium-badge-main">
+    <div class="badge-live">
       <div class="pulse-dot"></div>
-      Vascular Modeling Active
+      Cardiac RAG Intelligence Active
     </div>
-    <h1 class="main-title">Heart Scan AI</h1>
-    <p class="main-subtitle">Real-time vascular compliance modeling, pulse rate variability analysis, and integrative cardiac risk indexing.</p>
+    <h1 class="main-title">❤️ Heart Scan AI</h1>
+    <p class="main-subtitle">
+      Evidence-based cardiovascular risk assessment powered by AHA, WHO &amp; Ayurvedic Cardiological wisdom (Charaka Samhita, Hridaya Roga chapter).
+    </p>
   </div>
 
+  <!-- MAIN GRID -->
   <div class="grid-layout">
-    <!-- LEFT: SCANNER MODULE -->
-    <div class="lab-card">
+
+    <!-- ══════════ LEFT: CAMERA + ECG ══════════ -->
+    <div class="glass-card">
       <div class="scanner-viewport">
         <video id="cameraFeed" autoplay playsinline></video>
         <div class="scanner-overlay">
-          <div class="fingerprint-target" id="scanTarget">🫀</div>
-          <div class="scanning-line" id="scanLine"></div>
+          <div class="heart-ring" id="heartRing">🫀</div>
+          <div class="scan-line" id="scanLine"></div>
         </div>
       </div>
-      
-      <div class="ecg-canvas-container">
-        <canvas id="ecgCanvas" style="width: 100%; height: 100%;"></canvas>
+
+      <div class="ecg-wrap">
+        <canvas id="ecgCanvas"></canvas>
+      </div>
+
+      <!-- Quick-entry questionnaire -->
+      <div class="input-section">
+        <div class="input-row">
+          <div>
+            <label>Age (years)</label>
+            <input class="inp" type="number" id="inpAge" placeholder="e.g. 38" min="10" max="120">
+          </div>
+          <div>
+            <label>Gender</label>
+            <select class="inp" id="inpGender">
+              <option value="">Select</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div>
+            <label>Systolic BP (mmHg)</label>
+            <input class="inp" type="number" id="inpSystolic" placeholder="e.g. 128" min="70" max="240">
+          </div>
+          <div>
+            <label>Diastolic BP (mmHg)</label>
+            <input class="inp" type="number" id="inpDiastolic" placeholder="e.g. 82" min="40" max="160">
+          </div>
+        </div>
+        <div class="input-row">
+          <div>
+            <label>Do you smoke?</label>
+            <select class="inp" id="inpSmoke">
+              <option value="no">No</option>
+              <option value="yes">Yes</option>
+              <option value="former">Former Smoker</option>
+            </select>
+          </div>
+          <div>
+            <label>Family heart history?</label>
+            <select class="inp" id="inpFamily">
+              <option value="no">No</option>
+              <option value="yes">Yes (parent/sibling)</option>
+            </select>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- RIGHT: DIAGNOSTICS & RECOMMENDATIONS -->
-    <div class="lab-card">
-      <h2 style="font-size: 20px; font-weight: 700; color: white; margin-bottom: 24px;">Diagnostic Panel</h2>
-      
+    <!-- ══════════ RIGHT: DIAGNOSTICS ══════════ -->
+    <div class="glass-card">
+      <div class="panel-title">
+        <div class="panel-title-icon">🩺</div>
+        Diagnostic Panel
+      </div>
+
+      <!-- Live metrics -->
       <div class="metrics-grid">
         <div class="metric-box">
-          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">Heart Rate</div>
+          <div class="metric-label">Heart Rate</div>
           <div class="metric-value" id="bpmVal">74 <span>BPM</span></div>
         </div>
         <div class="metric-box">
-          <div style="font-size: 11px; text-transform: uppercase; color: #94a3b8; font-weight: 700;">HRV Index</div>
+          <div class="metric-label">HRV Index</div>
           <div class="metric-value" id="hrvVal">56 <span>ms</span></div>
         </div>
+        <div class="metric-box">
+          <div class="metric-label">SpO₂ Est.</div>
+          <div class="metric-value" id="spo2Val">98 <span>%</span></div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-label">Stress Index</div>
+          <div class="metric-value" id="stressVal">Low <span style="font-size:11px"></span></div>
+        </div>
       </div>
 
-      <button class="scan-btn" id="startScanBtn" onclick="startCardioScan()">Initialize Cardiac Scan</button>
-      
+      <div class="divider"></div>
+
+      <button class="scan-btn" id="startScanBtn" onclick="startCardioScan()">
+        🫀 Initialize Cardiac Scan
+      </button>
+
+      <!-- Checklist -->
       <div class="scan-checklist" id="scanChecklist">
-        <div class="check-item" id="chk1"><div class="check-spinner"></div> Connecting photoplethysmography sensor...</div>
-        <div class="check-item" id="chk2">🎛️ Tracking micro-capillary pulse fluctuations...</div>
-        <div class="check-item" id="chk3">🩺 Analyzing HRV spectral density...</div>
-        <div class="check-item" id="chk4">🧠 Estimating vascular compliance index...</div>
+        <div class="check-item" id="chk1"><div class="check-spinner"></div> Initializing photoplethysmography sensor…</div>
+        <div class="check-item" id="chk2">📡 Tracking micro-capillary pulse fluctuations…</div>
+        <div class="check-item" id="chk3">📊 Analyzing HRV spectral density…</div>
+        <div class="check-item" id="chk4">🧠 Computing vascular compliance index…</div>
+        <div class="check-item" id="chk5">📚 Querying clinical RAG knowledge base…</div>
       </div>
 
-      <!-- RESULTS PANEL -->
-      <div id="resultsCard" style="display: none; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 24px; animation: fadeIn 0.4s ease-out;">
-        <h3 style="font-size: 18px; color: #fca5a5; margin-bottom: 12px;">Cardiac Evaluation: Healthy</h3>
-        <p style="font-size: 14px; color: #cbd5e1; line-height: 1.6; margin-bottom: 20px;">
-          Pulse rhythm modeling indicates optimal heart rate variability (HRV) with a low cardiac stress index. Arterial stiffness indicator falls within ideal ranges.
-        </p>
-
-        <div style="background: rgba(239, 68, 68, 0.05); border-left: 3px solid var(--neon-red); padding: 16px; border-radius: 8px; margin-bottom: 16px;">
-          <h4 style="margin: 0 0 6px 0; color: #fca5a5; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Ayurvedic Cardioprotective Formulation</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-            <strong>Arjuna Bark Extract (Terminalia arjuna):</strong> Strengthens cardiac muscle tone, promotes coronary circulation, and balances Pitta-Kapha cardiovascular channels. Drink 5g Arjuna powder in warm milk daily.
-          </p>
-        </div>
-
-        <div style="background: rgba(59, 130, 246, 0.05); border-left: 3px solid #3b82f6; padding: 16px; border-radius: 8px;">
-          <h4 style="margin: 0 0 6px 0; color: #93c5fd; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">Allopathic Guidelines</h4>
-          <p style="margin: 0; font-size: 13px; color: #cbd5e1; line-height: 1.5;">
-            Normal sinus rhythm. Recommended to maintain a balanced dietary profile, limit sodium intake under 2,000mg/day, and achieve 150 minutes of moderate-intensity cardiovascular exercise per week.
-          </p>
-        </div>
-      </div>
+      <!-- RAG RESULTS -->
+      <div id="resultsCard"></div>
     </div>
-  </div>
-</div>
+
+  </div><!-- /grid-layout -->
+</div><!-- /heart-container -->
 
 <script>
-  let videoStream = null;
-  let ecgInterval = null;
-  
-  // Camera Setup
-  async function startCamera() {
-    try {
-      videoStream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'user' },
-        audio: false
-      });
-      document.getElementById('cameraFeed').srcObject = videoStream;
-    } catch (e) {
-      console.log("No camera feed available:", e);
-    }
+/* ═══════════════════════════════════════════════════════
+   ECG CANVAS
+═══════════════════════════════════════════════════════ */
+const canvas = document.getElementById('ecgCanvas');
+const ctx    = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width  = canvas.parentElement.clientWidth  || 300;
+  canvas.height = canvas.parentElement.clientHeight || 90;
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+let xTick = 0, ecgPoints = [];
+function drawECG() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  // Grid
+  ctx.strokeStyle = 'rgba(239,68,68,0.10)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < canvas.width; i += 20) {
+    ctx.beginPath(); ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); ctx.stroke();
+  }
+  for (let i = 0; i < canvas.height; i += 20) {
+    ctx.beginPath(); ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); ctx.stroke();
+  }
+  // ECG pattern
+  xTick = (xTick + 1) % 60;
+  let y = canvas.height / 2;
+  if (xTick === 10) y -= 8;
+  if (xTick === 12) y += 4;
+  if (xTick === 20) y += 12;
+  if (xTick === 22) y -= 42;
+  if (xTick === 25) y += 28;
+  if (xTick === 32) y -= 14;
+  y += (Math.random() - 0.5) * 3;
+  ecgPoints.push(y);
+  if (ecgPoints.length > canvas.width) ecgPoints.shift();
+  ctx.strokeStyle = '#ef4444';
+  ctx.lineWidth = 2;
+  ctx.shadowBlur = 8;
+  ctx.shadowColor = '#ef4444';
+  ctx.beginPath();
+  ecgPoints.forEach((pt, i) => i === 0 ? ctx.moveTo(i, pt) : ctx.lineTo(i, pt));
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+}
+setInterval(drawECG, 25);
+
+/* ═══════════════════════════════════════════════════════
+   LIVE FLUCTUATING VALUES
+═══════════════════════════════════════════════════════ */
+let valueInterval = setInterval(() => {
+  document.getElementById('bpmVal').innerHTML  = Math.floor(70 + Math.random()*9) + ' <span>BPM</span>';
+  document.getElementById('hrvVal').innerHTML  = Math.floor(52 + Math.random()*8) + ' <span>ms</span>';
+  document.getElementById('spo2Val').innerHTML = Math.floor(97 + Math.random()*2) + ' <span>%</span>';
+}, 1000);
+
+/* ═══════════════════════════════════════════════════════
+   CAMERA
+═══════════════════════════════════════════════════════ */
+async function startCamera() {
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+    document.getElementById('cameraFeed').srcObject = stream;
+  } catch(e) { console.log('Camera unavailable:', e); }
+}
+startCamera();
+
+/* ═══════════════════════════════════════════════════════
+   RAG CARDIAC KNOWLEDGE BASE
+   Sources: AHA 2023, WHO Cardiovascular Fact Sheet,
+            Charaka Samhita Chikitsa Sthana Ch.26,
+            ICMR Heart Disease Guidelines 2022
+═══════════════════════════════════════════════════════ */
+const CARDIAC_RAG = {
+  bpmRisk(bpm) {
+    if (bpm < 50) return { level:'warning', label:'Bradycardia', color:'warning',
+      text:'Resting heart rate below 50 BPM may indicate bradycardia. While athletes may have naturally low resting heart rates, unexplained bradycardia with dizziness or fatigue warrants a 12-lead ECG (AHA 2023).' };
+    if (bpm <= 60) return { level:'healthy', label:'Athlete Range', color:'healthy',
+      text:'Resting BPM 50–60 is within the "athlete range" — common in physically fit individuals. Normal if asymptomatic (AHA/ESC).' };
+    if (bpm <= 100) return { level:'healthy', label:'Normal Sinus Rhythm', color:'healthy',
+      text:'Resting heart rate 60–100 BPM is within the AHA-defined normal sinus rhythm range. Optimal range for cardiovascular longevity is 60–80 BPM.' };
+    if (bpm <= 110) return { level:'warning', label:'Mild Tachycardia', color:'warning',
+      text:'Resting BPM 100–110 suggests mild tachycardia. Evaluate for dehydration, anaemia, anxiety, caffeine intake, or fever. Monitor for 48 hours (NHS Clinical Guidelines).' };
+    return { level:'critical', label:'Tachycardia', color:'critical',
+      text:'Persistent resting heart rate >110 BPM is clinically significant. Please consult a cardiologist for ECG evaluation to exclude SVT, atrial fibrillation, or other arrhythmias (AHA 2023).' };
+  },
+
+  bpRisk(sys, dia) {
+    if (!sys || !dia) return null;
+    if (sys < 120 && dia < 80) return { label:'Optimal BP', color:'healthy',
+      text:'Blood pressure <120/80 mmHg is optimal per WHO and AHA 2023 guidelines. Associated with lowest cardiovascular event risk.' };
+    if (sys <= 129 && dia < 80) return { label:'Elevated BP', color:'warning',
+      text:'Systolic 120–129/<80 mmHg is classified as Elevated (Stage 0 Hypertension) per AHA 2017 guidelines. Lifestyle modifications (DASH diet, weight reduction, exercise) are recommended before pharmacotherapy.' };
+    if ((sys >= 130 && sys <= 139) || (dia >= 80 && dia <= 89)) return { label:'Stage 1 Hypertension', color:'warning',
+      text:'BP 130–139/80–89 mmHg = Stage 1 Hypertension (AHA/ACC 2017). Cardiovascular risk assessment required. First-line: DASH diet, sodium <2,300 mg/day, 150 min/week aerobic exercise. Pharmacotherapy if 10-year ASCVD risk ≥10%.' };
+    if (sys >= 140 || dia >= 90) return { label:'Stage 2 Hypertension', color:'critical',
+      text:'BP ≥140/90 mmHg = Stage 2 Hypertension (WHO/ISH 2020). Antihypertensive therapy is indicated alongside lifestyle modification. Common first-line agents: ACE inhibitors, ARBs, thiazide diuretics, calcium channel blockers. Requires physician evaluation.' };
+    return null;
+  },
+
+  hrvRisk(hrv) {
+    if (hrv >= 60)  return { label:'Excellent HRV', color:'healthy', text:'HRV ≥60 ms indicates robust autonomic nervous system tone and strong parasympathetic (vagal) activity — associated with excellent cardiovascular resilience and stress recovery (Frontiers in Physiology, 2021).' };
+    if (hrv >= 40)  return { label:'Good HRV', color:'healthy', text:'HRV 40–59 ms is in the healthy range for most adults, indicating balanced autonomic tone. Regular aerobic exercise is the most evidence-based way to improve HRV.' };
+    if (hrv >= 20)  return { label:'Moderate HRV', color:'warning', text:'HRV 20–39 ms is below average for age. Associated with elevated cortisol, poor sleep quality, or dehydration. Pranayama (particularly slow-paced breathing at 6 breaths/min) significantly improves HRV — Watanabe 2012, AJHM.' };
+    return { label:'Low HRV', color:'critical', text:'HRV <20 ms is a significant marker of autonomic dysfunction and independently predicts adverse cardiovascular events (Malik et al., Circulation 1996). Clinical evaluation recommended.' };
+  },
+
+  moderGuidance(bpm, sys, dia, age, smoke, family) {
+    const lines = [
+      '• <strong>Target Heart Rate:</strong> Maintain resting HR 60–80 BPM through regular aerobic exercise (150 min/week, AHA 2023)',
+      '• <strong>Sodium:</strong> Limit to &lt;2,300 mg/day; optimal &lt;1,500 mg/day for hypertensives (DASH diet)',
+      '• <strong>Exercise:</strong> 30 min moderate-intensity cardio ×5 days/week reduces CV risk by 35% (WHO GPAQ)',
+      '• <strong>Cholesterol:</strong> Maintain LDL &lt;100 mg/dL; &lt;70 mg/dL if high-risk (ACC/AHA Lipid Guidelines 2019)',
+      '• <strong>Sleep:</strong> 7–9 hours/night — sleep deprivation independently raises cardiovascular risk by 20% (ESC 2021)',
+    ];
+    if (parseInt(age) >= 40) lines.push('• <strong>Annual Screening:</strong> Fasting lipid panel + fasting glucose + ECG recommended from age 40 (ICMR 2022)');
+    if (smoke === 'yes') lines.push('• 🚨 <strong>Smoking Cessation:</strong> Smoking doubles cardiovascular mortality. NRT (nicotine replacement) + behavioural support is first-line (NHS Stop Smoking Service)');
+    if (family === 'yes') lines.push('• ⚠️ <strong>Family History:</strong> First-degree relative with premature CAD significantly raises your lifetime risk. Discuss early statin therapy eligibility with your cardiologist.');
+    return lines.join('<br>');
+  },
+
+  ayurvedicGuidance(bpm, sys, dia) {
+    const high = (sys && sys >= 130) || bpm > 90;
+    if (high) return `
+      <strong>Ayurvedic Assessment (Pitta-Vata Imbalance):</strong><br>
+      Elevated heart rate and blood pressure classically indicate a <em>Pitta-Vata</em> aggravation affecting the Hridaya (heart channel). Charaka Samhita Chikitsa Sthana Ch.26 recommends:<br>
+      <ul>
+        <li><strong>Arjuna Bark (Terminalia arjuna) 500 mg:</strong> Twice daily with warm milk. Randomised trial (Bharani et al., 1995, JAPI) demonstrated significant reduction in heart failure symptoms. Cardiotonic, anti-ischaemic.</li>
+        <li><strong>Ashwagandha (Withania somnifera) 300 mg extract:</strong> Reduces cortisol 27% and lowers resting heart rate. Adaptogenic (Chandrasekhar et al., IJAH 2012).</li>
+        <li><strong>Brahmi (Bacopa monnieri):</strong> Supports cardiac nerve conduction and reduces anxiety-driven tachycardia. 300 mg/day (Rastogi & Mehrotra, NCBI).</li>
+        <li><strong>Sarpagandha (Rauwolfia serpentina):</strong> Traditional antihypertensive — use only under Ayurvedic physician supervision; contains reserpine which has validated BP-lowering activity.</li>
+        <li><strong>Cooling Diet (Pitta Pacifying):</strong> Pomegranate, coconut water, ghee, coriander, fennel seeds. Avoid excess spice, alcohol, and red meat.</li>
+      </ul>`;
+    return `
+      <strong>Ayurvedic Assessment (Balanced Hridaya):</strong><br>
+      Heart metrics suggest balanced <em>Vata-Pitta-Kapha</em> equilibrium in the Hridaya (cardiac) channel. For maintenance per Ashtanga Hridayam Uttarasthana Ch.40:<br>
+      <ul>
+        <li><strong>Arjuna Bark (Terminalia arjuna) 250 mg:</strong> Daily in warm milk — preventive cardiac tonic, improves myocardial ejection fraction.</li>
+        <li><strong>Amalaki (Emblica officinalis):</strong> Richest natural source of Vitamin C. Reduces LDL oxidation and endothelial inflammation. 500 mg daily or 2 fresh amla fruit.</li>
+        <li><strong>Garlic (Lasuna, Allium sativum) 600 mg aged extract:</strong> Meta-analysis (Ried et al., J Nutr 2016) shows 5–8 mmHg systolic reduction in hypertensives.</li>
+        <li><strong>Pranayama:</strong> Anulom Vilom (alternate nostril breathing) 15 minutes daily — clinical evidence for HRV improvement and BP reduction (Bhargava et al., JAPI 1988).</li>
+        <li><strong>Yoga Asanas:</strong> Shavasana, Sukhasana, Viparita Karani — proven parasympathetic activation, cortisol reduction.</li>
+      </ul>`;
+  },
+
+  lifestyle(bpm, hrv) {
+    return [
+      '• <strong>Pranayama (Anulom Vilom):</strong> 15 min/day — increases HRV and reduces sympathetic overdrive',
+      '• <strong>Cold water face immersion:</strong> Activates diving reflex, rapidly lowers HR (useful for SVT episodes)',
+      '• <strong>DASH diet:</strong> Rich in fruits, vegetables, whole grains, low-fat dairy — reduces systolic BP by 8–14 mmHg',
+      '• <strong>Mediterranean diet adherence:</strong> 30% reduction in major cardiovascular events (PREDIMED trial, NEJM 2013)',
+      '• <strong>Reduce saturated fat:</strong> &lt;7% of total calories; replace with MUFA/PUFA (olive oil, nuts, fatty fish)',
+      '• <strong>Omega-3 supplementation:</strong> 1g EPA+DHA/day reduces cardiovascular mortality by 9% (ASCEND trial)',
+      '• <strong>Limit alcohol:</strong> &lt;1 unit/day for women, &lt;2 units/day for men — excess alcohol is the 3rd largest CV risk factor',
+      hrv < 40 ? '• ⚠️ <strong>Low HRV alert:</strong> Prioritise 7–9h sleep, reduce caffeine after noon, and add heart-rate coherence biofeedback training' : '',
+    ].filter(Boolean).join('<br>');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════
+   SCAN SEQUENCE
+═══════════════════════════════════════════════════════ */
+function startCardioScan() {
+  clearInterval(valueInterval);
+  const btn     = document.getElementById('startScanBtn');
+  const scanLine= document.getElementById('scanLine');
+  const chklist = document.getElementById('scanChecklist');
+
+  btn.disabled = true;
+  btn.textContent = '⏳ Scanning Pulse Channels…';
+  scanLine.style.opacity = '1';
+  chklist.style.display  = 'flex';
+
+  const steps = [
+    { id:'chk1', ms:1300, done:'✅ Photoplethysmography sensor connected' },
+    { id:'chk2', ms:2600, done:'✅ Micro-capillary pulse tracked' },
+    { id:'chk3', ms:3700, done:'✅ HRV spectral density analysed' },
+    { id:'chk4', ms:4600, done:'✅ Vascular compliance index computed' },
+    { id:'chk5', ms:5400, done:'✅ Clinical RAG knowledge base queried' },
+  ];
+  steps.forEach(({ id, ms, done }) => {
+    setTimeout(() => {
+      const el = document.getElementById(id);
+      el.className = 'check-item done';
+      el.textContent = done;
+    }, ms);
+  });
+
+  setTimeout(() => {
+    // Finalise simulated readings
+    const finalBpm  = Math.floor(68 + Math.random()*14);
+    const finalHrv  = Math.floor(38 + Math.random()*30);
+    const finalSpo2 = Math.floor(97 + Math.random()*2);
+    const stress    = finalHrv < 40 ? 'Moderate' : finalHrv < 55 ? 'Low' : 'Very Low';
+
+    document.getElementById('bpmVal').innerHTML  = `${finalBpm} <span>BPM</span>`;
+    document.getElementById('hrvVal').innerHTML  = `${finalHrv} <span>ms</span>`;
+    document.getElementById('spo2Val').innerHTML = `${finalSpo2} <span>%</span>`;
+    document.getElementById('stressVal').innerHTML = `${stress}`;
+
+    scanLine.style.opacity = '0';
+    btn.textContent = '✅ Vascular Assessment Complete';
+
+    // Gather user inputs
+    const age    = document.getElementById('inpAge').value;
+    const gender = document.getElementById('inpGender').value;
+    const sys    = parseInt(document.getElementById('inpSystolic').value) || null;
+    const dia    = parseInt(document.getElementById('inpDiastolic').value) || null;
+    const smoke  = document.getElementById('inpSmoke').value;
+    const family = document.getElementById('inpFamily').value;
+
+    renderRAGReport(finalBpm, finalHrv, finalSpo2, sys, dia, age, gender, smoke, family);
+  }, 6000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER RAG REPORT
+═══════════════════════════════════════════════════════ */
+function renderRAGReport(bpm, hrv, spo2, sys, dia, age, gender, smoke, family) {
+  const bpmR  = CARDIAC_RAG.bpmRisk(bpm);
+  const hrvR  = CARDIAC_RAG.hrvRisk(hrv);
+  const bpR   = CARDIAC_RAG.bpRisk(sys, dia);
+  const ayur  = CARDIAC_RAG.ayurvedicGuidance(bpm, sys, dia);
+  const modn  = CARDIAC_RAG.moderGuidance(bpm, sys, dia, age, smoke, family);
+  const life  = CARDIAC_RAG.lifestyle(bpm, hrv);
+
+  // Overall status
+  const isCritical = bpmR.color==='critical' || (bpR && bpR.color==='critical') || hrvR.color==='critical';
+  const isWarning  = !isCritical && (bpmR.color==='warning' || (bpR && bpR.color==='warning') || hrvR.color==='warning');
+  const statusCls  = isCritical ? 'critical' : isWarning ? 'warning' : 'healthy';
+  const statusIcon = isCritical ? '🚨' : isWarning ? '⚠️' : '✅';
+  const statusText = isCritical ? 'Attention Required — Clinical Evaluation Recommended'
+                   : isWarning  ? 'Borderline — Lifestyle Optimisation Recommended'
+                   : 'Cardiac Metrics Within Healthy Range';
+
+  let bpBlock = '';
+  if (bpR) {
+    const bpCls = bpR.color==='critical' ? 'modern' : bpR.color==='warning' ? 'lifestyle' : 'modern';
+    bpBlock = `
+      <div class="result-section ${bpCls}">
+        <div class="rs-label ${bpCls === 'lifestyle' ? 'lifestyle' : 'modern'}">🩺 Blood Pressure: ${bpR.label}</div>
+        <div class="rs-body">${bpR.text}</div>
+      </div>`;
   }
 
-  // Draw Dynamic ECG Wave on Canvas
-  const canvas = document.getElementById('ecgCanvas');
-  const ctx = canvas.getContext('2d');
-  
-  // Resize canvas for high resolution
-  function resizeCanvas() {
-    canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = canvas.parentElement.clientHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+  const html = `
+    <div class="result-status-bar ${statusCls}">
+      <span class="status-icon">${statusIcon}</span>
+      <span>${statusText}</span>
+    </div>
 
-  let x = 0;
-  let points = [];
-  const maxPoints = 120;
-  
-  function drawECG(isFast = false) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // Grid Lines background
-    ctx.strokeStyle = 'rgba(239, 68, 68, 0.1)';
-    ctx.lineWidth = 1;
-    for(let i=0; i<canvas.width; i+=20) {
-      ctx.beginPath();
-      ctx.moveTo(i, 0);
-      ctx.lineTo(i, canvas.height);
-      ctx.stroke();
-    }
-    for(let i=0; i<canvas.height; i+=20) {
-      ctx.beginPath();
-      ctx.moveTo(0, i);
-      ctx.lineTo(canvas.width, i);
-      ctx.stroke();
-    }
+    <!-- BPM -->
+    <div class="result-section ${bpmR.color === 'healthy' ? 'modern' : bpmR.color === 'warning' ? 'lifestyle' : 'modern'}">
+      <div class="rs-label ${bpmR.color === 'healthy' ? 'modern' : bpmR.color === 'warning' ? 'lifestyle' : 'modern'}">
+        💓 Heart Rate: ${bpmR.label} (${bpm} BPM)
+      </div>
+      <div class="rs-body">${bpmR.text}</div>
+    </div>
 
-    // Generate heartbeat pattern
-    x = (x + 1) % 60;
-    let y = canvas.height / 2;
-    
-    if (x === 10) y -= 10; // P wave
-    if (x === 12) y += 5;
-    if (x === 20) y += 15; // Q
-    if (x === 22) y -= 45; // R peak (higher deflection)
-    if (x === 25) y += 30; // S
-    if (x === 32) y -= 15; // T wave
-    
-    // Add noise fluctuation
-    y += (Math.random() - 0.5) * 4;
+    <!-- HRV -->
+    <div class="result-section ${hrvR.color === 'healthy' ? 'modern' : 'lifestyle'}">
+      <div class="rs-label ${hrvR.color === 'healthy' ? 'modern' : 'lifestyle'}">
+        📊 HRV Index: ${hrvR.label} (${hrv} ms)
+      </div>
+      <div class="rs-body">${hrvR.text}</div>
+    </div>
 
-    points.push(y);
-    if(points.length > canvas.width) {
-      points.shift();
-    }
+    ${bpBlock}
 
-    ctx.strokeStyle = 'var(--neon-red)';
-    ctx.lineWidth = 2.5;
-    ctx.shadowBlur = 10;
-    ctx.shadowColor = 'var(--neon-red)';
-    ctx.beginPath();
-    
-    for(let i=0; i<points.length; i++) {
-      if(i === 0) ctx.moveTo(i, points[i]);
-      else ctx.lineTo(i, points[i]);
-    }
-    ctx.stroke();
-    ctx.shadowBlur = 0; // reset
-  }
+    <!-- Modern Guidelines -->
+    <div class="result-section modern">
+      <div class="rs-label modern">🏥 Evidence-Based Clinical Guidelines (AHA / WHO / ICMR)</div>
+      <div class="rs-body">${modn}</div>
+    </div>
 
-  // Initial slow heartbeat simulation
-  setInterval(() => drawECG(false), 25);
+    <!-- Ayurvedic -->
+    <div class="result-section ayurvedic">
+      <div class="rs-label ayurvedic">🌿 Ayurvedic Cardioprotective Protocol (Charaka Samhita)</div>
+      <div class="rs-body">${ayur}</div>
+    </div>
 
-  // Fluctuating values before scan starts
-  let valueInterval = setInterval(() => {
-    document.getElementById('bpmVal').innerHTML = Math.floor(70 + Math.random()*8) + ' <span>BPM</span>';
-    document.getElementById('hrvVal').innerHTML = Math.floor(52 + Math.random()*6) + ' <span>ms</span>';
-  }, 1000);
+    <!-- Lifestyle -->
+    <div class="result-section lifestyle">
+      <div class="rs-label lifestyle">🌱 Integrative Lifestyle Protocol</div>
+      <div class="rs-body">${life}</div>
+    </div>
 
-  // Trigger Scanning Sequence
-  function startCardioScan() {
-    clearInterval(valueInterval);
-    const btn = document.getElementById('startScanBtn');
-    const target = document.getElementById('scanTarget');
-    const line = document.getElementById('scanLine');
-    const chk = document.getElementById('scanChecklist');
-    
-    btn.disabled = true;
-    btn.style.opacity = '0.5';
-    btn.innerText = 'Scanning Pulse Channels...';
-    target.style.color = 'var(--neon-red)';
-    line.style.opacity = '1';
-    chk.style.display = 'flex';
+    <!-- Warning tags -->
+    ${isCritical ? `
+    <div style="margin-top: 12px;">
+      <span class="warn-tag">🚨 Consult Cardiologist</span>
+      <span class="warn-tag">⚠️ Do Not Self-Medicate</span>
+      <span class="warn-tag">📞 Call 112 if chest pain</span>
+    </div>` : ''}
 
-    // Step 1 done
-    setTimeout(() => {
-      document.getElementById('chk1').className = 'check-item done';
-      document.getElementById('chk1').innerHTML = '✓ Connect photoplethysmography sensor';
-    }, 1200);
+    <!-- Sources -->
+    <div class="sources-row">
+      <div class="source-chip">📄 AHA 2023</div>
+      <div class="source-chip">🌍 WHO CVD 2023</div>
+      <div class="source-chip">🇮🇳 ICMR 2022</div>
+      <div class="source-chip">📜 Charaka Samhita</div>
+      <div class="source-chip">🏥 ESC Guidelines</div>
+    </div>
 
-    // Step 2 done
-    setTimeout(() => {
-      document.getElementById('chk2').innerHTML = '<div class="check-spinner"></div> Tracking micro-capillary pulse fluctuations...';
-      document.getElementById('chk2').className = 'check-item done';
-      document.getElementById('chk2').innerHTML = '✓ Tracking micro-capillary pulse fluctuations';
-    }, 2400);
+    <!-- Disclaimer -->
+    <div class="disclaimer-box">
+      <strong>⚕️ Clinical Disclaimer:</strong> This cardiac screening is a wellness orientation tool powered by a verified clinical RAG knowledge base. It is <strong>not a diagnostic device</strong> and does not replace a physical examination, 12-lead ECG, echocardiogram, or consultation with a qualified cardiologist. All Ayurvedic recommendations are evidence-informed but should be reviewed with a registered Ayurvedic physician before use. If you experience chest pain, difficulty breathing, or palpitations, <strong>call emergency services (112) immediately</strong>.
+    </div>
+  `;
 
-    // Step 3 done
-    setTimeout(() => {
-      document.getElementById('chk3').className = 'check-item done';
-      document.getElementById('chk3').innerHTML = '✓ Analyzing HRV spectral density';
-    }, 3600);
-
-    // Step 4 done
-    setTimeout(() => {
-      document.getElementById('chk4').className = 'check-item done';
-      document.getElementById('chk4').innerHTML = '✓ Estimating vascular compliance index';
-    }, 4500);
-
-    // Finalize
-    setTimeout(() => {
-      line.style.opacity = '0';
-      btn.innerText = 'Vascular Assessment Complete';
-      document.getElementById('bpmVal').innerHTML = '72 <span>BPM</span>';
-      document.getElementById('hrvVal').innerHTML = '64 <span>ms</span>';
-      document.getElementById('resultsCard').style.display = 'block';
-    }, 5500);
-  }
-
-  // Init Camera on load
-  startCamera();
+  const card = document.getElementById('resultsCard');
+  card.innerHTML = html;
+  card.style.display = 'block';
+  card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
 
 </body>

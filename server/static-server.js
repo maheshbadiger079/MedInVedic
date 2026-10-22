@@ -21,7 +21,10 @@ const MIME_TYPES = {
 
 const server = http.createServer((req, res) => {
   let reqPath = decodeURI(req.url.split('?')[0]);
-  if (reqPath === '/' || reqPath === '') reqPath = '/landing.html';
+  if (reqPath === '/' || reqPath === '' || reqPath === '/landing' || reqPath === '/pages/landing') reqPath = '/landing.html';
+  if (reqPath === '/founder' || reqPath === '/founders-journey' || reqPath === '/pages/founder') reqPath = '/pages/founder.html';
+  if (reqPath === '/healthcare' || reqPath === '/pages/healthcare') reqPath = '/pages/healthcare.html';
+  if (reqPath === '/workspace' || reqPath === '/pages/workspace') reqPath = '/pages/workspace.html';
   
   const filePath = path.join(PUBLIC_DIR, reqPath);
   

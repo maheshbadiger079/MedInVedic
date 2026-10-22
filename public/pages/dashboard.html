@@ -38,12 +38,12 @@
   <script src="../js/api.js"></script>
 
   <style>
-    /* â”€â”€ DESIGN SYSTEM: WHITE HEALTHCARE SAAS â”€â”€ */
+    /* ── DESIGN SYSTEM: WHITE HEALTHCARE SAAS ── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      --bg: #f8fafc;
+      --bg: #f0fdf4;
       --surface: #ffffff;
-      --border: #e2e8f0;
+      --border: #bbf7d0;
       --border-subtle: #f1f5f9;
       --text: #0f172a;
       --text-muted: #64748b;
@@ -80,7 +80,7 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* â”€â”€ HEADER â”€â”€ */
+    /* ── HEADER ── */
     .top-header {
       background: var(--surface);
       border-bottom: 1px solid var(--border);
@@ -268,14 +268,14 @@
       color: var(--text);
     }
 
-    /* â”€â”€ LAYOUT â”€â”€ */
+    /* ── LAYOUT ── */
     .dashboard-layout {
       display: flex;
       flex: 1;
       min-height: calc(100vh - 64px);
     }
 
-    /* â”€â”€ SIDEBAR â”€â”€ */
+    /* ── SIDEBAR ── */
     .dashboard-sidebar {
       width: var(--sidebar-width);
       background: var(--surface);
@@ -360,7 +360,7 @@
       font-weight: 700;
     }
 
-    /* â”€â”€ MAIN CONTENT â”€â”€ */
+    /* ── MAIN CONTENT ── */
     .dashboard-main {
       flex: 1;
       padding: 28px 36px;
@@ -384,7 +384,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* â”€â”€ WHITE PROFILE CARD â”€â”€ */
+    /* ── WHITE PROFILE CARD ── */
     .profile-hero-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -478,10 +478,11 @@
       height: 100%;
       background: var(--primary);
       border-radius: 99px;
-      width: 82%;
+      width: 0%;
+      transition: width 0.4s ease;
     }
 
-    /* â”€â”€ SUMMARY CARDS GRID â”€â”€ */
+    /* ── SUMMARY CARDS GRID ── */
     .summary-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -555,7 +556,7 @@
       justify-content: space-between;
     }
 
-    /* â”€â”€ SECTION HEADER â”€â”€ */
+    /* ── SECTION HEADER ── */
     .section-header {
       display: flex;
       justify-content: space-between;
@@ -572,7 +573,7 @@
       gap: 8px;
     }
 
-    /* â”€â”€ AI HEALTH ASSISTANT CARD â”€â”€ */
+    /* ── AI HEALTH ASSISTANT CARD ── */
     .ai-assistant-card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -698,7 +699,7 @@
       color: var(--primary);
     }
 
-    /* â”€â”€ AI RESPONSE VIEWER â”€â”€ */
+    /* ── AI RESPONSE VIEWER ── */
     #aiResponseBox {
       display: none;
       margin-top: 20px;
@@ -779,7 +780,7 @@
       color: var(--text);
     }
 
-    /* â”€â”€ CONTENT GRID (2 COLUMNS) â”€â”€ */
+    /* ── CONTENT GRID (2 COLUMNS) ── */
     .dashboard-two-col {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -795,7 +796,7 @@
       box-shadow: var(--shadow-sm);
     }
 
-    /* â”€â”€ MEDICINES LIST â”€â”€ */
+    /* ── MEDICINES LIST ── */
     .med-item {
       display: flex;
       align-items: center;
@@ -860,7 +861,7 @@
       color: var(--primary);
     }
 
-    /* â”€â”€ APPOINTMENT CARD â”€â”€ */
+    /* ── APPOINTMENT CARD ── */
     .appt-item {
       display: flex;
       gap: 14px;
@@ -915,7 +916,7 @@
       margin-top: 4px;
     }
 
-    /* â”€â”€ TIMELINE â”€â”€ */
+    /* ── TIMELINE ── */
     .activity-timeline {
       display: flex;
       flex-direction: column;
@@ -948,7 +949,7 @@
       margin-top: 2px;
     }
 
-    /* â”€â”€ BUTTONS â”€â”€ */
+    /* ── BUTTONS ── */
     .btn {
       display: inline-flex;
       align-items: center;
@@ -968,7 +969,7 @@
     .btn-outline:hover { background: var(--bg); border-color: #cbd5e1; }
     .btn-sm { padding: 5px 10px; font-size: 12px; }
 
-    /* â”€â”€ MOBILE BOTTOM BAR â”€â”€ */
+    /* ── MOBILE BOTTOM BAR ── */
     .mobile-bottom-nav {
       display: none;
       position: fixed;
@@ -1005,7 +1006,7 @@
       font-size: 18px;
     }
 
-    /* â”€â”€ RESPONSIVE â”€â”€ */
+    /* ── RESPONSIVE ── */
     @media (max-width: 1024px) {
       .summary-grid { grid-template-columns: repeat(2, 1fr); }
       .dashboard-two-col { grid-template-columns: 1fr; }
@@ -1048,7 +1049,7 @@
 
 <body>
 
-  <!-- â”€â”€ 1. GLOBAL HEADER â”€â”€ -->
+  <!-- ── 1. GLOBAL HEADER ── -->
   <header class="top-header">
     <div class="header-left">
       <a class="brand-logo" href="../index.html">
@@ -1085,6 +1086,7 @@
         <span class="badge-dot"></span>
       </button>
 
+
       <!-- User Profile Dropdown / Admin Link -->
       <div class="header-user-btn" onclick="toggleProfileDropdown()">
         <div class="user-avatar" id="headerAvatar">M</div>
@@ -1093,14 +1095,15 @@
     </div>
   </header>
 
-  <!-- â”€â”€ 2. DASHBOARD BODY â”€â”€ -->
+  <!-- ── 2. DASHBOARD BODY ── -->
   <div class="dashboard-layout">
     
-    <!-- â”€â”€ LEFT SIDEBAR NAVIGATION â”€â”€ -->
+    <!-- ── LEFT SIDEBAR NAVIGATION ── -->
     <aside class="dashboard-sidebar">
       <div>
         <div class="nav-section-title">AI &amp; Learning</div>
         <ul class="sidebar-nav-list">
+          <li><a href="workspace.html" class="nav-item-btn" style="text-decoration:none; color:#103f36; font-weight:800; background:#e6f4ea;"><span class="nav-icon">🏥</span> Patient Workspace <span class="nav-badge" style="background:#166534; color:#fff;">LIVE</span></a></li>
           <li><a href="vedicmind.html" class="nav-item-btn" style="text-decoration:none; color:var(--primary); font-weight:800;"><span class="nav-icon">🧠</span> VedicMind AI <span class="nav-badge" style="background:var(--primary-light); color:#fff;">NEW</span></a></li>
           <li><a href="ai-assistant.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">🤖</span> RAG Health AI</a></li>
           <li><a href="prescription-decoder.html" class="nav-item-btn" style="text-decoration:none;"><span class="nav-icon">📄</span> Lipi Vaidya (Rx Decoder)</a></li>
@@ -1150,25 +1153,25 @@
       </div>
     </aside>
 
-    <!-- â”€â”€ 3. MAIN DASHBOARD CONTENT PANELS â”€â”€ -->
+    <!-- ── 3. MAIN DASHBOARD CONTENT PANELS ── -->
     <main class="dashboard-main">
       
-      <!-- â”€â”€ TAB: PRIMARY DASHBOARD â”€â”€ -->
+      <!-- ── TAB: PRIMARY DASHBOARD ── -->
       <section class="tab-panel active" id="panel_dashboard">
         
         <!-- White User Profile Card -->
         <div class="profile-hero-card">
           <div class="profile-info-block">
-            <div class="profile-hero-avatar" id="heroAvatar">M</div>
+            <div class="profile-hero-avatar" id="heroAvatar">U</div>
             <div>
-              <div class="greeting-title" id="heroGreeting">Good Morning, Mahesh</div>
+              <div class="greeting-title" id="heroGreeting">Welcome to MedInVedic</div>
               <div class="profile-meta-row">
-                <span>Age: <strong>26</strong></span>
+                <span>Age: <strong id="heroAgeVal">--</strong></span>
                 <span>•</span>
-                <span>Language: <strong>English / ಕನ್ನಡ</strong></span>
+                <span>Language: <strong id="heroLangVal">English</strong></span>
                 <span>•</span>
-                <span class="meta-tag tag-green">🌿 Vata-Pitta Prakriti</span>
-                <span class="meta-tag tag-purple" id="roleBadgeDisplay">Super Admin</span>
+                <span class="meta-tag tag-green" id="heroPrakritiBadge">🌿 Prakriti: Not Assessed</span>
+                <span class="meta-tag tag-purple" id="roleBadgeDisplay">Member</span>
               </div>
             </div>
           </div>
@@ -1176,12 +1179,12 @@
           <div class="profile-progress-block">
             <div class="progress-label-row">
               <span style="color:var(--text-muted);">Health Profile Status</span>
-              <span style="color:var(--primary);">82% Complete</span>
+              <span style="color:var(--primary); font-weight:700;" id="profileStatusPercent">0% Complete</span>
             </div>
             <div class="progress-track">
-              <div class="progress-fill"></div>
+              <div class="progress-fill" id="profileProgressFill" style="width: 0%;"></div>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="switchTab('profile', document.querySelectorAll('.nav-item-btn')[2])">Complete Health Profile →</button>
+            <button class="btn btn-outline btn-sm" id="btnProfileComplete" onclick="switchTab('profile', document.querySelectorAll('.nav-item-btn')[2])">Complete Health Profile →</button>
           </div>
         </div>
 
@@ -1193,8 +1196,8 @@
               <span class="card-stat-label">Health Activity</span>
               <div class="card-icon-wrap icon-green">🎯</div>
             </div>
-            <div class="card-stat-val">3 / 4</div>
-            <div class="card-subtext"><span>Daily goals completed</span><span>View →</span></div>
+            <div class="card-stat-val" id="statGoalsVal">0 / 4</div>
+            <div class="card-subtext"><span id="statGoalsSub">Daily goals completed</span><span>View →</span></div>
           </div>
 
           <!-- Card 2: Medicines -->
@@ -1203,8 +1206,8 @@
               <span class="card-stat-label">My Medicines</span>
               <div class="card-icon-wrap icon-blue">💊</div>
             </div>
-            <div class="card-stat-val">3 Active</div>
-            <div class="card-subtext"><span>1 taken · 2 pending today</span><span>Schedule →</span></div>
+            <div class="card-stat-val" id="statMedsVal">0 Active</div>
+            <div class="card-subtext"><span id="statMedsSub">No active medicines</span><span>Schedule →</span></div>
           </div>
 
           <!-- Card 3: Appointments -->
@@ -1213,8 +1216,8 @@
               <span class="card-stat-label">Next Consult</span>
               <div class="card-icon-wrap icon-purple">🩺</div>
             </div>
-            <div class="card-stat-val" style="font-size:18px; margin-top:4px;">Tomorrow</div>
-            <div class="card-subtext"><span>Dr. Shailesh Phalle · 10:30 AM</span><span>Join →</span></div>
+            <div class="card-stat-val" id="statConsultVal" style="font-size:18px; margin-top:4px;">None</div>
+            <div class="card-subtext"><span id="statConsultSub">No upcoming consult</span><span id="statConsultAction">Book →</span></div>
           </div>
 
           <!-- Card 4: Health Records -->
@@ -1223,8 +1226,8 @@
               <span class="card-stat-label">Records &amp; Reports</span>
               <div class="card-icon-wrap icon-amber">📄</div>
             </div>
-            <div class="card-stat-val">5 Files</div>
-            <div class="card-subtext"><span>Prescriptions &amp; Lab PDFs</span><span>Upload →</span></div>
+            <div class="card-stat-val" id="statRecordsVal">0 Files</div>
+            <div class="card-subtext"><span id="statRecordsSub">Prescriptions &amp; Lab PDFs</span><span>Upload →</span></div>
           </div>
         </div>
 
@@ -1320,37 +1323,8 @@
               <button class="btn btn-outline btn-sm" onclick="switchTab('medicines', document.querySelectorAll('.nav-item-btn')[3])">Manage</button>
             </div>
             
-            <div class="med-item">
-              <div class="med-info-left">
-                <div class="med-emoji-box">💊</div>
-                <div>
-                  <div class="med-name">Metformin 500mg</div>
-                  <div class="med-sub">1 Tablet · Morning after breakfast (8:00 AM)</div>
-                </div>
-              </div>
-              <button class="btn-check-dose taken" onclick="toggleDose(this)">✓ Taken</button>
-            </div>
-
-            <div class="med-item">
-              <div class="med-info-left">
-                <div class="med-emoji-box">🌿</div>
-                <div>
-                  <div class="med-name">Ashwagandha KSM-66</div>
-                  <div class="med-sub">1 Capsule · Night with warm water (10:00 PM)</div>
-                </div>
-              </div>
-              <button class="btn-check-dose" onclick="toggleDose(this)">Take</button>
-            </div>
-
-            <div class="med-item">
-              <div class="med-info-left">
-                <div class="med-emoji-box">🌞</div>
-                <div>
-                  <div class="med-name">Vitamin D3 60K IU</div>
-                  <div class="med-sub">Weekly dose · Sunday morning</div>
-                </div>
-              </div>
-              <button class="btn-check-dose" onclick="toggleDose(this)">Take</button>
+            <div id="todayMedsContainer">
+              <!-- Rendered dynamically -->
             </div>
           </div>
 
@@ -1361,27 +1335,13 @@
               <button class="btn btn-outline btn-sm" onclick="switchTab('appointments', document.querySelectorAll('.nav-item-btn')[4])">Book New</button>
             </div>
 
-            <div class="appt-item">
-              <div class="appt-date-badge">
-                <span>MAR</span>
-                <strong>28</strong>
-              </div>
-              <div class="appt-details">
-                <div class="appt-doc-name">Dr. Shailesh Phalle</div>
-                <div class="appt-spec">MD - Ayurvedic &amp; Panchakarma · Video Consult</div>
-                <div class="appt-time">â° Tomorrow at 10:30 AM (IST)</div>
-              </div>
-              <button class="btn btn-primary btn-sm" onclick="alert('Starting secure encrypted consultation session...')">Join</button>
+            <div id="upcomingApptContainer">
+              <!-- Rendered dynamically -->
             </div>
 
             <!-- Health Records Quick Access -->
-            <div style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
-              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <span style="font-size:13px; font-weight:700; color:var(--text);">📄 Recent Lab Report</span>
-                <span class="meta-tag tag-blue">Verified</span>
-              </div>
-              <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">Comprehensive Blood Panel &amp; Lipid Profile (Deenanath Mangeshkar Hospital) — Extracted via OCR.</p>
-              <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%;" onclick="explainReport()">🔍 Explain My Report with AI →</button>
+            <div id="recentReportContainer" style="margin-top:16px; padding-top:14px; border-top:1px solid var(--border);">
+              <!-- Rendered dynamically -->
             </div>
           </div>
         </div>
@@ -1432,11 +1392,19 @@
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">FULL NAME</label>
-              <input type="text" id="profName" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="Your Name">
+              <input type="text" id="profName" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="Your Full Name">
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">EMAIL ADDRESS</label>
               <input type="email" id="profEmail" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="name@example.com" readonly>
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">AGE</label>
+              <input type="number" id="profAge" min="1" max="120" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="e.g. 26">
+            </div>
+            <div>
+              <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">PHONE NUMBER</label>
+              <input type="tel" id="profPhone" class="ai-input-field" style="width:100%; border:1px solid var(--border); border-radius:8px; padding:10px;" placeholder="e.g. +91 9876543210">
             </div>
             <div>
               <label style="font-size:12px; font-weight:700; color:var(--text-muted); display:block; margin-bottom:6px;">BLOOD GROUP</label>
@@ -1503,7 +1471,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: DOCTORS â”€â”€ -->
+      <!-- ── TAB: DOCTORS ── -->
       <section class="tab-panel" id="panel_doctors">
         <div class="section-header">
           <div>
@@ -1517,7 +1485,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: RECORDS â”€â”€ -->
+      <!-- ── TAB: RECORDS ── -->
       <section class="tab-panel" id="panel_records">
         <div class="section-header">
           <div>
@@ -1536,7 +1504,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: SYMPTOMS â”€â”€ -->
+      <!-- ── TAB: SYMPTOMS ── -->
       <section class="tab-panel" id="panel_symptoms">
         <div class="section-header">
           <div>
@@ -1557,7 +1525,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: REMEDIES â”€â”€ -->
+      <!-- ── TAB: REMEDIES ── -->
       <section class="tab-panel" id="panel_remedies">
         <div class="section-header">
           <div>
@@ -1571,7 +1539,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: GOALS â”€â”€ -->
+      <!-- ── TAB: GOALS ── -->
       <section class="tab-panel" id="panel_goals">
         <div class="section-header">
           <div>
@@ -1580,28 +1548,13 @@
           </div>
         </div>
         <div class="content-card" style="margin-top:16px;">
-          <div style="display:flex; flex-direction:column; gap:12px;">
-            <label style="display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;">
-              <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--primary);">
-              <span>Take prescribed morning medication on schedule (Metformin 500mg)</span>
-            </label>
-            <label style="display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;">
-              <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--primary);">
-              <span>Hydration Goal: 2.5 Liters of water throughout the day</span>
-            </label>
-            <label style="display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;">
-              <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--primary);">
-              <span>30-minute brisk walk or light Yoga Pranayama</span>
-            </label>
-            <label style="display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;">
-              <input type="checkbox" style="width:18px; height:18px; accent-color:var(--primary);">
-              <span>Night Rasayana: Ashwagandha KSM-66 before 10:00 PM</span>
-            </label>
+          <div style="display:flex; flex-direction:column; gap:12px;" id="dailyGoalsList">
+            <!-- Rendered dynamically -->
           </div>
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: SAVED â”€â”€ -->
+      <!-- ── TAB: SAVED ── -->
       <section class="tab-panel" id="panel_saved">
         <div class="section-header">
           <div>
@@ -1620,7 +1573,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: PRIVACY & SECURITY â”€â”€ -->
+      <!-- ── TAB: PRIVACY & SECURITY ── -->
       <section class="tab-panel" id="panel_privacy">
         <div class="section-header">
           <div>
@@ -1654,7 +1607,7 @@
         </div>
       </section>
 
-      <!-- â”€â”€ TAB: SETTINGS â”€â”€ -->
+      <!-- ── TAB: SETTINGS ── -->
       <section class="tab-panel" id="panel_settings">
         <div class="section-header">
           <div>
@@ -1683,7 +1636,7 @@
     </main>
   </div>
 
-  <!-- â”€â”€ 4. MOBILE BOTTOM NAVIGATION â”€â”€ -->
+  <!-- ── 4. MOBILE BOTTOM NAVIGATION ── -->
   <nav class="mobile-bottom-nav">
     <button class="bottom-nav-item active" onclick="switchTab('dashboard', this); setActiveBottom(this)">
       <span>📊</span>
@@ -1707,13 +1660,13 @@
     </a>
   </nav>
 
-  <!-- â”€â”€ 5. JAVASCRIPT CONTROLLER â”€â”€ -->
+  <!-- ── 5. JAVASCRIPT CONTROLLER ── -->
   <script>
     let currentAuthUser = null;
     let recognition = null;
     let isListening = false;
 
-    // â”€â”€ INITIALIZATION â”€â”€
+    // ── INITIALIZATION ──
     window.addEventListener('DOMContentLoaded', async () => {
       // 1. Auth Guard Integration
       currentAuthUser = window.AuthGuard ? AuthGuard.getAuthUser() : null;
@@ -1747,6 +1700,8 @@
       // Populate Health Profile Fields
       const profNameEl = document.getElementById('profName');
       const profEmailEl = document.getElementById('profEmail');
+      const profAgeEl = document.getElementById('profAge');
+      const profPhoneEl = document.getElementById('profPhone');
       const profBloodEl = document.getElementById('profBlood');
       const profPrakritiEl = document.getElementById('profPrakriti');
 
@@ -1755,9 +1710,14 @@
 
       try {
         const savedProfile = JSON.parse(localStorage.getItem('mv_user_profile') || '{}');
+        if (savedProfile.age && profAgeEl) profAgeEl.value = savedProfile.age;
+        if (savedProfile.phone && profPhoneEl) profPhoneEl.value = savedProfile.phone;
         if (savedProfile.blood && profBloodEl) profBloodEl.value = savedProfile.blood;
         if (savedProfile.prakriti && profPrakritiEl) profPrakritiEl.value = savedProfile.prakriti;
       } catch (e) {}
+
+      // Refresh real dynamic dashboard stats
+      refreshDashboardStats();
 
       // Load User Activity Timeline
       loadUserActivityTimeline();
@@ -1775,7 +1735,7 @@
       return 'Good Evening';
     }
 
-    // â”€â”€ TAB SWITCHING â”€â”€
+    // ── TAB SWITCHING ──
     function switchTab(tabId, btn) {
       document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
       document.querySelectorAll('.nav-item-btn').forEach(b => b.classList.remove('active'));
@@ -1791,7 +1751,7 @@
       btn.classList.add('active');
     }
 
-    // â”€â”€ RAG HEALTH ASSISTANT â”€â”€
+    // ── RAG HEALTH ASSISTANT ──
     async function askAiAssistant(inputId = 'dashAiInput') {
       const query = document.getElementById(inputId).value.trim();
       if (!query) return;
@@ -1835,8 +1795,8 @@
             <div class="source-item">• <strong>${r.title}</strong> — <em>${r.source}</em> (Relevance: ${(r.relevanceScore * 100).toFixed(0)}%)</div>
           `).join('');
         } else {
-          badgeEl.innerHTML = '<span class="response-evidence-badge" style="background:#f1f5f9; color:#475569;">â— General Health Information</span>';
-          contentEl.innerHTML = `For "${query}", please consult Dr. Priya Sharma or Dr. Shailesh Phalle on MedInVedic for personalized clinical advice.`;
+          badgeEl.innerHTML = '<span class="response-evidence-badge" style="background:#f1f5f9; color:#475569;">● General Health Information</span>';
+          contentEl.innerHTML = `For "${escapeHtml(query)}", please consult a verified specialist on MedInVedic for personalized clinical advice.`;
           sourcesEl.innerHTML = '<div class="source-item">• MedInVedic General Health Protocols</div>';
         }
 
@@ -1862,10 +1822,22 @@
     }
 
     function explainReport() {
-      alert('Report Explainer Activated: Analyzing Fasting Blood Glucose (108 mg/dL — Impaired Fasting Glycemia) and HbA1c (5.8%). Recommended: Low glycemic dietary changes and follow-up in 3 months.');
+      let records = [];
+      try {
+        const r1 = JSON.parse(localStorage.getItem('mv_user_prescriptions') || '[]');
+        const r2 = JSON.parse(localStorage.getItem('mv_lab_reports') || '[]');
+        records = [...r1, ...r2];
+      } catch (e) {}
+
+      if (!records.length) {
+        alert('Please upload a lab report first (in the Records tab) to use the AI Report Explainer.');
+        return;
+      }
+      const latest = records[0];
+      alert(`AI Report Explainer Activated for "${latest.name || 'Medical Record'}". Analyzing clinical parameters and reference ranges against ICMR clinical guidelines...`);
     }
 
-    // â”€â”€ SPEECH RECOGNITION (VOICE SEARCH) â”€â”€
+    // ── SPEECH RECOGNITION (VOICE SEARCH) ──
     function setupSpeechRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (SpeechRecognition) {
@@ -1920,7 +1892,7 @@
       }
     }
 
-    // â”€â”€ UI HELPERS â”€â”€
+    // ── UI HELPERS ──
     function toggleDose(btn) {
       btn.classList.toggle('taken');
       btn.textContent = btn.classList.contains('taken') ? '✓ Taken' : 'Take';
@@ -2001,29 +1973,430 @@
       } catch (e) {}
     }
 
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getActiveLanguageName() {
+      const selector = document.getElementById('langSelector');
+      if (selector && selector.selectedIndex >= 0) {
+        return selector.options[selector.selectedIndex].text.split('(')[0].trim();
+      }
+      return 'English';
+    }
+
+    // ─── DYNAMIC DASHBOARD REFRESH ───
+    function refreshDashboardStats() {
+      const profile = JSON.parse(localStorage.getItem('mv_user_profile') || '{}');
+      const name = (profile.name || (currentAuthUser && (currentAuthUser.displayName || currentAuthUser.name))) || 'User';
+      const email = (currentAuthUser && currentAuthUser.email) || profile.email || '';
+      const age = profile.age || (currentAuthUser && currentAuthUser.age) || '';
+      const phone = profile.phone || (currentAuthUser && currentAuthUser.phone) || '';
+      const blood = profile.blood || 'Not Specified';
+      const prakriti = profile.prakriti || 'Not Assessed';
+
+      // 1. Hero Card Updates
+      const heroAvatar = document.getElementById('heroAvatar');
+      const headerAvatar = document.getElementById('headerAvatar');
+      const headerUser = document.getElementById('headerUserName');
+      const heroGreeting = document.getElementById('heroGreeting');
+      const heroAgeVal = document.getElementById('heroAgeVal');
+      const heroLangVal = document.getElementById('heroLangVal');
+      const heroPrakritiBadge = document.getElementById('heroPrakritiBadge');
+      const profileStatusPercent = document.getElementById('profileStatusPercent');
+      const profileProgressFill = document.getElementById('profileProgressFill');
+      const btnProfileComplete = document.getElementById('btnProfileComplete');
+
+      if (heroAvatar) heroAvatar.textContent = (name[0] || 'U').toUpperCase();
+      if (headerAvatar) headerAvatar.textContent = (name[0] || 'U').toUpperCase();
+      if (headerUser) headerUser.textContent = name.split(' ')[0];
+      if (heroGreeting) heroGreeting.textContent = `${getGreetingTime()}, ${name}`;
+      if (heroAgeVal) heroAgeVal.textContent = age ? `${age} yrs` : 'Not set';
+      if (heroLangVal) heroLangVal.textContent = getActiveLanguageName();
+
+      if (heroPrakritiBadge) {
+        if (prakriti && prakriti !== 'Not Assessed') {
+          heroPrakritiBadge.textContent = `🌿 ${prakriti} Prakriti`;
+          heroPrakritiBadge.className = 'meta-tag tag-green';
+        } else {
+          heroPrakritiBadge.textContent = '🌿 Prakriti: Not Assessed';
+          heroPrakritiBadge.className = 'meta-tag tag-purple';
+        }
+      }
+
+      // Calculate Real Profile Completeness:
+      // Name (20%), Email (20%), Phone (20%), Age (20%), Blood (10%), Prakriti (10%)
+      let score = 0;
+      if (name && name !== 'User') score += 20;
+      if (email) score += 20;
+      if (phone) score += 20;
+      if (age) score += 20;
+      if (blood && blood !== 'Not Specified') score += 10;
+      if (prakriti && prakriti !== 'Not Assessed') score += 10;
+
+      if (profileStatusPercent) profileStatusPercent.textContent = `${score}% Complete`;
+      if (profileProgressFill) profileProgressFill.style.width = `${score}%`;
+      if (btnProfileComplete) {
+        btnProfileComplete.textContent = score === 100 ? 'Edit Health Profile →' : 'Complete Health Profile →';
+      }
+
+      // 2. Summary Card 1: Health Activity & Daily Goals
+      const dailyGoals = getDailyGoals();
+      const completedGoals = dailyGoals.filter(g => g.completed).length;
+      const statGoalsVal = document.getElementById('statGoalsVal');
+      const statGoalsSub = document.getElementById('statGoalsSub');
+      if (statGoalsVal) statGoalsVal.textContent = `${completedGoals} / ${dailyGoals.length}`;
+      if (statGoalsSub) {
+        statGoalsSub.textContent = completedGoals === 0 ? 'No goals completed today' : `${completedGoals} of ${dailyGoals.length} daily goals completed`;
+      }
+      renderDailyGoalsList(dailyGoals);
+
+      // 3. Summary Card 2 & Two-Col: Medicines
+      const meds = JSON.parse(localStorage.getItem('mv_medicine_reminders') || '[]');
+      const takenMeds = meds.filter(m => m.taken).length;
+      const pendingMeds = meds.length - takenMeds;
+      const statMedsVal = document.getElementById('statMedsVal');
+      const statMedsSub = document.getElementById('statMedsSub');
+      if (statMedsVal) statMedsVal.textContent = `${meds.length} Active`;
+      if (statMedsSub) {
+        statMedsSub.textContent = meds.length === 0 ? 'No active medicines' : `${takenMeds} taken · ${pendingMeds} pending today`;
+      }
+      renderTodayMedsList(meds);
+      renderUserMedsPanel(meds);
+
+      // 4. Summary Card 3 & Two-Col: Appointments
+      let appts = [];
+      try {
+        appts = JSON.parse(localStorage.getItem('mv_consultations') || localStorage.getItem('miv_consultations') || '[]');
+      } catch (e) {}
+      const statConsultVal = document.getElementById('statConsultVal');
+      const statConsultSub = document.getElementById('statConsultSub');
+      const statConsultAction = document.getElementById('statConsultAction');
+
+      if (appts && appts.length > 0) {
+        const nextAppt = appts[0];
+        if (statConsultVal) statConsultVal.textContent = nextAppt.date || 'Upcoming';
+        if (statConsultSub) statConsultSub.textContent = `${nextAppt.doctorName || 'Doctor'} · ${nextAppt.time || '10:30 AM'}`;
+        if (statConsultAction) statConsultAction.textContent = 'Join →';
+      } else {
+        if (statConsultVal) statConsultVal.textContent = 'None';
+        if (statConsultSub) statConsultSub.textContent = 'No upcoming consult';
+        if (statConsultAction) statConsultAction.textContent = 'Book →';
+      }
+      renderUpcomingAppointment(appts);
+      renderUserAppointmentsPanel(appts);
+
+      // 5. Summary Card 4 & Two-Col: Records & Reports
+      let records = [];
+      try {
+        const rec1 = JSON.parse(localStorage.getItem('mv_user_prescriptions') || '[]');
+        const rec2 = JSON.parse(localStorage.getItem('mv_lab_reports') || '[]');
+        records = [...rec1, ...rec2];
+      } catch (e) {}
+      const statRecordsVal = document.getElementById('statRecordsVal');
+      const statRecordsSub = document.getElementById('statRecordsSub');
+      if (statRecordsVal) statRecordsVal.textContent = `${records.length} File${records.length === 1 ? '' : 's'}`;
+      if (statRecordsSub) {
+        statRecordsSub.textContent = records.length === 0 ? 'No uploaded records' : 'Prescriptions & Lab PDFs';
+      }
+      renderRecentReport(records);
+    }
+
+    // ─── DAILY GOALS CONTROLLER ───
+    function getDailyGoals() {
+      const defaultGoals = [
+        { id: 'g1', text: 'Daily Hydration: 2.5 Liters of water throughout the day', completed: false },
+        { id: 'g2', text: '30-minute brisk walk, light Yoga Pranayama, or physical activity', completed: false },
+        { id: 'g3', text: 'Mindful Nutrition: Balanced meals with seasonal fruits & vegetables', completed: false },
+        { id: 'g4', text: 'Restful Sleep & Digital Detox (7-8 hours restful sleep before bedtime)', completed: false }
+      ];
+      try {
+        const stored = localStorage.getItem('mv_daily_goals');
+        if (stored) return JSON.parse(stored);
+      } catch (e) {}
+      return defaultGoals;
+    }
+
+    function toggleGoal(goalId) {
+      const goals = getDailyGoals();
+      const g = goals.find(x => x.id === goalId);
+      if (g) {
+        g.completed = !g.completed;
+        localStorage.setItem('mv_daily_goals', JSON.stringify(goals));
+        refreshDashboardStats();
+        addActivityLog(`${g.completed ? 'Completed' : 'Unchecked'} daily goal: ${g.text.split(':')[0]}`);
+      }
+    }
+
+    function renderDailyGoalsList(goals) {
+      const container = document.getElementById('dailyGoalsList');
+      if (!container) return;
+      container.innerHTML = goals.map(g => `
+        <label style="display:flex; align-items:center; gap:10px; font-size:14px; cursor:pointer;">
+          <input type="checkbox" ${g.completed ? 'checked' : ''} onchange="toggleGoal('${g.id}')" style="width:18px; height:18px; accent-color:var(--primary);">
+          <span style="${g.completed ? 'text-decoration:line-through; color:var(--text-muted);' : ''}">${escapeHtml(g.text)}</span>
+        </label>
+      `).join('');
+    }
+
+    // ─── MEDICINES CONTROLLERS ───
+    function renderTodayMedsList(meds) {
+      const container = document.getElementById('todayMedsContainer');
+      if (!container) return;
+      if (!meds || meds.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">💊</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Active Medicine Reminders</div>
+            <div style="font-size:12.5px; margin-top:4px; margin-bottom:14px;">Add medications to track daily schedules and dose alerts.</div>
+            <button class="btn btn-outline btn-sm" onclick="addNewMedicineReminder()">+ Add Medication</button>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = meds.map((m, index) => `
+        <div class="med-item">
+          <div class="med-info-left">
+            <div class="med-emoji-box">${m.type === 'herb' ? '🌿' : '💊'}</div>
+            <div>
+              <div class="med-name">${escapeHtml(m.name)}</div>
+              <div class="med-sub">${escapeHtml(m.dosage || '1 Dose')} · ${escapeHtml(m.schedule || 'Daily')}</div>
+            </div>
+          </div>
+          <button class="btn-check-dose ${m.taken ? 'taken' : ''}" onclick="toggleMedDose(${index})">
+            ${m.taken ? '✓ Taken' : 'Take'}
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function toggleMedDose(index) {
+      const meds = JSON.parse(localStorage.getItem('mv_medicine_reminders') || '[]');
+      if (meds[index]) {
+        meds[index].taken = !meds[index].taken;
+        localStorage.setItem('mv_medicine_reminders', JSON.stringify(meds));
+        refreshDashboardStats();
+        addActivityLog(`${meds[index].taken ? 'Marked taken' : 'Marked pending'}: ${meds[index].name}`);
+      }
+    }
+
+    function addNewMedicineReminder() {
+      const name = prompt('Enter medicine or herbal supplement name:');
+      if (!name || !name.trim()) return;
+      const dosage = prompt('Enter dosage & frequency (e.g. 1 Tablet after breakfast):', '1 Tablet daily');
+      const schedule = prompt('Enter dose timing (e.g. 8:00 AM or 10:00 PM):', '8:00 AM');
+      
+      const meds = JSON.parse(localStorage.getItem('mv_medicine_reminders') || '[]');
+      meds.push({
+        id: 'med_' + Date.now(),
+        name: name.trim(),
+        dosage: dosage ? dosage.trim() : '1 Dose',
+        schedule: schedule ? schedule.trim() : 'Daily',
+        taken: false,
+        addedAt: new Date().toISOString()
+      });
+      localStorage.setItem('mv_medicine_reminders', JSON.stringify(meds));
+      refreshDashboardStats();
+      addActivityLog(`Added medication reminder: ${name.trim()}`);
+      alert(`✅ Added "${name.trim()}" to your medicine reminders.`);
+    }
+
+    function renderUserMedsPanel(meds) {
+      const container = document.getElementById('userMedsContainer');
+      if (!container) return;
+      if (!meds || meds.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">💊</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Active Medicine Reminders</div>
+            <div style="font-size:12.5px; margin-top:4px; margin-bottom:14px;">Upload your prescription or add medications to set daily dose schedules.</div>
+            <button class="btn btn-outline btn-sm" onclick="addNewMedicineReminder()">+ Add Medication</button>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:14px;">Active Prescriptions & Reminders (${meds.length})</strong>
+          <button class="btn btn-outline btn-sm" onclick="addNewMedicineReminder()">+ Add Another</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          ${meds.map((m, idx) => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border:1px solid var(--border); border-radius:10px;">
+              <div>
+                <div style="font-weight:700; font-size:13.5px;">${escapeHtml(m.name)}</div>
+                <div style="font-size:12px; color:var(--text-muted);">${escapeHtml(m.dosage || '')} · ${escapeHtml(m.schedule || '')}</div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <button class="btn-check-dose ${m.taken ? 'taken' : ''}" onclick="toggleMedDose(${idx})">
+                  ${m.taken ? '✓ Taken' : 'Take'}
+                </button>
+                <button class="btn btn-outline btn-sm" style="color:var(--accent-red); border-color:#fecaca;" onclick="deleteMedicine(${idx})">✕</button>
+              </div>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    function deleteMedicine(idx) {
+      const meds = JSON.parse(localStorage.getItem('mv_medicine_reminders') || '[]');
+      if (meds[idx] && confirm(`Remove "${meds[idx].name}" from medicine reminders?`)) {
+        const removed = meds.splice(idx, 1)[0];
+        localStorage.setItem('mv_medicine_reminders', JSON.stringify(meds));
+        refreshDashboardStats();
+        addActivityLog(`Removed medication reminder: ${removed.name}`);
+      }
+    }
+
+    // ─── CONSULTATIONS CONTROLLERS ───
+    function renderUpcomingAppointment(appts) {
+      const container = document.getElementById('upcomingApptContainer');
+      if (!container) return;
+      if (!appts || appts.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:28px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">🩺</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Upcoming Consultations</div>
+            <div style="font-size:12.5px; margin-top:4px; margin-bottom:14px;">Connect with certified Ayurvedic and Allopathic doctors online.</div>
+            <a href="consult.html" class="btn btn-primary btn-sm">Book a Specialist →</a>
+          </div>`;
+        return;
+      }
+
+      const appt = appts[0];
+      const dateObj = appt.date ? new Date(appt.date) : new Date();
+      const monthStr = dateObj.toLocaleString('en-US', { month: 'short' }).toUpperCase();
+      const dayStr = dateObj.getDate();
+
+      container.innerHTML = `
+        <div class="appt-item">
+          <div class="appt-date-badge">
+            <span>${monthStr}</span>
+            <strong>${dayStr}</strong>
+          </div>
+          <div class="appt-details">
+            <div class="appt-doc-name">${escapeHtml(appt.doctorName || 'Certified Specialist')}</div>
+            <div class="appt-spec">${escapeHtml(appt.specialty || 'General Consultation')} · Video Consult</div>
+            <div class="appt-time">🕒 ${escapeHtml(appt.time || '10:30 AM')}</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="joinConsultation('${escapeHtml(appt.videoLink || '')}')">Join</button>
+        </div>`;
+    }
+
+    function joinConsultation(link) {
+      if (link) {
+        window.open(link, '_blank');
+      } else {
+        alert('Starting secure encrypted consultation session...');
+      }
+    }
+
+    function renderUserAppointmentsPanel(appts) {
+      const container = document.getElementById('userAppointmentsContainer');
+      if (!container) return;
+      if (!appts || appts.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding:32px 16px; color:var(--text-muted);">
+            <div style="font-size:32px; margin-bottom:8px;">🩺</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text);">No Upcoming Consultations</div>
+            <div style="font-size:12.5px; margin-top:4px; margin-bottom:16px;">Schedule an online video consultation or in-person clinic visit with certified allopathic and Ayurvedic doctors.</div>
+            <a href="consult.html" class="btn btn-primary btn-sm" style="display:inline-block;">Book a Specialist →</a>
+          </div>`;
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:14px;">Scheduled Consultations (${appts.length})</strong>
+          <a href="consult.html" class="btn btn-primary btn-sm">+ Book Another</a>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          ${appts.map(a => `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:14px; border:1px solid var(--border); border-radius:12px;">
+              <div>
+                <div style="font-weight:700; font-size:14px;">${escapeHtml(a.doctorName || 'Doctor')}</div>
+                <div style="font-size:12.5px; color:var(--text-muted);">${escapeHtml(a.specialty || 'Consultation')} · ${escapeHtml(a.date || 'Scheduled')} at ${escapeHtml(a.time || '')}</div>
+              </div>
+              <button class="btn btn-primary btn-sm" onclick="joinConsultation('${escapeHtml(a.videoLink || '')}')">Join Call</button>
+            </div>
+          `).join('')}
+        </div>`;
+    }
+
+    // ─── RECORDS & REPORTS CONTROLLERS ───
+    function renderRecentReport(records) {
+      const container = document.getElementById('recentReportContainer');
+      if (!container) return;
+      if (!records || records.length === 0) {
+        container.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <span style="font-size:13px; font-weight:700; color:var(--text);">📄 Recent Lab Report</span>
+            <span class="meta-tag tag-blue" style="background:#f1f5f9; color:#64748b;">None</span>
+          </div>
+          <p style="font-size:12.5px; color:var(--text-muted); line-height:1.5;">No lab reports uploaded yet. Upload a PDF or photo of your report for instant AI explanation.</p>
+          <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%;" onclick="document.getElementById('reportFileInput').click()">📁 Upload Lab Report →</button>
+        `;
+        return;
+      }
+
+      const latest = records[0];
+      const fileName = latest.name || latest.fileName || 'Uploaded Medical Record';
+      const dateStr = latest.date || (latest.uploadedAt ? new Date(latest.uploadedAt).toLocaleDateString() : 'Recent');
+
+      container.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <span style="font-size:13px; font-weight:700; color:var(--text);">📄 Recent Lab Report</span>
+          <span class="meta-tag tag-blue">Uploaded</span>
+        </div>
+        <p style="font-size:12.5px; color:var(--text); line-height:1.5; font-weight:600;">${escapeHtml(fileName)} (${dateStr})</p>
+        <button class="btn btn-outline btn-sm" style="margin-top:10px; width:100%;" onclick="explainReport()">🔍 Explain My Report with AI →</button>
+      `;
+    }
+
     function saveHealthProfile() {
       const name = document.getElementById('profName')?.value?.trim();
+      const email = document.getElementById('profEmail')?.value?.trim();
+      const age = document.getElementById('profAge')?.value?.trim();
+      const phone = document.getElementById('profPhone')?.value?.trim();
       const blood = document.getElementById('profBlood')?.value;
       const prakriti = document.getElementById('profPrakriti')?.value;
       
-      const profileData = { name, blood, prakriti, updatedAt: new Date().toISOString() };
+      const profileData = { name, email, age, phone, blood, prakriti, updatedAt: new Date().toISOString() };
       localStorage.setItem('mv_user_profile', JSON.stringify(profileData));
 
-      if (currentAuthUser && name) {
-        currentAuthUser.displayName = name;
-        localStorage.setItem('mv_auth_user', JSON.stringify(currentAuthUser));
-        document.getElementById('headerUserName').textContent = name.split(' ')[0];
-        document.getElementById('heroGreeting').textContent = `${getGreetingTime()}, ${name}`;
-      }
+      if (!currentAuthUser) currentAuthUser = {};
+      if (name) currentAuthUser.displayName = name;
+      if (age) currentAuthUser.age = age;
+      if (phone) currentAuthUser.phone = phone;
+      localStorage.setItem('mv_auth_user', JSON.stringify(currentAuthUser));
 
+      refreshDashboardStats();
       alert('✅ Health profile details successfully updated and saved.');
       addActivityLog('Updated Health Profile details.');
     }
 
     function handleFileUpload(input) {
       if (input.files && input.files[0]) {
-        alert(`File "${input.files[0].name}" uploaded securely. OCR entity extraction in progress...`);
-        addActivityLog(`Uploaded lab record: ${input.files[0].name}`);
+        const file = input.files[0];
+        const reports = JSON.parse(localStorage.getItem('mv_lab_reports') || '[]');
+        reports.unshift({
+          id: 'rep_' + Date.now(),
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          uploadedAt: new Date().toISOString()
+        });
+        localStorage.setItem('mv_lab_reports', JSON.stringify(reports));
+        refreshDashboardStats();
+        alert(`File "${file.name}" uploaded securely. Saved to your Health Records.`);
+        addActivityLog(`Uploaded lab record: ${file.name}`);
+        input.value = '';
       }
     }
 
@@ -2034,6 +2407,9 @@
       else if (lang === 'hi') greeting.textContent = `शुभ प्रभात, ${name}`;
       else if (lang === 'mr') greeting.textContent = `शुभ सकाळ, ${name}`;
       else greeting.textContent = `${getGreetingTime()}, ${name}`;
+
+      const heroLangVal = document.getElementById('heroLangVal');
+      if (heroLangVal) heroLangVal.textContent = getActiveLanguageName();
     }
 
     function handleGlobalSearch(e) {
@@ -2067,7 +2443,17 @@
     }
 
     function openNotificationsModal() {
-      alert('Notifications: 1. Video Consultation with Dr. Shailesh Phalle scheduled for tomorrow at 10:30 AM. 2. Prescription verified.');
+      let appts = [];
+      try {
+        appts = JSON.parse(localStorage.getItem('mv_consultations') || localStorage.getItem('miv_consultations') || '[]');
+      } catch (e) {}
+
+      if (appts.length > 0) {
+        const appt = appts[0];
+        alert(`🔔 Notifications:\n• Upcoming Consultation with ${appt.doctorName || 'Doctor'} on ${appt.date || 'scheduled date'} at ${appt.time || '10:30 AM'}.\n• Your health profile and records are securely encrypted.`);
+      } else {
+        alert('🔔 Notifications: You have no unread notifications at this time.');
+      }
     }
 
     // ─── PHASE 2: WALLET & REFERRAL CONTROLLERS ───

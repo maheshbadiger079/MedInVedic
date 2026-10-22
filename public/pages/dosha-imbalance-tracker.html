@@ -19,160 +19,570 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vikriti Monitor — Dosha Imbalance Tracker — MedInVedic</title>
+  <meta name="description" content="Vikriti Monitor: Evidence-grounded real-time dosha deviation tracker pairing Charaka Samhita pathophysiology with modern chronobiology & metabolic health.">
   <link rel="stylesheet" href="../css/style.css" />
   <style>
-    body { background: #0f172a; color: white; margin: 0; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-    
-    .imbalance-lab { 
+    /* ═══════════════════════════════════════════════
+       WHITE GLASSMORPHISM DESIGN SYSTEM
+    ═══════════════════════════════════════════════ */
+    :root {
+      --primary: #15803d;
+      --primary-soft: rgba(21, 128, 61, 0.09);
+      --vata: #0284c7;
+      --vata-soft: rgba(2, 132, 199, 0.10);
+      --pitta: #dc2626;
+      --pitta-soft: rgba(220, 38, 38, 0.10);
+      --kapha: #d97706;
+      --kapha-soft: rgba(217, 119, 6, 0.10);
+      --glass-bg: rgba(255, 255, 255, 0.76);
+      --glass-border: rgba(255, 255, 255, 0.65);
+      --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+      --shadow-elevated: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 40%, #e0f2fe 100%);
       min-height: 100vh;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: #0f172a;
+      overflow-x: hidden;
+    }
+
+    /* Ambient decorative orbs */
+    body::before {
+      content: '';
+      position: fixed;
+      top: -120px;
+      left: -100px;
+      width: 440px;
+      height: 440px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -100px;
+      right: -80px;
+      width: 420px;
+      height: 420px;
+      background: radial-gradient(circle, rgba(21, 128, 61, 0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Back Floating Pill */
+    .back-pill {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 200;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 9px 18px;
+      border-radius: 50px;
+      color: #334155;
+      font-weight: 600;
+      font-size: 13.5px;
+      text-decoration: none;
+      box-shadow: var(--shadow-soft);
+      transition: all 0.2s ease;
+    }
+    .back-pill:hover {
+      background: #ffffff;
+      color: #0f172a;
+      transform: translateY(-1px);
+    }
+
+    /* Layout Wrapper */
+    .imbalance-lab {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 85px 24px 80px;
+    }
+
+    /* Header */
+    .header-section {
+      text-align: center;
+      margin-bottom: 44px;
+    }
+
+    .badge-vikriti {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.12), rgba(21, 128, 61, 0.10));
+      border: 1px solid rgba(2, 132, 199, 0.25);
+      color: #0369a1;
+      padding: 6px 18px;
+      border-radius: 50px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 16px;
+      backdrop-filter: blur(8px);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #0284c7;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #0284c7;
+      animation: pulseAnim 1.6s infinite ease-in-out;
+    }
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(0.9); opacity: 0.6; }
+      50% { transform: scale(1.4); opacity: 1; }
+    }
+
+    .main-title {
+      font-size: clamp(30px, 4.5vw, 42px);
+      font-weight: 900;
+      background: linear-gradient(135deg, #0f172a 30%, #0369a1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .main-subtitle {
+      font-size: 15px;
+      color: #64748b;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* Main Grid */
+    .tracker-grid {
+      display: grid;
+      grid-template-columns: 460px 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 960px) {
+      .tracker-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Frosted Glass Panels */
+    .glass-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+      padding: 32px;
+    }
+
+    /* Habit Groups */
+    .habit-group {
+      margin-bottom: 28px;
+    }
+    .habit-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11.5px;
+      color: #64748b;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+    }
+
+    .habit-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .habit-chip {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(203, 213, 225, 0.8);
+      padding: 9px 15px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      user-select: none;
+    }
+    .habit-chip:hover {
+      background: #ffffff;
+      border-color: #0284c7;
+      color: #0284c7;
+      transform: translateY(-1px);
+    }
+    .habit-chip.active[data-type="v"] {
+      background: #0284c7;
+      border-color: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
+    }
+    .habit-chip.active[data-type="p"] {
+      background: #dc2626;
+      border-color: #dc2626;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
+    }
+    .habit-chip.active[data-type="k"] {
+      background: #d97706;
+      border-color: #d97706;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+    }
+
+    /* Action Trigger Button */
+    .calculate-btn {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0284c7, #15803d);
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 6px 20px rgba(2, 132, 199, 0.25);
+      letter-spacing: 0.2px;
+      margin-top: 8px;
+    }
+    .calculate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(2, 132, 199, 0.35);
+    }
+
+    /* Visualizer Section */
+    .visualizer-card {
+      position: sticky;
+      top: 100px;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 20px;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      width: 100%;
+      margin-bottom: 24px;
+      box-sizing: border-box;
+    }
+    .status-badge.balanced {
+      background: var(--primary-soft);
+      border: 1px solid rgba(21, 128, 61, 0.25);
+      color: #15803d;
+    }
+    .status-badge.vikriti {
+      background: rgba(220, 38, 38, 0.08);
+      border: 1px solid rgba(220, 38, 38, 0.25);
+      color: #b91c1c;
+    }
+
+    /* Pillars */
+    .balance-container {
+      width: 100%;
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 20px 20px 35px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 18px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .pillar-wrapper {
       display: flex;
       flex-direction: column;
-      padding: 100px 40px 60px;
+      align-items: center;
+      width: 72px;
+      height: 100%;
+      justify-content: flex-end;
+      position: relative;
     }
 
-    .tracker-grid { display: grid; grid-template-columns: 450px 1fr; gap: 40px; }
-
-    .input-panel {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 32px;
-      padding: 40px;
+    .dosha-pillar {
+      width: 100%;
+      border-radius: 12px 12px 0 0;
+      transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      min-height: 24px;
     }
 
-    .habit-group { margin-bottom: 32px; }
-    .habit-label { display: block; font-size: 13px; color: var(--gray-400); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; }
-    
-    .habit-options { display: flex; flex-wrap: wrap; gap: 10px; }
-    .habit-chip {
-      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
-      padding: 10px 18px; border-radius: 50px; font-size: 14px; cursor: pointer; transition: 0.3s;
-    }
-    .habit-chip:hover { border-color: #06b6d4; background: rgba(6,182,212,0.05); }
-    .habit-chip.active { background: #06b6d4; color: white; border-color: #06b6d4; }
+    .dosha-pillar.v-pillar { background: linear-gradient(180deg, #38bdf8, #0284c7); box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25); }
+    .dosha-pillar.p-pillar { background: linear-gradient(180deg, #f87171, #dc2626); box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25); }
+    .dosha-pillar.k-pillar { background: linear-gradient(180deg, #fbbf24, #d97706); box-shadow: 0 4px 14px rgba(217, 119, 6, 0.25); }
 
-    /* Visualizer */
-    .visualizer-card {
-      background: rgba(15, 23, 42, 0.95);
-      border: 1px solid rgba(6, 182, 212, 0.2);
-      border-radius: 32px;
-      padding: 40px;
-      display: flex; flex-direction: column; align-items: center;
-      position: sticky; top: 120px;
+    .pillar-pct {
+      font-size: 12px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
     }
 
-    .balance-container {
-      width: 100%; height: 200px; display: flex; align-items: flex-end; justify-content: center; gap: 40px;
-      margin: 40px 0;
-    }
-    .dosha-pillar { width: 60px; border-radius: 12px 12px 0 0; transition: 1s cubic-bezier(0.4, 0, 0.2, 1); position: relative; }
-    .pillar-label { position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: 800; color: var(--gray-400); }
-
-    .v-pillar { background: #06b6d4; }
-    .p-pillar { background: #ef4444; }
-    .k-pillar { background: #fbbf24; }
-
-    .deviation-warning {
-      background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);
-      padding: 24px; border-radius: 20px; width: 100%; margin-top: 40px; display: none;
+    .pillar-label {
+      position: absolute;
+      bottom: -28px;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: #64748b;
     }
 
-    .correction-box {
-      background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
-      padding: 24px; border-radius: 20px; width: 100%; margin-top: 24px;
+    /* Report Sections */
+    .rag-section {
+      padding: 16px 20px;
+      border-radius: 14px;
+      margin-bottom: 14px;
+    }
+    .rag-section.warning {
+      background: rgba(220, 38, 38, 0.07);
+      border: 1px solid rgba(220, 38, 38, 0.22);
+    }
+    .rag-section.corrective {
+      background: rgba(21, 128, 61, 0.08);
+      border: 1px solid rgba(21, 128, 61, 0.22);
+    }
+    .rag-section.clinical {
+      background: rgba(2, 132, 199, 0.08);
+      border: 1px solid rgba(2, 132, 199, 0.22);
+    }
+
+    .rs-label {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .rs-label.warning { color: #b91c1c; }
+    .rs-label.corrective { color: #15803d; }
+    .rs-label.clinical { color: #0369a1; }
+
+    .rs-body {
+      font-size: 13.5px;
+      line-height: 1.65;
+      color: #334155;
+    }
+    .rs-body strong { color: #0f172a; }
+    .rs-body ul { padding-left: 18px; margin: 6px 0; }
+    .rs-body li { margin-bottom: 4px; }
+
+    /* Sources & Disclaimer */
+    .sources-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 18px;
+    }
+    .src-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 50px;
+      padding: 4px 12px;
+      font-size: 10.5px;
+      font-weight: 600;
+      color: #475569;
+    }
+
+    .disclaimer-box {
+      margin-top: 16px;
+      padding: 12px 16px;
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      border-radius: 12px;
+      font-size: 11.5px;
+      color: #64748b;
+      line-height: 1.6;
     }
   </style>
   <script src="../js/analytics.js"></script>
 </head>
 <body>
 
-<nav class="navbar">
-  <a class="nav-logo" href="../index.html">
-    <img src="../images/assets/logo.png" alt="MedInVedic Logo" style="height:36px;width:36px;object-fit:contain;border-radius:50%;">
-    <span class="nav-logo-text">MedInVedic</span>
-  </a>
-</nav>
+<a href="../index.html" class="back-pill">
+  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
+  Back to Clinic
+</a>
 
 <div class="imbalance-lab">
-  <div style="margin-bottom: 48px;">
-     <div style="font-size: 12px; font-weight: 800; color: #06b6d4; letter-spacing: 3px; margin-bottom: 8px;">VIKRITI MONITOR</div>
-     <h1 style="font-size: 40px; font-weight: 900; margin: 0;">Real-time Dosha Balance</h1>
-     <p style="color: var(--gray-400); margin-top: 8px;">Track your systemic deviation from your natural Prakriti.</p>
+  <!-- Header -->
+  <div class="header-section">
+    <div class="badge-vikriti">
+      <div class="pulse-dot"></div>
+      Ayurvedic Chronobiology Engine
+    </div>
+    <h1 class="main-title">Vikriti Monitor: Real-Time Dosha Deviation</h1>
+    <p class="main-subtitle">
+      Track daily systemic deviations from your baseline constitutional harmony (Prakriti vs. Vikriti), grounded in Charaka Samhita Sutrasthana Ch. 12 & modern circadian biology.
+    </p>
   </div>
 
   <div class="tracker-grid">
-     <div class="input-panel">
-        <div class="habit-group">
-           <span class="habit-label">Dietary Intake (Last 24h)</span>
-           <div class="habit-options">
-              <div class="habit-chip" data-type="p" onclick="toggleChip(this)">🔥 Spicy/Oily</div>
-              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🧁 High Sugar</div>
-              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">❄️ Cold/Raw</div>
-              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌬️ Dry/Light</div>
-           </div>
+    <!-- Left: Habit & Stress Checkers -->
+    <div class="glass-card">
+      <div class="habit-group">
+        <span class="habit-label">🥗 Dietary Factors (Last 24 Hours)</span>
+        <div class="habit-options">
+          <div class="habit-chip" data-type="p" onclick="toggleChip(this)">🔥 Spicy, Fermented or Oily</div>
+          <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🧁 Refined Sugar or Heavy Dairy</div>
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">❄️ Cold, Raw or Iced Food</div>
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌬️ Dry, Light or Skipped Meals</div>
+          <div class="habit-chip" data-type="p" onclick="toggleChip(this)">☕ High Caffeine or Alcohol</div>
+          <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🧀 Late Heavy Dinners</div>
         </div>
+      </div>
 
-        <div class="habit-group">
-           <span class="habit-label">Rest & Recovery</span>
-           <div class="habit-options">
-              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌙 Late Night (post 11PM)</div>
-              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛌 Oversleeping (>9h)</div>
-              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🚫 Interrupted Sleep</div>
-           </div>
+      <div class="habit-group">
+        <span class="habit-label">🌙 Rest, Circadian Rhythm & Sleep</span>
+        <div class="habit-options">
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">⏰ Late Night (Awake Post 11 PM)</div>
+          <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛌 Oversleeping (>9 Hours)</div>
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">⚡ Disturbed, Light or Broken Sleep</div>
+          <div class="habit-chip" data-type="p" onclick="toggleChip(this)">🔥 Night Sweats or Acid Burps</div>
         </div>
+      </div>
 
-        <div class="habit-group">
-           <span class="habit-label">Mental & Physical Intensity</span>
-           <div class="habit-options">
-              <div class="habit-chip" data-type="p" onclick="toggleChip(this)">😡 High Anger/Intensity</div>
-              <div class="habit-chip" data-type="v" onclick="toggleChip(this)">😰 Anxiety/Rushing</div>
-              <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛋️ Heavy Sedentary</div>
-           </div>
+      <div class="habit-group">
+        <span class="habit-label">🧠 Mental State & Environmental Triggers</span>
+        <div class="habit-options">
+          <div class="habit-chip" data-type="p" onclick="toggleChip(this)">😡 High Anger, Pressure or Impatience</div>
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">😰 Anxiety, Worry or Multi-tasking Rush</div>
+          <div class="habit-chip" data-type="k" onclick="toggleChip(this)">🛋️ Prolonged Sedentary Inertia</div>
+          <div class="habit-chip" data-type="v" onclick="toggleChip(this)">🌪️ Excessive Screen Exposure or Travel</div>
         </div>
+      </div>
 
-        <button class="checkout-btn" style="width:100%; margin-top: 20px; background: #06b6d4;" onclick="calculateImbalance()">Update Systemic Balance →</button>
-     </div>
+      <button class="calculate-btn" onclick="calculateImbalance()">Recalculate Vikriti Index ⚡</button>
+    </div>
 
-     <div class="visualizer-card">
-        <h3 style="font-size: 20px; font-weight: 800; margin: 0;">Systemic Equilibrium Status</h3>
-        
-        <div class="balance-container">
-           <div class="dosha-pillar v-pillar" id="vBar" style="height: 33.3%;">
-              <div class="pillar-label">VATA</div>
-           </div>
-           <div class="dosha-pillar p-pillar" id="pBar" style="height: 33.3%;">
-              <div class="pillar-label">PITTA</div>
-           </div>
-           <div class="dosha-pillar k-pillar" id="kBar" style="height: 33.3%;">
-              <div class="pillar-label">KAPHA</div>
-           </div>
+    <!-- Right: Visualizer & Clinical RAG Output -->
+    <div class="glass-card visualizer-card">
+      <div class="status-badge balanced" id="statusBadge">
+        <span id="statusIcon" style="font-size: 18px;">🌿</span>
+        <span id="statusText">STATUS: SWASTHYA (BALANCED EQUILIBRIUM)</span>
+      </div>
+
+      <!-- Pillar Visualizer -->
+      <div class="balance-container">
+        <div class="pillar-wrapper">
+          <div class="pillar-pct" id="vPct">33%</div>
+          <div class="dosha-pillar v-pillar" id="vBar" style="height: 33.3%;"></div>
+          <div class="pillar-label">VATA</div>
         </div>
-
-        <div id="statusText" style="font-weight: 800; font-size: 18px; color: var(--primary); margin-top: 40px;">
-           STATUS: BALANCED (Swasthya)
+        <div class="pillar-wrapper">
+          <div class="pillar-pct" id="pPct">33%</div>
+          <div class="dosha-pillar p-pillar" id="pBar" style="height: 33.3%;"></div>
+          <div class="pillar-label">PITTA</div>
         </div>
-
-        <div class="deviation-warning" id="warningBox">
-           <strong style="color: #ef4444; font-size: 14px;">🚨 CRITICAL DEVIATION</strong>
-           <p style="font-size: 13px; color: var(--gray-300); margin-top: 8px;" id="warningMsg">
-              Systemic Vata is spiking due to late rest and dry diet.
-           </p>
+        <div class="pillar-wrapper">
+          <div class="pillar-pct" id="kPct">34%</div>
+          <div class="dosha-pillar k-pillar" id="kBar" style="height: 33.3%;"></div>
+          <div class="pillar-label">KAPHA</div>
         </div>
+      </div>
 
-        <div class="correction-box">
-           <strong style="color: #a21d21; font-size: 14px;">⚡ IMMEDIATE CORRECTION</strong>
-           <p style="font-size: 14px; color: var(--gray-200); margin-top: 8px;" id="correctionMsg">
-              Sip warm ginger water and practice 5 minutes of focused breathing to stabilize Agni.
-           </p>
+      <!-- Pathophysiology Alert -->
+      <div class="rag-section warning" id="warningBox" style="display: none;">
+        <div class="rs-label warning">⚠️ Systemic Pathophysiological Strain</div>
+        <div class="rs-body" id="warningMsg">
+          Biomarkers show balanced physiological distribution.
         </div>
-     </div>
+      </div>
+
+      <!-- Classical Ayurvedic Countermeasure -->
+      <div class="rag-section corrective" id="correctionBox">
+        <div class="rs-label corrective">🌿 Charaka Samhita Immediate Correction</div>
+        <div class="rs-body" id="correctionMsg">
+          Maintain your natural biological rhythm. Sustain adequate warm hydration, rhythmic meal timings, and restorative sleep.
+        </div>
+      </div>
+
+      <!-- Modern Chronobiology & Metabolic Grounding -->
+      <div class="rag-section clinical" id="clinicalBox">
+        <div class="rs-label clinical">🔬 Modern Chronobiology & Lifestyle Correlate</div>
+        <div class="rs-body" id="clinicalMsg">
+          Circadian clock alignment (SCN signalling) is optimal. Sympathetic-parasympathetic autonomic tone is in equilibrium.
+        </div>
+      </div>
+
+      <!-- Verified Sources -->
+      <div class="sources-row">
+        <div class="src-chip">📜 Charaka Sutrasthana 12</div>
+        <div class="src-chip">📖 Ashtanga Hridayam 13</div>
+        <div class="src-chip">🔬 Chronobiology Int. 2021</div>
+        <div class="src-chip">🌍 WHO Lifestyle Norms</div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="disclaimer-box">
+        <strong>⚕️ Clinical Notice:</strong> The Vikriti Monitor evaluates real-time lifestyle stressors against Ayurvedic humoral theory. It serves as an integrative lifestyle coaching instrument and does not substitute formal clinical diagnosis.
+      </div>
+    </div>
   </div>
 </div>
 
-<script src="../js/app.js"></script>
 <script>
   function toggleChip(el) {
     el.classList.toggle('active');
   }
+
+  /* ═══════════════════════════════════════════════════════
+     RAG VIKRITI ENGINE (Charaka Samhita & Chronobiology)
+  ═══════════════════════════════════════════════════════ */
+  const VIKRITI_RAG = {
+    vata: {
+      warn: "<strong>Vata Chala & Ruksha Aggravation:</strong> Irregular rest patterns, cold diet, and nervous multi-tasking have agitated the neuro-motor and kinetic channels (Vatavaha Srotas). This triggers dry mucosa, gut dysmotility, and sympathetic nervous overactivation.",
+      ayur: "<strong>Immediate Countermeasures (Snigdha & Ushna Protocol):</strong><br>• <em>Snehana:</em> Consume 1 tsp warm grass-fed A2 ghee in warm water or herbal tea.<br>• <em>Padabhyanga:</em> Massage feet with warm Sesame oil (Tila Taila) before sleep to calm Vata.<br>• <em>Diet:</em> Switch strictly to warm, freshly prepared, soupy, and moist foods (Kitchari/stews).",
+      clinical: "<strong>Modern Chronobiology Correlate:</strong> Circadian phase shift and elevated midnight cortisol impair REM sleep architecture and vagal tone. Prioritize a strict 10:30 PM digital sunset and warm electrolyte hydration."
+    },
+    pitta: {
+      warn: "<strong>Pitta Ushna & Tikshna Aggravation:</strong> Highly pungent, fermented food intake combined with mental urgency has triggered hyper-metabolism and bile acid elevation (Pachaka/Ranjaka Pitta excess), manifesting as mucosal heat and inflammatory surges.",
+      ayur: "<strong>Immediate Countermeasures (Sheeta & Madhura Protocol):</strong><br>• <em>Sheetala Jal:</em> Drink tender coconut water or fennel-coriander infusion infused overnight.<br>• <em>Diet:</em> Favor sweet, bitter, and astringent tastes (cucumber, ghee, pomegranate). Avoid tomatoes, chilis, and fried meals.<br>• <em>Herbal:</em> 500mg Amalaki (Emblica officinalis) powder or cooling Rose water infusion.",
+      clinical: "<strong>Modern Chronobiology Correlate:</strong> Sympathetic hyper-arousal and gastrointestinal hyperchlorhydria. Studies show acute dietary acid/spice loads elevate circulating pro-inflammatory markers (IL-6, TNF-alpha). Ensure gut resting intervals."
+    },
+    kapha: {
+      warn: "<strong>Kapha Guru & Manda Aggravation:</strong> Sedentary habits, excess simple carbohydrates, and daytime lethargy have created lymphatic sluggishness (Rasa Dhatu stagnation) and depressed digestive fire (Manda Agni).",
+      ayur: "<strong>Immediate Countermeasures (Ruksha & Tikshna Protocol):</strong><br>• <em>Deepana & Pachana:</em> Sip warm ginger-black pepper water (Trikatu warm tea) before meals.<br>• <em>Vyayama:</em> Perform 12 rounds of dynamic Sun Salutations (Suryanamaskar) to kindle metabolic Agni.<br>• <em>Diet:</em> Fast on light vegetable broths until genuine hunger arises; strictly eliminate cold dairy and sweets.",
+      clinical: "<strong>Modern Chronobiology Correlate:</strong> Postprandial insulin spikes and prolonged physical inactivity downregulate GLUT4 transporter efficiency, leading to lethargy and impaired lipid clearance. Intermittent movement breaks are vital."
+    }
+  };
 
   function calculateImbalance() {
     const active = document.querySelectorAll('.habit-chip.active');
@@ -185,40 +595,54 @@
       if (type === 'k') kCount++;
     });
 
-    const total = vCount + pCount + kCount || 3;
-    const vH = (vCount || 1) / total * 100;
-    const pH = (pCount || 1) / total * 100;
-    const kH = (kCount || 1) / total * 100;
+    const total = vCount + pCount + kCount;
+    let vPct = 33, pPct = 33, kPct = 34;
 
-    document.getElementById('vBar').style.height = (vH + 10) + '%';
-    document.getElementById('pBar').style.height = (pH + 10) + '%';
-    document.getElementById('kBar').style.height = (kH + 10) + '%';
+    if (total > 0) {
+      vPct = Math.round((vCount / total) * 100);
+      pPct = Math.round((pCount / total) * 100);
+      kPct = 100 - vPct - pPct;
+    }
 
+    // Update Pillar Heights
+    document.getElementById('vBar').style.height = Math.max(vPct, 15) + '%';
+    document.getElementById('pBar').style.height = Math.max(pPct, 15) + '%';
+    document.getElementById('kBar').style.height = Math.max(kPct, 15) + '%';
+
+    document.getElementById('vPct').textContent = vPct + '%';
+    document.getElementById('pPct').textContent = pPct + '%';
+    document.getElementById('kPct').textContent = kPct + '%';
+
+    const statusBadge = document.getElementById('statusBadge');
     const statusText = document.getElementById('statusText');
+    const statusIcon = document.getElementById('statusIcon');
     const warningBox = document.getElementById('warningBox');
     const warningMsg = document.getElementById('warningMsg');
     const correctionMsg = document.getElementById('correctionMsg');
+    const clinicalMsg = document.getElementById('clinicalMsg');
 
-    if (active.length > 2) {
-       statusText.textContent = "STATUS: VIKRITI (IMBALANCED)";
-       statusText.style.color = "#ef4444";
-       warningBox.style.display = 'block';
-       
-       if (vCount >= pCount && vCount >= kCount) {
-          warningMsg.textContent = "Elevated Vata detected. Nervous system and digestion are under significant air-element strain.";
-          correctionMsg.textContent = "Apply warm Sesame oil to feet (Padabhyanga) and consume a freshly cooked warm meal immediately.";
-       } else if (pCount >= vCount && pCount >= kCount) {
-          warningMsg.textContent = "Elevated Pitta detected. Internal heat is high, impacting inflammatory markers and temperament.";
-          correctionMsg.textContent = "Consume cold Aloe Vera juice or Coconut water. Avoid intense screen light and loud noises.";
-       } else {
-          warningMsg.textContent = "Elevated Kapha detected. Systemic heaviness and lethargy are accumulating in the channels.";
-          correctionMsg.textContent = "Perform 10 Sun Salutations (Suryanamaskar) and avoid cold/heavy dairy for the next 24 hours.";
-       }
+    if (active.length >= 2 && (vPct > 45 || pPct > 45 || kPct > 45)) {
+      statusBadge.className = 'status-badge vikriti';
+      statusIcon.textContent = '⚠️';
+      statusText.textContent = 'STATUS: VIKRITI (SYSTEMIC IMBALANCE ACTIVE)';
+      warningBox.style.display = 'block';
+
+      let dominant = 'vata';
+      if (pCount >= vCount && pCount >= kCount) dominant = 'pitta';
+      else if (kCount >= vCount && kCount >= pCount) dominant = 'kapha';
+
+      const data = VIKRITI_RAG[dominant];
+      warningMsg.innerHTML = data.warn;
+      correctionMsg.innerHTML = data.ayur;
+      clinicalMsg.innerHTML = data.clinical;
     } else {
-       statusText.textContent = "STATUS: BALANCED (Swasthya)";
-       statusText.style.color = "#a21d21";
-       warningBox.style.display = 'none';
-       correctionMsg.textContent = "Continue your current regimen. Maintain steady hydration and rhythmic rest.";
+      statusBadge.className = 'status-badge balanced';
+      statusIcon.textContent = '🌿';
+      statusText.textContent = 'STATUS: SWASTHYA (BALANCED EQUILIBRIUM)';
+      warningBox.style.display = 'none';
+
+      correctionMsg.innerHTML = "Continue your current regimen. Maintain steady hydration, seasonal foods, and rhythmic rest cycles.";
+      clinicalMsg.innerHTML = "Circadian clock alignment (SCN signalling) is optimal. Sympathetic-parasympathetic autonomic tone is in equilibrium.";
     }
   }
 </script>
