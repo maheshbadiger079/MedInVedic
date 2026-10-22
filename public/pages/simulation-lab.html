@@ -552,6 +552,30 @@
 
   </main>
 
+  <!-- ═══ MOBILE BOTTOM NAVIGATION ═══ -->
+  <nav class="sim-mobile-bottom-nav" aria-label="Mobile Navigation">
+    <a href="../index.html" class="sim-bottom-nav-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <a href="health-hub.html" class="sim-bottom-nav-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span>Health Hub</span>
+    </a>
+    <a href="emergency.html" class="sim-bottom-nav-sos">
+      <div class="sim-bottom-nav-sos-btn">🚨</div>
+      <span>SOS</span>
+    </a>
+    <button class="sim-bottom-nav-item active" onclick="switchTab('dashboard')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+      <span>Sim Lab</span>
+    </button>
+    <button class="sim-bottom-nav-item" onclick="switchTab('create')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      <span>+ New</span>
+    </button>
+  </nav>
+
   <!-- Script Controller -->
   <script src="../js/simulation-lab.js?v=1"></script>
 </body>

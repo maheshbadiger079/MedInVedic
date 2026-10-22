@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Health Hub — MedInVedic Clinical Platform</title>
+  <meta name="description" content="MedInVedic Health Hub — AI Medical Report Explainer, Symptom Checker, Digital Health Locker, Drug Interactions, and Ayurvedic Preventive Care." />
+  
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../icon-512.png" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="../css/style.css?v=102" />
+  <link rel="stylesheet" href="../css/health-hub.css?v=1" />
+
+  <style>
+    /* Screen reader only utility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .symptom-pill {
+      display: inline-block;
+      padding: 8px 14px;
+      margin: 4px;
+      border-radius: var(--hh-radius-full);
+      background: var(--hh-surface-subtle);
+      border: 1px solid var(--hh-border);
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+    .symptom-pill.active {
+      background: var(--hh-primary);
+      color: white;
+      border-color: var(--hh-primary);
+    }
+  </style>
+</head>
+<body class="hh-body">
+
+  <!-- ARIA Live Announcer for Assistive Screen Readers (WCAG 2.2 AA) -->
+  <div id="hhLiveAnnouncer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- ── 1. ACCESSIBILITY & UTILITY TOPBAR ── -->
+  <div class="hh-utility-bar" role="region" aria-label="Accessibility and Regional Controls">
+    <div class="hh-util-left">
+      <span class="hh-trust-badge">🌿 AYUSH & CDSCO Verified Protocols</span>
+      <span>🏥 NABL-Accredited Diagnostic Labs</span>
+    </div>
+    <div class="hh-util-right">
+      <span style="font-weight:700;">Accessibility:</span>
+      <button class="hh-access-btn" onclick="toggleHighContrast()" aria-label="Toggle High Contrast Mode">🌓 Contrast</button>
+      <button class="hh-access-btn" onclick="setFontScale('normal')" aria-label="Default Font Size">A</button>
+      <button class="hh-access-btn" onclick="setFontScale('lg')" aria-label="Large Font Size">A+</button>
+      <button class="hh-access-btn" onclick="setFontScale('xl')" aria-label="Extra Large Font Size">A++</button>
+      <button class="hh-access-btn" onclick="toggleReducedMotion()" aria-label="Toggle Reduced Motion">⚡ Motion</button>
+    </div>
+  </div>
+
+  <!-- ── 2. MAIN APPLICATION NAVIGATION (8 MAIN SECTIONS) ── -->
+  <nav class="hh-navbar" role="navigation" aria-label="Main Platform Navigation">
+    <a class="hh-nav-brand" href="../index.html">
+      <img src="../images/assets/logo_new.png" alt="MedInVedic Logo" class="hh-nav-logo" />
+      <span class="hh-brand-text">MedInVedic</span>
+      <span class="hh-brand-badge">HEALTH HUB</span>
+    </a>
+
+    <!-- Standardized 8 Sections Navigation -->
+    <ul class="hh-nav-links">
+      <li><a href="../index.html" class="hh-nav-link">Home</a></li>
+      <li><a href="online-pharmacy.html" class="hh-nav-link">Medicines</a></li>
+      <li><a href="vedicmind.html" class="hh-nav-link">Ayurveda</a></li>
+      <li><a href="consult.html" class="hh-nav-link">Doctors</a></li>
+      <li><a href="health-hub.html" class="hh-nav-link active" aria-current="page">Health Hub</a></li>
+      <li><a href="simulation-lab.html" class="hh-nav-link" style="color:#0369a1; font-weight:700;">Simulation Lab</a></li>
+      <li><a href="ai-assistant.html" class="hh-nav-link">AI Assistant</a></li>
+      <li><a href="orders.html" class="hh-nav-link">Orders</a></li>
+      <li><a href="workspace.html" class="hh-nav-link">Profile</a></li>
+    </ul>
+
+    <div class="hh-nav-actions">
+      <a href="emergency.html" class="hh-sos-btn" id="navSosBtn">
+        <span>🚨</span>
+        <span>SOS 112</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── 3. HEALTH HUB SUB-NAVIGATION (FEATURE TABS) ── -->
+  <nav class="hh-subnav" role="tablist" aria-label="Health Hub Feature Sections">
+    <ul class="hh-subnav-list">
+      <li><button class="hh-subnav-btn active" data-tab="overview" role="tab" aria-selected="true">📊 Cockpit Overview</button></li>
+      <li><button class="hh-subnav-btn" data-tab="reports" role="tab" aria-selected="false">📑 AI Report Explainer</button></li>
+      <li><button class="hh-subnav-btn" data-tab="symptoms" role="tab" aria-selected="false">🩺 Symptom Checker</button></li>
+      <li><button class="hh-subnav-btn" data-tab="nutrition" role="tab" aria-selected="false">🥗 Nutrition & Diet</button></li>
+      <li><button class="hh-subnav-btn" data-tab="locker" role="tab" aria-selected="false">🔒 Digital Health Locker</button></li>
+      <li><button class="hh-subnav-btn" data-tab="timeline" role="tab" aria-selected="false">📈 Health Timeline</button></li>
+      <li><button class="hh-subnav-btn" data-tab="preventive" role="tab" aria-selected="false">🛡️ Preventive Care</button></li>
+      <li><button class="hh-subnav-btn" data-tab="family" role="tab" aria-selected="false">👨‍👩‍👧 Family Profiles</button></li>
+      <li><button class="hh-subnav-btn" data-tab="safety" role="tab" aria-selected="false">💊 Medicine Safety & Scanner</button></li>
+      <li><button class="hh-subnav-btn" data-tab="labs" role="tab" aria-selected="false">🧪 Lab Bookings</button></li>
+      <li><button class="hh-subnav-btn" data-tab="emergency" role="tab" aria-selected="false">🪪 Emergency SOS Card</button></li>
+      <li><button class="hh-subnav-btn" data-tab="tracking" role="tab" aria-selected="false">🚚 Order Tracking</button></li>
+      <li><button class="hh-subnav-btn" data-tab="expenses" role="tab" aria-selected="false">💳 Health Expenses</button></li>
+      <li><button class="hh-subnav-btn" data-tab="doctor" role="tab" aria-selected="false">👨‍⚕️ Doctor Follow-up</button></li>
+      <li><button class="hh-subnav-btn" data-tab="pharmacy" role="tab" aria-selected="false">🏪 Pharmacy Stock</button></li>
+    </ul>
+  </nav>
+
+  <!-- ── 4. MAIN CONTENT CONTAINER ── -->
+  <main class="hh-container">
+
+    <!-- ── TAB 1: COCKPIT OVERVIEW ── -->
+    <section id="tab-overview" class="hh-tab-panel active" role="tabpanel">
+      <div class="hh-hero-banner">
+        <div class="hh-hero-content">
+          <h1 class="hh-hero-title">MedInVedic Health Hub & Clinical Cockpit</h1>
+          <p class="hh-hero-subtitle">
+            All 20 features powered by RAG — Gemini 1.5 Flash AI + MedInVedic Knowledge Base. Evidence-cited answers, emergency guardrails, multilingual EN/HI/KN/MR.
+          </p>
+          <div style="margin-top:12px;"><span id="ragStatusBadge" style="display:inline-block;background:#f59e0b;color:#fff;font-size:12px;font-weight:700;padding:4px 14px;border-radius:20px;">⚙️ Checking RAG status…</span></div>
+        </div>
+        <div class="hh-hero-stats">
+          <div class="hh-stat-pill">
+            <div class="hh-stat-val" id="statDocsCount">3</div>
+            <div class="hh-stat-lbl">Locker Docs</div>
+          </div>
+          <div class="hh-stat-pill">
+            <div class="hh-stat-val" id="statReportsCount">1</div>
+            <div class="hh-stat-lbl">AI Reports</div>
+          </div>
+          <div class="hh-stat-pill">
+            <div class="hh-stat-val" id="statFamilyCount">3</div>
+            <div class="hh-stat-lbl">Family Members</div>
+          </div>
+          <div class="hh-stat-pill">
+            <div class="hh-stat-val" id="statExpensesTotal">₹2,189</div>
+            <div class="hh-stat-lbl">Expenses (YTD)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Action Cards Grid -->
+      <div class="hh-grid-3">
+        <div class="hh-card">
+          <div class="hh-card-header">
+            <h3 class="hh-card-title">📑 AI Report Explainer</h3>
+            <span class="hh-badge hh-badge-normal">Feature 1</span>
+          </div>
+          <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:16px;">
+            Upload laboratory reports to extract test values, compare against reference ranges, and receive explanations in Kannada, Hindi, Marathi, or English.
+          </p>
+          <button class="hh-btn" onclick="switchHealthTab('reports')">Analyze Report ➔</button>
+        </div>
+
+        <div class="hh-card">
+          <div class="hh-card-header">
+            <h3 class="hh-card-title">🩺 Smart Symptom Checker</h3>
+            <span class="hh-badge hh-badge-info">Feature 2</span>
+          </div>
+          <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:16px;">
+            Evidence-based symptom evaluation with clinical escalation guardrails and care navigation. No speculative diagnostic guessing.
+          </p>
+          <button class="hh-btn" onclick="switchHealthTab('symptoms')">Check Symptoms ➔</button>
+        </div>
+
+        <div class="hh-card">
+          <div class="hh-card-header">
+            <h3 class="hh-card-title">🔒 Digital Health Locker</h3>
+            <span class="hh-badge hh-badge-normal">Feature 4</span>
+          </div>
+          <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:16px;">
+            Encrypted document vault for prescriptions, discharge summaries, and lab records with time-limited doctor share links.
+          </p>
+          <button class="hh-btn" onclick="switchHealthTab('locker')">Open Vault ➔</button>
+        </div>
+      </div>
+
+      <!-- Active Health Notifications -->
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h3 class="hh-card-title">🔔 Active Health Notifications & Reminders</h3>
+          <span class="hh-badge hh-badge-normal">Feature 12</span>
+        </div>
+        <div id="smartNotificationsList">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 2: AI MEDICAL REPORT EXPLAINER (FEATURE 1) ── -->
+    <section id="tab-reports" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card" style="margin-bottom:24px;">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">📑 AI Medical Report Explainer</h2>
+          <span class="hh-badge hh-badge-info">Multilingual OCR & Analysis</span>
+        </div>
+        <p style="color:var(--hh-text-muted);margin-bottom:18px;">
+          Securely analyze your diagnostic blood tests and pathology reports. Extracted values can be reviewed and edited before saving.
+        </p>
+
+        <div class="hh-grid-2">
+          <div>
+            <div class="hh-form-group">
+              <label class="hh-label" for="reportTitleInput">Report Title / Test Name</label>
+              <input type="text" id="reportTitleInput" class="hh-input" value="Complete Blood Count & Metabolic Panel" />
+            </div>
+
+            <div class="hh-form-group">
+              <label class="hh-label" for="reportLanguageSelect">Explanation Language</label>
+              <select id="reportLanguageSelect" class="hh-select">
+                <option value="en">English (Standard Medical)</option>
+                <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                <option value="hi">हिन्दी (Hindi)</option>
+                <option value="mr">मराठी (Marathi)</option>
+              </select>
+            </div>
+
+            <div class="hh-form-group">
+              <label class="hh-label" for="reportFileInput">Upload Report (PDF, JPG, PNG)</label>
+              <input type="file" id="reportFileInput" class="hh-input" accept=".pdf,image/*" />
+            </div>
+
+            <button class="hh-btn" onclick="analyzeReportInput()">⚡ Process & Explain Report</button>
+            <div id="reportLoader" style="display:none;margin-top:12px;color:var(--hh-primary);font-weight:700;">
+              ⏳ Extracting text, identifying lab indicators, and citing clinical references...
+            </div>
+          </div>
+
+          <div>
+            <div class="hh-safety-notice">
+              <strong>Medical Safety Protocol:</strong> MedInVedic does not autonomously diagnose medical conditions or advise changing prescription dosages. Findings are contrasted strictly against laboratory reference ranges.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Output Card -->
+      <div id="reportAnalysisOutput" class="hh-card" style="display:none;">
+        <div class="hh-card-header">
+          <h3 class="hh-card-title" id="reportOutputTitle">Report Analysis</h3>
+          <div>
+            <button class="hh-btn hh-btn-sm hh-btn-secondary" onclick="downloadReportSummary()">📥 Download PDF/Summary</button>
+            <button class="hh-btn hh-btn-sm" onclick="saveVerifiedReport()">💾 Save to Health Locker</button>
+          </div>
+        </div>
+
+        <div style="background:var(--hh-surface-subtle);padding:18px;border-radius:var(--hh-radius-md);margin-bottom:20px;border-left:4px solid var(--hh-primary);">
+          <h4 style="margin:0 0 8px 0;">Clinical Interpretation:</h4>
+          <p id="reportExplanationText" style="line-height:1.6;font-size:15px;margin:0;"></p>
+        </div>
+
+        <h4 style="margin-bottom:12px;">Identified Parameters (You may edit any measured value):</h4>
+        <div style="overflow-x:auto;">
+          <table class="hh-table">
+            <thead>
+              <tr>
+                <th>Test Parameter</th>
+                <th>Measured Value</th>
+                <th>Unit</th>
+                <th>Biological Reference Range</th>
+                <th>Status Indicator</th>
+              </tr>
+            </thead>
+            <tbody id="reportTestsTableBody"></tbody>
+          </table>
+        </div>
+
+        <div id="reportCitationsBox" style="margin-top:20px;font-size:12.5px;color:var(--hh-text-muted);background:#f8fafc;padding:12px;border-radius:8px;"></div>
+        <div id="reportRAGOutput" style="display:none;margin-top:16px;"></div>
+      </div>
+    </section>
+
+    <!-- ── TAB 3: SMART SYMPTOM CHECKER (FEATURE 2) ── -->
+    <section id="tab-symptoms" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🩺 Smart Symptom Checker & Care Navigator</h2>
+          <span class="hh-badge hh-badge-warning">Clinically Guardrailed</span>
+        </div>
+        <p style="color:var(--hh-text-muted);margin-bottom:18px;">
+          Select your symptoms below to navigate appropriate care pathways. Emergency warning symptoms trigger immediate escalation.
+        </p>
+
+        <div class="hh-form-group">
+          <label class="hh-label">Common Symptoms (Click to toggle):</label>
+          <div>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Fever')">🌡️ Fever</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Headache')">🤕 Headache</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Cough & Cold')">🤧 Cough & Cold</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Shortness of breath')">🫁 Shortness of breath</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Chest tightness or discomfort')">💔 Chest tightness</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Nausea or Indigestion')">🤢 Nausea</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Joint or Muscle Pain')">🦵 Joint Pain</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Severe Fatigue')">💤 Fatigue</span>
+            <span class="symptom-pill" onclick="toggleSymptomPill(this, 'Skin Rash')">🔴 Skin Rash</span>
+          </div>
+        </div>
+
+        <div class="hh-form-group">
+          <label class="hh-label" for="selectedSymptomsInput">Describe your symptoms in your own words:</label>
+          <input type="text" id="selectedSymptomsInput" class="hh-input" placeholder="e.g. Mild headache and throat scratchiness since yesterday" />
+        </div>
+
+        <div class="hh-grid-3">
+          <div class="hh-form-group">
+            <label class="hh-label" for="symptomDurationSelect">Duration</label>
+            <select id="symptomDurationSelect" class="hh-select">
+              <option value="Less than 24 hours">Less than 24 hours</option>
+              <option value="1-3 days" selected>1-3 days</option>
+              <option value="4-7 days">4-7 days</option>
+              <option value="More than 2 weeks">More than 2 weeks</option>
+            </select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="symptomAgeGroupSelect">Age Group</label>
+            <select id="symptomAgeGroupSelect" class="hh-select">
+              <option value="Pediatric (0-17)">Pediatric (0-17)</option>
+              <option value="Adult (18-64)" selected>Adult (18-64)</option>
+              <option value="Senior (65+)">Senior (65+)</option>
+            </select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label">Severity Level</label>
+            <div style="display:flex;gap:12px;align-items:center;margin-top:8px;">
+              <label><input type="radio" name="symptomSeverity" value="Mild"> Mild</label>
+              <label><input type="radio" name="symptomSeverity" value="Moderate" checked> Moderate</label>
+              <label><input type="radio" name="symptomSeverity" value="Severe"> Severe</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="hh-form-group" style="margin-top:12px;">
+  <label class="hh-label" for="symptomLangSelect">Response Language</label>
+  <select id="symptomLangSelect" class="hh-select"><option value="en">English</option><option value="hi">हिन्दी</option><option value="kn">ಕನ್ನಡ</option><option value="mr">मराठी</option></select>
+</div>
+<button id="symptomEvalBtn" class="hh-btn" onclick="evaluateSymptoms()">🔍 Evaluate via RAG &amp; Navigate Care</button>
+
+        <div id="symptomResultBox" style="display:none;margin-top:24px;"><div id="symptomRAGResult"></div></div>
+      </div>
+    </section>
+
+    <!-- ── TAB 4: NUTRITION & DIET ASSISTANT (FEATURE 3) ── -->
+    <section id="tab-nutrition" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card" style="margin-bottom:24px;">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🥗 AI Nutrition & Ayurvedic Diet Assistant</h2>
+          <span class="hh-badge hh-badge-normal">ICMR-NIN Aligned</span>
+        </div>
+
+        <div class="hh-grid-3">
+          <div class="hh-form-group">
+            <label class="hh-label" for="nutritionRegionSelect">Regional Indian Cuisine</label>
+            <select id="nutritionRegionSelect" class="hh-select">
+              <option value="South Indian">South Indian (Millet, Idli, Rasam, Sambar)</option>
+              <option value="North Indian">North Indian (Dal, Roti, Seasonal Sabzi, Dalia)</option>
+              <option value="Ayurvedic Sattvic">Ayurvedic Sattvic (Kitchari, Ghee, Stewed Fruits)</option>
+            </select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="nutritionDietTypeSelect">Diet Preference</label>
+            <select id="nutritionDietTypeSelect" class="hh-select">
+              <option value="Vegetarian">Pure Vegetarian</option>
+              <option value="Eggetarian">Eggetarian</option>
+              <option value="Non-Vegetarian">Non-Vegetarian</option>
+              <option value="Vegan">Vegan (Plant-based)</option>
+            </select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="nutritionCaloriesInput">Target Daily Calories (kcal)</label>
+            <input type="number" id="nutritionCaloriesInput" class="hh-input" value="2000" min="1200" max="3500" />
+          </div>
+        </div>
+
+        <div class="hh-form-group" style="margin-top:12px;">
+  <label class="hh-label" for="nutritionAllergiesInput">Food Allergies / Restrictions</label>
+  <input type="text" id="nutritionAllergiesInput" class="hh-input" placeholder="e.g. Peanuts, Lactose, Gluten" />
+</div>
+<div class="hh-form-group">
+  <label class="hh-label" for="nutritionGoalsInput">Wellness Goals</label>
+  <input type="text" id="nutritionGoalsInput" class="hh-input" placeholder="e.g. Weight management, energy, diabetes control" />
+</div>
+<div class="hh-form-group">
+  <label class="hh-label" for="nutritionLangSelect">Language</label>
+  <select id="nutritionLangSelect" class="hh-select"><option value="en">English</option><option value="hi">हिन्दी</option><option value="kn">ಕನ್ನಡ</option><option value="mr">मराठी</option></select>
+</div>
+<button id="nutritionGenerateBtn" class="hh-btn" onclick="generateNutritionPlan()">🥗 Generate RAG Meal Plan</button>
+      </div>
+
+      <!-- Plan Output -->
+      <div id="nutritionRAGOutput" style="display:none;margin-bottom:16px;"></div>`n      <<div id="nutritionPlanOutput" class="hh-card" style="display:none;">
+        <h3 id="nutritionPlanTitle" style="margin-top:0;">Personalized Plan</h3>
+        <div class="hh-grid-2" style="margin-top:16px;">
+          <div>
+            <h4>Daily Meal Timeline:</h4>
+            <div style="background:var(--hh-surface-subtle);padding:14px;border-radius:8px;margin-bottom:10px;">
+              <strong>🌅 Breakfast:</strong> <span id="mealBreakfast"></span>
+            </div>
+            <div style="background:var(--hh-surface-subtle);padding:14px;border-radius:8px;margin-bottom:10px;">
+              <strong>☀️ Lunch:</strong> <span id="mealLunch"></span>
+            </div>
+            <div style="background:var(--hh-surface-subtle);padding:14px;border-radius:8px;margin-bottom:10px;">
+              <strong>🍵 Evening Snack:</strong> <span id="mealSnack"></span>
+            </div>
+            <div style="background:var(--hh-surface-subtle);padding:14px;border-radius:8px;margin-bottom:10px;">
+              <strong>🌙 Dinner:</strong> <span id="mealDinner"></span>
+            </div>
+          </div>
+
+          <div>
+            <h4>Automated Shopping List:</h4>
+            <ul id="nutritionShoppingList" style="list-style:none;padding:0;margin-bottom:20px;"></ul>
+
+            <h4>Smart Ayurvedic Substitutions:</h4>
+            <div id="nutritionSubstitutions"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 5: DIGITAL HEALTH LOCKER (FEATURE 4) ── -->
+    <section id="tab-locker" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card" style="margin-bottom:20px;">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🔒 Digital Health Locker Vault</h2>
+          <button class="hh-btn" onclick="document.getElementById('uploadLockerModal').classList.add('open')">➕ Upload New Document</button>
+        </div>
+
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+          <button class="hh-btn hh-btn-sm hh-btn-secondary locker-filter-btn active" onclick="filterLockerCategory('All', this)">All</button>
+          <button class="hh-btn hh-btn-sm hh-btn-secondary locker-filter-btn" onclick="filterLockerCategory('Lab Reports', this)">Lab Reports</button>
+          <button class="hh-btn hh-btn-sm hh-btn-secondary locker-filter-btn" onclick="filterLockerCategory('Prescriptions', this)">Prescriptions</button>
+          <button class="hh-btn hh-btn-sm hh-btn-secondary locker-filter-btn" onclick="filterLockerCategory('Discharge Summaries', this)">Discharge Summaries</button>
+        </div>
+
+        <div id="lockerRAGOutput" style="display:none;margin-bottom:16px;"></div>`n      <<div class="hh-card" style="margin-bottom:16px;"><div class="hh-card-header"><h4 class="hh-card-title">🤖 Ask AI About Your Records</h4></div><div style="display:flex;gap:8px;margin-bottom:8px;"><input type="text" id="lockerRAGInput" class="hh-input" placeholder="e.g. What documents do I have about diabetes?" /><select id="lockerRAGLang" class="hh-select" style="width:120px;"><option value="en">EN</option><option value="hi">HI</option><option value="kn">KN</option><option value="mr">MR</option></select><button id="lockerRAGBtn" class="hh-btn" onclick="askLockerRAG()">Ask RAG</button></div><div id="lockerRAGOutput" style="display:none;"></div></div><<div id="lockerDocsGrid" class="hh-grid-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 6: PERSONAL HEALTH TIMELINE (FEATURE 11) ── -->
+    <section id="tab-timeline" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card" style="margin-bottom:20px;">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">📈 Chronological Health Timeline</h2>
+          <button class="hh-btn hh-btn-secondary" onclick="document.getElementById('logVitalsModal').classList.add('open')">💓 Log Vitals</button>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;">
+          Unified record stream merging doctor consultations, diagnostic test releases, recorded symptoms, and self-reported vitals.
+        </p>
+
+        <div id="timelineEventsStream" class="hh-timeline">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 7: PREVENTIVE HEALTH PLANNER (FEATURE 17) ── -->
+    <section id="tab-preventive" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🛡️ Preventive Care & Vaccination Planner</h2>
+          <span class="hh-badge hh-badge-normal">ICMR & WHO Protocols</span>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:18px;">
+          Evidence-based screening schedules tailored for proactive disease prevention and early detection.
+        </p>
+
+        <div style="overflow-x:auto;">
+          <table class="hh-table">
+            <thead>
+              <tr>
+                <th>Screening / Vaccination</th>
+                <th>Clinical Guidance</th>
+                <th>Last Done</th>
+                <th>Next Due</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="preventiveTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 8: FAMILY HEALTH PROFILES (FEATURE 7) ── -->
+    <section id="tab-family" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card" style="margin-bottom:20px;">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">👨‍👩‍👧 Family Health Profiles</h2>
+          <button class="hh-btn" onclick="document.getElementById('addFamilyModal').classList.add('open')">➕ Add Family Member</button>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:18px;">
+          Manage health records, appointments, and prescriptions for children and senior dependents under verified consent protocols.
+        </p>
+
+        <div id="familyProfilesList" class="hh-grid-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 9: MEDICINE SAFETY, BARCODE SCANNER & RAG (FEATURES 5, 9, 16) ── -->
+    <section id="tab-safety" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-grid-2">
+        <!-- Feature 5: Barcode Scanner -->
+        <div class="hh-card">
+          <div class="hh-card-header">
+            <h3 class="hh-card-title">📷 Medicine Barcode Scanner</h3>
+            <span class="hh-badge hh-badge-normal">Feature 5</span>
+          </div>
+          <p style="color:var(--hh-text-muted);font-size:13.5px;margin-bottom:14px;">
+            Point your camera or enter the product barcode to inspect active ingredients, manufacturer details, and verified batch dates.
+          </p>
+
+          <div style="background:#000;border-radius:10px;height:140px;display:flex;align-items:center;justify-content:center;color:white;margin-bottom:14px;font-size:13px;flex-direction:column;gap:6px;">
+            <div>📷 Camera Viewport Live</div>
+            <small style="color:#a7f3d0;">(Optical Barcode & QR Sensor Ready)</small>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="barcodeNumberInput">Or enter Barcode manually:</label>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="barcodeInput" class="hh-input" value="890103000001" placeholder="e.g. 890103000001" /><input type="text" id="barcodeManualName" class="hh-input" placeholder="Or type medicine name for RAG search" style="margin-top:8px;" />
+              <button class="hh-btn" id="barcodeBtn" onclick="lookupBarcode()">Lookup</button>
+            </div>
+            <small style="color:var(--hh-text-muted);display:block;margin-top:4px;">Try sample barcodes: 890103000001 (Dolo), 890123456789 (Ashwagandha)</small>
+          </div>
+
+          <div id="barcodeResult" style="display:none;margin-top:14px;"></div>
+        </div>
+
+        <!-- Feature 9: Medicine Interaction Checker -->
+        <div class="hh-card">
+          <div class="hh-card-header">
+            <h3 class="hh-card-title">⚠️ Medicine & Herb Interaction Checker</h3>
+            <span class="hh-badge hh-badge-warning">Feature 9</span>
+          </div>
+          <p style="color:var(--hh-text-muted);font-size:13.5px;margin-bottom:14px;">
+            Check potential interactions between Allopathic medicines and Ayurvedic herbs (CDSCO & AYUSH database).
+          </p>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="interactionMedsInput">Enter two or more medicines / herbs (separated by commas):</label>
+            <input type="text" id="interactionMed1Input" class="hh-input" value="Warfarin" placeholder="Medicine 1" placeholder="e.g. Warfarin, Guggulu or Metformin, Karela" /><input type="text" id="interactionMed2Input" class="hh-input" placeholder="Medicine 2 (optional)" style="margin-top:8px;" /><input type="text" id="interactionMed3Input" class="hh-input" placeholder="Medicine 3 / Herb (optional)" style="margin-top:8px;" /><div class="hh-form-group"><label class="hh-label" for="interactionLangSelect">Language</label><select id="interactionLangSelect" class="hh-select"><option value="en">English</option><option value="hi">Hindi</option><option value="kn">Kannada</option><option value="mr">Marathi</option></select></div>
+          </div>
+
+          <button class="hh-btn" id="interactionCheckBtn" onclick="checkDrugInteractions()">🔬 Analyze Drug-Herb Interactions</button>
+          <div id="interactionRAGOutput" style="display:none;margin-top:16px;"></div>
+        </div>
+      </div>
+
+      <!-- Feature 16: Personal Health-Record RAG Assistant -->
+      <div class="hh-card" style="margin-top:24px;">
+        <div class="hh-card-header">
+          <h3 class="hh-card-title">🧠 Personal Health-Record RAG Assistant</h3>
+          <span class="hh-badge hh-badge-info">Feature 16</span>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:14px;">
+          Ask questions grounded exclusively in your private uploaded Health Locker documents. Protected by the golden principle: <strong>NO VERIFIED SOURCE → NO MEDICAL CLAIM</strong>.
+        </p>
+
+        <div style="display:flex;gap:10px;">
+          <input type="text" id="ragQuestionInput" class="hh-input" placeholder="e.g. What was my cholesterol level in my last blood test?" value="What was my cholesterol level in my last blood test?" /><select id="ragLangSelect" class="hh-select" style="margin-top:8px;"><option value="en">English</option><option value="hi">Hindi</option><option value="kn">Kannada</option><option value="mr">Marathi</option></select>
+          <button class="hh-btn" id="ragSubmitBtn" onclick="submitRAGQuestion()">Ask RAG</button>
+        </div>
+
+        <div id="ragAnswerSection" style="display:none;"><div id="ragAnswerOutput"><div id="ragAnswerSection"></div></div></div>
+      </div>
+    </section>
+
+    <!-- ── TAB 10: LAB TEST BOOKING (FEATURE 10) ── -->
+    <section id="tab-labs" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🧪 Diagnostic Lab Test Booking</h2>
+          <span class="hh-badge hh-badge-normal">NABL Accredited Labs</span>
+        </div>
+
+        <div class="hh-grid-3">
+          <div class="hh-form-group">
+            <label class="hh-label" for="labTestSelect">Choose Test or Health Package</label>
+            <select id="labTestNameInput" class="hh-select"></select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="labCollectionSelect">Sample Collection Mode</label>
+            <select id="labCollectionSelectOld" class="hh-select">
+              <option value="Home Sample Collection">🏠 Home Sample Collection (Free Phlebotomist Visit)</option>
+              <option value="Lab Visit">🏥 Walk-in Visit to Diagnostic Center</option>
+            </select>
+          </div>
+
+          <div class="hh-form-group">
+            <label class="hh-label" for="labApptDate">Preferred Date</label>
+            <input type="date" id="labSlotDateInput" class="hh-input" />
+          </div>
+        </div>
+
+        <input type="text" id="labNameInput" class="hh-input" placeholder="Lab name (auto-filled when selecting from catalog)" style="margin-bottom:8px;" /><input type="checkbox" id="labHomeCollectionCheck"> Home sample collection<br/><br/><button id="labBookBtn" class="hh-btn" onclick="bookLabTest()">📅 Confirm RAG-Guided Booking</button><div id="labBookingResult" style="display:none;margin-top:16px;"></div>
+      </div>
+    </section>
+
+    <!-- ── TAB 11: EMERGENCY SOS MEDICAL CARD (FEATURE 13) ── -->
+    <section id="tab-emergency" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🪪 Emergency Medical Card (First Responder Pass)</h2>
+          <button class="hh-btn hh-btn-secondary" onclick="printEmergencyCard()">🖨️ Print Wallet Card</button>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:18px;">
+          Minimal-access emergency profile accessible via revocable secure token without exposing your private medical document locker.
+        </p>
+
+        <div class="hh-grid-2">
+          <div style="background:var(--hh-surface-subtle);padding:24px;border-radius:var(--hh-radius-md);border:2px dashed var(--hh-primary);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h3 style="margin:0;color:var(--hh-primary-dark);" id="emCardName">Emergency Patient Profile</h3>
+              <span class="hh-badge hh-badge-high" id="emCardBlood" style="font-size:14px;">B+ Positive</span>
+            </div>
+            <p><strong>🚨 Critical Allergies:</strong> <span id="emCardAllergies">Sulfa Antibiotics, Penicillin</span></p>
+            <p><strong>🩺 Chronic Conditions:</strong> <span id="emCardConditions">Mild Seasonal Allergy, Controlled Hypertension</span></p>
+            <p><strong>💊 Current Medications:</strong> <span id="emCardMeds">Amlodipine 5mg, Ashwagandha KSM-66</span></p>
+            <p><strong>👨‍⚕️ Attending Physician:</strong> <span id="emCardDoctor">Primary Care Physician (Contact On File)</span></p>
+            <p><strong>📞 Emergency Contacts:</strong> <span id="emCardContacts">Emergency SOS Helpline: 112 / 108</span></p>
+          </div>
+
+          <div style="text-align:center;padding:20px;background:#f8fafc;border-radius:12px;">
+            <h4>Secure Emergency QR Code</h4>
+            <div style="width:160px;height:160px;background:#ffffff;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;border:1px solid #cbd5e1;border-radius:8px;font-size:12px;color:#64748b;">
+              [Dynamic QR Token: <span id="emCardToken">em_token_8899a1</span>]
+            </div>
+            <small style="color:var(--hh-text-muted);display:block;">First responders scan to view life-saving parameters under Good Samaritan protocols.</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 12: LIVE ORDER TRACKING (FEATURE 6) ── -->
+    <section id="tab-tracking" class="hh-tab-panel" role="tabpanel"><div class="hh-card"><div class="hh-form-group"><label class="hh-label" for="orderIdInput">Order ID</label><input type="text" id="orderIdInput" class="hh-input" placeholder="e.g. ORD-2026-001" /></div><button id="trackOrderBtn" class="hh-btn" onclick="trackOrder()">🔍 Track Order</button><div id="orderTrackingOutput" style="display:none;margin-top:16px;"></div></div>
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🚚 Live Order Tracking & Logistics</h2>
+          <span class="hh-badge hh-badge-normal">Feature 6</span>
+        </div>
+
+        <div class="hh-form-group" style="max-width:500px;">
+          <label class="hh-label" for="orderIdTrackInput">Enter Order ID</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="orderIdTrackInput" class="hh-input" value="MV-8921" />
+            <button class="hh-btn" onclick="trackLiveOrder()">Track</button>
+          </div>
+        </div>
+
+        <div id="orderTrackingOutput" style="display:none;margin-top:20px;"></div>
+      </div>
+    </section>
+
+    <!-- ── TAB 13: HEALTH EXPENSE TRACKER (FEATURE 18) ── -->
+    <section id="tab-expenses" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">💳 Healthcare Expense Tracker (Section 80D)</h2>
+          <div>
+            <button class="hh-btn hh-btn-sm hh-btn-secondary" onclick="exportExpensesCsv()">📥 Export CSV</button>
+            <button class="hh-btn hh-btn-sm" onclick="document.getElementById('addExpenseModal').classList.add('open')">➕ Log Expense</button>
+          </div>
+        </div>
+
+        <div style="background:var(--hh-surface-subtle);padding:16px;border-radius:8px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <span style="font-size:13px;color:var(--hh-text-muted);">Total Out-of-Pocket Spend (YTD):</span>
+            <div id="totalExpensesDisplay" style="font-size:24px;font-weight:800;color:var(--hh-primary-dark);">₹0</div>
+          </div>
+          <span class="hh-badge hh-badge-normal">Section 80D Tracking Ready</span>
+        </div>
+
+        <div style="overflow-x:auto;">
+          <table class="hh-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Payment Mode</th>
+                <th>Tax Notes</th>
+              </tr>
+            </thead>
+            <tbody id="expensesTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 14: DOCTOR FOLLOW-UP PORTAL (FEATURE 14) ── -->
+    <section id="tab-doctor" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">👨‍⚕️ Clinician Follow-up Portal</h2>
+          <span class="hh-badge hh-badge-info">Doctor Dashboard</span>
+        </div>
+        <p style="color:var(--hh-text-muted);font-size:14px;margin-bottom:16px;">
+          Verified clinicians review consultation notes, authorize follow-up prescriptions, and monitor patient health locker logs.
+        </p>
+
+        <div style="background:var(--hh-surface-subtle);padding:18px;border-radius:10px;border-left:4px solid var(--hh-primary);">
+          <h4>Active Follow-up: Mahesh Badiger (2-Week Post Consultation)</h4>
+          <p><strong>Primary Doctor:</strong> Dr. Shailesh Phalle (MD Ayurvedic & Panchakarma)</p>
+          <p><strong>Clinical Notes:</strong> "Blood sugar stabilized at 98 mg/dL with dietary changes. Continue Ashwagandha KSM-66 1 cap daily and maintain CCF herbal tea."</p>
+          <div style="margin-top:12px;">
+            <button class="hh-btn hh-btn-sm" onclick="alert('Consultation note signed and synchronized to patient Health Timeline.')">✍️ Update Clinical Notes</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── TAB 15: PHARMACY STOCK & INVENTORY (FEATURES 15 & 19) ── -->
+    <section id="tab-pharmacy" class="hh-tab-panel" role="tabpanel">
+      <div class="hh-card">
+        <div class="hh-card-header">
+          <h2 class="hh-card-title">🏪 Nearby Pharmacy Stock & Partner Portal</h2>
+          <span class="hh-badge hh-badge-normal">Features 15 & 19</span>
+        </div>
+
+        <div class="hh-grid-3" style="margin-bottom:16px;">
+          <div class="hh-form-group">
+            <label class="hh-label" for="pharmacyPinInput">Search by PIN Code</label>
+            <input type="text" id="pharmacyPinInput" class="hh-input" value="412115" />
+          </div>
+          <div class="hh-form-group">
+            <label class="hh-label" for="pharmacyCityInput">Or City</label>
+            <input type="text" id="pharmacyCityInput" class="hh-input" value="Pune" />
+          </div>
+          <div style="display:flex;align-items:flex-end;">
+            <button class="hh-btn" style="margin-bottom:16px;" onclick="triggerPharmacySearch()">🔍 Search Stock</button>
+          </div>
+        </div>
+
+        <div id="pharmacyResultsGrid" class="hh-grid-3">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ── 5. FLOATING MULTILINGUAL VOICE ASSISTANT (FEATURE 8) ── -->
+  <button id="voiceFab" class="hh-voice-fab" onclick="toggleVoiceRecording()" aria-label="Activate Multilingual Voice Assistant" title="Click to speak (English, Hindi, Kannada, Marathi)">
+    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+      <line x1="12" y1="19" x2="12" y2="22"></line>
+    </svg>
+  </button>
+
+  <!-- Voice Assistant Quick Interaction Modal -->
+  <div class="hh-modal-overlay" id="voiceAssistantModal">
+    <div class="hh-modal">
+      <div class="hh-card-header">
+        <h3 class="hh-card-title">🎙️ Multilingual Voice Assistant</h3>
+        <button class="hh-access-btn" onclick="document.getElementById('voiceAssistantModal').classList.remove('open')">✕</button>
+      </div>
+
+      <div class="hh-form-group">
+        <label class="hh-label" for="voiceLangSelect">Spoken Language</label>
+        <select id="voiceLangSelect" class="hh-select">
+          <option value="en">English (Indian Accent)</option>
+          <option value="kn">ಕನ್ನಡ (Kannada)</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+          <option value="mr">मराठी (Marathi)</option>
+        </select>
+      </div>
+
+      <div class="hh-form-group">
+        <label class="hh-label" for="voiceAssistantQueryInput">Your Voice Query or Question:</label>
+        <div style="display:flex;gap:8px;">
+          <input type="text" id="voiceAssistantQueryInput" class="hh-input" placeholder="e.g. How does Ashwagandha reduce stress?" />
+          <button class="hh-btn" onclick="sendVoiceQuery()">Send</button>
+        </div>
+      </div>
+
+      <div id="voiceAssistantResponseCard" style="display:none;margin-top:16px;">
+        <div style="background:var(--hh-surface-subtle);padding:16px;border-radius:8px;">
+          <h4 style="margin:0 0 6px 0;">Voice Response:</h4>
+          <p id="voiceResponseText" style="line-height:1.6;font-size:14.5px;"></p>
+          <div id="voiceCitationsList" style="font-size:12px;color:var(--hh-text-muted);margin-top:8px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 6. MODALS FOR ACTIONS ── -->
+  <!-- Upload Locker Modal -->
+  <div class="hh-modal-overlay" id="uploadLockerModal">
+    <div class="hh-modal">
+      <div class="hh-card-header">
+        <h3 class="hh-card-title">🔒 Upload Document to Health Locker</h3>
+        <button class="hh-access-btn" onclick="document.getElementById('uploadLockerModal').classList.remove('open')">✕</button>
+      </div>
+      <form id="lockerUploadForm" onsubmit="event.preventDefault(); alert('Document encrypted and stored in your vault!'); document.getElementById('uploadLockerModal').classList.remove('open');">
+        <div class="hh-form-group">
+          <label class="hh-label">Document Title</label>
+          <input type="text" class="hh-input" required placeholder="e.g. Thyroid Panel Report Oct 2026" />
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">Category</label>
+          <select class="hh-select">
+            <option>Lab Reports</option>
+            <option>Prescriptions</option>
+            <option>Discharge Summaries</option>
+            <option>Clinical Notes</option>
+          </select>
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">Select File (PDF, PNG, JPG)</label>
+          <input type="file" class="hh-input" required accept=".pdf,image/*" />
+        </div>
+        <button type="submit" class="hh-btn" style="width:100%;">Upload & Encrypt</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Log Vitals Modal -->
+  <div class="hh-modal-overlay" id="logVitalsModal">
+    <div class="hh-modal">
+      <div class="hh-card-header">
+        <h3 class="hh-card-title">💓 Log Health Vitals</h3>
+        <button class="hh-access-btn" onclick="document.getElementById('logVitalsModal').classList.remove('open')">✕</button>
+      </div>
+      <div class="hh-grid-2">
+        <div class="hh-form-group">
+          <label class="hh-label">BP Systolic (mmHg)</label>
+          <input type="number" id="vitalSystolicInput" class="hh-input" value="120" />
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">BP Diastolic (mmHg)</label>
+          <input type="number" id="vitalDiastolicInput" class="hh-input" value="80" />
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">Heart Rate (bpm)</label>
+          <input type="number" id="vitalPulseInput" class="hh-input" value="72" />
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">Blood Sugar (mg/dL)</label>
+          <input type="number" id="vitalSugarInput" class="hh-input" value="95" />
+        </div>
+      </div>
+      <button class="hh-btn" style="width:100%;margin-top:12px;" onclick="logVitalReading(); document.getElementById('logVitalsModal').classList.remove('open');">Save Vitals</button>
+    </div>
+  </div>
+
+  <!-- Add Family Modal -->
+  <div class="hh-modal-overlay" id="addFamilyModal">
+    <div class="hh-modal">
+      <div class="hh-card-header">
+        <h3 class="hh-card-title">👨‍👩‍👧 Add Family Health Profile</h3>
+        <button class="hh-access-btn" onclick="document.getElementById('addFamilyModal').classList.remove('open')">✕</button>
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Full Name</label>
+        <input type="text" id="familyFullNameInput" class="hh-input" placeholder="e.g. Aarav Badiger" />
+      </div>
+      <div class="hh-grid-2">
+        <div class="hh-form-group">
+          <label class="hh-label">Relationship</label>
+          <select id="familyRelationSelect" class="hh-select">
+            <option>Spouse</option>
+            <option>Child</option>
+            <option>Mother</option>
+            <option>Father</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="hh-form-group">
+          <label class="hh-label">Blood Group</label>
+          <select id="familyBloodGroupSelect" class="hh-select">
+            <option>A+</option><option>B+</option><option>O+</option><option>AB+</option>
+            <option>A-</option><option>B-</option><option>O-</option><option>AB-</option>
+          </select>
+        </div>
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Known Allergies</label>
+        <input type="text" id="familyAllergiesInput" class="hh-input" placeholder="None known or specify" />
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Chronic Conditions</label>
+        <input type="text" id="familyConditionsInput" class="hh-input" placeholder="None or specify" />
+      </div>
+      <div class="hh-form-group" style="margin-top:12px;">
+        <label style="cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;">
+          <input type="checkbox" id="familyConsentCheckbox" checked />
+          <span>I confirm I have informed consent / legal guardian authority to manage this profile.</span>
+        </label>
+      </div>
+      <button class="hh-btn" style="width:100%;margin-top:12px;" onclick="addFamilyProfile(); document.getElementById('addFamilyModal').classList.remove('open');">Create Profile</button>
+    </div>
+  </div>
+
+  <!-- Add Expense Modal -->
+  <div class="hh-modal-overlay" id="addExpenseModal">
+    <div class="hh-modal">
+      <div class="hh-card-header">
+        <h3 class="hh-card-title">💳 Log Healthcare Expense</h3>
+        <button class="hh-access-btn" onclick="document.getElementById('addExpenseModal').classList.remove('open')">✕</button>
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Category</label>
+        <select id="expenseCategorySelect" class="hh-select">
+          <option>Doctor Consult</option>
+          <option>Medicines & Herbs</option>
+          <option>Lab Diagnostics</option>
+          <option>Hospital & Therapy</option>
+          <option>Wellness & Devices</option>
+        </select>
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Description</label>
+        <input type="text" id="expenseDescInput" class="hh-input" placeholder="e.g. Consult with Dr. Phalle" />
+      </div>
+      <div class="hh-form-group">
+        <label class="hh-label">Amount (INR)</label>
+        <input type="number" id="expenseAmountInput" class="hh-input" placeholder="600" />
+      </div>
+      <button class="hh-btn" style="width:100%;margin-top:12px;" onclick="addHealthcareExpense(); document.getElementById('addExpenseModal').classList.remove('open');">Save Expense</button>
+    </div>
+  </div>
+
+  <!-- ═══ MOBILE BOTTOM NAVIGATION ═══ -->
+  <nav class="hh-mobile-bottom-nav" aria-label="Mobile Navigation">
+    <a href="../index.html" class="hh-bottom-nav-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </a>
+    <button class="hh-bottom-nav-item active" onclick="switchHealthTab('overview')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+      <span>Health Hub</span>
+    </button>
+    <a href="emergency.html" class="hh-bottom-nav-sos">
+      <div class="hh-bottom-nav-sos-btn">🚨</div>
+      <span>SOS</span>
+    </a>
+    <a href="simulation-lab.html" class="hh-bottom-nav-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/></svg>
+      <span>Sim Lab</span>
+    </a>
+    <a href="workspace.html" class="hh-bottom-nav-item">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </a>
+  </nav>
+
+  <script src="../js/health-hub.js?v=1"></script>
+</body>
+</html>
+
+
+
+

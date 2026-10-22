@@ -55,7 +55,8 @@
   <link rel="stylesheet" href="css/style.css?v=v_Glassmorphism_v1" />
   <link rel="stylesheet" href="css/auth-gate.css" />
   <link rel="stylesheet" href="css/responsive.css?v=v5" />
-  <link rel="stylesheet" href="css/rag-engine.css?v=v1" />
+  <link rel="stylesheet" href="css/rag-engine.css?v=v_black_1791739431873" />
+  <link rel="stylesheet" href="css/ai-model-selector.css" />
 
   <meta property="og:title" content="MedInVedic — Dual Healthcare Innovation" />
   <meta property="og:description" content="Integrating Allopathy and Ayurveda for a holistic health experience. Consult doctors and shop authentic remedies." />
@@ -151,7 +152,7 @@
     /* Vedic Health Cockpit CSS */
     .cockpit-section {
       background: #ffffff;
-      border: 1px solid #e4e4e7;
+      border: 1px solid #dcfce7;
       border-radius: 20px;
       padding: 36px;
       margin-top: 50px;
@@ -170,8 +171,8 @@
       }
     }
     .cockpit-card {
-      background: #faf7f2;
-      border: 1px solid #e4e4e7;
+      background: #f0fdf4;
+      border: 1px solid #dcfce7;
       border-radius: 16px;
       padding: 24px;
     }
@@ -190,20 +191,20 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-    .sb-blue { background: #18181b; }
-    .sb-red { background: #3f3f46; }
-    .sb-purple { background: #27272a; }
+    .sb-blue { background: #15803d; }
+    .sb-red { background: #16a34a; }
+    .sb-purple { background: #166534; }
     
     .streak-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 16px;
-      border-bottom: 1px solid #e4e4e7;
+      border-bottom: 1px solid #dcfce7;
       padding-bottom: 12px;
     }
     .streak-bar-container {
-      background: #e4e4e7;
+      background: #dcfce7;
       height: 8px;
       border-radius: 10px;
       overflow: hidden;
@@ -211,7 +212,7 @@
     }
     .streak-bar-fill {
       height: 100%;
-      background: #18181b;
+      background: #15803d;
       width: 0%;
       transition: width 0.4s ease;
     }
@@ -227,7 +228,7 @@
     }
     .task-item {
       background: #ffffff;
-      border: 1px solid #e4e4e7;
+      border: 1px solid #dcfce7;
       border-radius: 10px;
       padding: 12px 14px;
       display: flex;
@@ -237,17 +238,17 @@
       transition: all 0.2s ease;
     }
     .task-item:hover {
-      background: #faf7f2;
-      border-color: #d4d4d8;
+      background: #f0fdf4;
+      border-color: #bbf7d0;
     }
     .task-item.checked {
       background: #f4f0e8;
-      border-color: #18181b;
+      border-color: #15803d;
     }
     .task-checkbox {
       width: 18px;
       height: 18px;
-      border: 2px solid #a1a1aa;
+      border: 2px solid #86efac;
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -257,8 +258,8 @@
       transition: all 0.2s ease;
     }
     .task-item.checked .task-checkbox {
-      background: #18181b;
-      border-color: #18181b;
+      background: #15803d;
+      border-color: #15803d;
       color: white;
     }
     .score-circle-container {
@@ -275,12 +276,12 @@
     }
     .score-circle-bg {
       fill: none;
-      stroke: #e4e4e7;
+      stroke: #dcfce7;
       stroke-width: 10;
     }
     .score-circle-bar {
       fill: none;
-      stroke: #18181b;
+      stroke: #15803d;
       stroke-width: 10;
       stroke-linecap: round;
       stroke-dasharray: 440;
@@ -294,11 +295,11 @@
     .score-val {
       font-size: 36px;
       font-weight: 900;
-      color: #18181b;
+      color: #15803d;
     }
     .score-label {
       font-size: 11px;
-      color: #71717a;
+      color: #374151;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
@@ -309,7 +310,7 @@
     }
     .stat-pill {
       background: #ffffff;
-      border: 1px solid #e4e4e7;
+      border: 1px solid #dcfce7;
       border-radius: 12px;
       padding: 12px;
       text-align: center;
@@ -317,7 +318,7 @@
     }
     .stat-pill-title {
       font-size: 11px;
-      color: #71717a;
+      color: #374151;
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -326,12 +327,12 @@
     .stat-pill-val {
       font-size: 16px;
       font-weight: 800;
-      color: #18181b;
+      color: #15803d;
     }
     .stat-pill-btn {
-      background: #f4f4f5;
-      border: 1px solid #e4e4e7;
-      color: #18181b;
+      background: #f0fdf4;
+      border: 1px solid #dcfce7;
+      color: #15803d;
       width: 24px;
       height: 24px;
       border-radius: 50%;
@@ -344,7 +345,7 @@
       transition: background 0.2s;
     }
     .stat-pill-btn:hover {
-      background: #e4e4e7;
+      background: #dcfce7;
     }
     .bmi-inputs {
       display: flex;
@@ -354,10 +355,10 @@
     .bmi-input-field {
       width: 50%;
       background: #ffffff;
-      border: 1px solid #d4d4d8;
+      border: 1px solid #bbf7d0;
       border-radius: 6px;
       padding: 6px;
-      color: #18181b;
+      color: #15803d;
       font-size: 11px;
       text-align: center;
       outline: none;
@@ -366,89 +367,365 @@
   <script type="module" src="js/auth-gate.js?v=93"></script>
 <body>
 
-<!-- ❖❖❖ NAVBAR ❖❖❖ -->
+<!-- ——— NAVBAR ——— -->
 <nav class="navbar">
   <a class="nav-logo" href="index.html">
     <img src="images/assets/logo_new.png?v=v_newlogo_v2" alt="MedInVedic Logo" class="nav-logo-img" style="object-fit:contain;">
     <span class="nav-logo-text">MedInVedic</span>
   </a>
-  <div class="nav-links-desktop">
-    <a href="#home">Home</a>
-    <a href="#products">Products</a>
-    <a href="#goals">Health Goals</a>
-    <a href="pages/consult.html">Doctors</a>
-    <a href="pages/online-pharmacy.html">Pharmacy</a>
-    <a href="pages/healing-hub.html">Healing Hub</a>
-    <a href="pages/vedicmind.html" style="color: #1e3a8a; font-weight: 700;">🧠 VedicMind AI</a>
-    <a href="#contact" onclick="event.preventDefault(); document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Contact</a>
-  </div>
-  <a href="pages/emergency.html" class="nav-sos-btn">
-    <div class="pulse-dot-red"></div>
-    🚨 SOS Emergency
-  </a>
 
-  <div class="nav-auth-desktop" style="display: none; align-items: center; gap: 8px; margin-left: 8px;">
-    <a href="pages/dashboard.html" class="nav-user-pill" style="display: inline-flex; align-items: center; gap: 6px; text-decoration: none; color: #1e293b; font-size: 13px; font-weight: 700; background: #f8fafc; padding: 6px 12px; border-radius: 20px; border: 1px solid #e2e8f0; transition: all .2s;">
-      <span id="navUserInitial" style="width: 22px; height: 22px; border-radius: 50%; background: #166534; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 11px;">👤</span>
-      <span id="navUserName">Account</span>
+  <!-- DESKTOP NAVIGATION LINKS (8 Core Sections) -->
+  <div class="nav-desktop-links">
+    <a href="index.html#home" class="nav-header-link">Home</a>
+    <a href="pages/online-pharmacy.html" class="nav-header-link">Medicines</a>
+    <a href="pages/vedicmind.html" class="nav-header-link">Ayurveda</a>
+    <a href="pages/consult.html" class="nav-header-link">Doctors</a>
+    <a href="pages/health-hub.html" class="nav-header-link nav-health-hub-pill">🏥 Health Hub</a>
+    <a href="pages/simulation-lab.html" class="nav-header-link nav-simulation-lab-pill">🧪 Simulation Lab</a>
+    <a href="pages/ai-assistant.html" class="nav-header-link">AI Assistant</a>
+    <a href="pages/orders.html" class="nav-header-link">Orders</a>
+    <a href="pages/workspace.html" class="nav-header-link">Profile</a>
+  </div>
+
+  <div class="nav-actions-right">
+    <a href="pages/emergency.html" class="nav-sos-btn" id="navSosBtn" title="SOS Emergency Assistance">
+      <span class="nav-sos-icon">🚨</span>
+      <span class="nav-sos-text">SOS Emergency Response</span>
     </a>
-    <button class="logout-btn" onclick="API.auth.logout()" title="Secure Logout" style="background: rgba(220,38,38,0.08); color: #dc2626; border: 1px solid rgba(220,38,38,0.25); border-radius: 8px; padding: 6px 12px; font-size: 12.5px; font-weight: 700; cursor: pointer; transition: all .2s;">
-      Logout
+    <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu" title="Menu">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
     </button>
   </div>
-
-  <button class="nav-menu-btn" onclick="toggleSidebar()" aria-label="Open Menu">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-  </button>
 </nav>
 
+<!-- ——— MOBILE SUB-NAV PILLS (Visible on Mobile & Tablet) ——— -->
+<div class="mobile-intel-bar" aria-label="Core AI Platforms Mobile Quick Access">
+  <a href="pages/health-hub.html" class="mobile-intel-pill pill-health-hub">
+    <span class="m-pill-icon">🏥</span>
+    <span class="m-pill-text">Health Hub</span>
+    <span class="m-pill-badge">20 AI Modules</span>
+  </a>
+  <a href="pages/simulation-lab.html" class="mobile-intel-pill pill-simulation-lab">
+    <span class="m-pill-icon">🧪</span>
+    <span class="m-pill-text">Simulation Lab</span>
+    <span class="m-pill-badge">Multi-Agent</span>
+  </a>
+</div>
+
 <style>
-.nav-links-desktop { display: none; gap: 24px; margin-left: 40px; margin-right: auto; }
-.nav-links-desktop a { color: #374151; text-decoration: none; font-size: 14px; font-weight: 600; transition: var(--transition); }
-.nav-links-desktop a:hover { color: #2563EB; }
-@media (min-width: 1024px) { 
-  .nav-links-desktop { display: flex; } 
-  .nav-auth-desktop { display: flex !important; }
+.nav-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.nav-header-link {
+  text-decoration: none;
+  color: #142a23;
+  font-weight: 600;
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.nav-header-link:hover {
+  background: #f0fdf4;
+  color: #15803d;
+}
+.nav-health-hub-pill {
+  color: #15803d !important;
+  font-weight: 800 !important;
+  background: #dcfce7 !important;
+  padding: 6px 14px !important;
+  border-radius: 9999px !important;
+  border: 1px solid #bbf7d0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 3px rgba(21, 128, 61, 0.12) !important;
+}
+.nav-simulation-lab-pill {
+  color: #0369a1 !important;
+  font-weight: 800 !important;
+  background: #e0f2fe !important;
+  padding: 6px 14px !important;
+  border-radius: 9999px !important;
+  border: 1px solid #bae6fd !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 1px 3px rgba(3, 105, 161, 0.12) !important;
+}
+
+/* Mobile Quick Intelligence Bar */
+.mobile-intel-bar {
+  display: none;
+}
+@media (max-width: 1024px) {
+  .nav-desktop-links {
+    display: none !important;
+  }
+  .mobile-intel-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 8px 14px;
+    background: #ffffff;
+    border-bottom: 1px solid rgba(187, 247, 208, 0.8);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    position: sticky;
+    top: 64px;
+    z-index: 99;
+  }
+  .mobile-intel-pill {
+    flex: 1;
+    max-width: 210px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 12.5px;
+    font-weight: 800;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    white-space: nowrap;
+  }
+  .mobile-intel-pill.pill-health-hub {
+    background: linear-gradient(135deg, #dcfce7, #f0fdf4);
+    color: #15803d;
+    border: 1.5px solid #86efac;
+  }
+  .mobile-intel-pill.pill-simulation-lab {
+    background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+    color: #0369a1;
+    border: 1.5px solid #7dd3fc;
+  }
+  .mobile-intel-pill:active {
+    transform: scale(0.96);
+  }
+  .m-pill-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .m-pill-badge {
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 9999px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+  }
+  .pill-health-hub .m-pill-badge {
+    background: #bbf7d0;
+    color: #14532d;
+  }
+  .pill-simulation-lab .m-pill-badge {
+    background: #bae6fd;
+    color: #075985;
+  }
+}
+</style>
+
+<style>
+/* ═══ CLEAN MINIMAL HEADER ═══ */
+.navbar {
+  padding: 0 clamp(16px, 2.5vw, 32px) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  height: 64px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(20px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(187, 247, 208, 0.8) !important;
+  box-shadow: 0 4px 20px rgba(22, 163, 74, 0.05) !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
 }
 
 .nav-sos-btn {
-  padding: 8px 16px;
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
-  border-radius: 50px;
-  color: white;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: var(--transition);
-  margin-left: auto;
-  margin-right: 12px;
-  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, #ef4444, #b91c1c) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  border-radius: 9999px !important;
+  padding: 7px 16px !important;
+  font-size: 13px !important;
+  text-decoration: none !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  box-shadow: 0 4px 14px rgba(239,68,68,0.35) !important;
+  transition: all 0.2s ease !important;
+  letter-spacing: -0.2px !important;
+  white-space: nowrap !important;
+  flex-shrink: 0 !important;
 }
 .nav-sos-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.6);
-  color: white;
-}
-.pulse-dot-red {
-  width: 8px;
-  height: 8px;
-  background-color: #fff;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #fff;
-  animation: pulseSOS 1.2s infinite ease-in-out;
-}
-@keyframes pulseSOS {
-  0%, 100% { transform: scale(0.8); opacity: 0.5; }
-  50% { transform: scale(1.3); opacity: 1; }
-}
-@media (max-width: 600px) {
-  .nav-sos-btn { font-size: 10px; padding: 6px 12px; margin-right: 8px; }
+  transform: translateY(-1px) !important;
+  box-shadow: 0 6px 18px rgba(239,68,68,0.45) !important;
 }
 
-/* â”€â”€â”€ MOBILE FIXES: Products grid â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
+@media (max-width: 680px) {
+  .navbar {
+    padding: 0 10px !important;
+    height: 56px !important;
+  }
+  .nav-logo {
+    gap: 6px !important;
+    min-width: 0 !important;
+  }
+  .nav-logo-img {
+    height: 28px !important;
+    width: 28px !important;
+    flex-shrink: 0 !important;
+  }
+  .nav-logo-text {
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    white-space: nowrap !important;
+  }
+  .nav-actions-right {
+    gap: 6px !important;
+    flex-shrink: 0 !important;
+  }
+  .nav-sos-btn {
+    padding: 5px 10px !important;
+    font-size: 11px !important;
+    gap: 4px !important;
+    letter-spacing: -0.2px !important;
+  }
+  .nav-menu-btn {
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    flex-shrink: 0 !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .navbar {
+    padding: 0 6px !important;
+  }
+  .nav-logo-text {
+    font-size: 13px !important;
+  }
+  .nav-sos-btn {
+    padding: 4px 8px !important;
+    font-size: 10px !important;
+    letter-spacing: -0.3px !important;
+  }
+  .nav-menu-btn {
+    width: 32px !important;
+    height: 32px !important;
+  }
+}
+
+@media (max-width: 330px) {
+  .nav-logo-text {
+    font-size: 11px !important;
+  }
+  .nav-sos-btn {
+    padding: 4px 6px !important;
+    font-size: 9.5px !important;
+  }
+}
+.nav-logo {
+    gap: 8px !important;
+  }
+  .nav-logo-img {
+    height: 34px !important;
+    width: 34px !important;
+  }
+  .nav-logo-text {
+    font-size: 17px !important;
+  }
+  .nav-actions-right {
+    gap: 8px !important;
+  }
+  .nav-sos-btn {
+    padding: 6px 12px !important;
+    font-size: 12px !important;
+    gap: 4px !important;
+  }
+  .nav-sos-text-desktop {
+    display: none !important;
+  }
+  .nav-sos-text-mobile {
+    display: inline !important;
+    font-weight: 800 !important;
+  }
+  .nav-menu-btn {
+    width: 38px !important;
+    height: 38px !important;
+    border-radius: 10px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .nav-logo-text {
+    font-size: 14.5px !important;
+  }
+  .nav-sos-btn {
+    padding: 5px 8px !important;
+    font-size: 11px !important;
+  }
+}
+
+.nav-logo {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+}
+.nav-logo-img {
+  height: 40px !important;
+  width: 40px !important;
+  flex-shrink: 0 !important;
+}
+.nav-logo-text {
+  font-size: 20px !important;
+  font-weight: 800 !important;
+  color: #15803d !important;
+  letter-spacing: -0.4px !important;
+  white-space: nowrap !important;
+}
+
+.nav-actions-right {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  flex-shrink: 0 !important;
+  margin: 0 !important;
+}
+
+.nav-menu-btn {
+  width: 42px !important;
+  height: 42px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: #f0fdf4 !important;
+  border: 1.5px solid #bbf7d0 !important;
+  border-radius: 12px !important;
+  color: #16a34a !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 2px 8px rgba(22, 163, 74, 0.08) !important;
+  margin: 0 !important;
+}
+.nav-menu-btn:hover {
+  background: #dcfce7 !important;
+  border-color: #86efac !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.16) !important;
+}
+
+/* ────── MOBILE FIXES: Products grid ────────────────────────────────────────────────────── */
 @media (max-width: 580px) {
   .products-side-grid {
     grid-template-columns: repeat(2, 1fr) !important;
@@ -463,19 +740,19 @@
   }
 }
 
-/* â”€â”€â”€ VEDIC HEALTH COCKPIT (AI Health Score & Analytics) â”€â”€â”€ */
+/* ────── VEDIC HEALTH COCKPIT (AI Health Score & Analytics) ────── */
 .cockpit-section {
   margin-top: 36px;
   padding: 24px;
   background: #ffffff;
   border-radius: 20px;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid #bbf7d0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
 }
 
 .cockpit-hero-card {
-  background: linear-gradient(135deg, #fafafa 0%, #f4f4f5 100%);
-  border: 1.5px solid #e2e8f0;
+  background: linear-gradient(135deg, #fafafa 0%, #f0fdf4 100%);
+  border: 1.5px solid #bbf7d0;
   border-radius: 16px;
   padding: 24px;
   margin-top: 18px;
@@ -505,7 +782,7 @@
 
 .cockpit-score-ring circle.bg {
   fill: none;
-  stroke: #e2e8f0;
+  stroke: #bbf7d0;
   stroke-width: 8;
 }
 
@@ -548,7 +825,7 @@
   gap: 12px 20px;
   margin-top: 18px;
   padding-top: 16px;
-  border-top: 1px solid #e2e8f0;
+  border-top: 1px solid #bbf7d0;
 }
 
 .cockpit-pillar-item {
@@ -561,13 +838,13 @@
   align-items: center;
   font-size: 12px;
   font-weight: 700;
-  color: #1e293b;
+  color: #14532d;
   margin-bottom: 4px;
 }
 
 .cockpit-pillar-bar {
   height: 6px;
-  background: #e2e8f0;
+  background: #bbf7d0;
   border-radius: 99px;
   overflow: hidden;
 }
@@ -587,7 +864,7 @@
 
 .cockpit-tracker-card {
   background: #ffffff;
-  border: 1.5px solid #e2e8f0;
+  border: 1.5px solid #bbf7d0;
   border-radius: 16px;
   padding: 18px;
   display: flex;
@@ -674,28 +951,33 @@
   </div>
   <div class="sidebar-body">
     <a href="index.html#home" class="sidebar-link active" onclick="toggleSidebar()">Home</a>
+    <a href="pages/health-hub.html" class="sidebar-link" style="color: #15803d; font-weight: 800; background: #dcfce7; border-radius: 8px; padding: 10px 14px; margin-bottom: 4px;">🏥 Health Hub (20 Core AI Modules)</a>
+    <a href="pages/simulation-lab.html" class="sidebar-link" style="color: #0369a1; font-weight: 800; background: #e0f2fe; border-radius: 8px; padding: 10px 14px; margin-bottom: 4px;">🧪 AI Simulation Lab (Multi-Agent)</a>
+    <a href="pages/workspace.html" class="sidebar-link" style="color: #103f36; font-weight: 800; background: #e6f4ea; border-radius: 8px; padding: 10px 14px; margin-bottom: 4px;">🏥 Patient Workspace</a>
+    <a href="pages/healthcare.html" class="sidebar-link" style="color: #059669; font-weight: 800;">🐾 Multi-Species Healthcare</a>
     <a href="index.html#products" class="sidebar-link" onclick="toggleSidebar()">Products</a>
     <a href="index.html#goals" class="sidebar-link" onclick="toggleSidebar()">Health Goals</a>
     <a href="pages/consult.html" class="sidebar-link">Doctors</a>
     <a href="pages/online-pharmacy.html" class="sidebar-link" style="color: #24aeb1; font-weight: 800;">Pharmacy Hub</a>
+    <a href="pages/vedicmind.html" class="sidebar-link" style="color: #1e3a8a; font-weight: 800;">🧠 VedicMind AI</a>
     <a href="pages/healing-hub.html" class="sidebar-link">Healing Hub</a>
     <a href="pages/admin.html" class="sidebar-link admin-only-link" data-admin-only style="display:none; color: #2d6a4f; font-weight: 800; background: rgba(45,106,79,0.08); border-radius: 8px; padding: 10px 14px; margin-top: 4px;">🛡️ Admin Control Center</a>
     <a href="#contact" class="sidebar-link" onclick="toggleSidebar(); document.getElementById('contact').scrollIntoView({behavior: 'smooth'})">Contact Us</a>
     
-    <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
+    <div style="margin: 6px 12px; opacity: 0.15;"><hr style="margin: 0; border: none; border-top: 1px solid #dcfce7;"></div>
     
-    <a href="pages/login.html" class="sidebar-link" id="sideNavAccount">👤 Sign In</a>
+    <a href="pages/login.html" class="sidebar-link" id="sideNavAccount">💤 Sign In</a>
     <div class="sidebar-link" onclick="openLocationModal(); toggleSidebar()" style="cursor: pointer;">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right:8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
       <span id="deliveryLocationSidebar">Pune 412115</span>
     </div>
     <a href="pages/payment.html" class="sidebar-link">💳 Wallet & Payments</a>
-    <a href="#" class="sidebar-link" onclick="openCart(); toggleSidebar(); return false;">🛒 My Cart</a>
+    <a href="#" class="sidebar-link" onclick="openCart(); toggleSidebar(); return false;">🛑 My Cart</a>
 
-    <div style="margin-top:20px; padding:0 20px;"><hr style="opacity:0.1;"></div>
+    <div style="margin: 6px 12px; opacity: 0.15;"><hr style="margin: 0; border: none; border-top: 1px solid #dcfce7;"></div>
 
     <!-- Custom Language Selector -->
-    <div class="custom-lang-selector" style="margin: 16px 20px 8px;" onclick="toggleLangMenu(event)">
+    <div class="custom-lang-selector" style="margin: 6px 12px 4px; padding: 6px 10px; font-size: 12px;" onclick="toggleLangMenu(event)">
       <span id="currentLangLabel">English</span>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
       <div class="lang-dropdown" id="langDropdown" style="max-height: 60vh; overflow-y: auto; scrollbar-width: thin;">
@@ -709,15 +991,15 @@
         <div class="lang-item" onclick="selectLanguage('as', 'অসমীয়া')">অসমীয়া (Assamese)</div>
         <div class="lang-item" onclick="selectLanguage('gu', 'ગુજરાતી')">ગુજરાતી (Gujarati)</div>
         <div class="lang-item" onclick="selectLanguage('ml', 'മലയാളം')">മലയാളം (Malayalam)</div>
-        <div class="lang-item" onclick="selectLanguage('or', 'à¬“à¬¡à¬¼à¬¿à¬†')">à¬“à¬¡à¬¼à¬¿à¬† (Odia)</div>
+        <div class="lang-item" onclick="selectLanguage('or', 'ଓଡ଼ିଆ')">ଓଡ଼ିଆ (Odia)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('pa', 'ਪੰਜਾਬੀ')">ਪੰਜਾਬੀ (Punjabi)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('sa', 'संस्कृतम्')">संस्कृतम् (Sanskrit)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('sd', 'Ø³Ù†ÚŒÙŠ')">Ø³Ù†ÚŒÙŠ (Sindhi)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ur', 'Ø§Ø±Ø¯Ùˆ')">Ø§Ø±Ø¯Ùˆ (Urdu)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('sd', 'سنڌي')">سنڌي (Sindhi)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ur', 'اردو')">اردو (Urdu)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('mai', 'मैथिली')">मैथिली (Maithili)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('kok', 'कोंकणी')">कोंकणी (Konkani)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('brx', 'बड़ो')">बड़ो (Bodo)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('sat', 'á±¥á±Ÿá±±á±›á±Ÿá±²á±¤')">á±¥á±Ÿá±±á±›á±Ÿá±²á±¤ (Santali)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('sat', 'ᱥᱟᱱᱛᱟᱲᱤ')">ᱥᱟᱱᱛᱟᱲᱤ (Santali)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ks', 'कॉशुर')">कॉशुर (Kashmiri)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ne', 'नेपाली')">नेपाली (Nepali)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('doi', 'डोगरी')">डोगरी (Dogri)</div>
@@ -726,10 +1008,10 @@
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('de', 'Deutsch')">Deutsch (German)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('it', 'Italiano')">Italiano (Italian)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('pt', 'Português')">Português (Portuguese)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ru', 'Ð ÑƒÑÑÐºÐ¸Ð¹')">Ð ÑƒÑÑÐºÐ¸Ð¹ (Russian)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('zh', 'ä¸­æ–‡')">ä¸­æ–‡ (Chinese)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ja', 'æ—¥æœ¬èªž')">æ—¥æœ¬èªž (Japanese)</div>
-        <div class="lang-item" onclick="selectLanguage('th', 'à¹„à¸—à¸¢')">à¹„à¸—à¸¢ (Thai)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ru', 'Русский')">Русский (Russian)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('zh', '中文')">中文 (Chinese)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('ja', '日本語')">日本語 (Japanese)</div>
+        <div class="lang-item" onclick="selectLanguage('th', 'ไทย')">ไทย (Thai)</div>
         <div class="lang-item" onclick="selectLanguage('id', 'Bahasa Indonesia')">Bahasa Indonesia</div>
         <div class="lang-item" onclick="selectLanguage('ms', 'Bahasa Melayu')">Bahasa Melayu</div>
         <div class="lang-item" onclick="selectLanguage('nl', 'Nederlands')">Nederlands (Dutch)</div>
@@ -738,19 +1020,19 @@
         <div class="lang-item" onclick="selectLanguage('da', 'Dansk')">Dansk (Danish)</div>
         <div class="lang-item" onclick="selectLanguage('no', 'Norsk')">Norsk (Norwegian)</div>
         <div class="lang-item" onclick="selectLanguage('fi', 'Suomi')">Suomi (Finnish)</div>
-        <div class="lang-item" onclick="selectLanguage('el', 'Î•Î»Î»Î·Î½Î¹ÎºÎ¬')">Î•Î»Î»Î·Î½Î¹ÎºÎ¬ (Greek)</div>
-        <div class="lang-item" onclick="selectLanguage('he', '×¢×‘×¨×™×ª')">×¢×‘×¨×™×ª (Hebrew)</div>
+        <div class="lang-item" onclick="selectLanguage('el', 'Ελληνικά')">Ελληνικά (Greek)</div>
+        <div class="lang-item" onclick="selectLanguage('he', 'עברית')">עברית (Hebrew)</div>
         <div class="lang-item" onclick="selectLanguage('sw', 'Kiswahili')">Kiswahili (Swahili)</div>
-        <div class="lang-item" onclick="selectLanguage('am', 'áŠ áˆ›áˆ­áŠ›')">áŠ áˆ›áˆ­áŠ› (Amharic)</div>
+        <div class="lang-item" onclick="selectLanguage('am', 'አማርኛ')">አማርኛ (Amharic)</div>
         <div class="lang-item" onclick="selectLanguage('yo', 'Yorùbá')">Yorùbá (Yoruba)</div>
         <div class="lang-item" onclick="selectLanguage('ig', 'Igbo')">Igbo</div>
         <div class="lang-item" onclick="selectLanguage('zu', 'isiZulu')">isiZulu (Zulu)</div>
         <div class="lang-item" onclick="selectLanguage('hu', 'Magyar')">Magyar (Hungarian)</div>
-        <div class="lang-item" onclick="selectLanguage('cs', 'ÄŒeÅ¡tina')">ÄŒeÅ¡tina (Czech)</div>
+        <div class="lang-item" onclick="selectLanguage('cs', 'Čeština')">Čeština (Czech)</div>
         <div class="lang-item" onclick="selectLanguage('ro', 'Română')">Română (Romanian)</div>
-        <div class="lang-item" onclick="selectLanguage('bg', 'Ð‘ÑŠÐ»Ð³Ð°Ñ€ÑÐºÐ¸')">Ð‘ÑŠÐ»Ð³Ð°Ñ€ÑÐºÐ¸ (Bulgarian)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('uk', 'Ð£ÐºÑ€Ð°Ñ—Ð½ÑÑŒÐºÐ°')">Ð£ÐºÑ€Ð°Ñ—Ð½ÑÑŒÐºÐ° (Ukrainian)</div>
-        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('fa', 'فارسی')">فارسی (Persian)</div>
+        <div class="lang-item" onclick="selectLanguage('bg', 'Български')">Български (Bulgarian)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('uk', 'Українська')">Українська (Ukrainian)</div>
+        <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('fa', 'ÙØ§Ø±Ø³ÛŒ')">ÙØ§Ø±Ø³ÛŒ (Persian)</div>
         <div class="lang-item extra-lang" style="display:none;" onclick="selectLanguage('tl', 'Tagalog')">Tagalog</div>
 
         <div class="lang-item" onclick="event.stopPropagation(); document.querySelectorAll('.extra-lang').forEach(el=>el.style.display='block'); this.style.display='none';" style="font-size: 13px; text-align: center; color: #94a3b8; padding: 12px; font-weight: bold; border-top: 1px solid rgba(255,255,255,0.1);">+ See all 50+ Languages</div>
@@ -763,21 +1045,21 @@
   </div>
 </div>
 
-<!-- â•â•â• HERO â•â•â• -->
+<!-- ═══ HERO ═══ -->
 <section class="hero" id="home" style="background: transparent; text-align: left; padding: 100px 24px 70px; border-bottom: 1px solid rgba(228, 228, 231, 0.7);">
   <div class="iv-container" style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; max-width: 1200px; margin: 0 auto;">
     
     <!-- Hero Left Column -->
     <div class="fade-in">
-      <div class="hero-badge" style="background: #ffffff; border: 1px solid #e4e4e7; color: #18181b; margin-bottom: 20px; font-weight: 700; padding: 6px 14px; border-radius: 50px; display: inline-flex; align-items: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
-        <span class="pulse-circle" style="width: 8px; height: 8px; margin-right: 6px; vertical-align: middle; background: #18181b;"></span> AI-First Preventive Health Core
+      <div class="hero-badge" style="background: #ffffff; border: 1px solid #dcfce7; color: #15803d; margin-bottom: 20px; font-weight: 700; padding: 6px 14px; border-radius: 50px; display: inline-flex; align-items: center; font-size: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03);">
+        <span class="pulse-circle" style="width: 8px; height: 8px; margin-right: 6px; vertical-align: middle; background: #15803d;"></span> AI-First Preventive Health Core
       </div>
       
-      <h1 style="font-size: clamp(34px, 5vw, 54px); line-height: 1.15; margin-bottom: 20px; font-weight: 800; color: #18181b; letter-spacing: -1.5px;">
+      <h1 style="font-size: clamp(34px, 5vw, 54px); line-height: 1.15; margin-bottom: 20px; font-weight: 800; color: #15803d; letter-spacing: -1.5px;">
         India's 1st Dual Healthcare Platform
       </h1>
       
-      <p style="font-size: 16px; color: #52525b; line-height: 1.7; margin-bottom: 36px; max-width: 620px;">
+      <p style="font-size: 16px; color: #374151; line-height: 1.7; margin-bottom: 36px; max-width: 620px;">
         AI-powered health screening, disease prediction, doctor consultations, lab report analysis, nutrition planning, fitness guidance, and preventive healthcare—all in one intelligent platform.
       </p>
 
@@ -801,33 +1083,33 @@
       <div class="phone-mockup">
         <div class="phone-screen">
           <!-- Phone Status Header -->
-          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color:#71717a; margin-bottom:16px;">
-            <span style="font-weight:700; color:#18181b;">Live Bio-Metrics</span>
-            <span style="color:#18181b; font-weight:700;">â— Active</span>
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; color: #374151; margin-bottom:16px;">
+            <span style="font-weight:700; color:#15803d;">Live Bio-Metrics</span>
+            <span style="color:#15803d; font-weight:700;">● Active</span>
           </div>
 
           <!-- Phone Dashboard Header -->
           <div style="margin-bottom:16px;">
-            <span style="font-size:11px; text-transform:uppercase; color:#71717a; font-weight:700;">Vedic Digital Twin</span>
-            <h4 style="font-size:18px; margin:2px 0 0 0; color:#18181b; font-weight:800;">Health Dashboard</h4>
+            <span style="font-size:11px; text-transform:uppercase; color: #374151; font-weight:700;">Vedic Digital Twin</span>
+            <h4 style="font-size:18px; margin:2px 0 0 0; color:#15803d; font-weight:800;">Health Dashboard</h4>
           </div>
 
           <!-- Health Score Widget -->
-          <div class="phone-widget" style="background: #f4f0e8; border-color: #e4e4e7;">
+          <div class="phone-widget" style="background: #f4f0e8; border-color: #dcfce7;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-              <span style="font-size:13px; color:#18181b; font-weight:700;">Health Score</span>
-              <span style="font-size:14px; color:#18181b; font-weight:800;">782/900</span>
+              <span style="font-size:13px; color:#15803d; font-weight:700;">Health Score</span>
+              <span style="font-size:14px; color:#15803d; font-weight:800;">782/900</span>
             </div>
-            <div style="height:6px; background:#e4e4e7; border-radius:10px; overflow:hidden;">
-              <div style="width:82%; height:100%; background:#18181b; border-radius:10px;"></div>
+            <div style="height:6px; background:#dcfce7; border-radius:10px; overflow:hidden;">
+              <div style="width:82%; height:100%; background:#15803d; border-radius:10px;"></div>
             </div>
           </div>
 
           <!-- ECG Pulse Wave Widget -->
           <div class="phone-widget">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-              <span style="font-size:12px; color:#71717a; font-weight:600;">ECG Scan</span>
-              <span style="font-size:12px; color:#18181b; font-weight:700;">â¤ 72 BPM</span>
+              <span style="font-size:12px; color: #374151; font-weight:600;">ECG Scan</span>
+              <span style="font-size:12px; color:#1e40af; font-weight:700;">❤️ 72 BPM</span>
             </div>
             <div class="ecg-grid">
               <div class="ecg-bar"></div>
@@ -846,22 +1128,22 @@
           <!-- Sleep Analysis & Skin Health -->
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
             <div class="phone-widget">
-              <span style="font-size:10px; color:#71717a; display:block; margin-bottom:4px; font-weight:600;">Sleep Index</span>
-              <span style="font-size:13px; font-weight:800; color:#18181b;">92% Optimal</span>
+              <span style="font-size:10px; color: #374151; display:block; margin-bottom:4px; font-weight:600;">Sleep Index</span>
+              <span style="font-size:13px; font-weight:800; color:#374151;">92% Optimal</span>
             </div>
             <div class="phone-widget">
-              <span style="font-size:10px; color:#71717a; display:block; margin-bottom:4px; font-weight:600;">Skin Index</span>
-              <span style="font-size:13px; font-weight:800; color:#18181b;">Clear (9.4)</span>
+              <span style="font-size:10px; color: #374151; display:block; margin-bottom:4px; font-weight:600;">Skin Index</span>
+              <span style="font-size:13px; font-weight:800; color:#374151;">Clear (9.4)</span>
             </div>
           </div>
 
           <!-- Nutrition widget -->
           <div class="phone-widget">
             <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-              <span style="color:#71717a; font-weight:600;">Nutrition Plan</span>
-              <span style="color:#18181b; font-weight:700;">+420 kcal left</span>
+              <span style="color: #111827; font-weight:600;">Nutrition Plan</span>
+              <span style="color:#15803d; font-weight:700;">+420 kcal left</span>
             </div>
-            <div style="font-size:11px; color:#71717a;">Sattvic meal target: 80% achieved</div>
+            <div style="font-size:11px; color: #374151;">Sattvic meal target: 80% achieved</div>
           </div>
 
         </div>
@@ -870,36 +1152,36 @@
   </div>
 </section>
 
-<!-- â•â•â• SEARCH OVERLAY â•â•â• -->
+<!-- ═══ SEARCH OVERLAY ═══ -->
 <div id="searchOverlay">
-  <div class="search-modal" style="background: #ffffff; border: 1px solid #e4e4e7;">
+  <div class="search-modal" style="background: #ffffff; border: 1px solid #dcfce7;">
     <button class="search-close" onclick="closeSearch()">✕</button>
-    <h2 class="iv-style-6" id="searchQueryTitle" data-i18n="search.results" style="color: #18181b;">Search Results</h2>
-    <p class="iv-style-7" data-i18n="search.subtitle" style="color: #71717a;">Showing both modern medicine and Ayurvedic recommendations</p>
+    <h2 class="iv-style-6" id="searchQueryTitle" data-i18n="search.results" style="color: #15803d;">Search Results</h2>
+    <p class="iv-style-7" data-i18n="search.subtitle" style="color: #374151;">Showing both modern medicine and Ayurvedic recommendations</p>
     <div class="search-results-grid">
       <div>
-        <div class="search-col-header modern" data-i18n="search.modern.title" style="color: #18181b; border-color: #18181b;">Modern Medicine Solutions</div>
+        <div class="search-col-header modern" data-i18n="search.modern.title" style="color: #15803d; border-color: #15803d;">Modern Medicine Solutions</div>
         <div id="searchModern"></div>
       </div>
       <div>
-        <div class="search-col-header ayurvedic" data-i18n="search.ayur.title" style="color: #18181b; border-color: #18181b;">Ayurvedic Natural Remedies</div>
+        <div class="search-col-header ayurvedic" data-i18n="search.ayur.title" style="color: #15803d; border-color: #15803d;">Ayurvedic Natural Remedies</div>
         <div id="searchAyur"></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- â•â•â• MAIN LAYOUT â•â•â• -->
+<!-- ═══ MAIN LAYOUT ═══ -->
 <div class="main-layout iv-container" style="display: flex; flex-direction: column; gap: 60px;">
 
-  <!-- â•â•â• SECTION: RAG HEALTH INTELLIGENCE AI — CLINICAL ENGINE â•â•â• -->
+  <!-- ═══ SECTION: RAG HEALTH INTELLIGENCE AI — CLINICAL ENGINE ═══ -->
   <section id="ai-intelligence-suite" class="fade-scroll" style="position: relative; overflow: hidden;">
     <div class="rag-engine-container">
       <!-- Header -->
       <div class="rag-engine-header">
         <div class="rag-engine-badge"><span class="rag-pulse-dot"></span><span data-i18n="rag.badge">CLINICAL ENGINE</span></div>
-        <h2 class="rag-engine-title" data-i18n="rag.title">Health Intelligence AI</h2>
-        <p class="rag-engine-subtitle" data-i18n="rag.subtitle">Evidence-grounded answers from WHO, CDC, NHS, MoHFW clinical guidelines.<br><strong>Not a diagnostic tool</strong> — for informational purposes only.</p>
+        <h2 class="rag-engine-title" data-i18n="rag.title" style="color: #000000 !important;">Health Intelligence AI</h2>
+        <p class="rag-engine-subtitle" data-i18n="rag.subtitle" style="color: #111827 !important;">Evidence-grounded answers from WHO, CDC, NHS, MoHFW clinical guidelines.<br><strong>Not a diagnostic tool</strong> — for informational purposes only.</p>
         
         <!-- Language Switcher Bar -->
         <div class="rag-lang-bar" id="ragLangBar" role="radiogroup" aria-label="Select Clinical Assistant Language">
@@ -916,13 +1198,13 @@
           <span class="rag-trust-badge">🏛️ WHO</span>
           <span class="rag-trust-badge">🏥 NHS</span>
           <span class="rag-trust-badge">🇮🇳 MoHFW</span>
-          <span class="rag-trust-badge">🔬 CDC</span>
+          <span class="rag-trust-badge">🛡️ CDC</span>
           <span class="rag-trust-badge">🌿 AYUSH</span>
         </div>
       </div>
       <!-- Quick Question Chips -->
       <div class="rag-chips-row" id="ragChipsRow">
-        <button class="rag-chip" onclick="handleRagQuickAsk('I have a high fever, what should I do?')" data-i18n="rag.chip.fever">🌡️ High Fever</button>
+        <button class="rag-chip" onclick="handleRagQuickAsk('I have a high fever, what should I do?')" data-i18n="rag.chip.fever">🌡️ High Fever</button>
         <button class="rag-chip" onclick="handleRagQuickAsk('I have abdominal pain and stomach ache')" data-i18n="rag.chip.stomach">🫄 Stomach Pain</button>
         <button class="rag-chip" onclick="handleRagQuickAsk('I have lower back pain')" data-i18n="rag.chip.back">🦴 Back Pain</button>
         <button class="rag-chip" onclick="handleRagQuickAsk('I have a severe headache')" data-i18n="rag.chip.headache">🧠 Headache</button>
@@ -933,19 +1215,20 @@
       <div id="ragChatContainer" class="rag-chat-container" role="log" aria-label="Health Intelligence conversation" aria-live="polite"></div>
       <!-- Legacy alias for backward compat -->
       <div id="homeChatContainer" style="display:none;" aria-hidden="true"></div>
+      <div id="homeModelSelectorContainer" style="margin-bottom:10px;"></div>
       <!-- Input Bar -->
       <div class="rag-input-bar">
-        <button id="ragVoiceBtn" class="rag-voice-btn" onclick="ragVoiceToggle()" aria-label="Start voice input" title="Voice input">
+        <button id="ragVoiceBtn" class="rag-voice-btn" style="color: #000000 !important;" onclick="ragVoiceToggle()" aria-label="Start voice input" title="Voice input">
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
         </button>
-        <input type="text" id="ragChatInput" class="rag-input" placeholder="Ask about symptoms, medicines, or remedies..." data-i18n-placeholder="rag.input.ph" aria-label="Health question input" autocomplete="off">
+        <input type="text" id="ragChatInput" class="rag-input" style="color: #000000 !important;" placeholder="Ask about symptoms, medicines, or remedies..." data-i18n-placeholder="rag.input.ph" aria-label="Health question input" autocomplete="off">
         <!-- Legacy alias -->
         <input type="text" id="homeChatInput" style="display:none;" aria-hidden="true">
         <button class="rag-send-btn" onclick="handleRagMessage()" aria-label="Send message">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
         </button>
       </div>
-      <div class="rag-bottom-notice" data-i18n="rag.notice">⚕️ For emergencies call <strong>112</strong>. This assistant answers only from verified medical sources. Always consult a licensed healthcare provider for diagnosis and treatment.</div>
+      <div class="rag-bottom-notice" data-i18n="rag.notice" style="color: #111827 !important;">⚕️ For emergencies call <strong>112</strong>. This assistant answers only from verified medical sources. Always consult a licensed healthcare provider for diagnosis and treatment.</div>
     </div>
   </section>
   <script>
@@ -954,15 +1237,15 @@
     window.startHomeSpeech = function() { if (window.ragVoiceToggle) window.ragVoiceToggle(); };
   </script>
 
-  <!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+  <!-- ═══════════════════════════════════════════════════════════
        SECTION: PRODUCTS (Side-by-Side Dual Healthcare Catalog)
-  â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• -->
-  <!-- ❖❖❖ SECTION: OUR THREE HEALING PILLARS ❖❖❖ -->
+  ═══════════════════════════════════════════════════════════ -->
+  <!-- ——— SECTION: OUR THREE HEALING PILLARS ——— -->
   <section id="products" class="fade-scroll" style="margin-top: 40px; margin-bottom: 40px;">
     <!-- Main Healing Pillars Heading -->
     <div class="healing-pillars-header" style="text-align: center; margin-bottom: 28px;">
-      <h2 style="font-size: 32px; font-weight: 900; color: #18181b; letter-spacing: -0.5px; margin: 0 0 6px;" data-i18n="pillars.title">Our Three Healing Pillars</h2>
-      <p style="color: #71717a; font-size: 15px; margin: 0 auto; max-width: 680px;" data-i18n="pillars.subtitle">Explore comprehensive care across pharmaceutical science, kitchen wisdom, and ancient Ayurvedic wellness</p>
+      <h2 style="font-size: 32px; font-weight: 900; color: #15803d; letter-spacing: -0.5px; margin: 0 0 6px;" data-i18n="pillars.title">Our Three Healing Pillars</h2>
+      <p style="color: #111827; font-size: 15px; margin: 0 auto; max-width: 680px;" data-i18n="pillars.subtitle">Explore comprehensive care across pharmaceutical science, kitchen wisdom, and ancient Ayurvedic wellness</p>
     </div>
 
     <!-- 3 Interactive Visual Pillar Cards -->
@@ -1025,8 +1308,8 @@
         <div class="section-label" style="margin-bottom: 16px;">
           <div class="section-label-icon blue" style="background: #eff6ff; color: #1e40af; border: 1.5px solid #bfdbfe; font-weight: 800;">PHARMA</div>
           <div>
-            <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;" data-i18n="section.modern">Modern Medicines</h3>
-            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.modern.sub">Pharmaceutical grade evidence-based solutions for immediate relief</p>
+            <h3 style="font-size: 22px; font-weight: 900; color: #14532d; margin: 0 0 2px;" data-i18n="section.modern">Modern Medicines</h3>
+            <p style="color: #374151; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.modern.sub">Pharmaceutical grade evidence-based solutions for immediate relief</p>
           </div>
         </div>
         <div class="cat-tabs" style="margin-bottom: 20px;">
@@ -1045,8 +1328,8 @@
         <div class="section-label" style="margin-bottom: 16px;">
           <div class="section-label-icon" style="background: #fffbeb; color: #b45309; border: 1.5px solid #fde68a; font-weight: 800;">KITCHEN</div>
           <div>
-            <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;">Home Remedies</h3>
-            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;">Time-tested natural healing prepared with everyday kitchen ingredients</p>
+            <h3 style="font-size: 22px; font-weight: 900; color: #14532d; margin: 0 0 2px;">Home Remedies</h3>
+            <p style="color: #374151; font-size: 13.5px; margin: 0; font-weight: 600;">Time-tested natural healing prepared with everyday kitchen ingredients</p>
           </div>
         </div>
         <div class="cat-tabs" style="margin-bottom: 20px;">
@@ -1064,10 +1347,10 @@
       <!-- PANEL 3: AYURVEDIC WELLNESS -->
       <div class="pillar-panel" id="pillarPanelAyurveda" style="display: none;">
         <div class="section-label" style="margin-bottom: 16px;">
-          <div class="section-label-icon green" style="background: #f0fdf4; color: #166534; border: 1.5px solid #bbf7d0; font-weight: 800;">HERBAL</div>
+          <div class="section-label-icon green" style="background: #f0fdf4; color: #374151; border: 1.5px solid #bbf7d0; font-weight: 800;">HERBAL</div>
           <div>
-            <h3 style="font-size: 22px; font-weight: 900; color: #09090b; margin: 0 0 2px;" data-i18n="section.ayur">Ayurvedic Wellness</h3>
-            <p style="color: #52525b; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.ayur.sub">Natural healing, herbal formulations & holistic root-cause balance</p>
+            <h3 style="font-size: 22px; font-weight: 900; color: #14532d; margin: 0 0 2px;" data-i18n="section.ayur">Ayurvedic Wellness</h3>
+            <p style="color: #374151; font-size: 13.5px; margin: 0; font-weight: 600;" data-i18n="section.ayur.sub">Natural healing, herbal formulations & holistic root-cause balance</p>
           </div>
         </div>
         <div class="cat-tabs" style="margin-bottom: 20px;">
@@ -1118,7 +1401,7 @@
       box-shadow: 0 10px 30px rgba(217, 119, 6, 0.22);
     }
     .pillar-card#pillarTabAyurveda.active {
-      border-color: #166534;
+      border-color: #374151;
       box-shadow: 0 10px 30px rgba(22, 101, 52, 0.22);
     }
     .pillar-bg {
@@ -1178,7 +1461,7 @@
     }
     .pillar-catalog-container {
       background: #ffffff;
-      border: 1.5px solid #e4e4e7;
+      border: 1.5px solid #dcfce7;
       border-radius: 24px;
       padding: 28px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
@@ -1328,7 +1611,7 @@
             <h3 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0;">Predictive Health Index</h3>
             <span style="font-size: 11px; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px; font-weight: 700;">🌿 Optimal (Vedic Balance)</span>
           </div>
-          <p style="font-size: 12.5px; color: #64748b; margin: 0; font-weight: 500;">Scale: 300–900 · Continuous AI multi-modal biometric evaluation updated live.</p>
+          <p style="font-size: 12.5px; color: #64748b; margin: 0; font-weight: 500;">Scale: 300–900 Â· Continuous AI multi-modal biometric evaluation updated live.</p>
         </div>
       </div>
 
@@ -1397,13 +1680,13 @@
       <div class="cockpit-tracker-card">
         <div>
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <span style="font-size: 12.5px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">âš– BMI Index</span>
+            <span style="font-size: 12.5px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">⚖️ BMI Index</span>
             <span id="cockpitBmiStatus" style="font-size: 11px; font-weight: 700; color: #059669; background: #ecfdf5; border: 1px solid #a7f3d0; padding: 2px 8px; border-radius: 6px;">Normal</span>
           </div>
           <div style="font-size: 26px; font-weight: 900; color: #0f172a; margin-bottom: 12px;" id="cockpitBmiValDisplay">22.4</div>
           <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-            <input type="number" id="bmiWeight" placeholder="Weight (kg)" style="width: 50%; height: 36px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 8px; color: #0f172a; font-weight: 700; font-size: 12px; outline: none; text-align: center;">
-            <input type="number" id="bmiHeight" placeholder="Height (cm)" style="width: 50%; height: 36px; background: #f8fafc; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 8px; color: #0f172a; font-weight: 700; font-size: 12px; outline: none; text-align: center;">
+            <input type="number" id="bmiWeight" placeholder="Weight (kg)" style="width: 50%; height: 36px; background: #f0fdf4; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 8px; color: #0f172a; font-weight: 700; font-size: 12px; outline: none; text-align: center;">
+            <input type="number" id="bmiHeight" placeholder="Height (cm)" style="width: 50%; height: 36px; background: #f0fdf4; border: 1.5px solid #cbd5e1; border-radius: 8px; padding: 4px 8px; color: #0f172a; font-weight: 700; font-size: 12px; outline: none; text-align: center;">
           </div>
         </div>
         <button onclick="calcCockpitBmi()" style="width: 100%; height: 36px; font-size: 12px; font-weight: 800; border-radius: 8px; background: #0f172a; border: none; color: #ffffff; cursor: pointer; transition: opacity 0.2s;">Calculate BMI</button>
@@ -1422,7 +1705,7 @@
           <div style="font-size: 11.5px; color: #64748b; margin-bottom: 14px; font-weight: 500;">62% daily hydration achieved</div>
         </div>
         <div style="display: flex; gap: 8px;">
-          <button onclick="adjustCockpitStat('water', -1)" style="flex: 1; height: 36px; font-size: 16px; font-weight: 800; border-radius: 8px; background: #f8fafc; border: 1.5px solid #cbd5e1; color: #0f172a; cursor: pointer; line-height: 1;">âˆ’</button>
+          <button onclick="adjustCockpitStat('water', -1)" style="flex: 1; height: 36px; font-size: 16px; font-weight: 800; border-radius: 8px; background: #f0fdf4; border: 1.5px solid #cbd5e1; color: #0f172a; cursor: pointer; line-height: 1;">−</button>
           <button onclick="adjustCockpitStat('water', 1)" style="flex: 1; height: 36px; font-size: 16px; font-weight: 800; border-radius: 8px; background: #0f172a; border: none; color: #ffffff; cursor: pointer; line-height: 1;">+ Add</button>
         </div>
       </div>
@@ -1431,7 +1714,7 @@
       <div class="cockpit-tracker-card">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <span style="font-size: 12.5px; font-weight: 800; color: #0f172a; text-transform: uppercase; letter-spacing: 0.5px;">📈 Weekly Progress</span>
-          <span style="font-size: 11px; font-weight: 700; color: #16a34a; background: #f0fdf4; border: 1px solid #bbf7d0; padding: 2px 8px; border-radius: 6px;">Optimal Trend</span>
+          <span style="font-size: 11px; font-weight: 700; color: #374151; background: #f3f4f6; border: 1px solid #d1d5db; padding: 2px 8px; border-radius: 6px;">Optimal Trend</span>
         </div>
         <div style="width: 100%; height: 105px; position: relative;">
           <canvas id="healthTrendChart"></canvas>
@@ -1440,13 +1723,82 @@
     </div>
   </div>
 
-  <!-- SECTION: AI SMARTS HUB -->
-  <div class="ai-hub-section" id="wellness-suites" style="margin-top: 60px; margin-bottom: 40px; background: #ffffff; border-radius: 20px; padding: 40px 24px; border: 1px solid #e4e4e7; box-shadow: 0 4px 20px rgba(0,0,0,0.06); position: relative;">
+  <!-- SECTION 1: AI HEALTHCARE & PERSONAL WELLNESS -->
+  <div class="ai-hub-section" id="healthcare-wellness" style="margin-top: 60px; margin-bottom: 30px; background: #ffffff; border-radius: 20px; padding: 40px 24px; border: 1px solid #dcfce7; box-shadow: 0 4px 20px rgba(0,0,0,0.06); position: relative;">
     <div class="section-label">
-      <div class="section-label-icon" style="color: #18181b; background: #f4f0e8; border: 1px solid #e4e4e7;">AI CORE</div>
+      <div class="section-label-icon" style="color: #15803d; background: #f4f0e8; border: 1px solid #dcfce7;">RAG CORE</div>
       <div>
-        <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">AI Diagnostic & Wellness Suites</h2>
-        <p style="color: #71717a; font-size: 14px;">Clinical assessment tools and wellness checkers powered by MedInVedic AI models.</p>
+        <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">AI Healthcare & Personal Wellness</h2>
+        <p style="color: #111827; font-size: 14px;">Evidence-grounded health intelligence, Ayurvedic Prakriti synergy, and personalized wellness assistants.</p>
+      </div>
+    </div>
+    
+    <div class="feature-card-grid">
+      <!-- Card 1: AI Nutritionist -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/ai-diet.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">🥗</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">AI Nutritionist</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Personalized meal plans synced with your Ayurvedic Prakriti.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Get Diet Plan →</span>
+      </div>
+
+      <!-- Card 2: Lab Report Reader -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/lab-integrator.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">🩸</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Lab Report Reader</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Upload blood reports to translate biomarkers to clear insights.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Upload Report →</span>
+      </div>
+
+      <!-- Card 3: AI Fitness Coach -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/smart-lifestyle.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">🏃</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">AI Fitness Coach</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Daily physical exercises tailored to your body type & balance.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Start Fitness →</span>
+      </div>
+
+      <!-- Card 4: Doctor Consultation -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/consult.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">👨‍⚕️</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Doctor Consultation</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Instantly consult allopathic doctors or Ayurvedic Vaidyas.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Find Doctor →</span>
+      </div>
+
+      <!-- Card 5: Emergency Assistant -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/emergency.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">🚨</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Emergency Assistant</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">One-tap global SOS trigger with GPS tracking & pharmacy dispatch.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Emergency SOS →</span>
+      </div>
+
+      <!-- Card 6: Record Vault -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/record-vault.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">📑</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Record Vault</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Secure encrypted storage for all your prescriptions and reports.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Open Vault →</span>
+      </div>
+
+      <!-- Card 7: Voice Assistant (Vani) -->
+      <div class="feature-card-futuristic" onclick="window.location.href='pages/voice-doctor.html'">
+        <div style="font-size: 32px; margin-bottom: 14px;">🎙️</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Voice Assistant (Vani)</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Speak naturally with Vani Vaidya Voice AI in your own language.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Talk to AI →</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: AI DIAGNOSTIC & WELLNESS SUITES -->
+  <div class="ai-hub-section" id="wellness-suites" style="margin-top: 30px; margin-bottom: 40px; background: #ffffff; border-radius: 20px; padding: 40px 24px; border: 1px solid #dcfce7; box-shadow: 0 4px 20px rgba(0,0,0,0.06); position: relative;">
+    <div class="section-label">
+      <div class="section-label-icon" style="color: #15803d; background: #f4f0e8; border: 1px solid #dcfce7;">AI CORE</div>
+      <div>
+        <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">AI Diagnostic & Wellness Suites</h2>
+        <p style="color: #111827; font-size: 14px;">Clinical assessment tools and wellness checkers powered by MedInVedic AI models.</p>
       </div>
     </div>
     
@@ -1454,133 +1806,75 @@
       <!-- Card 1: AI Symptom Checker -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/ai-assistant.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">🔍</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">AI Symptom Checker</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Analyze symptoms instantly. Gets deep medical & Ayurvedic insights.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Open Checker →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">AI Symptom Checker</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Analyze symptoms instantly. Gets deep medical & Ayurvedic insights.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Open Checker →</span>
       </div>
 
       <!-- Card 2: Heart Scan AI -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/heart-scan.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🫁</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Heart Scan AI</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Continuous rhythm modeling & vascular health risk projection.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Check Heart →</span>
+        <div style="font-size: 32px; margin-bottom: 14px;">🫀</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Heart Scan AI</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Continuous rhythm modeling & vascular health risk projection.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Check Heart →</span>
       </div>
 
       <!-- Card 3: Skin Analysis -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/ai-vision.html?mode=skin'">
         <div style="font-size: 32px; margin-bottom: 14px;">🔬</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Skin Analysis</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Scan skin and tongue marks using deep computer vision models.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Scan Skin →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Skin Analysis</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Scan skin and tongue marks using deep computer vision models.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Scan Skin →</span>
       </div>
 
       <!-- Card 4: Sleep AI -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/wellness-tracker.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">🌙</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Sleep AI</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Analyze sleep cycles, circadian alignment, and restful hours.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Track Sleep →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Sleep AI</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Analyze sleep cycles, circadian alignment, and restful hours.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Track Sleep →</span>
       </div>
 
       <!-- Card 5: Eye Scan -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/diabetic-retinopathy.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">👁️</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Eye Scan (Retinopathy)</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Automated diabetic retinopathy grading via retinal imaging.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Scan Eyes →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Eye Scan (Retinopathy)</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Automated diabetic retinopathy grading via retinal imaging.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Scan Eyes →</span>
       </div>
 
       <!-- Card 6: Dental Scan -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/dental-scan.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">🦷</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Dental Scan</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Assess plaque, calculus, and gingivitis risk using camera scans.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Check Teeth →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Dental Scan</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Assess plaque, calculus, and gingivitis risk using camera scans.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Check Teeth →</span>
       </div>
 
       <!-- Card 7: Mental Health AI -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/wellness-tracker.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">🧠</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Mental Health AI</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Track emotions, cognitive fatigue, stress, and Sattva balance.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Check Mood →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Mental Health AI</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Track emotions, cognitive fatigue, stress, and Sattva balance.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Check Mood →</span>
       </div>
 
       <!-- Card 8: Disease Prediction -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/disease-radar.html'">
         <div style="font-size: 32px; margin-bottom: 14px;">🔮</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Disease Prediction</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Map health trajectories, lifestyle risk areas, and warnings.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">View Radar →</span>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Disease Prediction</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Map health trajectories, lifestyle risk areas, and warnings.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">View Radar →</span>
       </div>
 
       <!-- Card 9: Medicine Reminder -->
       <div class="feature-card-futuristic" onclick="window.location.href='pages/habit-autopilot.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">âš¡</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Medicine Reminder</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Automated reminders for Dinacharya, medicines, and hydration.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Set Reminders →</span>
-      </div>
-
-      <!-- Card 10: AI Nutritionist -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/ai-diet.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🥗</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">AI Nutritionist</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Personalized meal plans synced with your Ayurvedic Prakriti.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Get Diet Plan →</span>
-      </div>
-
-      <!-- Card 11: Lab Report Reader -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/lab-integrator.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🩸</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Lab Report Reader</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Upload blood reports to translate biomarkers to clear insights.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Upload Report →</span>
-      </div>
-
-      <!-- Card 12: Fitness Coach -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/smart-lifestyle.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🏃</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">AI Fitness Coach</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Daily physical exercises tailored to your body type & balance.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Start Fitness →</span>
-      </div>
-
-      <!-- Card 13: Doctor Consultation -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/consult.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">👨‍⚕️</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Doctor Consultation</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Instantly consult allopathic doctors or Ayurvedic Vaidyas.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Find Doctor →</span>
-      </div>
-
-      <!-- Card 14: Emergency Assistant -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/emergency.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🚨</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Emergency Assistant</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">One-tap global SOS trigger with GPS tracking & pharmacy dispatch.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Emergency SOS →</span>
-      </div>
-
-      <!-- Card 15: Medical Record Vault -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/dashboard.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🔒</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Record Vault</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Secure encrypted storage for all your prescriptions and reports.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Open Vault →</span>
-      </div>
-
-      <!-- Card 16: Voice Health Assistant -->
-      <div class="feature-card-futuristic" onclick="window.location.href='pages/voice-doctor.html'">
-        <div style="font-size: 32px; margin-bottom: 14px;">🎙️</div>
-        <h3 style="font-size: 17px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Voice Assistant (Vani)</h3>
-        <p style="font-size: 13px; color: #52525b; margin-bottom: 14px; line-height: 1.5;">Speak naturally with Vani Vaidya Voice AI in your own language.</p>
-        <span style="font-size: 12px; color: #18181b; font-weight: 700;">Talk to AI →</span>
+        <div style="font-size: 32px; margin-bottom: 14px;">⏰</div>
+        <h3 style="font-size: 17px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Medicine Reminder</h3>
+        <p style="font-size: 13px; color: #4b5563; margin-bottom: 14px; line-height: 1.5;">Automated reminders for Dinacharya, medicines, and hydration.</p>
+        <span style="font-size: 12px; color: #1e40af; font-weight: 700;">Set Reminders →</span>
       </div>
     </div>
-  </div>
-
   </div>
 
   <!-- SECTION: DOCTOR PORTAL CONSOLE -->
@@ -1588,37 +1882,37 @@
     <div class="section-label" style="max-width: 1200px; margin: 0 auto;">
       <div class="section-label-icon" style="color: #2563EB; background: #eff6ff; border: 1px solid #bfdbfe;">CLINICAL</div>
       <div>
-        <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">AI Clinical Doctor Workstation</h2>
-        <p style="color: #71717a; font-size: 14px;">Master console for medical experts, featuring real-time diagnostic indicators and decision support.</p>
+        <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">AI Clinical Doctor Workstation</h2>
+        <p style="color: #111827; font-size: 14px;">Master console for medical experts, featuring real-time diagnostic indicators and decision support.</p>
       </div>
     </div>
 
-    <div class="glass-panel" style="max-width: 1200px; margin: 32px auto 0; padding: 32px; display: grid; grid-template-columns: 280px 1fr; gap: 32px; background: #ffffff; border: 1px solid #e4e4e7; border-radius: 20px;">
+    <div class="glass-panel" style="max-width: 1200px; margin: 32px auto 0; padding: 32px; display: grid; grid-template-columns: 280px 1fr; gap: 32px; background: #ffffff; border: 1px solid #dcfce7; border-radius: 20px;">
       <!-- Doctor Sidebar -->
-      <div style="border-right: 1px solid #e4e4e7; padding-right: 24px;">
-        <h3 style="font-size: 15px; font-weight: 700; color: #18181b; margin-bottom: 16px;">Patient Queue</h3>
+      <div style="border-right: 1px solid #dcfce7; padding-right: 24px;">
+        <h3 style="font-size: 15px; font-weight: 700; color: #15803d; margin-bottom: 16px;">Patient Queue</h3>
         <div style="display:flex; flex-direction:column; gap:12px;">
-          <div style="background: #f4f0e8; border: 1px solid #e4e4e7; padding: 12px; border-radius: 12px; cursor: pointer;">
-            <div style="font-size: 13px; font-weight: 700; color: #18181b;">Rahul Sharma</div>
-            <div style="font-size: 11px; color: #18181b; margin-top: 4px; font-weight: 600;">â— Consultation In Progress</div>
+          <div style="background: #f4f0e8; border: 1px solid #dcfce7; padding: 12px; border-radius: 12px; cursor: pointer;">
+            <div style="font-size: 13px; font-weight: 700; color: #374151;">Rahul Sharma</div>
+            <div style="font-size: 11px; color: #4b5563; margin-top: 4px; font-weight: 600;">● Consultation In Progress</div>
           </div>
-          <div style="background: #faf7f2; border: 1px solid #e4e4e7; padding: 12px; border-radius: 12px; cursor: pointer;">
-            <div style="font-size: 13px; font-weight: 700; color: #18181b;">Priya Deshmukh</div>
-            <div style="font-size: 11px; color: #71717a; margin-top: 4px;">Waiting (10 min)</div>
+          <div style="background: #f0fdf4; border: 1px solid #dcfce7; padding: 12px; border-radius: 12px; cursor: pointer;">
+            <div style="font-size: 13px; font-weight: 700; color: #374151;">Priya Deshmukh</div>
+            <div style="font-size: 11px; color: #374151; margin-top: 4px;">Waiting (10 min)</div>
           </div>
-          <div style="background: #faf7f2; border: 1px solid #e4e4e7; padding: 12px; border-radius: 12px; cursor: pointer;">
-            <div style="font-size: 13px; font-weight: 700; color: #18181b;">Karan Johar</div>
-            <div style="font-size: 11px; color: #71717a; margin-top: 4px;">Scheduled (14:30)</div>
+          <div style="background: #f0fdf4; border: 1px solid #dcfce7; padding: 12px; border-radius: 12px; cursor: pointer;">
+            <div style="font-size: 13px; font-weight: 700; color: #374151;">Karan Johar</div>
+            <div style="font-size: 11px; color: #374151; margin-top: 4px;">Scheduled (14:30)</div>
           </div>
         </div>
       </div>
 
       <!-- Main Portal Window -->
       <div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:1px solid #e4e4e7; padding-bottom:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px; border-bottom:1px solid #dcfce7; padding-bottom:16px;">
           <div>
-            <h4 style="font-size: 20px; font-weight: 700; color: #18181b; margin:0;">Active Consult Session</h4>
-            <span style="font-size:12px; color:#71717a;">Dr. Shailesh Phalle presiding</span>
+            <h4 style="font-size: 20px; font-weight: 700; color: #15803d; margin:0;">Active Consult Session</h4>
+            <span style="font-size:12px; color: #374151;">Dr. Shailesh Phalle presiding</span>
           </div>
           <div style="display:flex; gap:12px;">
             <button class="btn-futuristic btn-primary-futuristic" style="padding: 8px 16px; font-size:12px; margin:0;" onclick="alert('Starting encrypted HD video stream...')">🎥 Start Video</button>
@@ -1629,31 +1923,31 @@
         <div style="display:grid; grid-template-columns: 1.2fr 0.8fr; gap:24px;">
           <!-- Telemetry & Notes -->
           <div>
-            <h5 style="font-size:12px; text-transform:uppercase; color:#71717a; margin-bottom:10px; font-weight:700;">Patient Diagnostics Summary</h5>
-            <div style="background:#faf7f2; border-radius:12px; padding:16px; border:1px solid #e4e4e7; margin-bottom:16px;">
-              <div style="font-size:12px; color:#71717a; margin-bottom:8px;">Biomarker Scan:</div>
-              <div style="font-size:14px; font-weight:700; color:#18181b; display:flex; align-items:center; gap:8px;">
-                <span style="background:#f4f0e8; color:#18181b; border:1px solid #e4e4e7; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700;">VATA HIGH</span>
-                <span style="background:#f4f0e8; color:#18181b; border:1px solid #e4e4e7; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700;">PITTA STABLE</span>
+            <h5 style="font-size:12px; text-transform:uppercase; color: #374151; margin-bottom:10px; font-weight:700;">Patient Diagnostics Summary</h5>
+            <div style="background:#f0fdf4; border-radius:12px; padding:16px; border:1px solid #dcfce7; margin-bottom:16px;">
+              <div style="font-size:12px; color: #374151; margin-bottom:8px;">Biomarker Scan:</div>
+              <div style="font-size:14px; font-weight:700; color:#15803d; display:flex; align-items:center; gap:8px;">
+                <span style="background:#f4f0e8; color:#15803d; border:1px solid #dcfce7; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700;">VATA HIGH</span>
+                <span style="background:#f4f0e8; color:#15803d; border:1px solid #dcfce7; padding:2px 8px; border-radius:4px; font-size:10px; font-weight:700;">PITTA STABLE</span>
               </div>
             </div>
 
-            <div style="background:#faf7f2; border-radius:12px; padding:16px; border:1px solid #e4e4e7;">
+            <div style="background:#f0fdf4; border-radius:12px; padding:16px; border:1px solid #dcfce7;">
               <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:12px; color:#71717a; font-weight:600;">Voice Notes (Dictation AI)</span>
-                <span style="color:#18181b; font-size:10px; font-weight:700;">â— REC</span>
+                <span style="font-size:12px; color: #374151; font-weight:600;">Voice Notes (Dictation AI)</span>
+                <span style="color:#15803d; font-size:10px; font-weight:700;">● REC</span>
               </div>
-              <p style="font-size:12px; color:#52525b; margin:0; line-height:1.5;">"Patient reports slight digestion burn and increased stress due to sleeping disruption..."</p>
+              <p style="font-size:12px; color:#4b5563; margin:0; line-height:1.5;">"Patient reports slight digestion burn and increased stress due to sleeping disruption..."</p>
             </div>
           </div>
 
           <!-- AI Clinical Suggestions -->
-          <div class="glass-panel" style="padding:16px; background: #faf7f2; border: 1px solid #e4e4e7; border-radius: 12px;">
-            <div style="font-size: 11px; font-weight: 800; color: #18181b; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">🔮 AI Co-Pilot Advice</div>
-            <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; font-size:12px; color:#52525b;">
-              <li>â— Prescribe Ashwagandha capsules for Vata balance.</li>
-              <li>â— Rule out metabolic Agni weakness.</li>
-              <li>â— Suggest daily calming breathing cycles.</li>
+          <div class="glass-panel" style="padding:16px; background: #f0fdf4; border: 1px solid #dcfce7; border-radius: 12px;">
+            <div style="font-size: 11px; font-weight: 800; color: #374151; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px;">🔮 AI Co-Pilot Advice</div>
+            <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:8px; font-size:12px; color:#4b5563;">
+              <li>● Prescribe Ashwagandha capsules for Vata balance.</li>
+              <li>● Rule out metabolic Agni weakness.</li>
+              <li>● Suggest daily calming breathing cycles.</li>
             </ul>
           </div>
         </div>
@@ -1664,44 +1958,44 @@
   <!-- SECTION: PATIENT JOURNEY -->
   <section id="patient-journey" class="fade-scroll" style="margin-top: 80px; padding: 0 24px; margin-bottom: 60px;">
     <div class="section-label" style="justify-content: center; text-align: center; flex-direction: column;">
-      <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">The Care Loop Lifecycle</h2>
-      <p style="color: #71717a; font-size: 14px;">Five simple stages keeping you healthy, monitored, and supported.</p>
+      <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">The Care Loop Lifecycle</h2>
+      <p style="color: #111827; font-size: 14px;">Five simple stages keeping you healthy, monitored, and supported.</p>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-top: 36px; max-width: 1200px; margin-left: auto; margin-right: auto;">
       <!-- Step 1 -->
-      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #e4e4e7; border-radius:14px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">1</div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #18181b; margin-bottom: 6px;">Create Account</h4>
-        <p style="font-size: 12px; color: #71717a; margin: 0;">Quick sign-in & health profile sync.</p>
+      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #dcfce7; border-radius:14px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #15803d; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">1</div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 6px;">Create Account</h4>
+        <p style="font-size: 12px; color: #374151; margin: 0;">Quick sign-in & health profile sync.</p>
       </div>
 
       <!-- Step 2 -->
-      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #e4e4e7; border-radius:14px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">2</div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #18181b; margin-bottom: 6px;">AI Assessment</h4>
-        <p style="font-size: 12px; color: #71717a; margin: 0;">Symptom checks & voice assessment.</p>
+      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #dcfce7; border-radius:14px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #15803d; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">2</div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 6px;">AI Assessment</h4>
+        <p style="font-size: 12px; color: #374151; margin: 0;">Symptom checks & voice assessment.</p>
       </div>
 
       <!-- Step 3 -->
-      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #e4e4e7; border-radius:14px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">3</div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #18181b; margin-bottom: 6px;">Health Report</h4>
-        <p style="font-size: 12px; color: #71717a; margin: 0;">Personalized 300–900 wellness dial.</p>
+      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #dcfce7; border-radius:14px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #15803d; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">3</div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 6px;">Health Report</h4>
+        <p style="font-size: 12px; color: #374151; margin: 0;">Personalized 300–900 wellness dial.</p>
       </div>
 
       <!-- Step 4 -->
-      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #e4e4e7; border-radius:14px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">4</div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #18181b; margin-bottom: 6px;">Doctor Review</h4>
-        <p style="font-size: 12px; color: #71717a; margin: 0;">Expert consultations & prescriptions.</p>
+      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #dcfce7; border-radius:14px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #15803d; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">4</div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 6px;">Doctor Review</h4>
+        <p style="font-size: 12px; color: #374151; margin: 0;">Expert consultations & prescriptions.</p>
       </div>
 
       <!-- Step 5 -->
-      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #e4e4e7; border-radius:14px;">
-        <div style="width: 32px; height: 32px; border-radius: 50%; background: #18181b; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">5</div>
-        <h4 style="font-size: 14px; font-weight: 700; color: #18181b; margin-bottom: 6px;">Stay Healthy</h4>
-        <p style="font-size: 12px; color: #71717a; margin: 0;">Habit tracking & medicine reminders.</p>
+      <div class="glass-panel" style="padding: 20px; text-align: center; background:#ffffff; border:1px solid #dcfce7; border-radius:14px;">
+        <div style="width: 32px; height: 32px; border-radius: 50%; background: #15803d; color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px;">5</div>
+        <h4 style="font-size: 14px; font-weight: 700; color: #15803d; margin-bottom: 6px;">Stay Healthy</h4>
+        <p style="font-size: 12px; color: #374151; margin: 0;">Habit tracking & medicine reminders.</p>
       </div>
     </div>
   </section>
@@ -1710,19 +2004,19 @@
   <!-- SECTION: SUBSCRIPTION PRICING -->
   <section id="pricing" class="fade-scroll" style="margin-top: 60px; padding: 0 24px;">
     <div class="section-label" style="justify-content: center; text-align: center; flex-direction: column;">
-      <div class="section-label-icon" style="color: #18181b; background: #f4f0e8; border: 1px solid #e4e4e7; margin: 0 auto 16px;">MEMBERSHIP</div>
-      <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">Simple & Transparent Plans</h2>
-      <p style="color: #71717a; font-size: 14px;">Access AI diagnostics, clinical consults, and priority wellness dispatch.</p>
+      <div class="section-label-icon" style="color: #15803d; background: #f4f0e8; border: 1px solid #dcfce7; margin: 0 auto 16px;">MEMBERSHIP</div>
+      <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">Simple & Transparent Plans</h2>
+      <p style="color: #111827; font-size: 14px;">Access AI diagnostics, clinical consults, and priority wellness dispatch.</p>
     </div>
 
     <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 36px; max-width: 1200px; margin-left: auto; margin-right: auto;">
       <!-- Free Plan -->
-      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #e4e4e7; border-radius:16px;">
+      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #dcfce7; border-radius:16px;">
         <div>
-          <span style="font-size:11px; text-transform:uppercase; color:#71717a; font-weight:700;">Essential</span>
-          <h4 style="font-size:22px; color:#18181b; margin:8px 0; font-weight:800;">Free Care</h4>
-          <div style="font-size:30px; font-weight:800; color:#18181b; margin-bottom:20px;">₹0 <span style="font-size:14px; color:#71717a; font-weight:normal;">/ month</span></div>
-          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#52525b;">
+          <span style="font-size:11px; text-transform:uppercase; color: #374151; font-weight:700;">Essential</span>
+          <h4 style="font-size:22px; color:#15803d; margin:8px 0; font-weight:800;">Free Care</h4>
+          <div style="font-size:30px; font-weight:800; color:#15803d; margin-bottom:20px;">₹0 <span style="font-size:14px; color: #374151; font-weight:normal;">/ month</span></div>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#4b5563;">
             <li>✓ Vani Voice AI Assistant</li>
             <li>✓ Basic water and calorie logging</li>
             <li>✓ Local pharmacy map directory</li>
@@ -1732,13 +2026,13 @@
       </div>
 
       <!-- Premium Plan -->
-      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:2px solid #18181b; border-radius:16px; position:relative;">
-        <span style="position:absolute; top:-12px; right:20px; background:#18181b; color:white; font-size:10px; font-weight:800; padding:4px 12px; border-radius:20px; text-transform:uppercase;">POPULAR</span>
+      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:2px solid #15803d; border-radius:16px; position:relative;">
+        <span style="position:absolute; top:-12px; right:20px; background:#15803d; color:white; font-size:10px; font-weight:800; padding:4px 12px; border-radius:20px; text-transform:uppercase;">POPULAR</span>
         <div>
-          <span style="font-size:11px; text-transform:uppercase; color:#18181b; font-weight:700;">Advanced</span>
-          <h4 style="font-size:22px; color:#18181b; margin:8px 0; font-weight:800;">Premium Veda</h4>
-          <div style="font-size:30px; font-weight:800; color:#18181b; margin-bottom:20px;">₹499 <span style="font-size:14px; color:#71717a; font-weight:normal;">/ month</span></div>
-          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#52525b;">
+          <span style="font-size:11px; text-transform:uppercase; color:#374151; font-weight:700;">Advanced</span>
+          <h4 style="font-size:22px; color:#15803d; margin:8px 0; font-weight:800;">Premium Veda</h4>
+          <div style="font-size:30px; font-weight:800; color:#15803d; margin-bottom:20px;">₹499 <span style="font-size:14px; color: #374151; font-weight:normal;">/ month</span></div>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#4b5563;">
             <li>✓ Advanced Skin & Tongue Scan</li>
             <li>✓ Complete 300-900 score mapping</li>
             <li>✓ 1 monthly Doctor consultation</li>
@@ -1749,12 +2043,12 @@
       </div>
 
       <!-- Professional Plan -->
-      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #e4e4e7; border-radius:16px;">
+      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #dcfce7; border-radius:16px;">
         <div>
-          <span style="font-size:11px; text-transform:uppercase; color:#71717a; font-weight:700;">Expert</span>
-          <h4 style="font-size:22px; color:#18181b; margin:8px 0; font-weight:800;">Professional</h4>
-          <div style="font-size:30px; font-weight:800; color:#18181b; margin-bottom:20px;">₹999 <span style="font-size:14px; color:#71717a; font-weight:normal;">/ month</span></div>
-          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#52525b;">
+          <span style="font-size:11px; text-transform:uppercase; color: #374151; font-weight:700;">Expert</span>
+          <h4 style="font-size:22px; color:#15803d; margin:8px 0; font-weight:800;">Professional</h4>
+          <div style="font-size:30px; font-weight:800; color:#15803d; margin-bottom:20px;">₹999 <span style="font-size:14px; color: #374151; font-weight:normal;">/ month</span></div>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#4b5563;">
             <li>✓ Unlimited AI scans</li>
             <li>✓ 3 monthly Doctor consultations</li>
             <li>✓ DNA mapping & diet profiles</li>
@@ -1765,12 +2059,12 @@
       </div>
 
       <!-- Enterprise Plan -->
-      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #e4e4e7; border-radius:16px;">
+      <div class="glass-panel pricing-card-futuristic" style="padding: 28px; display:flex; flex-direction:column; justify-content:space-between; background:#ffffff; border:1px solid #dcfce7; border-radius:16px;">
         <div>
-          <span style="font-size:11px; text-transform:uppercase; color:#71717a; font-weight:700;">Scale</span>
-          <h4 style="font-size:22px; color:#18181b; margin:8px 0; font-weight:800;">Enterprise</h4>
-          <div style="font-size:30px; font-weight:800; color:#18181b; margin-bottom:20px;">Custom</div>
-          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#52525b;">
+          <span style="font-size:11px; text-transform:uppercase; color: #374151; font-weight:700;">Scale</span>
+          <h4 style="font-size:22px; color:#15803d; margin:8px 0; font-weight:800;">Enterprise</h4>
+          <div style="font-size:30px; font-weight:800; color:#15803d; margin-bottom:20px;">Custom</div>
+          <ul style="list-style:none; padding:0; margin:0; display:flex; flex-direction:column; gap:10px; font-size:13px; color:#4b5563;">
             <li>✓ Custom dashboard integration</li>
             <li>✓ Dedicated doctor panel APIs</li>
             <li>✓ Outbreak forecasting reports</li>
@@ -1810,7 +2104,7 @@
         <div style="font-size: 42px; margin-bottom: 8px;">⚡</div>
         <div style="font-size: 20px; font-weight: 900; color: #1e3a8a;">98 × 97 = 9506</div>
         <div style="font-size: 12px; color: #10b981; font-weight: 700; margin: 4px 0 12px;">Solved in 1.2s mentally!</div>
-        <div style="font-size: 11.5px; color: #64748b; background: #f8fafc; padding: 8px; border-radius: 8px;">Base 100: (-2) × (-3) = 06<br>98 - 3 = 95 → 9506</div>
+        <div style="font-size: 11.5px; color: #64748b; background: #f0fdf4; padding: 8px; border-radius: 8px;">Base 100: (-2) × (-3) = 06<br>98 - 3 = 95 → 9506</div>
       </div>
     </div>
   </section>
@@ -1818,24 +2112,24 @@
   <!-- SECTION: TESTIMONIALS -->
   <section id="testimonials" class="fade-scroll" style="margin-top: 80px; padding: 0 24px;">
     <div class="section-label" style="justify-content: center; text-align: center; flex-direction: column;">
-      <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">Trusted by Thousands Globally</h2>
-      <p style="color: #71717a; font-size: 14px;">Hear from certified professionals and families utilizing MedInVedic.</p>
+      <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">Trusted by Thousands Globally</h2>
+      <p style="color: #111827; font-size: 14px;">Hear from certified professionals and families utilizing MedInVedic.</p>
     </div>
 
     <!-- Carousel Container -->
     <div style="position:relative; max-width: 800px; margin: 32px auto 0; overflow:hidden;">
       <div id="testimonialCarousel" style="display:flex; transition: transform 0.4s ease; gap: 20px;">
         <!-- Testimonial 1 -->
-        <div class="glass-panel" style="flex: 0 0 100%; padding: 36px; box-sizing:border-box; text-align:center; background:#ffffff; border:1px solid #e4e4e7; border-radius:16px;">
-          <div style="font-size: 18px; color: #18181b; margin-bottom: 16px; letter-spacing: 2px;">★★★★★</div>
-          <p style="font-size: 15px; color: #52525b; line-height: 1.6; font-style: italic; margin-bottom: 20px;">
+        <div class="glass-panel" style="flex: 0 0 100%; padding: 36px; box-sizing:border-box; text-align:center; background:#ffffff; border:1px solid #dcfce7; border-radius:16px;">
+          <div style="font-size: 18px; color: #15803d; margin-bottom: 16px; letter-spacing: 2px;">★★★★★</div>
+          <p style="font-size: 15px; color: #374151; line-height: 1.6; font-style: italic; margin-bottom: 20px;">
             "MedInVedic AI diagnosed my Vata sleep imbalance with incredible accuracy. Linking to organic Ayurvedic remedies restored my natural sleep pattern within weeks!"
           </p>
           <div style="display:flex; justify-content:center; align-items:center; gap:14px;">
-            <div style="width:44px; height:44px; border-radius:50%; background: #faf7f2; border: 1px solid #e4e4e7; display:flex; align-items:center; justify-content:center; font-size:20px;">👤</div>
+            <div style="width:44px; height:44px; border-radius:50%; background: #f0fdf4; border: 1px solid #dcfce7; display:flex; align-items:center; justify-content:center; font-size:20px;">💤</div>
             <div style="text-align:left;">
-              <div style="font-weight:700; color:#18181b; font-size:14px;">Rahul Dev <span style="color:#18181b; font-size:11px; margin-left:4px; font-weight:700;">✓ Verified</span></div>
-              <div style="font-size:12px; color:#71717a;">Health Score: 812 • Mumbai</div>
+              <div style="font-weight:700; color:#15803d; font-size:14px;">Rahul Dev <span style="color:#15803d; font-size:11px; margin-left:4px; font-weight:700;">✓ Verified</span></div>
+              <div style="font-size:12px; color: #374151;">Health Score: 812 • Mumbai</div>
             </div>
           </div>
         </div>
@@ -1853,8 +2147,8 @@
   <!-- SECTION: FAQs -->
   <section id="faqs" class="fade-scroll" style="margin-top: 80px; padding: 0 24px; margin-bottom: 80px; max-width: 800px; margin-left: auto; margin-right: auto;">
     <div class="section-label" style="justify-content: center; text-align: center; flex-direction: column; margin-bottom: 32px;">
-      <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">Frequently Asked Questions</h2>
-      <p style="color: #71717a; font-size: 14px;">Clear explanations of our platform, consultations, and remedies.</p>
+      <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">Frequently Asked Questions</h2>
+      <p style="color: #111827; font-size: 14px;">Clear explanations of our platform, consultations, and remedies.</p>
     </div>
 
     <div style="display:flex; flex-direction:column; gap:12px;">
@@ -1896,47 +2190,55 @@
   <!-- SECTION: CONTACT US -->
   <section id="contact" class="fade-scroll" style="margin-top: 80px; padding: 0 24px;">
     <div class="section-label" style="justify-content: center; text-align: center; flex-direction: column;">
-      <div class="section-label-icon" style="color: #18181b; background: #f4f0e8; border: 1px solid #e4e4e7; margin: 0 auto 16px;">CONTACT</div>
-      <h2 style="font-size: 26px; font-weight: 800; color: #18181b;">Contact Us</h2>
-      <p style="color: #71717a; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+      <div class="section-label-icon" style="color: #15803d; background: #f4f0e8; border: 1px solid #dcfce7; margin: 0 auto 16px;">CONTACT</div>
+      <h2 style="font-size: 26px; font-weight: 800; color: #15803d;">Contact Us</h2>
+      <p style="color: #111827; font-size: 14px; max-width: 600px; margin: 0 auto; line-height: 1.6;">
         We're here to help. Whether you have questions about medicines, Ayurveda, doctor consultations, pharmacy partnerships, or enterprise solutions, our team is ready to assist.
       </p>
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 36px; max-width: 760px; margin-left: auto; margin-right: auto; padding-bottom: 40px;">
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; margin-top: 36px; max-width: 960px; margin-left: auto; margin-right: auto; padding-bottom: 40px;">
+
+      <!-- Online Support -->
+      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #dcfce7; background: #ffffff;">
+        <div style="width: 50px; height: 50px; border-radius: 50%; background: #f0fdf4; border: 1px solid #dcfce7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #15803d;">💬</div>
+        <h4 style="font-size: 16px; font-weight: 700; color: #15803d; margin-bottom: 8px;">24/7 Online Support</h4>
+        <a href="pages/ai-assistant.html" style="color: #15803d; text-decoration: underline; font-size: 13.5px; font-weight: 600; margin-top: 4px;">Launch AI Health Helpdesk</a>
+      </div>
+
       <!-- Email Support -->
-      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
-        <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">📧</div>
-        <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Email Support</h4>
-        <a href="mailto:support.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">support.medinvedic@gmail.com</a>
+      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #dcfce7; background: #ffffff;">
+        <div style="width: 50px; height: 50px; border-radius: 50%; background: #f0fdf4; border: 1px solid #dcfce7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #15803d;">📧</div>
+        <h4 style="font-size: 16px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Email Support</h4>
+        <a href="mailto:support.medinvedic@gmail.com" style="color: #15803d; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">support.medinvedic@gmail.com</a>
       </div>
 
       <!-- Enterprise Card -->
-      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #e4e4e7; background: #ffffff;">
-        <div style="width: 50px; height: 50px; border-radius: 50%; background: #faf7f2; border: 1px solid #e4e4e7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #18181b;">🏢</div>
-        <h4 style="font-size: 16px; font-weight: 700; color: #18181b; margin-bottom: 8px;">Enterprise</h4>
-        <a href="mailto:enterprise.medinvedic@gmail.com" style="color: #18181b; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">enterprise.medinvedic@gmail.com</a>
+      <div class="glass-panel" style="padding: 28px 24px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); border: 1px solid #dcfce7; background: #ffffff;">
+        <div style="width: 50px; height: 50px; border-radius: 50%; background: #f0fdf4; border: 1px solid #dcfce7; display: flex; align-items: center; justify-content: center; font-size: 22px; margin-bottom: 16px; color: #15803d;">🏢</div>
+        <h4 style="font-size: 16px; font-weight: 700; color: #15803d; margin-bottom: 8px;">Enterprise</h4>
+        <a href="mailto:enterprise.medinvedic@gmail.com" style="color: #15803d; text-decoration: underline; font-size: 13.5px; font-weight: 600; word-break: break-all; margin-top: 4px;">enterprise.medinvedic@gmail.com</a>
       </div>
     </div>
   </section>
 
-  <!-- â•â•â• TRUST BADGES (FOOTER STICKY) â•â•â• -->
-  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; padding: 32px 20px 48px; text-align: center; border-top: 1px solid #e4e4e7; background: #faf7f2;">
-    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #e4e4e7;">
-      <div style="color: #18181b; font-size: 16px; font-weight: 800;">✓</div>
-      <div style="color: #18181b; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">AYUSH CERTIFIED</div>
+  <!-- ═══ TRUST BADGES (FOOTER STICKY) ═══ -->
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; padding: 32px 20px 48px; text-align: center; border-top: 1px solid #dcfce7; background: #f0fdf4;">
+    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #dcfce7;">
+      <div style="color: #15803d; font-size: 16px; font-weight: 800;">✓</div>
+      <div style="color: #15803d; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">AYUSH CERTIFIED</div>
     </div>
-    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #e4e4e7;">
-      <div style="color: #18181b; font-size: 16px; font-weight: 800;">★</div>
-      <div style="color: #18181b; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">FSSAI APPROVED</div>
+    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #dcfce7;">
+      <div style="color: #15803d; font-size: 16px; font-weight: 800;">★</div>
+      <div style="color: #15803d; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">FSSAI APPROVED</div>
     </div>
-    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #e4e4e7;">
-      <div style="color: #18181b; font-size: 16px; font-weight: 800;">⚙️</div>
-      <div style="color: #18181b; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">ISO 9001</div>
+    <div style="background: #ffffff; display: flex; align-items: center; gap: 10px; padding: 10px 20px; border-radius: 10px; border: 1px solid #dcfce7;">
+      <div style="color: #15803d; font-size: 16px; font-weight: 800;">⚙️</div>
+      <div style="color: #15803d; font-weight: 700; font-size: 12px; letter-spacing: 0.5px;">ISO 9001</div>
     </div>
   </div>
 
-<!-- â•â•â• FOOTER â•â•â• -->
+<!-- ═══ FOOTER ═══ -->
 <footer class="footer">
   <div class="footer-grid">
     <div class="footer-brand">
@@ -1956,21 +2258,23 @@
     </div>
     <div class="footer-col">
       <h4>Services</h4>
+      <a href="pages/workspace.html" style="font-weight: 700; color: #166534;">Patient Workspace</a>
       <a href="pages/consult.html">Doctor Consult</a>
-      <a href="pages/voice-doctor.html" style="color: #22c55e; font-weight: 700;">Vani Vaidya Voice AI</a>
+      <a href="pages/voice-doctor.html" style="font-weight: 700;">Vani Vaidya Voice AI</a>
       <a href="#" onclick="openPrescriptionModal(); return false;">Upload Prescription</a>
       <a href="pages/healing-hub.html">Healing Hub</a>
       <a href="pages/login.html">Login / Register</a>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
+      <a href="mailto:support.medinvedic@gmail.com">support.medinvedic@gmail.com</a>
       <a href="https://www.linkedin.com/in/mahesh-badiger-4588552b3?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" target="_blank">LinkedIn</a>
       <a href="https://github.com/maheshbadiger079" target="_blank">GitHub</a>
       <a href="https://www.instagram.com/_mahi_369_?igsh=MWR5eDd3cHdwd3J2ZQ==" target="_blank">Instagram</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2026 MedInVedic. All rights reserved.</span>
+    <span id="footerCopyright">&copy; <span id="currentYear">2026</span> MedInVedic. All rights reserved.</span>
     <a href="privacy.html" style="color: #94a3b8; text-decoration: none; margin: 0 10px;">Privacy Policy</a>
     <span>Secure &amp; HIPAA Compliant Platform</span>
     <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(34,197,94,0.1);color:#10b981;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;margin-left:8px;" title="Google Analytics 4 Active">
@@ -1981,8 +2285,8 @@
 
 <!-- APPOINTMENT BOOKING FORM MODAL -->
 <div class="modal-overlay" id="bookingModal">
-  <div class="modal-box" style="max-width: 460px; padding: 32px; background: #ffffff; border-radius: 20px; border: 1px solid #e2e8f0;">
-    <button class="modal-close" style="color: #374151; background: #f8fafc;" onclick="document.getElementById('bookingModal').classList.remove('open')">✕</button>
+  <div class="modal-box" style="max-width: 460px; padding: 32px; background: #ffffff; border-radius: 20px; border: 1px solid #bbf7d0;">
+    <button class="modal-close" style="color: #374151; background: #f0fdf4;" onclick="document.getElementById('bookingModal').classList.remove('open')">✕</button>
     <div style="text-align: center; margin-bottom: 24px;">
       <div style="font-size: 36px; margin-bottom: 10px;">📋</div>
       <h2 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 6px;">Appointment Details</h2>
@@ -1991,21 +2295,21 @@
     <div style="display: flex; flex-direction: column; gap: 14px;">
       <div>
         <label style="font-size: 12px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Full Name *</label>
-        <input id="bk_name" type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
+        <input id="bk_name" type="text" placeholder="e.g. Rahul Sharma" style="width: 100%; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
       </div>
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
         <div>
           <label style="font-size: 12px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Age *</label>
-          <input id="bk_age" type="number" placeholder="e.g. 30" min="1" max="120" style="width: 100%; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
+          <input id="bk_age" type="number" placeholder="e.g. 30" min="1" max="120" style="width: 100%; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
         </div>
         <div>
           <label style="font-size: 12px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Phone *</label>
-          <input id="bk_phone" type="tel" placeholder="10-digit number" style="width: 100%; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
+          <input id="bk_phone" type="tel" placeholder="10-digit number" style="width: 100%; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; box-sizing: border-box;">
         </div>
       </div>
       <div>
         <label style="font-size: 12px; font-weight: 700; color: #4b5563; text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 6px;">Address</label>
-        <textarea id="bk_address" placeholder="City / Area (optional)" rows="2" style="width: 100%; padding: 12px 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; resize: none; box-sizing: border-box;"></textarea>
+        <textarea id="bk_address" placeholder="City / Area (optional)" rows="2" style="width: 100%; padding: 12px 16px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #111827; font-size: 14px; font-family: inherit; outline: none; resize: none; box-sizing: border-box;"></textarea>
       </div>
     </div>
     <button onclick="submitBooking()" style="width: 100%; margin-top: 20px; padding: 14px; background: #16A34A; border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; font-family: inherit;">
@@ -2020,26 +2324,26 @@
 let _bookingDoctor = { name: '', spec: '', fee: 0 };
 window.openBookingForm = function(name, spec, fee) {
   _bookingDoctor = { name, spec, fee };
-  document.getElementById('bookingDoctorLabel').textContent = `Dr. ${name} · ${spec} · ₹${fee}`;
+  document.getElementById('bookingDoctorLabel').textContent = `Dr. ${name} Â· ${spec} Â· ₹${fee}`;
   ['bk_name', 'bk_age', 'bk_phone', 'bk_address'].forEach(id => { const el = document.getElementById(id); if(el) el.value = ''; });
   document.getElementById('bookingModal').classList.add('open');
 };
 window.submitBooking = function() {
   const name=document.getElementById('bk_name').value.trim(), age=document.getElementById('bk_age').value.trim(), phone=document.getElementById('bk_phone').value.trim(), address=document.getElementById('bk_address').value.trim();
   if(!name){alert('Please enter your full name.');return;}if(!age){alert('Please enter your age.');return;}if(!phone){alert('Please enter your phone number.');return;}
-  const msg = [`📋 *Appointment Booking Request*`,``,`👨‍⚕️ *Doctor:* ${_bookingDoctor.name}`,`🏥 *Specialization:* ${_bookingDoctor.spec}`,`💰 *Consultation Fee:* ₹${_bookingDoctor.fee}`,``,`👤 *Patient Name:* ${name}`,`🎂 *Age:* ${age} years`,`📞 *Phone:* ${phone}`,address ? `📍 *Address:* ${address}` : null,``,`Please confirm a suitable appointment slot. Thank you!`].filter(Boolean).join('\n');
-  window.open('https://wa.me/919766441863?text=' + encodeURIComponent(msg), '_blank');
+  const msg = [`📋 *Appointment Booking Request*`,``,`👨‍⚕️ *Doctor:* ${_bookingDoctor.name}`,`🏥 *Specialization:* ${_bookingDoctor.spec}`,`💰 *Consultation Fee:* ₹${_bookingDoctor.fee}`,``,`💤 *Patient Name:* ${name}`,`🎂 *Age:* ${age} years`,`📞 *Phone:* ${phone}`,address ? `📍 *Address:* ${address}` : null,``,`Please confirm a suitable appointment slot. Thank you!`].filter(Boolean).join('\n');
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
   document.getElementById('bookingModal').classList.remove('open');
   if(window.showToast) showToast('✅ Opening WhatsApp to confirm your appointment...');
 };
 </script>
 
-<!-- â•â•â• MEDICAL DISCLAIMER â•â•â• -->
+<!-- ═══ MEDICAL DISCLAIMER ═══ -->
 <div class="medical-disclaimer">
   MedInVedic is not a substitute for professional medical advice. Always consult a qualified healthcare provider before starting any treatment. Ayurvedic products are not evaluated by CDSCO for disease treatment.
 </div>
 
-<!-- â•â•â• PRESCRIPTION MODAL â•â•â• -->
+<!-- ═══ PRESCRIPTION MODAL ═══ -->
 <div class="modal-overlay" id="prescriptionModal">
   <div class="modal-box iv-style-16">
     <button class="iv-style-17" onclick="closePrescriptionModal()">✕</button>
@@ -2059,12 +2363,12 @@ window.submitBooking = function() {
   </div>
 </div>
 
-<!-- â•â•â• PRODUCT MODAL â•â•â• -->
+<!-- ═══ PRODUCT MODAL ═══ -->
 <div class="modal-overlay" id="productModal">
   <div class="modal-box"><!-- filled by JS --></div>
 </div>
 
-<!-- â•â•â• CART PANEL â•â•â• -->
+<!-- ═══ CART PANEL ═══ -->
 <div class="cart-panel" id="cartPanel">
   <div class="cart-header">
     <h3>Your Cart</h3>
@@ -2088,7 +2392,7 @@ window.submitBooking = function() {
 
 
 
-<!-- â•â•â• TOAST â•â•â• -->
+<!-- ═══ TOAST ═══ -->
 <div class="toast-container" id="toastContainer"></div>
 
 <!-- Payment Modal is now dynamically injected by app.js -->
@@ -2097,11 +2401,12 @@ window.submitBooking = function() {
 <script src="js/medical-kb.js"></script>
 <script src="js/app.js?v=v_202603310200"></script>
 <script src="js/futuristic-animations.js"></script>
-<!-- â•â•â• RAG HEALTH INTELLIGENCE ENGINE â•â•â• -->
+<!-- ═══ RAG HEALTH INTELLIGENCE ENGINE ═══ -->
 <script src="js/rag-knowledge-base.js"></script>
 <script src="js/rag-safety.js"></script>
 <script src="js/rag-retriever.js"></script>
 <script src="js/rag-generator.js"></script>
+<script src="js/ai-model-selector.js"></script>
 <script src="js/rag-engine.js"></script>
 <script>
 // ── THREE HEALING PILLARS CONTROLS ──
@@ -2177,16 +2482,16 @@ function renderDetailedRemedyCard(remedy) {
       </div>
       <div class="product-info" style="padding: 16px; display: flex; flex-direction: column; flex: 1;">
         <span class="product-badge" style="background: #fef3c7; color: #92400e; border: 1px solid #fde68a; font-weight: 700; font-size: 11px; align-self: flex-start;">${remedy.category}</span>
-        <div class="product-name" style="font-size: 16px; font-weight: 800; color: #18181b; margin: 8px 0 4px;">${remedy.name}</div>
-        <div class="product-desc" style="font-size: 12.5px; color: #52525b; margin-bottom: 10px; line-height: 1.4;">${remedy.desc}</div>
+        <div class="product-name" style="font-size: 16px; font-weight: 800; color: #15803d; margin: 8px 0 4px;">${remedy.name}</div>
+        <div class="product-desc" style="font-size: 12.5px; color: #374151; margin-bottom: 10px; line-height: 1.4;">${remedy.desc}</div>
         <div style="font-size: 11.5px; color: #374151; margin-bottom: 6px; line-height: 1.4;">
           <strong>🥄 Key Ingredients:</strong> ${remedy.ingredients}
         </div>
-        <div style="font-size: 11.5px; color: #166534; font-weight: 600; margin-bottom: 14px; line-height: 1.4; margin-top: auto;">
+        <div style="font-size: 11.5px; color: #374151; font-weight: 600; margin-bottom: 14px; line-height: 1.4; margin-top: auto;">
           <strong>✨ Benefit:</strong> ${remedy.benefits}
         </div>
         <button class="add-to-cart-btn" style="background: #d97706; color: #ffffff; border: none; font-weight: 700; width: 100%; border-radius: 10px; padding: 10px; font-size: 13px; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#b45309'" onmouseout="this.style.background='#d97706'" onclick="event.stopPropagation(); openRemedyModal('${remedy.id}')">
-          🍵 View Recipe & Prep
+          🏵 View Recipe & Prep
         </button>
       </div>
     </div>
@@ -2229,14 +2534,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const docTeaser = document.getElementById('doctorTeaser');
   if (docTeaser) {
     docTeaser.innerHTML = DOCTORS.slice(0, 6).map(d => `
-      <div class="doctor-card" style="height: auto; padding: 24px; text-align: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px;">
+      <div class="doctor-card" style="height: auto; padding: 24px; text-align: center; background: #ffffff; border: 1px solid #bbf7d0; border-radius: 16px;">
         <div class="doctor-avatar" style="width: 76px; height: 76px; margin: 0 auto 14px;">
-          <img src="${d.image ? 'images/doctors/' + d.image : 'images/assets/doc_avatar.png'}" alt="${d.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; border: 2px solid #e2e8f0;" />
+          <img src="${d.image ? 'images/doctors/' + d.image : 'images/assets/doc_avatar.png'}" alt="${d.name}" style="width:100%; height:100%; object-fit:cover; border-radius:50%; border: 2px solid #bbf7d0;" />
         </div>
         <div class="doctor-name" style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 4px;">${d.name}</div>
         <div class="doctor-spec" style="color: #2563EB; font-weight: 700; font-size: 12px; margin-bottom: 8px;">${d.spec}</div>
         <div style="font-size: 12px; color: #6b7280; margin-bottom: 16px;">
-          ${d.exp} Exp • â­ ${d.rating}
+          ${d.exp} Exp • ⭐ ${d.rating}
         </div>
         <div style="display: flex; flex-direction: column; gap: 8px;">
           <button class="add-to-cart-btn" style="background: #2563EB; border: none; padding: 10px 16px; font-size: 13px; font-weight: 700; border-radius: 10px; color: white; margin: 0; display: flex; align-items: center; justify-content: center; gap: 6px;" onclick="event.stopPropagation(); window.openBookingForm('${d.name}', '${d.spec}', Math.round(${d.fee} * 0.7))">
@@ -2305,7 +2610,7 @@ function selectLanguage(code, name) {
   }
 }
 
-// â”€â”€ AI ANALYTIC FEATURE â”€â”€
+// ──── AI ANALYTIC FEATURE ────
 function executeAIAnalytic() {
   const input = document.getElementById('aiSearchInput');
   const query = input.value.trim();
@@ -2347,7 +2652,7 @@ function executeAIAnalytic() {
   }, 1500);
 }
 
-// â”€â”€ VEDIC HEALTH COCKPIT LOGIC â”€â”€
+// ──── VEDIC HEALTH COCKPIT LOGIC ────
 let cockpitTasks = [false, false, false, false, false, false];
 let cockpitStats = {
   cal: 1850,
@@ -2468,7 +2773,7 @@ function showCockpitTip(type) {
   if (type === 'water') {
     msg = '💧 Ayurvedic Tip: Drink warm or copper-charged water sitting down, not standing, to prevent joint imbalances.';
   } else if (type === 'workout') {
-    msg = '🏃‍♂️ Metabolic Tip: Regular light activity prevents Kapha accumulation and improves insulin sensitivity.';
+    msg = '🏃”â™‚ï¸ Metabolic Tip: Regular light activity prevents Kapha accumulation and improves insulin sensitivity.';
   } else if (type === 'breakfast') {
     msg = '🥗 Nutrition Tip: Avoid mixing sour fruits with milk or yogurt, as it creates Ama (toxic digest residue).';
   }
@@ -2518,8 +2823,8 @@ document.addEventListener('DOMContentLoaded', () => {
 </script>
   <!-- Location Picker Modal -->
   <div id="locationPickerModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 20px; background: #ffffff; border: 1px solid #e2e8f0;">
-      <div style="padding: 24px; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 20px; background: #ffffff; border: 1px solid #bbf7d0;">
+      <div style="padding: 24px; border-bottom: 1px solid #bbf7d0; display: flex; justify-content: space-between; align-items: center;">
         <h2 style="font-size: 18px; font-weight: 800; color: #111827; margin: 0;">Where do you want the delivery?</h2>
         <button onclick="closeLocationModal()" style="background: none; border: none; color: #6b7280; cursor: pointer; font-size: 20px;">✕</button>
       </div>
@@ -2527,23 +2832,23 @@ document.addEventListener('DOMContentLoaded', () => {
         <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">Select delivery address to check product availability, offers, and more.</p>
         
         <div style="display: flex; gap: 14px; margin-bottom: 24px;">
-          <div style="flex: 1; border: 2px dashed #cbd5e1; border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; background: #f8fafc;" onclick="openAddAddressModal()">
+          <div style="flex: 1; border: 2px dashed #cbd5e1; border-radius: 14px; padding: 20px; text-align: center; cursor: pointer; background: #f0fdf4;" onclick="openAddAddressModal()">
             <div style="font-size: 22px; margin-bottom: 6px;">âž•</div>
             <div style="font-size: 13px; font-weight: 700; color: #2563EB;">Add New</div>
           </div>
-          <div style="flex: 1; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 14px; padding: 20px; text-align: center; cursor: pointer;" onclick="selectSavedAddress('Home', 'Pune 412115')">
+          <div style="flex: 1; border: 1px solid #bbf7d0; background: #ffffff; border-radius: 14px; padding: 20px; text-align: center; cursor: pointer;" onclick="selectSavedAddress('Home', document.getElementById('savedHomeLocationSub')?.innerText || 'Pune 412115')">
             <div style="font-size: 22px; margin-bottom: 6px;">🏠</div>
             <div style="font-size: 13px; font-weight: 700; color: #111827;">Home</div>
-            <p style="font-size: 11px; color: #6b7280; margin-top: 4px;">Pune 412115</p>
+            <p id="savedHomeLocationSub" style="font-size: 11px; color: #6b7280; margin-top: 4px;">Pune 412115</p>
           </div>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 10px;">
-          <button class="sidebar-link" style="width: 100%; border: 1px solid #e2e8f0; background: #f8fafc; color: #111827; padding: 12px 16px; border-radius: 10px;" onclick="promptPinCode()">
+          <button class="sidebar-link" style="width: 100%; border: 1px solid #bbf7d0; background: #f0fdf4; color: #111827; padding: 12px 16px; border-radius: 10px;" onclick="promptPinCode()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
             Enter a PIN Code
           </button>
-          <button class="sidebar-link" style="width: 100%; border: 1px solid #e2e8f0; background: #f8fafc; color: #111827; padding: 12px 16px; border-radius: 10px;" onclick="detectLocation()">
+          <button class="sidebar-link" style="width: 100%; border: 1px solid #bbf7d0; background: #f0fdf4; color: #111827; padding: 12px 16px; border-radius: 10px;" onclick="detectLocation()">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
             Detect my location
           </button>
@@ -2554,26 +2859,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
   <!-- Add Address Modal -->
   <div id="addAddressModal" class="modal-overlay">
-    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 20px; background: #ffffff; border: 1px solid #e2e8f0;">
+    <div class="modal-box" style="max-width: 500px; padding: 0; overflow: hidden; border-radius: 20px; background: #ffffff; border: 1px solid #bbf7d0;">
       <div style="padding: 20px 24px; background: #2563EB; color: white; display: flex; align-items: center; gap: 14px;">
-        <button onclick="closeAddAddressModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">←</button>
+        <button onclick="closeAddAddressModal()" style="background: none; border: none; color: white; cursor: pointer; font-size: 20px;">→</button>
         <span style="font-size: 16px; font-weight: 700;">Add delivery address</span>
       </div>
       <div style="padding: 24px;">
         <h3 style="font-size: 16px; margin-bottom: 6px; color: #111827;">Address details</h3>
         <p style="font-size: 13px; color: #6b7280; margin-bottom: 20px;">To add a new address, search for your area, landmark, street name or apartment.</p>
         
-        <div style="background: #f8fafc; border-radius: 10px; padding: 4px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid #e2e8f0; margin-bottom: 24px;">
+        <div style="background: #f0fdf4; border-radius: 10px; padding: 4px 16px; display: flex; align-items: center; gap: 10px; border: 1px solid #bbf7d0; margin-bottom: 24px;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
           <input type="text" placeholder="Search for area, landmark" style="background: none; border: none; color: #111827; padding: 10px 0; width: 100%; outline: none; font-size: 14px;">
         </div>
 
         <div style="text-align: center; position: relative; margin: 24px 0;">
-          <hr style="border-top: 1px solid #e2e8f0;">
+          <hr style="border-top: 1px solid #bbf7d0;">
           <span style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #ffffff; padding: 0 12px; font-size: 11px; color: #9ca3af; font-weight: 700;">OR</span>
         </div>
 
-        <button class="sidebar-link" style="width: 100%; border: 1px solid #e2e8f0; background: #f8fafc; padding: 14px 16px; gap: 14px; border-radius: 10px;" onclick="detectLocation()">
+        <button class="sidebar-link" style="width: 100%; border: 1px solid #bbf7d0; background: #f0fdf4; padding: 14px 16px; gap: 14px; border-radius: 10px;" onclick="detectLocation()">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2"></path></svg>
           <div style="text-align: left;">
             <div style="font-weight: 700; color: #111827; font-size: 13px;">Use current location</div>
@@ -2590,40 +2895,176 @@ document.addEventListener('DOMContentLoaded', () => {
     function openAddAddressModal() { closeLocationModal(); document.getElementById('addAddressModal').classList.add('open'); }
     function closeAddAddressModal() { document.getElementById('addAddressModal').classList.remove('open'); }
     
-    function detectLocation() {
-      if (typeof showToast === 'function') showToast("📍 Fetching GPS coordinates...", "info");
-      else alert("Fetching GPS coordinates via Browser Geolocation API...");
+    // Synchronize delivery location across all UI badges and storage
+    function applyDetectedLocation(locString, meta) {
+      if (!locString || typeof locString !== 'string') return;
+      const cleanLoc = locString.trim();
       
-      closeLocationModal(); 
-      closeAddAddressModal();
+      // Update sidebar badge
+      const sideEl = document.getElementById('deliveryLocationSidebar');
+      if (sideEl) sideEl.textContent = cleanLoc;
       
-      const loc = "Viman Nagar, Pune";
-      document.querySelectorAll('#deliveryLocationHeader').forEach(el => el.innerText = loc);
-      if (typeof showToast === 'function') showToast("✓ Location set to " + loc, "success");
+      // Update any header badges or generic delivery location spans
+      document.querySelectorAll('#deliveryLocationHeader, .current-delivery-location, #locLabel').forEach(el => {
+        el.textContent = cleanLoc;
+      });
+
+      // Update home address subtitle in modal
+      const homeSub = document.getElementById('savedHomeLocationSub');
+      if (homeSub) homeSub.textContent = cleanLoc;
+
+      try {
+        localStorage.setItem('mv_delivery_location', cleanLoc);
+        if (meta) localStorage.setItem('mv_delivery_coords', JSON.stringify(meta));
+      } catch (e) {
+        console.warn('Storage quota or private mode', e);
+      }
     }
 
-    function promptPinCode() {
+    // IP-based Fallback Geolocation
+    async function fallbackIPLocation(opts = {}) {
+      try {
+        const res = await fetch('https://ipapi.co/json/');
+        if (res.ok) {
+          const data = await res.json();
+          if (data && (data.city || data.region)) {
+            const area = data.city || data.region;
+            const post = data.postal ? ` ${data.postal}` : '';
+            const loc = `${area}${post}`;
+            applyDetectedLocation(loc, { lat: data.latitude, lon: data.longitude, source: 'ip' });
+            if (!opts.silent && typeof showToast === 'function') {
+              showToast("✓ Location detected: " + loc, "success");
+            }
+            return true;
+          }
+        }
+      } catch (err) {
+        console.warn("IP location fallback failed:", err);
+      }
+      if (!opts.silent && typeof showToast === 'function') {
+        showToast("⚠️ Could not detect exact location. Please enter a PIN code.", "warning");
+      }
+      return false;
+    }
+
+    // Real-Time GPS / Geolocation Detection with Reverse Geocoding
+    function detectLocation(opts) {
+      const silent = (opts && opts.silent === true);
+
+      if (!silent) {
+        closeLocationModal(); 
+        closeAddAddressModal();
+        if (typeof showToast === 'function') showToast("📍 Detecting your exact current location...", "info");
+      }
+
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          async (position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            const accuracy = position.coords.accuracy;
+            let formattedLoc = "";
+
+            try {
+              // High-accuracy reverse geocoding via OpenStreetMap Nominatim
+              const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`, {
+                headers: { 'Accept': 'application/json' }
+              });
+              if (res.ok) {
+                const data = await res.json();
+                if (data && data.address) {
+                  const a = data.address;
+                  const locality = a.suburb || a.neighbourhood || a.residential || a.subdistrict || a.quarter || a.road || '';
+                  const city = a.city || a.town || a.village || a.city_district || a.municipality || a.county || '';
+                  const postcode = a.postcode || '';
+
+                  if (locality && city && locality.toLowerCase() !== city.toLowerCase()) {
+                    formattedLoc = `${locality}, ${city}`;
+                  } else if (city) {
+                    formattedLoc = city;
+                  } else if (locality) {
+                    formattedLoc = locality;
+                  } else if (data.display_name) {
+                    formattedLoc = data.display_name.split(',').slice(0, 2).join(',').trim();
+                  }
+
+                  if (postcode && !formattedLoc.includes(postcode)) {
+                    formattedLoc += ` ${postcode}`;
+                  }
+                }
+              }
+            } catch (err) {
+              console.warn("Reverse geocode request failed:", err);
+            }
+
+            if (!formattedLoc) {
+              formattedLoc = `Lat ${lat.toFixed(2)}Â°, Lon ${lon.toFixed(2)}Â°`;
+            }
+
+            applyDetectedLocation(formattedLoc, { lat, lon, accuracy, source: 'gps' });
+            if (!silent && typeof showToast === 'function') {
+              showToast("✓ Exact location detected: " + formattedLoc, "success");
+            }
+          },
+          (error) => {
+            console.warn("GPS Geolocation error/denied:", error.message);
+            fallbackIPLocation({ silent });
+          },
+          { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+        );
+      } else {
+        fallbackIPLocation({ silent });
+      }
+    }
+
+    // Pincode manual entry with reverse lookup
+    async function promptPinCode() {
       const pin = prompt("Enter Pincode (6 digits):");
-      if(pin && pin.length === 6) {
-        const loc = "Pincode: " + pin;
-        document.querySelectorAll('#deliveryLocationHeader').forEach(el => el.innerText = loc);
+      if (pin && /^\d{6}$/.test(pin.trim())) {
+        const cleanPin = pin.trim();
+        let loc = "PIN " + cleanPin;
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${cleanPin}`);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data[0] && data[0].Status === 'Success' && data[0].PostOffice && data[0].PostOffice[0]) {
+              const po = data[0].PostOffice[0];
+              const district = po.District || po.Name;
+              loc = `${district}, ${cleanPin}`;
+            }
+          }
+        } catch (e) {
+          console.warn("Pincode lookup error:", e);
+        }
+        applyDetectedLocation(loc, { pincode: cleanPin, source: 'pincode' });
         closeLocationModal();
-        if (typeof showToast === 'function') showToast("✓ Delivery zone updated: " + pin, "success");
-      } else if(pin) {
+        if (typeof showToast === 'function') showToast("✓ Delivery zone updated: " + loc, "success");
+      } else if (pin) {
         alert("Please enter a valid 6-digit Pincode.");
       }
     }
 
     function selectSavedAddress(name, details) {
-      const loc = details;
-      document.querySelectorAll('#deliveryLocationHeader').forEach(el => el.innerText = loc);
+      const loc = details || name;
+      applyDetectedLocation(loc, { name, source: 'saved' });
       closeLocationModal();
       if (typeof triggerHaptic === 'function') triggerHaptic('light');
       if (typeof showToast === 'function') showToast("✓ Delivery address: " + name, "success");
     }
+
+    // Auto-detect or restore saved location on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedLoc = localStorage.getItem('mv_delivery_location');
+      if (savedLoc && savedLoc !== 'Pune 412115') {
+        applyDetectedLocation(savedLoc);
+      } else {
+        // Automatically detect exact current location in background
+        detectLocation({ silent: true });
+      }
+    });
   </script>
 
-  <!-- â”€â”€ VIDEO DEMO MODAL â”€â”€ -->
+  <!-- ──── VIDEO DEMO MODAL ──── -->
   <div id="videoDemoModal" class="demo-modal-overlay" onclick="closeDemoModal()">
     <div class="demo-modal-content" onclick="event.stopPropagation()">
       <button class="demo-modal-close" onclick="closeDemoModal()">✕</button>
@@ -2637,7 +3078,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <span style="font-size: 13px; color: #94a3b8; font-weight: 500;">Access the Interactive NotebookLM Case File</span>
         </div>
         <a href="https://notebooklm.google.com/notebook/42b9e7e0-825d-4c35-9182-b97b71c2a2b0/artifact/aaf4c60b-2fe3-4267-8ce2-155514b7202e" target="_blank" class="notebooklm-launch-btn">
-          Explore NotebookLM Workspace â†—
+          Explore NotebookLM Workspace →
         </a>
       </div>
     </div>
@@ -2758,7 +3199,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   </script>
 
-  <!-- â•â•â• MOBILE BOTTOM NAVIGATION â•â•â• -->
+  <!-- ═══ MOBILE BOTTOM NAVIGATION ═══ -->
   <nav class="bottom-nav" id="bottomNav" aria-label="Mobile navigation">
     <div class="bottom-nav-inner">
 
@@ -2770,12 +3211,11 @@ document.addEventListener('DOMContentLoaded', () => {
         Home
       </a>
 
-      <a href="index.html#products" class="bottom-nav-item" id="bnShop">
+      <a href="pages/health-hub.html" class="bottom-nav-item" id="bnHealthHub">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
+          <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
         </svg>
-        Shop
+        Health Hub
       </a>
 
       <!-- SOS centre button -->
@@ -2784,12 +3224,11 @@ document.addEventListener('DOMContentLoaded', () => {
         SOS
       </a>
 
-      <a href="pages/consult.html" class="bottom-nav-item" id="bnDoctors">
+      <a href="pages/simulation-lab.html" class="bottom-nav-item" id="bnSimLab">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
+          <path d="M10 2v7.31M14 9.3V1.99M8.5 2h7M14 9.3a6.5 6.5 0 1 1-4 0"/>
         </svg>
-        Doctors
+        Sim Lab
       </a>
 
       <button class="bottom-nav-item" onclick="toggleSidebar()" id="bnMenu" style="background:none;border:none;cursor:pointer;">
@@ -2829,7 +3268,7 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
   </script>
 
-  <!-- â•â•â• MOBILE INLINE-STYLE GRID PATCHER â•â•â• -->
+  <!-- ═══ MOBILE INLINE-STYLE GRID PATCHER ═══ -->
   <!-- CSS cannot override inline style="" attributes. This JS does it on mobile. -->
   <script>
   (function mobileGridPatcher() {
@@ -2947,6 +3386,13 @@ document.addEventListener('DOMContentLoaded', () => {
   })();
   </script>
 
+<script>
+(function(){
+  var el = document.getElementById("currentYear");
+  if (el) el.textContent = new Date().getFullYear();
+})();
+</script>
 </body>
 </html>
+
 
