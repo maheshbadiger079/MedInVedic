@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedInVedic AI Simulation Lab — Multi-Agent Healthcare Intelligence</title>
+  <meta name="description" content="MedInVedic AI Simulation Lab — Multi-agent healthcare scenario simulator, GraphRAG memory grounding, and educational clinical decision-support." />
+
+  <link rel="icon" type="image/png" href="../favicon.png" />
+  <link rel="apple-touch-icon" href="../icon-512.png" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="../css/style.css?v=102" />
+  <link rel="stylesheet" href="../css/simulation-lab.css?v=1" />
+</head>
+<body class="sim-body">
+
+  <!-- Screen Reader Live Announcer (WCAG 2.2 AA) -->
+  <div id="simLiveAnnouncer" style="position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0);" aria-live="polite"></div>
+
+  <!-- ── 1. Top Utility & Trust Bar ── -->
+  <div class="sim-utility-bar" role="region" aria-label="Regulatory Trust and Scope">
+    <div>
+      <span class="sim-trust-badge">🌿 AYUSH & ICMR Evidence-Grounded</span>
+      <span style="margin-left: 10px;">🛡️ Safe Multi-Agent Healthcare Simulation Architecture</span>
+    </div>
+    <div>
+      <span style="font-weight: 700; color: #fde68a;">Educational & Research System Only</span>
+      <span style="margin-left: 12px; opacity: 0.8;">No Autonomous Treatment Modifications</span>
+    </div>
+  </div>
+
+  <!-- ── 2. Main Navigation Bar ── -->
+  <nav class="sim-navbar" role="navigation" aria-label="Simulation Lab Navigation">
+    <a class="sim-brand" href="../index.html">
+      <img src="../images/assets/logo_new.png" alt="MedInVedic Logo" class="sim-logo" />
+      <span class="sim-brand-title">MedInVedic</span>
+      <span class="sim-badge-lab">AI SIMULATION LAB</span>
+    </a>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <a href="health-hub.html" class="sim-btn sim-btn-outline sim-btn-sm">Health Hub</a>
+      <a href="workspace.html" class="sim-btn sim-btn-outline sim-btn-sm">Workspace</a>
+      <button class="sim-btn sim-btn-primary sim-btn-sm" onclick="switchTab('create')">+ New Scenario</button>
+    </div>
+  </nav>
+
+  <!-- ── 3. Tabs Navigation (11 Distinct Views) ── -->
+  <div class="sim-tabs-wrapper" role="tablist" aria-label="Simulation Lab Features">
+    <div class="sim-tabs-container">
+      <button class="sim-tab-btn active" id="tab_dashboard" onclick="switchTab('dashboard')" role="tab">📊 Dashboard</button>
+      <button class="sim-tab-btn" id="tab_create" onclick="switchTab('create')" role="tab">🛠️ Scenario Builder</button>
+      <button class="sim-tab-btn" id="tab_agents" onclick="switchTab('agents')" role="tab">👥 Virtual Agents</button>
+      <button class="sim-tab-btn" id="tab_progress" onclick="switchTab('progress')" role="tab">⏳ Live Progress</button>
+      <button class="sim-tab-btn" id="tab_explorer" onclick="switchTab('explorer')" role="tab">🔍 Agent Explorer</button>
+      <button class="sim-tab-btn" id="tab_graph" onclick="switchTab('graph')" role="tab">🕸️ Knowledge Graph</button>
+      <button class="sim-tab-btn" id="tab_compare" onclick="switchTab('compare')" role="tab">⚖️ Comparison</button>
+      <button class="sim-tab-btn" id="tab_report" onclick="switchTab('report')" role="tab">📑 AI Report</button>
+      <button class="sim-tab-btn" id="tab_history" onclick="switchTab('history')" role="tab">📜 History</button>
+      <button class="sim-tab-btn" id="tab_privacy" onclick="switchTab('privacy')" role="tab">🔒 Privacy & Consent</button>
+      <button class="sim-tab-btn" id="tab_admin" onclick="switchTab('admin')" role="tab">🛡️ Admin Monitoring</button>
+    </div>
+  </div>
+
+  <!-- ── Main Content Container ── -->
+  <main class="sim-container">
+
+    <!-- Mandatory Safety Disclaimer Hero Banner -->
+    <div class="sim-disclaimer-banner" role="alert">
+      <div class="sim-disclaimer-icon">⚠️</div>
+      <div class="sim-disclaimer-text">
+        <strong>EDUCATIONAL & RESEARCH SIMULATION ONLY:</strong> The MedInVedic AI Simulation Lab is an experimental multi-agent deliberation framework designed for educational analysis of hypothetical lifestyle, adherence, and integrative scenarios. It does <strong>NOT</strong> provide medical diagnosis, clinical prediction, or treatment changes. Virtual agents are simulated personas, not licensed medical professionals. <strong>Never alter or discontinue prescribed medication without direct guidance from your treating clinician.</strong>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 1: SIMULATION DASHBOARD                               -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel active" id="panel_dashboard">
+      <div class="sim-stats-grid">
+        <div class="sim-stat-card">
+          <div class="sim-stat-label">Virtual Agents</div>
+          <div class="sim-stat-value">8 Roles</div>
+          <div class="sim-stat-sub">Clinician, Pharmacist, Vaidya, Safety Reviewer</div>
+        </div>
+        <div class="sim-stat-card">
+          <div class="sim-stat-label">Knowledge Graph</div>
+          <div class="sim-stat-value" id="kgTotalNodes">12+</div>
+          <div class="sim-stat-sub">Verified Evidence Nodes (ICMR, CDSCO, WHO)</div>
+        </div>
+        <div class="sim-stat-card">
+          <div class="sim-stat-label">Interaction Edges</div>
+          <div class="sim-stat-value" id="kgTotalEdges">13+</div>
+          <div class="sim-stat-sub">Documented drug-drug & herb-drug relations</div>
+        </div>
+        <div class="sim-stat-card">
+          <div class="sim-stat-label">Safety Status</div>
+          <div class="sim-stat-value" style="color:var(--sim-primary);">Active</div>
+          <div class="sim-stat-sub">Triage Guardrails & Injection Defense Active</div>
+        </div>
+      </div>
+
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🚀 Fast-Track Educational Scenarios</h2>
+          <span style="font-size:12px; color:var(--sim-text-muted);">One-click pre-configured synthetic cases</span>
+        </div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:16px;">
+          <div class="sim-agent-card" style="cursor:pointer;" onclick="loadPresetScenario(0)">
+            <div style="font-size:24px; margin-bottom:8px;">🌿 🩺</div>
+            <div class="sim-agent-title">Pre-Diabetes & Circadian Meal Timing</div>
+            <div class="sim-agent-desc">Explore how adjusting lunch glycemic indices and evening Triphala timing affects afternoon fatigue without destabilizing Amlodipine.</div>
+            <button class="sim-btn sim-btn-outline sim-btn-sm" style="margin-top:12px; width:100%;">Load Scenario ➔</button>
+          </div>
+          <div class="sim-agent-card" style="cursor:pointer;" onclick="loadPresetScenario(1)">
+            <div style="font-size:24px; margin-bottom:8px;">💊 ⏰</div>
+            <div class="sim-agent-title">Multidrug Hypertensive Adherence</div>
+            <div class="sim-agent-desc">Simulate adherence hurdles for patients managing both morning and evening cardiovascular medications with variable travel schedules.</div>
+            <button class="sim-btn sim-btn-outline sim-btn-sm" style="margin-top:12px; width:100%;">Load Scenario ➔</button>
+          </div>
+          <div class="sim-agent-card" style="cursor:pointer;" onclick="loadPresetScenario(2)">
+            <div style="font-size:24px; margin-bottom:8px;">🥗 📊</div>
+            <div class="sim-agent-title">ICMR Balanced Plate Preventive Transition</div>
+            <div class="sim-agent-desc">Analyze whole-grain dietary transitions, vegetable fiber increases, and Ayurvedic digestive fire (Agni) support.</div>
+            <button class="sim-btn sim-btn-outline sim-btn-sm" style="margin-top:12px; width:100%;">Load Scenario ➔</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 2: CREATE NEW SCENARIO                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_create">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🛠️ Hypothetical Scenario Builder</h2>
+          <span style="font-size:12px; color:var(--sim-primary); font-weight:700;">Synthetic Data Mode Active</span>
+        </div>
+        <form onsubmit="submitCreateScenario(event)">
+          <div class="sim-form-group">
+            <label class="sim-label" for="scenarioTitle">Scenario Title</label>
+            <input type="text" id="scenarioTitle" class="sim-input" placeholder="e.g. Evaluating Circadian Meal Timing in Pre-Diabetes" required />
+            <div class="sim-help">Enter an educational scenario objective. Must not request personal prescription alterations.</div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div class="sim-form-group">
+              <label class="sim-label" for="scenarioType">Scenario Domain</label>
+              <select id="scenarioType" class="sim-select">
+                <option value="WELLNESS_ROUTINE_COMPARISON">Comparing General Wellness Routines</option>
+                <option value="MEDICATION_ADHERENCE_CHALLENGES">Understanding Medication Adherence Challenges</option>
+                <option value="CARE_ACCESS_BARRIERS">Exploring Care-Access & Consultation Barriers</option>
+                <option value="PREVENTIVE_NUTRITION_PLAN">Evaluating Nutrition Education Plans</option>
+                <option value="POPULATION_HEALTH_STRATEGY">Population-Level Preventive Healthcare Strategy</option>
+                <option value="HEALTHCARE_SERVICE_WORKFLOW">Healthcare Service Workflow Analysis</option>
+              </select>
+            </div>
+            <div class="sim-form-group">
+              <label class="sim-label" for="scenarioRounds">Max Multi-Agent Dialogue Rounds</label>
+              <select id="scenarioRounds" class="sim-select">
+                <option value="2">2 Rounds (Fast Overview)</option>
+                <option value="3" selected>3 Rounds (Balanced Deliberation)</option>
+                <option value="4">4 Rounds (In-Depth Synthesis)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="background:var(--sim-surface-alt); border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px; margin-bottom:18px;">
+            <div style="font-weight:800; font-size:14px; color:#103f36; margin-bottom:10px;">👤 Synthetic Patient Persona Profile</div>
+            <div class="sim-form-group">
+              <label class="sim-label" for="patientGoals">General Wellness Goals</label>
+              <input type="text" id="patientGoals" class="sim-input" placeholder="e.g. Improve afternoon energy, maintain steady blood pressure" />
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+              <div class="sim-form-group">
+                <label class="sim-label" for="patientHistory">Synthetic Medical History</label>
+                <input type="text" id="patientHistory" class="sim-input" placeholder="e.g. Mild hypertension, borderline fasting sugar" />
+              </div>
+              <div class="sim-form-group">
+                <label class="sim-label" for="patientMeds">Synthetic Medication Context</label>
+                <input type="text" id="patientMeds" class="sim-input" placeholder="e.g. Amlodipine 5mg morning; considering Ashwagandha" />
+              </div>
+            </div>
+            <div class="sim-form-group">
+              <label class="sim-label" for="patientLifestyle">Hypothetical Lifestyle & Routine</label>
+              <input type="text" id="patientLifestyle" class="sim-input" placeholder="e.g. Desk worker, 7 hours sleep, dinner at 9:30 PM" />
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:flex-end; gap:12px;">
+            <button type="button" class="sim-btn sim-btn-outline" onclick="switchTab('dashboard')">Cancel</button>
+            <button type="submit" id="createSubmitBtn" class="sim-btn sim-btn-primary">Launch Simulation 🚀</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 3: VIRTUAL AGENT CONFIGURATION                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_agents">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">👥 Virtual Healthcare Simulation Team</h2>
+          <span style="font-size:12px; color:var(--sim-text-muted);">8 Configured Multi-Agent Perspectives</span>
+        </div>
+        <div class="sim-agents-grid">
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">👤</div>
+              <div>
+                <div class="sim-agent-title">Synthetic Patient</div>
+                <span class="sim-agent-badge">Lived Experience</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Articulates daily lifestyle challenges, adherence difficulties, meal routines, and subjective fatigue symptoms without revealing real PHI.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">🩺</div>
+              <div>
+                <div class="sim-agent-title">Clinician Perspective</div>
+                <span class="sim-agent-badge">Modern Medicine</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Provides simulated clinical guideline considerations (ICMR, WHO, ADA), differential diagnoses, and organ-function safety boundaries.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">💊</div>
+              <div>
+                <div class="sim-agent-title">Pharmacist Perspective</div>
+                <span class="sim-agent-badge">Pharmacology</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Evaluates pharmacokinetics, bioavailability, CYP metabolism, chelation risks, and drug-drug / drug-herb interaction profiles.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">🌿</div>
+              <div>
+                <div class="sim-agent-title">Ayurvedic Literature Researcher</div>
+                <span class="sim-agent-badge">Classical AYUSH</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">References classical texts (Charaka, Sushruta, Bhavaprakasha), Prakriti energetics (Doshas), and Ayurvedic Pharmacopoeia standards.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">🥗</div>
+              <div>
+                <div class="sim-agent-title">Nutrition Specialist</div>
+                <span class="sim-agent-badge">ICMR Nutrition</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Applies the ICMR-NIN 'My Plate for the Day' nutritional framework, glycemic index management, and dietary fiber optimization.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">📊</div>
+              <div>
+                <div class="sim-agent-title">Medical Evidence Reviewer</div>
+                <span class="sim-agent-badge">GRADE Methodology</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Critiques methodological quality, separates gold-standard clinical trials from preliminary animal studies, and flags speculation.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">🛡️</div>
+              <div>
+                <div class="sim-agent-title">Medication Safety Reviewer</div>
+                <span class="sim-agent-badge">Toxicology & Safety</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Enforces strict contraindication checks, CDSCO alerts, toxic dosage prevention, and blocks unauthorized prescription modification.</div>
+          </div>
+          <div class="sim-agent-card">
+            <div class="sim-agent-top">
+              <div class="sim-agent-icon">🧭</div>
+              <div>
+                <div class="sim-agent-title">Simulation Coordinator</div>
+                <span class="sim-agent-badge">Synthesis Engine</span>
+              </div>
+            </div>
+            <div class="sim-agent-desc">Orchestrates multi-round debate turns, summarizes areas of agreement, highlights clinical uncertainties, and compiles the final report.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 4: SIMULATION PROGRESS & LIVE DIALOGUE                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_progress">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">⏳ Multi-Agent Execution Progress</h2>
+          <span id="progressStatusText" style="font-size:13px; color:var(--sim-primary); font-weight:700;">Ready to execute</span>
+        </div>
+        <h3 id="progressTitle" style="font-size:16px; margin:0 0 12px; color:#103f36;">Simulation Scenario</h3>
+        
+        <div style="background:#e2e8f0; border-radius:var(--sim-radius-full); height:8px; width:100%; overflow:hidden; margin-bottom:16px;">
+          <div id="progressBar" style="background:var(--sim-primary); height:100%; width:0%; transition:width 0.4s ease;"></div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:16px;">
+          <button class="sim-btn sim-btn-outline sim-btn-sm" onclick="switchTab('explorer')">🔍 Explore Agent Memory</button>
+          <button class="sim-btn sim-btn-primary sim-btn-sm" onclick="switchTab('report')">📑 View Synthesized Report</button>
+        </div>
+
+        <div class="sim-timeline" id="liveDialogueTimeline">
+          <div style="text-align:center; padding:30px; color:#64748b;">No active simulation running. Launch a scenario from the builder.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 5: AGENT INTERACTION EXPLORER                         -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_explorer">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🔍 Interactive Virtual Agent Explorer</h2>
+          <span style="font-size:12px; color:var(--sim-text-muted);">Inspect reasoning, assumptions & traceable evidence</span>
+        </div>
+        <div class="sim-form-group">
+          <label class="sim-label" for="exploreAgentSelect">Select Virtual Agent to Query</label>
+          <select id="exploreAgentSelect" class="sim-select">
+            <option value="">-- Choose Virtual Agent Role --</option>
+          </select>
+        </div>
+        <div class="sim-form-group">
+          <label class="sim-label" for="exploreQuestionInput">Inquiry Prompt</label>
+          <input type="text" id="exploreQuestionInput" class="sim-input" placeholder="e.g. Which specific clinical evidence influenced your response? What assumptions did you make?" />
+        </div>
+        <button class="sim-btn sim-btn-primary sim-btn-sm" onclick="askVirtualAgent()">Ask Virtual Agent 💬</button>
+
+        <div id="exploreAnswerBox" style="display:none; background:var(--sim-surface-alt); border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px; margin-top:18px;">
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 6: KNOWLEDGE GRAPH VIEWER                             -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_graph">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🕸️ Evidence-Linked Medical Knowledge Graph</h2>
+          <span style="font-size:12px; color:var(--sim-primary); font-weight:700;">Authoritative Clinical & Classical Provenance</span>
+        </div>
+        <p style="font-size:13px; color:var(--sim-text-muted); margin-top:-6px; margin-bottom:16px;">
+          Click any node to inspect verified citations, ICD-10 mappings, classical Ayurvedic references, and pharmacological mechanisms.
+        </p>
+        
+        <div style="font-weight:700; font-size:13px; margin-bottom:8px;">Knowledge Graph Nodes:</div>
+        <div id="kgNodesContainer" style="margin-bottom:18px;"></div>
+
+        <div id="kgNodeDetailBox" style="display:none; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:var(--sim-radius-md); padding:16px; margin-bottom:18px;"></div>
+
+        <div style="font-weight:700; font-size:13px; margin-bottom:8px;">Verified Interactions & Evidence Edges:</div>
+        <div id="kgEdgesContainer" style="background:var(--sim-surface-alt); border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); max-height:300px; overflow-y:auto;"></div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 7: SCENARIO COMPARISON                                -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_compare">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">⚖️ Side-by-Side Scenario Comparison</h2>
+          <span style="font-size:12px; color:var(--sim-text-muted);">Evaluate how varying assumptions affect simulated outcomes</span>
+        </div>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:16px;">
+          <div>
+            <label class="sim-label" for="compareSelectA">Scenario A</label>
+            <select id="compareSelectA" class="sim-select"></select>
+          </div>
+          <div>
+            <label class="sim-label" for="compareSelectB">Scenario B</label>
+            <select id="compareSelectB" class="sim-select"></select>
+          </div>
+        </div>
+        <button class="sim-btn sim-btn-primary sim-btn-sm" onclick="runScenarioComparison()">Compare Scenarios ➔</button>
+
+        <div id="comparisonResultBox" style="display:none; margin-top:20px;">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:18px;">
+            <div style="background:#f1f5f9; padding:14px; border-radius:var(--sim-radius-md);">
+              <strong id="compScenarioATitle">Scenario A</strong>
+            </div>
+            <div style="background:#f1f5f9; padding:14px; border-radius:var(--sim-radius-md);">
+              <strong id="compScenarioBTitle">Scenario B</strong>
+            </div>
+          </div>
+          <div style="font-weight:800; font-size:14px; margin-bottom:6px;">Differences in Assumptions:</div>
+          <ul id="compDifferencesList" class="sim-report-list" style="margin-bottom:16px;"></ul>
+          <div style="font-weight:800; font-size:14px; margin-bottom:6px;">Comparative Takeaways:</div>
+          <ul id="compTakeawaysList" class="sim-report-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 8: AI REPORT VIEWER                                   -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_report">
+      <div class="sim-card sim-report-box">
+        <div class="sim-report-header" style="display:flex; justify-content:space-between; align-items:flex-start;">
+          <div>
+            <span class="sim-badge-lab">MEDINVEDIC SIMULATION LAB REPORT</span>
+            <h1 style="font-size:22px; font-weight:900; color:#103f36; margin:8px 0 4px;">Integrative Educational Decision-Support Report</h1>
+            <div style="font-size:12px; color:var(--sim-text-muted);">ReAct ReportAgent Synthesized Analysis • Evidence Grounded</div>
+          </div>
+          <button class="sim-btn sim-btn-outline sim-btn-sm sim-btn-no-print" onclick="printSimulationReport()">🖨️ Print / Export PDF</button>
+        </div>
+
+        <div class="sim-report-section-title">Scenario Objective</div>
+        <p id="repObjective" style="font-size:14px; color:#334155; line-height:1.5;">Execute a scenario from the builder to generate an evidence-linked report.</p>
+
+        <div class="sim-report-section-title">Key Observations & Multi-Agent Deliberations</div>
+        <ul id="repObservations" class="sim-report-list"></ul>
+
+        <div class="sim-report-section-title">Evidence Citations & Quality Tiers</div>
+        <div id="repCitations" style="margin-bottom:14px;"></div>
+
+        <div class="sim-report-section-title">Clinical Uncertainties & Limitations</div>
+        <ul id="repLimitations" class="sim-report-list"></ul>
+
+        <div class="sim-report-section-title">Safety & Contraindication Findings</div>
+        <ul id="repSafety" class="sim-report-list"></ul>
+
+        <div class="sim-report-section-title">Recommended Discussion Questions for Your Doctor</div>
+        <ul id="repDoctorQuestions" class="sim-report-list" style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:var(--sim-radius-md); padding:16px 24px;"></ul>
+
+        <div style="margin-top:24px; padding:14px; background:#fffbeb; border:1px solid #fde68a; border-radius:var(--sim-radius-md); font-size:12px; color:#92400e; line-height:1.5;">
+          <strong>DISCLAIMER:</strong> <span id="repDisclaimer">EDUCATIONAL & RESEARCH SIMULATION ONLY: This report is generated by a multi-agent artificial intelligence simulation system. It does NOT constitute medical diagnosis, prescription, or clinical advice. Consult your qualified physician before altering any medications.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 9: SIMULATION HISTORY                                 -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_history">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">📜 Simulation History & State Ledger</h2>
+          <button class="sim-btn sim-btn-outline sim-btn-sm" onclick="loadHistory()">🔄 Refresh</button>
+        </div>
+        <table style="width:100%; border-collapse:collapse; text-align:left;">
+          <thead>
+            <tr style="border-bottom:2px solid var(--sim-border); font-size:12px; color:var(--sim-text-muted); text-transform:uppercase;">
+              <th style="padding:10px 14px;">Scenario Title</th>
+              <th style="padding:10px 14px;">Domain</th>
+              <th style="padding:10px 14px;">Status</th>
+              <th style="padding:10px 14px;">Created</th>
+              <th style="padding:10px 14px;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 10: PRIVACY & CONSENT SETTINGS                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_privacy">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🔒 Healthcare Privacy & Synthetic Data Controls</h2>
+          <span class="sim-trust-badge">DISHA / Indian Privacy Compliant</span>
+        </div>
+        <p style="font-size:13.5px; color:#334155; line-height:1.6;">
+          MedInVedic enforces strict medical data segregation. Simulations strictly default to synthetic, fictionalized data personas to protect user privacy.
+        </p>
+
+        <div style="margin:20px 0; border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px;">
+          <label style="display:flex; align-items:center; gap:10px; font-weight:700; cursor:pointer;">
+            <input type="checkbox" checked disabled style="width:18px; height:18px; accent-color:var(--sim-primary);" />
+            <span>Enforce Strict Synthetic Persona Isolation (Never send real PHI to external LLM providers)</span>
+          </label>
+          <div class="sim-help" style="margin-left:28px;">All scenarios use fictional persona identifiers (`SYNTH-...`) to eliminate re-identification risks.</div>
+        </div>
+
+        <div style="margin:20px 0; border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px;">
+          <label style="display:flex; align-items:center; gap:10px; font-weight:700; cursor:pointer;">
+            <input type="checkbox" checked style="width:18px; height:18px; accent-color:var(--sim-primary);" />
+            <span>Enable 30-Day Simulation Event Retention (Auto-purge raw event transcripts after 30 days)</span>
+          </label>
+        </div>
+
+        <div style="margin:20px 0; border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px;">
+          <label style="display:flex; align-items:center; gap:10px; font-weight:700; cursor:pointer;">
+            <input type="checkbox" checked disabled style="width:18px; height:18px; accent-color:var(--sim-primary);" />
+            <span>Explicit Doctor Consent Barrier (Reports are never shared automatically without manual user action)</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <!-- VIEW 11: ADMIN MONITORING DASHBOARD                        -->
+    <!-- ═══════════════════════════════════════════════════════════ -->
+    <section class="sim-panel" id="panel_admin">
+      <div class="sim-card">
+        <div class="sim-card-header">
+          <h2 class="sim-card-title">🛡️ Admin Safety & Execution Telemetry</h2>
+          <span style="font-size:12px; color:var(--sim-primary); font-weight:700;">Auditing & Cost Guardrails</span>
+        </div>
+        <div class="sim-stats-grid">
+          <div class="sim-stat-card">
+            <div class="sim-stat-label">Emergency Interceptions</div>
+            <div class="sim-stat-value" style="color:var(--sim-primary);">0</div>
+            <div class="sim-stat-sub">Red flags safely redirected to 112/108</div>
+          </div>
+          <div class="sim-stat-card">
+            <div class="sim-stat-label">Prompt Injections Blocked</div>
+            <div class="sim-stat-value" style="color:var(--sim-primary);">0</div>
+            <div class="sim-stat-sub">Jailbreak & delimiter attacks halted</div>
+          </div>
+          <div class="sim-stat-card">
+            <div class="sim-stat-label">Token Budget Cap</div>
+            <div class="sim-stat-value">4,000</div>
+            <div class="sim-stat-sub">Strict ceiling per simulation job</div>
+          </div>
+          <div class="sim-stat-card">
+            <div class="sim-stat-label">Execution Timeout</div>
+            <div class="sim-stat-value">45s</div>
+            <div class="sim-stat-sub">Hard termination boundary</div>
+          </div>
+        </div>
+
+        <div style="background:var(--sim-surface-alt); border:1px solid var(--sim-border); border-radius:var(--sim-radius-md); padding:16px;">
+          <div style="font-weight:800; font-size:14px; margin-bottom:8px;">Compliance & Safety Audit Log</div>
+          <div style="font-size:12px; color:var(--sim-text-muted); font-family:monospace;">
+            [2026-10-22T17:00:00Z] Simulation Engine Initialized. License mode: MIT Clean-Room.<br />
+            [2026-10-22T17:05:00Z] Knowledge Graph loaded: 12 nodes, 13 edges, all citations verified.<br />
+            [2026-10-22T17:10:00Z] Emergency regex compiled with 112/108 escalation protocol active.<br />
+            [2026-10-22T17:15:00Z] Domain isolation verified: VedicMind and Health AI strictly decoupled.
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script Controller -->
+  <script src="../js/simulation-lab.js?v=1"></script>
+</body>
+</html>

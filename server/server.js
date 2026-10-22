@@ -11,8 +11,22 @@ const { initDB } = require('./database');
 
 const app = express();
 
-// ── Middleware ────────────────────────────────────────────────────
-app.use(cors({ origin: '*' }));
+// ── Middleware & CORS Configuration ──────────────────────────────
+const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(s => s.trim())
+  : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5000', 'http://localhost:8888', 'http://127.0.0.1:8888', 'http://127.0.0.1:5000'];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests or allowed origins
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.web.app') || origin.endsWith('.firebaseapp.com')) {
+      return callback(null, true);
+    }
+    return callback(new Error('CORS policy: Access from this origin is restricted.'));
+  },
+  credentials: true
+}));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,8 +36,22 @@ app.use((req, res, next) => {
   next();
 });
 
-// Serve uploaded files statically
-app.use('/uploads', express.static(path.join(__dirname, '../public/uploads')));
+// Serve static upload assets
+app.use('/uploads/products', express.static(path.join(__dirname, '../public/uploads/products')));
+app.use('/uploads/prescriptions', express.static(path.join(__dirname, '../public/uploads/prescriptions')));
+
+// Serve frontend public directory directly
+app.use(express.static(path.join(__dirname, '../public')));
+
+// Clean alias for patient workspace and health hub
+app.get('/workspace', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/pages/workspace.html'));
+});
+
+app.get('/health-hub', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/pages/health-hub.html'));
+});
+
 
 // ── Health check (works before DB init) ──────────────────────────
 app.get('/api/health', (req, res) => {
@@ -45,6 +73,13 @@ initDB().then(() => {
   app.use('/api',               require('./routes/users'));
   app.use('/api',               require('./routes/rag'));
   app.use('/api/vedicmind',     require('./routes/vedicmind'));
+  app.use('/api/activity',      require('./routes/activity'));
+  app.use('/api/admin/activity',require('./routes/activity'));
+  app.use('/api/healthcare',    require('./routes/healthcare'));
+  app.use('/api/workspace',     require('./routes/workspace'));
+  app.use('/api/health-hub',    require('./routes/healthhub'));
+  app.use('/api/healthhub',     require('./routes/healthhub'));
+  app.use('/api/simulations',   require('./routes/simulations'));
 
   // Global error handler
   app.use((err, req, res, next) => {

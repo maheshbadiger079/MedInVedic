@@ -56,7 +56,12 @@ function createApp() {
     TRANSACTIONS: 'transactions',
     PRESCRIPTIONS: 'prescriptions',
     ACTIVITY_SESSIONS: 'activity_sessions',
-    ACTIVITY_EVENTS: 'activity_events'
+    ACTIVITY_EVENTS: 'activity_events',
+    SIMULATION_JOBS: 'simulationJobs',
+    SIMULATION_AGENTS: 'simulationAgents',
+    SIMULATION_EVENTS: 'simulationEvents',
+    SIMULATION_REPORTS: 'simulationReports',
+    SIMULATION_FEEDBACK: 'simulationFeedback'
   };
 
   const { PaymentOrchestrator } = require('./payment/payment-orchestrator');
@@ -2095,6 +2100,14 @@ function createApp() {
   });
 
   // ─────────────────────────────────────────────────────────────────────────
+  // ── MedInVedic AI Simulation Lab (Multi-Agent Healthcare Simulator) ───────
+  try {
+    const { createSimulationRouter } = require('./simulation/simulation-router');
+    app.use('/simulations', createSimulationRouter(db, admin, COLLECTIONS, requireAuth));
+  } catch (simErr) {
+    console.error('Error initializing simulation router:', simErr.message);
+  }
+
   return app;
 }
 

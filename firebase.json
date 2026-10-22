@@ -1,98 +1,139 @@
 {
-  "functions": {
-    "source": "functions",
-    "runtime": "nodejs20",
-    "ignore": [
-      "node_modules",
-      ".git",
-      "firebase-debug.log",
-      "firebase-debug.*.log"
-    ]
-  },
-  "hosting": {
-    "public": "public",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**",
-      "**/app/**",
-      "**/*.apk",
-      "**/*.zip"
-    ],
-    "redirects": [
-      {
-        "source": "/pages/index.html",
-        "destination": "/index.html",
-        "type": 302
-      },
-      {
-        "source": "/pages/landing.html",
-        "destination": "/landing.html",
-        "type": 302
-      }
-    ],
-    "rewrites": [
-      {
-        "source": "/api/**",
-        "function": "api"
-      }
-    ],
-    "headers": [
-      {
-        "source": "**/*.html",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache, no-store, must-revalidate"
-          }
-        ]
-      },
-      {
-        "source": "**/*.@(js|css)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "max-age=31536000"
-          }
-        ]
-      },
-      {
-        "source": "**/*.@(png|jpg|jpeg|gif|webp|svg|ico)",
-        "headers": [
-          {
-            "key": "Cache-Control",
-            "value": "no-cache, must-revalidate"
-          }
-        ]
-      }
-    ]
-  },
-  "firestore": {
-    "rules": "firestore.rules",
-    "indexes": "firestore.indexes.json"
-  },
-  "storage": {
-    "rules": "storage.rules"
-  },
-  "emulators": {
-    "auth": {
-      "port": 9099
-    },
-    "functions": {
-      "port": 5001
-    },
-    "firestore": {
-      "port": 8080
-    },
-    "hosting": {
-      "port": 5000
-    },
-    "storage": {
-      "port": 9199
-    },
-    "ui": {
-      "enabled": true,
-      "port": 4000
-    }
-  }
+    "functions":  {
+                      "source":  "functions",
+                      "runtime":  "nodejs20",
+                      "ignore":  [
+                                     "node_modules",
+                                     ".git",
+                                     "firebase-debug.log",
+                                     "firebase-debug.*.log"
+                                 ]
+                  },
+    "hosting":  {
+                    "public":  "public",
+                    "ignore":  [
+                                   "firebase.json",
+                                   "**/.*",
+                                   "**/node_modules/**",
+                                   "**/app/**",
+                                   "**/*.apk",
+                                   "**/*.zip"
+                               ],
+                    "redirects":  [
+                                      {
+                                          "source":  "/pages/index.html",
+                                          "destination":  "/index.html",
+                                          "type":  302
+                                      },
+                                      {
+                                          "source":  "/pages/landing.html",
+                                          "destination":  "/landing.html",
+                                          "type":  302
+                                      }
+                                  ],
+                    "rewrites":  [
+                                     {
+                                         "source":  "/founder",
+                                         "destination":  "/pages/founder.html"
+                                     },
+                                     {
+                                         "source":  "/login",
+                                         "destination":  "/login.html"
+                                     },
+                                     {
+                                         "source":  "/healthcare",
+                                         "destination":  "/pages/healthcare.html"
+                                     },
+                                     {
+                                         "source":  "/workspace",
+                                         "destination":  "/pages/workspace.html"
+                                     },
+                                     {
+                                         "source":  "/health-hub",
+                                         "destination":  "/pages/health-hub.html"
+                                     },
+                                     {
+                                         "source":  "/simulation-lab",
+                                         "destination":  "/pages/simulation-lab.html"
+                                     },
+                                     {
+                                         "source":  "/api/**",
+                                         "function":  "api"
+                                     }
+                                 ],
+                    "headers":  [
+                                    {
+                                        "source":  "**",
+                                        "headers":  [
+                                                        {
+                                                            "key":  "X-Content-Type-Options",
+                                                            "value":  "nosniff"
+                                                        },
+                                                        {
+                                                            "key":  "X-Frame-Options",
+                                                            "value":  "DENY"
+                                                        },
+                                                        {
+                                                            "key":  "Referrer-Policy",
+                                                            "value":  "strict-origin-when-cross-origin"
+                                                        }
+                                                    ]
+                                    },
+                                    {
+                                        "source":  "**/*.html",
+                                        "headers":  [
+                                                        {
+                                                            "key":  "Cache-Control",
+                                                            "value":  "no-cache, no-store, must-revalidate"
+                                                        }
+                                                    ]
+                                    },
+                                    {
+                                        "source":  "**/*.@(js|css)",
+                                        "headers":  [
+                                                        {
+                                                            "key":  "Cache-Control",
+                                                            "value":  "max-age=31536000"
+                                                        }
+                                                    ]
+                                    },
+                                    {
+                                        "source":  "**/*.@(png|jpg|jpeg|gif|webp|svg|ico)",
+                                        "headers":  [
+                                                        {
+                                                            "key":  "Cache-Control",
+                                                            "value":  "no-cache, must-revalidate"
+                                                        }
+                                                    ]
+                                    }
+                                ]
+                },
+    "firestore":  {
+                      "rules":  "firestore.rules",
+                      "indexes":  "firestore.indexes.json"
+                  },
+    "storage":  {
+                    "rules":  "storage.rules"
+                },
+    "emulators":  {
+                      "auth":  {
+                                   "port":  9099
+                               },
+                      "functions":  {
+                                        "port":  5001
+                                    },
+                      "firestore":  {
+                                        "port":  8080
+                                    },
+                      "hosting":  {
+                                      "port":  5000
+                                  },
+                      "storage":  {
+                                      "port":  9199
+                                  },
+                      "ui":  {
+                                 "enabled":  true,
+                                 "port":  4000
+                             }
+                  }
 }

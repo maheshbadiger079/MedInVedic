@@ -1,0 +1,511 @@
+/**
+ * public/css/simulation-lab.css
+ * MedInVedic AI Simulation Lab Design System
+ * ─────────────────────────────────────────────────────────────────
+ * Fully responsive, accessible (WCAG 2.2 AA), modern aesthetic.
+ * ─────────────────────────────────────────────────────────────────
+ */
+
+:root {
+  --sim-primary: #15803d;
+  --sim-primary-hover: #166534;
+  --sim-primary-light: #dcfce7;
+  --sim-primary-dark: #14532d;
+  
+  --sim-secondary: #0369a1;
+  --sim-secondary-light: #e0f2fe;
+  
+  --sim-amber: #d97706;
+  --sim-amber-light: #fef3c7;
+  
+  --sim-rose: #be123c;
+  --sim-rose-light: #ffe4e6;
+  
+  --sim-surface: #ffffff;
+  --sim-surface-alt: #f8fafc;
+  --sim-surface-hover: #f1f5f9;
+  
+  --sim-border: #e2e8f0;
+  --sim-border-strong: #cbd5e1;
+  
+  --sim-text-main: #0f172a;
+  --sim-text-muted: #64748b;
+  --sim-text-subtle: #94a3b8;
+  
+  --sim-radius-sm: 6px;
+  --sim-radius-md: 10px;
+  --sim-radius-lg: 16px;
+  --sim-radius-xl: 22px;
+  --sim-radius-full: 9999px;
+  
+  --sim-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --sim-shadow-md: 0 4px 12px -2px rgba(0,0,0,0.08);
+  --sim-shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+}
+
+body.sim-body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: var(--sim-text-main);
+  background-color: #f8fafc;
+  line-height: 1.5;
+}
+
+/* ── Top Utility & Trust Bar ── */
+.sim-utility-bar {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 7px 24px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sim-trust-badge {
+  background: rgba(255,255,255,0.12);
+  padding: 2px 10px;
+  border-radius: var(--sim-radius-full);
+  font-weight: 600;
+  color: #86efac;
+}
+
+/* ── Main Navbar ── */
+.sim-navbar {
+  background: #ffffff;
+  border-bottom: 1px solid var(--sim-border);
+  padding: 12px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--sim-shadow-sm);
+}
+.sim-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+.sim-logo {
+  height: 38px;
+  width: auto;
+  border-radius: 8px;
+}
+.sim-brand-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 900;
+  font-size: 20px;
+  color: #103f36;
+  letter-spacing: -0.5px;
+}
+.sim-badge-lab {
+  background: #ecfdf5;
+  color: var(--sim-primary);
+  border: 1px solid #a7f3d0;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+/* ── View Navigation Tabs (11 Views) ── */
+.sim-tabs-wrapper {
+  background: #ffffff;
+  border-bottom: 1px solid var(--sim-border);
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 4px 20px;
+  scrollbar-width: thin;
+}
+.sim-tabs-container {
+  display: flex;
+  gap: 6px;
+}
+.sim-tab-btn {
+  background: transparent;
+  border: none;
+  padding: 10px 14px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--sim-text-muted);
+  cursor: pointer;
+  border-radius: var(--sim-radius-md);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.sim-tab-btn:hover {
+  background: var(--sim-surface-hover);
+  color: var(--sim-text-main);
+}
+.sim-tab-btn.active {
+  background: var(--sim-primary-light);
+  color: var(--sim-primary-dark);
+  font-weight: 700;
+}
+
+/* ── Container & Panels ── */
+.sim-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 24px 20px 60px;
+}
+.sim-panel {
+  display: none;
+  animation: fadeIn 0.2s ease-in-out;
+}
+.sim-panel.active {
+  display: block;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Safety Disclaimer Hero Banner ── */
+.sim-disclaimer-banner {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-left: 5px solid var(--sim-amber);
+  border-radius: var(--sim-radius-md);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.sim-disclaimer-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+.sim-disclaimer-text {
+  font-size: 13px;
+  color: #92400e;
+  line-height: 1.45;
+}
+.sim-disclaimer-text strong {
+  color: #78350f;
+}
+
+/* ── Stat Cards Grid ── */
+.sim-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.sim-stat-card {
+  background: #ffffff;
+  border: 1px solid var(--sim-border);
+  border-radius: var(--sim-radius-lg);
+  padding: 18px 20px;
+  box-shadow: var(--sim-shadow-sm);
+}
+.sim-stat-label {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--sim-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.sim-stat-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--sim-text-main);
+  margin-top: 4px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+}
+.sim-stat-sub {
+  font-size: 12px;
+  color: var(--sim-text-muted);
+  margin-top: 4px;
+}
+
+/* ── Cards & Section Wrappers ── */
+.sim-card {
+  background: #ffffff;
+  border: 1px solid var(--sim-border);
+  border-radius: var(--sim-radius-lg);
+  padding: 24px;
+  margin-bottom: 24px;
+  box-shadow: var(--sim-shadow-sm);
+}
+.sim-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--sim-border);
+}
+.sim-card-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--sim-text-main);
+  margin: 0;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Forms & Controls ── */
+.sim-form-group {
+  margin-bottom: 18px;
+}
+.sim-label {
+  display: block;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--sim-text-main);
+  margin-bottom: 6px;
+}
+.sim-input, .sim-select, .sim-textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1px solid var(--sim-border);
+  border-radius: var(--sim-radius-md);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--sim-text-main);
+  background: #ffffff;
+  transition: border-color 0.15s;
+}
+.sim-input:focus, .sim-select:focus, .sim-textarea:focus {
+  outline: none;
+  border-color: var(--sim-primary);
+  box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.15);
+}
+.sim-help {
+  font-size: 12px;
+  color: var(--sim-text-muted);
+  margin-top: 4px;
+}
+
+/* ── Buttons ── */
+.sim-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--sim-radius-md);
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+.sim-btn-primary {
+  background: var(--sim-primary);
+  color: #ffffff;
+}
+.sim-btn-primary:hover {
+  background: var(--sim-primary-hover);
+}
+.sim-btn-outline {
+  background: transparent;
+  color: var(--sim-text-main);
+  border: 1px solid var(--sim-border-strong);
+}
+.sim-btn-outline:hover {
+  background: var(--sim-surface-hover);
+}
+.sim-btn-sm {
+  padding: 6px 12px;
+  font-size: 12.5px;
+}
+
+/* ── Virtual Agent Grid ── */
+.sim-agents-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 16px;
+}
+.sim-agent-card {
+  background: #ffffff;
+  border: 1px solid var(--sim-border);
+  border-radius: var(--sim-radius-lg);
+  padding: 18px;
+  transition: transform 0.15s, box-shadow 0.15s;
+  display: flex;
+  flex-direction: column;
+}
+.sim-agent-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sim-shadow-md);
+}
+.sim-agent-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.sim-agent-icon {
+  font-size: 26px;
+  width: 44px;
+  height: 44px;
+  background: var(--sim-surface-alt);
+  border-radius: var(--sim-radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.sim-agent-title {
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--sim-text-main);
+}
+.sim-agent-badge {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: var(--sim-radius-full);
+  background: var(--sim-primary-light);
+  color: var(--sim-primary-dark);
+}
+.sim-agent-desc {
+  font-size: 12.5px;
+  color: var(--sim-text-muted);
+  line-height: 1.45;
+  flex-grow: 1;
+}
+
+/* ── Dialogue Timeline ── */
+.sim-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+.sim-dialogue-item {
+  background: #ffffff;
+  border: 1px solid var(--sim-border);
+  border-left: 4px solid var(--sim-primary);
+  border-radius: var(--sim-radius-md);
+  padding: 16px;
+}
+.sim-dialogue-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.sim-dialogue-author {
+  font-weight: 800;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.sim-dialogue-body {
+  font-size: 13.5px;
+  color: #334155;
+  line-height: 1.55;
+}
+.sim-dialogue-citation {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--sim-border);
+  font-size: 12px;
+  color: var(--sim-primary);
+  font-weight: 600;
+}
+
+/* ── Knowledge Graph Node Chip ── */
+.sim-node-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--sim-radius-full);
+  background: var(--sim-surface-alt);
+  border: 1px solid var(--sim-border);
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.sim-node-chip:hover {
+  background: var(--sim-primary-light);
+  border-color: var(--sim-primary);
+}
+
+/* ── Report Container ── */
+.sim-report-box {
+  background: #ffffff;
+  border: 1px solid var(--sim-border);
+  border-radius: var(--sim-radius-lg);
+  padding: 28px;
+  box-shadow: var(--sim-shadow-md);
+}
+.sim-report-header {
+  border-bottom: 2px solid var(--sim-border);
+  padding-bottom: 16px;
+  margin-bottom: 20px;
+}
+.sim-report-section-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--sim-text-main);
+  margin: 18px 0 8px;
+  border-left: 3px solid var(--sim-primary);
+  padding-left: 8px;
+}
+.sim-report-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 13.5px;
+  color: #334155;
+}
+.sim-report-list li {
+  margin-bottom: 6px;
+}
+
+/* ── Badges ── */
+.badge-status-completed {
+  background: #dcfce7;
+  color: #14532d;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.badge-status-running {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+.badge-status-draft {
+  background: #f1f5f9;
+  color: #475569;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+@media print {
+  .sim-utility-bar, .sim-navbar, .sim-tabs-wrapper, .sim-btn-no-print {
+    display: none !important;
+  }
+  .sim-container {
+    max-width: 100%;
+    padding: 0;
+  }
+}
